@@ -78,7 +78,6 @@
                 window.showNotification('Item dropped successfully!');
             }
         }
-
     </script>
 
     @livewire('dragula-widget', [
