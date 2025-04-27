@@ -8,6 +8,7 @@ use Trinavo\LivewirePageBuilder\Http\Livewire\Block;
 use Trinavo\LivewirePageBuilder\Http\Livewire\BlockProperties;
 use Trinavo\LivewirePageBuilder\Http\Livewire\PageEditor;
 use Trinavo\LivewirePageBuilder\Http\Livewire\Row;
+use Trinavo\LivewirePageBuilder\Console\InstallPageBuilderCommand;
 
 class PageBuilderServiceProvider extends ServiceProvider
 {
@@ -27,15 +28,13 @@ class PageBuilderServiceProvider extends ServiceProvider
         Livewire::component('block', Block::class);
         Livewire::component('block-properties', BlockProperties::class);
         Livewire::component('row', Row::class);
-
-
-        $this->publishes([
-            __DIR__ . '/../../public' => public_path('vendor/page-builder'),
-        ], 'page-builder');
     }
 
     public function register(): void
     {
         // Bindings or services can be registered here if needed.
+        $this->commands([
+            InstallPageBuilderCommand::class,
+        ]);
     }
 }

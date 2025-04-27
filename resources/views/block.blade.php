@@ -1,4 +1,4 @@
 <div class="w-full md:w-{{$cols}}/12">
-{{$widgetId}}
+    {{$widgetId}}
     @livewire($widgetName, $widgetProperties)
 </div>
