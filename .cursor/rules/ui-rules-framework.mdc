@@ -1,0 +1,17 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+
+# Your rule content
+
+## Design Rules
+- Always take care of dark / light mode
+- Please try not to create svg as much as possible, and use blade icons
+- We are using tailwind 4, please make sure to not to use deprecated classes / code https://tailwindcss.com/docs/upgrade-guide#removed-deprecated-utilities and if you encounter an old code, upgrade it
+
+
+## Framework
+- We are using laravel 12
+- try to avoid writing @php inside livewire views please
