@@ -32,7 +32,7 @@ class PageBuilderServiceProvider extends ServiceProvider
         ], 'page-builder-views');
 
         Livewire::component('page-editor', PageEditor::class);
-        Livewire::component('block', BuilderBlock::class);
+        Livewire::component('builder-block', BuilderBlock::class);
         Livewire::component('block-properties', BlockProperties::class);
         Livewire::component('row', Row::class);
 

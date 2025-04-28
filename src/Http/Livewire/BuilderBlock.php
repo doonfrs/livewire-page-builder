@@ -20,6 +20,10 @@ class BuilderBlock extends Component
 
     public function render()
     {
-        return view('page-builder::block');
+        return view('page-builder::builder-block', [
+            'blockName' => $this->blockName,
+            'blockId' => $this->blockId,
+            'blockProperties' => $this->blockProperties,
+        ]);
     }
 }

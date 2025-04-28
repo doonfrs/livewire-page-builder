@@ -3,8 +3,8 @@
 
     <!-- Debug Information -->
     <div class="mb-4 text-xs p-2 bg-gray-100 rounded">
-        <div>Row ID: {{ $debug['selectedRowId'] ?? 'None' }}</div>
-        <div>Block ID: {{ $debug['selectedBlockId'] ?? 'None' }}</div>
+        <div>Row ID: {{ $rowId ?? 'None' }}</div>
+        <div>Block ID: {{ $blockId ?? 'None' }}</div>
 
         {{ json_encode($blockData) }}
     </div>
@@ -14,9 +14,17 @@
         <div>
             <label class="block text-sm font-medium text-gray-700">{{ $property['label'] }}</label>
             @if($property['type'] === 'checkbox')
-            <input type="checkbox" class="form-checkbox" @if(($blockData['properties'][$property['name']] ?? false)) checked @endif>
+            <input
+                type="checkbox"
+                class="form-checkbox"
+                @if(($blockData['propertyValues'][$property['name']] ?? false)) checked @endif
+                wire:change.debounce.500ms="updateBlockProperty('{{ $rowId }}', '{{ $blockId }}', '{{ $property['name'] }}', $event.target.checked)">
             @else
-            <input type="text" class="w-full p-2 border border-gray-300 rounded focus:ring focus:ring-gray-300" value="{{ $blockData['properties'][$property['name']] ?? '' }}">
+            <input
+                type="text"
+                class="w-full p-2 border border-gray-300 rounded focus:ring focus:ring-gray-300"
+                value="{{ $blockData['propertyValues'][$property['name']] ?? '' }}"
+                wire:change.debounce.500ms="updateBlockProperty('{{ $rowId }}', '{{ $blockId }}', '{{ $property['name'] }}', $event.target.value)">
             @endif
         </div>
         @endforeach

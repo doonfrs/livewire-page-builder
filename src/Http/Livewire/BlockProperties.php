@@ -9,7 +9,8 @@ class BlockProperties extends Component
 {
 
     public $blockData = null;
-    public $rowData = null;
+    public $rowId = null;
+    public $blockId = null;
 
     public function mount() {}
 
@@ -17,5 +18,10 @@ class BlockProperties extends Component
     {
 
         return view('page-builder::block-properties');
+    }
+
+    public function updateBlockProperty($rowId, $blockId, $property, $value)
+    {
+        $this->dispatch('updateBlockProperty', $rowId, $blockId, $property, $value);
     }
 }
