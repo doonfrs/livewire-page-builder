@@ -12,6 +12,8 @@ class PageEditor extends Component
     public $availableBlocks = [];
     public ?string $selectedRowId = null;
     public ?string $selectedBlockId = null;
+    public $selectedBlock = null;
+    public $selectedRow = null;
     public bool $showBlockModal = false;
     public string $blockFilter = '';
     public ?string $modalRowId = null;
@@ -32,28 +34,6 @@ class PageEditor extends Component
         $this->dispatch('rowAdded', $rowId);
     }
 
-    public function updateRowOrder($rowIds)
-    {
-        dd($rowIds);
-    }
-
-    public function addBlock($rowId, $blockAlias)
-    {
-        // Find the class name for this alias
-        $blockClass = null;
-        foreach ($this->availableBlocks as $block) {
-            if ($block['alias'] === $blockAlias) {
-                $blockClass = $block['class'];
-                break;
-            }
-        }
-
-        $this->rows[$rowId]['blocks'][uniqid()] = [
-            'alias' => $blockAlias,
-            'properties' => []
-        ];
-    }
-
     public function save() {}
 
     #[On('selectBlock')]
@@ -61,28 +41,10 @@ class PageEditor extends Component
     {
         $this->selectedRowId = $rowId;
         $this->selectedBlockId = $blockId;
-        // Debug message for confirmation
-        session()->flash('debug', "Block selected: $rowId - $blockId");
+        $this->selectedBlock = $this->rows[$this->selectedRowId]['blocks'][$this->selectedBlockId] ?? null;
     }
 
-    public function getSelectedBlock()
-    {
-        if ($this->selectedRowId && $this->selectedBlockId) {
-            return $this->rows[$this->selectedRowId]['blocks'][$this->selectedBlockId] ?? null;
-        }
-        return null;
-    }
 
-    public function getSelectedBlockDataProperty()
-    {
-        return $this->getSelectedBlock();
-    }
-
-    public function getSelectedBlockClassProperty()
-    {
-        $block = $this->getSelectedBlock();
-        return $block['class'] ?? null;
-    }
 
     #[On('addBlockToRow')]
     public function addBlockToRow($rowId, $blockAlias)
@@ -98,8 +60,7 @@ class PageEditor extends Component
 
         $this->rows[$rowId]['blocks'][uniqid()] = [
             'alias' => $blockAlias,
-            'class' => $blockClass, // Store the real class name!
-            'properties' => []
+            'properties' => app(PageBuilderService::class)->getBlockPropertiesArray($blockClass)
         ];
     }
 

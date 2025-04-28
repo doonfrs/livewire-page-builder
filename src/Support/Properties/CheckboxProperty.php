@@ -8,4 +8,13 @@ class CheckboxProperty extends BlockProperty
     {
         return 'checkbox';
     }
+
+    public function toArray(): array
+    {
+        return [
+            'name' => $this->name,
+            'label' => $this->label,
+            'type' => $this->getType(),
+        ];
+    }
 }
