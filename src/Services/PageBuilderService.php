@@ -46,7 +46,26 @@ class PageBuilderService
     public function getBlockProperties($blockClass): array
     {
         $instance = app($blockClass);
-        return $instance->getPageBuilderProperties();
+
+        // Always merge shared and custom properties
+        $shared = method_exists($instance, 'getSharedProperties')
+            ? $instance->getSharedProperties()
+            : [];
+
+        $custom = method_exists($instance, 'getPageBuilderProperties')
+            ? $instance->getPageBuilderProperties()
+            : [];
+
+        // Avoid duplicate property names (custom should override shared)
+        $all = [];
+        foreach ($shared as $property) {
+            $all[$property->name] = $property;
+        }
+        foreach ($custom as $property) {
+            $all[$property->name] = $property;
+        }
+
+        return array_values($all);
     }
 
     /**

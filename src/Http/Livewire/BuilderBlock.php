@@ -18,6 +18,14 @@ class BuilderBlock extends Component
         $this->dispatch('block-selected', $blockId);
     }
 
+    public function getColClassesProperty()
+    {
+        $mobile = $this->blockProperties['mobile_columns'] ?? 12;
+        $tablet = $this->blockProperties['tablet_columns'] ?? 12;
+        $desktop = $this->blockProperties['desktop_columns'] ?? 12;
+        return "col-span-$mobile md:col-span-$tablet lg:col-span-$desktop";
+    }
+
     public function render()
     {
         return view('page-builder::builder-block', [
