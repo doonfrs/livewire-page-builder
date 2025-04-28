@@ -5,8 +5,7 @@
     <div class="mb-4 text-xs p-2 bg-gray-100 rounded">
         <div>Row ID: {{ $rowId ?? 'None' }}</div>
         <div>Block ID: {{ $blockId ?? 'None' }}</div>
-
-        {{ json_encode($blockData) }}
+        <pre>{{ json_encode($blockData, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) }}</pre>
     </div>
 
     <div class="space-y-3">
@@ -24,7 +23,7 @@
                 type="text"
                 class="w-full p-2 border border-gray-300 rounded focus:ring focus:ring-gray-300"
                 value="{{ $blockData['propertyValues'][$property['name']] ?? '' }}"
-                wire:change.debounce.500ms="updateBlockProperty('{{ $rowId }}', '{{ $blockId }}', '{{ $property['name'] }}', $event.target.value)">
+                wire:input.debounce.500ms="updateBlockProperty('{{ $rowId }}', '{{ $blockId }}', '{{ $property['name'] }}', $event.target.value)">
             @endif
         </div>
         @endforeach

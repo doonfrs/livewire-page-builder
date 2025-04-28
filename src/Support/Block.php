@@ -24,11 +24,22 @@ abstract class Block extends Component
     }
 
     /**
-     * Get the editable properties for the block in the page builder UI.
+     * Get the shared properties for the block in the page builder UI.
+     */
+    public function getSharedProperties(): array
+    {
+        return [
+            new TextProperty('mobile_columns', 'Mobile Columns'),
+            new TextProperty('tablet_columns', 'Tablet Columns'),
+            new TextProperty('desktop_columns', 'Desktop Columns'),
+        ];
+    }
+
+    /**
+     * Child classes should override this to provide custom properties.
      */
     public function getPageBuilderProperties(): array
     {
-        // Example: return [new TextProperty('title', 'Title')];
         return [];
     }
 }

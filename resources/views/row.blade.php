@@ -5,6 +5,10 @@
         <button wire:click="openBlockModal()" class="w-8 h-8 text-gray-600 hover:text-black p-1" title="Add Block">
             <x-heroicon-o-plus />
         </button>
+        <!-- Row Select Button -->
+        <button wire:click="selectRow" class="w-8 h-8 text-blue-600 hover:text-blue-900 p-1" title="Select Row">
+            <x-heroicon-o-cursor-arrow-rays />
+        </button>
         <!-- (Other row controls can go here) -->
     </div>
 
@@ -16,7 +20,7 @@
         <div class="row-blocks" id="row-blocks-{{ $rowId }}">
             @foreach($blocks as $blockId => $block)
             @if(is_array($block) && isset($block['alias']))
-            <div class="cursor-pointer" wire:click="selectBlock('{{ $blockId }}')">
+            <div class="cursor-pointer grid grid-cols-12" wire:click="selectBlock('{{ $blockId }}')">
                 @livewire('builder-block', [
                 'blockName' => $block['alias'],
                 'blockId' => $blockId,

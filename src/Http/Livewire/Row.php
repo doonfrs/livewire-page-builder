@@ -28,6 +28,11 @@ class Row extends Component
         $this->dispatch('selectBlock', $this->rowId, $blockId);
     }
 
+    public function selectRow()
+    {
+        $this->dispatch('selectBlock', $this->rowId, null);
+    }
+
     public function render()
     {
         return view('page-builder::row');
