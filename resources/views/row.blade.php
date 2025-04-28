@@ -25,8 +25,9 @@
             <h6 class="text-sm font-semibold">Select a Block:</h6>
             @foreach($availableBlocks as $block)
             <button class="border border-gray-500 text-gray-600 hover:bg-gray-600 hover:text-white text-sm px-3 py-1 rounded m-1"
-                wire:click="addBlock('{{ $block }}')">
-                {{ $block }}
+                wire:click="addBlock('{{  $block['alias'] }}')">
+                <x-dynamic-component :component="$block['icon']" class="inline w-4 h-4 mr-1" />
+                {{ $block['label'] }}
             </button>
             @endforeach
         </div>
@@ -34,9 +35,9 @@
         <div class="row-blocks" id="row-blocks-{{ $rowId }}">
             @foreach($blocks as $blockId => $block)
             <div class="block-block" id="block-block-{{ $blockId }}">
-                <h5 class="text-lg font-semibold">Block: {{ $block['name'] }}</h5>
+                <h5 class="text-lg font-semibold">Block: {{ $block['alias'] }}</h5>
                 @livewire('block', [
-                'blockName' => $block['name'],
+                'blockName' => $block['alias'],
                 'blockId' => $blockId,
                 ], key($blockId))
             </div>

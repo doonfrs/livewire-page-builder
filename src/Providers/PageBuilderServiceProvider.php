@@ -8,7 +8,10 @@ use Trinavo\LivewirePageBuilder\Http\Livewire\Block;
 use Trinavo\LivewirePageBuilder\Http\Livewire\BlockProperties;
 use Trinavo\LivewirePageBuilder\Http\Livewire\PageEditor;
 use Trinavo\LivewirePageBuilder\Http\Livewire\Row;
+use Trinavo\LivewirePageBuilder\Http\Livewire\BuilderBlock;
 use Trinavo\LivewirePageBuilder\Console\InstallPageBuilderCommand;
+use Illuminate\Support\Str;
+use Trinavo\LivewirePageBuilder\Services\PageBuilderService;
 
 class PageBuilderServiceProvider extends ServiceProvider
 {
@@ -29,9 +32,11 @@ class PageBuilderServiceProvider extends ServiceProvider
         ], 'page-builder-views');
 
         Livewire::component('page-editor', PageEditor::class);
-        Livewire::component('block', Block::class);
+        Livewire::component('block', BuilderBlock::class);
         Livewire::component('block-properties', BlockProperties::class);
         Livewire::component('row', Row::class);
+
+        $this->registerBlocks();
     }
 
     public function register(): void
@@ -40,5 +45,16 @@ class PageBuilderServiceProvider extends ServiceProvider
         $this->commands([
             InstallPageBuilderCommand::class,
         ]);
+    }
+
+    private function registerBlocks()
+    {
+        // Register user blocks with kebab-case aliases
+        foreach (config('page-builder.blocks', []) as $blockClass) {
+            if (class_exists($blockClass)) {
+                $alias = app(PageBuilderService::class)->getClassAlias($blockClass);
+                Livewire::component($alias, $blockClass);
+            }
+        }
     }
 }
