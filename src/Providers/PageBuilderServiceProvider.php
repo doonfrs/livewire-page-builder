@@ -24,6 +24,10 @@ class PageBuilderServiceProvider extends ServiceProvider
 
         $this->mergeConfigFrom(__DIR__ . '/../../config/page-builder.php', 'page-builder');
 
+        $this->publishes([
+            __DIR__ . '/../../resources/views' => resource_path('views/vendor/page-builder'),
+        ], 'page-builder-views');
+
         Livewire::component('page-editor', PageEditor::class);
         Livewire::component('block', Block::class);
         Livewire::component('block-properties', BlockProperties::class);
