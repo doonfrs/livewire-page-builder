@@ -20,7 +20,7 @@
             <div class="max-h-64 overflow-y-auto">
                 @forelse($this->filteredBlocks as $block)
                 <button class="flex items-center w-full px-3 py-2 mb-2 border rounded hover:bg-gray-100"
-                    wire:click="addBlock('{{ $block['alias'] }}'); closeBlockModal()">
+                    wire:click="addBlock('{{ $block['alias'] }}')">
                     <x-dynamic-component :component="$block['icon']" class="w-5 h-5 mr-2" />
                     <span>{{ $block['label'] }}</span>
                 </button>
@@ -40,10 +40,12 @@
         <div class="row-blocks" id="row-blocks-{{ $rowId }}">
             @foreach($blocks as $blockId => $block)
             @if(is_array($block) && isset($block['alias']))
-            @livewire('block', [
-            'blockName' => $block['alias'],
-            'blockId' => $blockId,
-            ], key($blockId))
+            <div class="cursor-pointer" wire:click="selectBlock('{{ $blockId }}')">
+                @livewire('block', [
+                'blockName' => $block['alias'],
+                'blockId' => $blockId,
+                ], key($blockId))
+            </div>
             @endif
             @endforeach
         </div>

@@ -15,3 +15,4 @@ alwaysApply: true
 ## Framework
 - We are using laravel 12
 - try to avoid writing @php inside livewire views please
+- Using Livewire 3, please make sure not to use deprecated method https://livewire.laravel.com/docs/upgrading#emitup

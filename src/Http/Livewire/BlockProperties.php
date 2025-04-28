@@ -8,21 +8,20 @@ use Livewire\Component;
 class BlockProperties extends Component
 {
 
-    public ?string $selectedBlockId = null;
     public ?string $selectedRowId = null;
-    
-    public function mount()
-    {
+    public ?string $selectedBlockId = null;
+    public $blockData = null;
+    public $blockClass = null;
 
-    }
+    public function mount() {}
 
-    #[On('block-selected')] 
+    #[On('block-selected')]
     public function blockSelected($blockId)
     {
         $this->selectedBlockId = $blockId;
     }
 
-    #[On('row-selected')] 
+    #[On('row-selected')]
     public function rowSelected($rowId)
     {
         $this->selectedRowId = $rowId;
@@ -30,6 +29,16 @@ class BlockProperties extends Component
 
     public function render()
     {
-        return view('page-builder::block-properties');
+        // Debug info for the component
+        $debug = [
+            'selectedRowId' => $this->selectedRowId,
+            'selectedBlockId' => $this->selectedBlockId,
+            'blockClass' => $this->blockClass,
+            'blockData' => $this->blockData ? 'Yes' : 'No',
+        ];
+
+        return view('page-builder::block-properties', [
+            'debug' => $debug
+        ]);
     }
 }

@@ -54,6 +54,11 @@ class Row extends Component
         }));
     }
 
+    public function selectBlock($blockId)
+    {
+        $this->dispatch('selectBlock', $this->rowId, $blockId);
+    }
+
     public function render()
     {
         return view('page-builder::row');
