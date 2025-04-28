@@ -4,7 +4,7 @@ namespace Trinavo\LivewirePageBuilder\Http\Livewire;
 
 use Livewire\Component;
 
-class Block extends Component
+class BuilderBlock extends Component
 {
     public $cols = 4;
     public $blockName = null;

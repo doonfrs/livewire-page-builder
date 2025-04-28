@@ -3,7 +3,7 @@
 namespace Trinavo\LivewirePageBuilder\Http\Livewire;
 
 use Livewire\Component;
-use Trinavo\LivewirePageBuilder\Services\BlockService;
+use Trinavo\LivewirePageBuilder\Services\PageBuilderService;
 
 class Row extends Component
 {
@@ -14,13 +14,13 @@ class Row extends Component
 
     public function mount()
     {
-        $this->availableBlocks = config('page-builder.blocks');
+        $this->availableBlocks = app(PageBuilderService::class)->getAvailableBlocks();
     }
 
-    public function addBlock($blockName)
+    public function addBlock($blockAlias)
     {
         $blockId = uniqid();
-        $this->blocks[$blockId] = ['name' => $blockName];
+        $this->blocks[$blockId] = ['alias' => $blockAlias];
 
         $this->dispatch('block-added', $blockId);
     }

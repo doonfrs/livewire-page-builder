@@ -2,6 +2,7 @@
 
 namespace Trinavo\LivewirePageBuilder\Http\Livewire;
 
+use Trinavo\LivewirePageBuilder\Services\PageBuilderService;
 use Livewire\Component;
 
 class PageEditor extends Component
@@ -11,7 +12,7 @@ class PageEditor extends Component
 
     public function mount()
     {
-        $this->availableBlocks = config('page-builder.blocks');
+        $this->availableBlocks = app(PageBuilderService::class)->getAvailableBlocks();
     }
 
     public function addRow()
@@ -23,7 +24,6 @@ class PageEditor extends Component
         ];
 
         $this->dispatch('rowAdded', $rowId);
-
     }
 
     public function updateRowOrder($rowIds)
