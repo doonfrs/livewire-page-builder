@@ -23,7 +23,6 @@ class Row extends Component
         $this->blocks[$blockId] = ['name' => $blockName];
 
         $this->dispatch('block-added', $blockId);
-
     }
 
     public function rowSelected($rowId)
