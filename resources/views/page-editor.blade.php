@@ -1,4 +1,11 @@
 <div>
+    <!-- Debug message -->
+    @if (session()->has('debug'))
+    <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-2" role="alert">
+        {{ session('debug') }}
+    </div>
+    @endif
+
     <div class="flex items-center justify-between bg-gray-200 shadow-md p-3 text-gray-900">
         <div class="flex gap-2">
             <button class="w-8 h-8 p-1 hover:bg-gray-300 flex items-center justify-center" wire:click="addRow">
@@ -13,7 +20,12 @@
 
     <div class="flex flex-1 overflow-hidden">
         <div class="w-64">
-            @livewire('block-properties')
+            @livewire('block-properties', [
+            'selectedRowId' => $selectedRowId,
+            'selectedBlockId' => $selectedBlockId,
+            'blockData' => $this->selectedBlockData,
+            'blockClass' => $this->selectedBlockClass,
+            ], key($selectedRowId . '-' . $selectedBlockId))
         </div>
 
         <main id="main" class="flex-1 p-6 bg-gray-50 overflow-auto">
