@@ -44,10 +44,7 @@
     <div class="flex flex-1 overflow-hidden">
         <div class="w-64">
             @livewire('block-properties', [
-            'selectedRowId' => $selectedRowId,
-            'selectedBlockId' => $selectedBlockId,
-            'blockData' => $this->selectedBlockData,
-            'blockClass' => $this->selectedBlockClass,
+            'blockData' => $selectedBlock,
             ], key($selectedRowId . '-' . $selectedBlockId))
         </div>
 

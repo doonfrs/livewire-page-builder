@@ -16,4 +16,13 @@ class TextProperty extends BlockProperty
     {
         return 'text';
     }
+
+    public function toArray(): array
+    {
+        return [
+            'name' => $this->name,
+            'label' => $this->label,
+            'type' => $this->getType(),
+        ];
+    }
 }

@@ -14,4 +14,6 @@ abstract class BlockProperty
     }
 
     abstract public function getType(): string;
+
+    abstract function toArray(): array;
 }
