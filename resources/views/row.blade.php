@@ -17,9 +17,10 @@
             @foreach($blocks as $blockId => $block)
             @if(is_array($block) && isset($block['alias']))
             <div class="cursor-pointer" wire:click="selectBlock('{{ $blockId }}')">
-                @livewire('block', [
+                @livewire('builder-block', [
                 'blockName' => $block['alias'],
                 'blockId' => $blockId,
+                'blockProperties' => $block['propertyValues'] ?? [],
                 ], key($blockId))
             </div>
             @endif

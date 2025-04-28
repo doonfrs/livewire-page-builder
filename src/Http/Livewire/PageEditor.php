@@ -34,7 +34,6 @@ class PageEditor extends Component
         $this->dispatch('rowAdded', $rowId);
     }
 
-    public function save() {}
 
     #[On('selectBlock')]
     public function selectBlock($rowId, $blockId)
@@ -44,6 +43,12 @@ class PageEditor extends Component
         $this->selectedBlock = $this->rows[$this->selectedRowId]['blocks'][$this->selectedBlockId] ?? null;
     }
 
+
+    #[On('updateBlockProperty')]
+    public function updateBlockProperty($rowId, $blockId, $property, $value)
+    {
+        $this->rows[$rowId]['blocks'][$blockId]['propertyValues'][$property] = $value;
+    }
 
 
     #[On('addBlockToRow')]
@@ -60,7 +65,8 @@ class PageEditor extends Component
 
         $this->rows[$rowId]['blocks'][uniqid()] = [
             'alias' => $blockAlias,
-            'properties' => app(PageBuilderService::class)->getBlockPropertiesArray($blockClass)
+            'properties' => app(PageBuilderService::class)->getBlockPropertiesArray($blockClass),
+            'propertyValues' => []
         ];
     }
 

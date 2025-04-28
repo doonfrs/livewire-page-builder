@@ -45,6 +45,8 @@
         <div class="w-64">
             @livewire('block-properties', [
             'blockData' => $selectedBlock,
+            'rowId' => $selectedRowId,
+            'blockId' => $selectedBlockId,
             ], key($selectedRowId . '-' . $selectedBlockId))
         </div>
 
