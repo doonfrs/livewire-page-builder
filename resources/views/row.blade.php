@@ -7,16 +7,7 @@
             <x-heroicon-o-plus />
         </button>
 
-        <!-- Move (Draggable) -->
-        <button class="w-8 h-8 text-gray-600 hover:text-black p-1 cursor-grab handle">
-            <x-heroicon-o-arrows-up-down />
-        </button>
 
-        <!-- Delete Row -->
-        <button wire:click="deleteRow('{{ $rowId }}')"
-            class="w-8 h-8 text-gray-600 hover:text-black p-1">
-            <x-heroicon-o-trash />
-        </button>
     </div>
 
     <!-- Row Container -->
@@ -34,13 +25,11 @@
 
         <div class="row-blocks" id="row-blocks-{{ $rowId }}">
             @foreach($blocks as $blockId => $block)
-            <div class="block-block" id="block-block-{{ $blockId }}">
-                <h5 class="text-lg font-semibold">Block: {{ $block['alias'] }}</h5>
-                @livewire('block', [
-                'blockName' => $block['alias'],
-                'blockId' => $blockId,
-                ], key($blockId))
-            </div>
+            <h5 class="text-lg font-semibold">Block: {{ $block['alias'] }}</h5>
+            @livewire('block', [
+            'blockName' => $block['alias'],
+            'blockId' => $blockId,
+            ], key($blockId))
             @endforeach
         </div>
     </div>
