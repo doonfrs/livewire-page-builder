@@ -30,6 +30,6 @@ class BlockProperties extends Component
 
     public function render()
     {
-        return view('livewire-page-builder::block-properties');
+        return view('page-builder::block-properties');
     }
 }

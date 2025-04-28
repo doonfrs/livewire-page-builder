@@ -18,7 +18,7 @@ class PageEditor extends Component
     {
         $rowId = uniqid();
         $this->rows[$rowId] = [
-            'widgets' => [],
+            'blocks' => [],
             'properties' => []
         ];
 
@@ -31,10 +31,10 @@ class PageEditor extends Component
         dd($rowIds);
     }
 
-    public function addWidget($rowId, $widgetName)
+    public function addBlock($rowId, $blockName)
     {
-        $this->rows[$rowId]['widgets'][uniqid()] = [
-            'name' => $widgetName,
+        $this->rows[$rowId]['blocks'][uniqid()] = [
+            'name' => $blockName,
             'properties' => []
         ];
     }
