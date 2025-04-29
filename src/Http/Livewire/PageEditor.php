@@ -5,19 +5,15 @@ namespace Trinavo\LivewirePageBuilder\Http\Livewire;
 use Trinavo\LivewirePageBuilder\Services\PageBuilderService;
 use Livewire\Component;
 use Livewire\Attributes\On;
-use Trinavo\LivewirePageBuilder\Support\RowBlock;
 
 class PageEditor extends Component
 {
     public $rows = [];
     public $availableBlocks = [];
-    public ?string $selectedRowId = null;
-    public ?string $selectedBlockId = null;
-    public $selectedBlock = null;
-    public $selectedRow = null;
     public bool $showBlockModal = false;
     public string $blockFilter = '';
     public ?string $modalRowId = null;
+    public $blockProperties = [];
 
     public function mount()
     {
@@ -27,39 +23,7 @@ class PageEditor extends Component
     public function addRow()
     {
         $rowId = uniqid();
-        $rowClass = RowBlock::class;
-        $this->rows[$rowId] = [
-            'type' => 'row',
-            'class' => $rowClass,
-            'properties' => app(PageBuilderService::class)->getBlockPropertiesArray($rowClass),
-            'propertyValues' => [
-                'mobile_columns' => 12,
-                'tablet_columns' => 12,
-                'desktop_columns' => 12,
-            ],
-            'blocks' => [],
-        ];
-        $this->dispatch('rowAdded', $rowId);
-    }
-
-
-    #[On('selectBlock')]
-    public function selectBlock($rowId, $blockId)
-    {
-        $this->selectedRowId = $rowId;
-        $this->selectedBlockId = $blockId;
-        if ($blockId) {
-            $this->selectedBlock = $this->rows[$rowId]['blocks'][$blockId] ?? null;
-        } else {
-            $this->selectedBlock = $this->rows[$rowId] ?? null;
-        }
-    }
-
-
-    #[On('updateBlockProperty')]
-    public function updateBlockProperty($rowId, $blockId, $property, $value)
-    {
-        $this->rows[$rowId]['blocks'][$blockId]['propertyValues'][$property] = $value;
+        $this->rows[$rowId] = [];
     }
 
 
@@ -74,18 +38,16 @@ class PageEditor extends Component
                 break;
             }
         }
+
         $this->rows[$rowId]['blocks'][uniqid()] = [
             'type' => 'block',
             'class' => $blockClass,
             'alias' => $blockAlias,
-            'properties' => app(PageBuilderService::class)->getBlockPropertiesArray($blockClass),
-            'propertyValues' => [
-                'mobile_columns' => 12,
-                'tablet_columns' => 12,
-                'desktop_columns' => 12,
-            ],
         ];
+
+        $this->dispatch('blockAdded', $rowId, $blockAlias)->to('row-block');
     }
+
 
     #[On('openBlockModal')]
     public function openBlockModal($rowId)
@@ -122,7 +84,9 @@ class PageEditor extends Component
 
     public function render()
     {
-        return view('page-builder::page-editor')
-            ->layout('page-builder::layouts.app');
+        return view('page-builder::page-editor', [
+            'selectedRowId' => $this->selectedRowId ?? null,
+            'selectedBlockId' => $this->selectedBlockId ?? null,
+        ])->layout('page-builder::layouts.app');
     }
 }

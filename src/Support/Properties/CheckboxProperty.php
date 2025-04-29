@@ -15,6 +15,7 @@ class CheckboxProperty extends BlockProperty
             'name' => $this->name,
             'label' => $this->label,
             'type' => $this->getType(),
+            'defaultValue' => $this->defaultValue,
         ];
     }
 }
