@@ -6,9 +6,13 @@ class TextProperty extends BlockProperty
 {
     public bool $numeric = false;
 
-    public function __construct(string $name, string $label = null, bool $numeric = false)
-    {
-        parent::__construct($name, $label);
+    public function __construct(
+        string $name,
+        string $label = null,
+        bool $numeric = false,
+        $defaultValue = null
+    ) {
+        parent::__construct($name, $label, $defaultValue);
         $this->numeric = $numeric;
     }
 
@@ -23,6 +27,7 @@ class TextProperty extends BlockProperty
             'name' => $this->name,
             'label' => $this->label,
             'type' => $this->getType(),
+            'defaultValue' => $this->defaultValue,
         ];
     }
 }
