@@ -2,7 +2,9 @@
     <div
         class="block-row relative border "
         :class="selected ? 'border-blue-500' : 'border-gray-300'"
-        x-on:block-selected.window="selected = $event.detail.blockId == '{{$blockId}}'">
+        x-on:block-selected.window="selected = $event.detail.blockId == '{{$blockId}}'"
+        x-on:row-selected.window="selected = false"
+        >
         <div
             class="cursor-pointer"
             wire:click="blockSelected()">

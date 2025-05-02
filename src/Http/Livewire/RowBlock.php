@@ -38,6 +38,8 @@ class RowBlock extends Block
             rowId: $this->rowId,
             properties: $this->properties,
         );
+
+        $this->skipRender();
     }
 
     #[On('blockAdded')]
