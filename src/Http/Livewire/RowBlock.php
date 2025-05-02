@@ -7,11 +7,11 @@ use Trinavo\LivewirePageBuilder\Support\Block;
 
 class RowBlock extends Block
 {
-
     public array $blocks = [];
-    public ?string $rowId;
-    public $properties = [];
 
+    public ?string $rowId;
+
+    public $properties = [];
 
     public function mount()
     {
@@ -22,7 +22,6 @@ class RowBlock extends Block
     {
         $this->dispatch('openBlockModal', $this->rowId)->to('page-editor');
     }
-
 
     public function render()
     {
@@ -40,7 +39,6 @@ class RowBlock extends Block
             properties: $this->properties,
         );
     }
-
 
     #[On('blockAdded')]
     public function blockAdded($rowId, $blockAlias)

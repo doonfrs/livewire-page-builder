@@ -8,7 +8,10 @@ interface View extends Renderable
 {
     /** @return static */
     public function extends();
+
     public function section();
+
     public function layoutData();
+
     public function layout($viewName);
 }

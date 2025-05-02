@@ -2,17 +2,22 @@
 
 namespace Trinavo\LivewirePageBuilder\Http\Livewire;
 
-use Trinavo\LivewirePageBuilder\Services\PageBuilderService;
-use Livewire\Component;
 use Livewire\Attributes\On;
+use Livewire\Component;
+use Trinavo\LivewirePageBuilder\Services\PageBuilderService;
 
 class PageEditor extends Component
 {
     public $rows = [];
+
     public $availableBlocks = [];
+
     public bool $showBlockModal = false;
+
     public string $blockFilter = '';
+
     public ?string $modalRowId = null;
+
     public $blockProperties = [];
 
     public function mount()
@@ -25,7 +30,6 @@ class PageEditor extends Component
         $rowId = uniqid();
         $this->rows[$rowId] = [];
     }
-
 
     #[On('addBlockToRow')]
     public function addBlockToRow($rowId, $blockAlias)
@@ -48,7 +52,6 @@ class PageEditor extends Component
         $this->dispatch('blockAdded', $rowId, $blockAlias)->to('row-block');
     }
 
-
     #[On('openBlockModal')]
     public function openBlockModal($rowId)
     {
@@ -65,10 +68,11 @@ class PageEditor extends Component
 
     public function getFilteredBlocksProperty()
     {
-        if (!$this->blockFilter) {
+        if (! $this->blockFilter) {
             return $this->availableBlocks;
         }
         $filter = strtolower($this->blockFilter);
+
         return array_values(array_filter($this->availableBlocks, function ($block) use ($filter) {
             return str_contains(strtolower($block['label']), $filter);
         }));
