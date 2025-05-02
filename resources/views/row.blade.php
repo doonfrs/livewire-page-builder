@@ -2,7 +2,9 @@
     <div
         class="block-row relative border "
         :class="selected ? 'border-blue-500' : 'border-gray-300'"
-        x-on:row-selected.window="console.log( $event.detail); selected = $event.detail.rowId == '{{$rowId}}'">
+        x-on:row-selected.window="selected = $event.detail.rowId == '{{$rowId}}'"
+        x-on:block-selected.window="selected = false"
+        >
         <div class="absolute top-[-14px] left-1/2 transform -translate-x-1/2 bg-white shadow-md px-2 py-1 rounded-full flex space-x-2 z-10">
             <button wire:click="openBlockModal()" class="w-8 h-8 text-gray-600 hover:text-black p-1" title="Add Block">
                 <x-heroicon-o-plus />
