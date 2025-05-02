@@ -7,7 +7,6 @@ use Trinavo\LivewirePageBuilder\Support\Properties\TextProperty;
 
 abstract class Block extends Component
 {
-
     /**
      * Get the icon for the block in the page builder UI.
      */
@@ -57,6 +56,7 @@ abstract class Block extends Component
                 $propertyValues[$property->name] = $property->defaultValue;
             }
         }
+
         return $propertyValues;
     }
 
@@ -79,6 +79,7 @@ abstract class Block extends Component
         $mobile = $values['mobile_columns'] ?? 12;
         $tablet = $values['tablet_columns'] ?? 12;
         $desktop = $values['desktop_columns'] ?? 12;
+
         return "col-span-$mobile md:col-span-$tablet lg:col-span-$desktop";
     }
 }

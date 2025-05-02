@@ -42,7 +42,8 @@ class PageBuilderService
     {
         $alias = Str::kebab(str_replace('\\', '-', $blockClass));
         $alias = str_replace('--', '-', $alias);
-        $alias = 'page-builder-' . $alias;
+        $alias = 'page-builder-'.$alias;
+
         return $alias;
     }
 
@@ -53,6 +54,7 @@ class PageBuilderService
                 return $blockClass;
             }
         }
+
         return null;
     }
 }

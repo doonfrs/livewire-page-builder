@@ -5,12 +5,14 @@ namespace Trinavo\LivewirePageBuilder\Support\Properties;
 abstract class BlockProperty
 {
     public string $name;
+
     public string $label;
+
     public $defaultValue = null;
 
     public function __construct(
         string $name,
-        string $label = null,
+        ?string $label = null,
         $defaultValue = null
     ) {
         $this->name = $name;
@@ -20,5 +22,5 @@ abstract class BlockProperty
 
     abstract public function getType(): string;
 
-    abstract function toArray(): array;
+    abstract public function toArray(): array;
 }

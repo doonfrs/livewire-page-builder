@@ -5,12 +5,13 @@ namespace Trinavo\LivewirePageBuilder\Http\Livewire;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use Trinavo\LivewirePageBuilder\Services\PageBuilderService;
-use Trinavo\LivewirePageBuilder\Support\Block;
 
 class BuilderBlock extends Component
 {
     public $blockAlias;
+
     public $blockId;
+
     public $properties;
 
     public function mount()

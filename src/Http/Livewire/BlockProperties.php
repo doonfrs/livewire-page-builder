@@ -4,17 +4,19 @@ namespace Trinavo\LivewirePageBuilder\Http\Livewire;
 
 use Livewire\Attributes\On;
 use Livewire\Component;
-use Livewire\Mechanisms\HandleComponents\HandleComponents;
 use Trinavo\LivewirePageBuilder\Services\PageBuilderService;
 use Trinavo\LivewirePageBuilder\Support\Properties\BlockProperty;
 
 class BlockProperties extends Component
 {
-
     public $rowId = null;
+
     public $blockId = null;
+
     public $properties = [];
+
     public $blockProperties = [];
+
     public $blockClass = null;
 
     public function render()
@@ -28,7 +30,6 @@ class BlockProperties extends Component
     {
         $this->dispatch('updateBlockProperty', $rowId, $blockId, $propertyName, $value);
     }
-
 
     #[On('row-selected')]
     public function rowSelected($rowId, $properties)

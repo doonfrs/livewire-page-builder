@@ -8,7 +8,7 @@ class TextProperty extends BlockProperty
 
     public function __construct(
         string $name,
-        string $label = null,
+        ?string $label = null,
         bool $numeric = false,
         $defaultValue = null
     ) {
