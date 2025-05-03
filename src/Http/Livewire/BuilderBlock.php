@@ -73,6 +73,31 @@ class BuilderBlock extends Component
         $tablet = $this->properties['tablet_grid_size'] ?? 12;
         $desktop = $this->properties['desktop_grid_size'] ?? 12;
 
-        return "col-span-$mobile md:col-span-$tablet lg:col-span-$desktop";
+        $hiddenMobile = $this->properties['hidden_mobile'] ?? false;
+        $hiddenTablet = $this->properties['hidden_tablet'] ?? false;
+        $hiddenDesktop = $this->properties['hidden_desktop'] ?? false;
+
+        $classes = [];
+
+        if ($hiddenMobile) {
+            $classes[] = 'hidden';
+            $classes[] = 'md:hidden';
+        }
+
+        if ($hiddenTablet) {
+            $classes[] = 'hidden';
+            $classes[] = 'lg:hidden';
+        }
+
+        if ($hiddenDesktop) {
+            $classes[] = 'hidden';
+            $classes[] = 'lg:hidden';
+        }
+
+        $classes[] = "col-span-$mobile md:col-span-$tablet lg:col-span-$desktop";
+
+        $classes = array_unique($classes);
+
+        return implode(' ', $classes);
     }
 }
