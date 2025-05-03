@@ -49,7 +49,7 @@
                         <span class="text-xs text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity">{{ $property['name'] }}</span>
                     </label>
                     <input
-                        type="text"
+                        type="{{ $property['numeric'] ? 'number' : 'text' }}"
                         class="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-200 focus:border-blue-400 transition-all duration-200"
                         value="{{ $properties[$property['name']] ?? '' }}"
                         wire:input.debounce.500ms="updateBlockProperty('{{ $rowId }}', '{{ $blockId }}', '{{ $property['name'] }}', $event.target.value)">
@@ -73,11 +73,13 @@
             </div>
 
             <!-- Separate responsive properties if needed -->
-            <div class="grid grid-cols-3 gap-3">
+            <div class="grid grid-cols-3 gap-3" wire:key="responsive-properties-{{ $blockId }}">
                 <div>
                     <label class="block text-xs font-medium text-gray-700 mb-1">Mobile</label>
                     <input
                         type="number"
+                        min="1"
+                        max="12"
                         class="w-full p-2 border border-gray-300 rounded focus:ring focus:ring-gray-300"
                         value="{{ $properties['mobile_grid_size'] ?? 12 }}"
                         wire:input.debounce.500ms="updateBlockProperty('{{ $rowId }}', '{{ $blockId }}', 'mobile_grid_size', $event.target.value)">
@@ -86,6 +88,8 @@
                     <label class="block text-xs font-medium text-gray-700 mb-1">Tablet</label>
                     <input
                         type="number"
+                        min="1"
+                        max="12"
                         class="w-full p-2 border border-gray-300 rounded focus:ring focus:ring-gray-300"
                         value="{{ $properties['tablet_grid_size'] ?? 12 }}"
                         wire:input.debounce.500ms="updateBlockProperty('{{ $rowId }}', '{{ $blockId }}', 'tablet_grid_size', $event.target.value)">
@@ -94,6 +98,8 @@
                     <label class="block text-xs font-medium text-gray-700 mb-1">Desktop</label>
                     <input
                         type="number"
+                        min="1"
+                        max="12"
                         class="w-full p-2 border border-gray-300 rounded focus:ring focus:ring-gray-300"
                         value="{{ $properties['desktop_grid_size'] ?? 12 }}"
                         wire:input.debounce.500ms="updateBlockProperty('{{ $rowId }}', '{{ $blockId }}', 'desktop_grid_size', $event.target.value)">

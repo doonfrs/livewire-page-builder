@@ -10,8 +10,10 @@ return new class extends Migration
     {
         Schema::create('builder_pages', function (Blueprint $table) {
             $table->id();
-            $table->string('key')->unique();
-            $table->json('components')->nullable();
+            $table->string('key');
+            $table->string('theme')->nullable();
+            $table->longText('components')->nullable();
+            $table->unique(['key', 'theme']);
             $table->timestamps();
         });
     }

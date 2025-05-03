@@ -86,10 +86,11 @@
             <div class="{{ count($blocks) == 0 ? 'pt-4 pb-4' : '' }}">
                 <div class="row-blocks grid grid-cols-12">
                     @foreach($blocks as $blockId => $block)
-                    @livewire('builder-block', [
-                    'blockAlias' => $block['alias'],
-                    'blockId' => $blockId,
-                    ], key($blockId))
+                        @livewire('builder-block', [
+                        'blockAlias' => $block['alias'],
+                        'blockId' => $blockId,
+                        'properties' => $block['properties'] ?? []
+                        ], key($blockId))
                     @endforeach
                 </div>
             </div>

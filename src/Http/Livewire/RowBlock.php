@@ -11,13 +11,13 @@ class RowBlock extends Block
 
     public ?string $rowId;
 
-    public $properties = [];
+    public ?array $properties;
 
     public $cssClasses;
 
     public function mount()
     {
-        $this->properties = $this->getPropertyValues();
+        $this->properties = $this->properties ?? $this->getPropertyValues();
         $this->cssClasses = $this->makeClasses();
     }
 
