@@ -101,6 +101,41 @@ class PageEditor extends Component
         $this->skipRender();
     }
 
+    #[On('moveRowUp')]
+    public function moveRowUp($rowId)
+    {
+        $rowIds = array_keys($this->rows);
+        $currentIndex = array_search($rowId, $rowIds);
+
+        if ($currentIndex > 0) {
+            $newOrder = $rowIds;
+            // Swap the current row with the previous one
+            $temp = $newOrder[$currentIndex - 1];
+            $newOrder[$currentIndex - 1] = $newOrder[$currentIndex];
+            $newOrder[$currentIndex] = $temp;
+
+            // Rebuild the rows array in the new order
+            $this->rows = collect($newOrder)->mapWithKeys(fn ($id) => [$id => $this->rows[$id]])->toArray();
+        }
+    }
+
+    #[On('moveRowDown')]
+    public function moveRowDown($rowId)
+    {
+        $rowIds = array_keys($this->rows);
+        $currentIndex = array_search($rowId, $rowIds);
+        if ($currentIndex < count($this->rows) - 1) {
+            $newOrder = $rowIds;
+            // Swap the current row with the next one
+            $temp = $newOrder[$currentIndex + 1];
+            $newOrder[$currentIndex + 1] = $newOrder[$currentIndex];
+            $newOrder[$currentIndex] = $temp;
+
+            // Rebuild the rows array in the new order
+            $this->rows = collect($newOrder)->mapWithKeys(fn ($id) => [$id => $this->rows[$id]])->toArray();
+        }
+    }
+
     public function render()
     {
         return view('page-builder::page-editor', [
