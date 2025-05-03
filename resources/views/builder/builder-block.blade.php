@@ -21,8 +21,9 @@
         x-on:block-selected.window="selected = $event.detail.blockId == '{{ $blockId }}'"
         x-on:row-selected.window="selected = false">
         <div class="cursor-pointer" wire:click="blockSelected()">
-            <div class="builder-block" style="pointer-events: none">
+            <div class="builder-block relative">
                 @livewire($blockAlias, $properties, key($blockId . '-' . md5(json_encode($properties))))
+                <div class="absolute inset-0 z-50" style="pointer-events: all;"></div>
             </div>
         </div>
         <!-- Context Menu UI -->
