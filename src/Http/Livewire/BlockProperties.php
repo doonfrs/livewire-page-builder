@@ -30,12 +30,14 @@ class BlockProperties extends Component
     {
         $this->properties[$propertyName] = $value;
         $this->dispatch('updateBlockProperty', $rowId, $blockId, $propertyName, $value);
+        $this->skipRender();
     }
 
     #[On('row-selected')]
     public function rowSelected($rowId, $properties)
     {
         $this->rowId = $rowId;
+        $this->blockId = null;
         $this->properties = $properties;
         $this->blockClass = RowBlock::class;
         $this->blockProperties =
@@ -48,6 +50,7 @@ class BlockProperties extends Component
     public function blockSelected($blockId, $properties, $blockClass)
     {
         $this->blockId = $blockId;
+        $this->rowId = null;
         $this->properties = $properties;
         $this->blockClass = $this->resolveBlockClass($blockClass);
         $this->blockProperties =
