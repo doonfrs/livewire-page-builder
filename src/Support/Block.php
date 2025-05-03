@@ -7,11 +7,11 @@ use Trinavo\LivewirePageBuilder\Support\Properties\TextProperty;
 
 abstract class Block extends Component
 {
-    public $mobileColumns = 12;
+    public $mobileGridSize = 12;
 
-    public $tabletColumns = 12;
+    public $tabletGridSize = 12;
 
-    public $desktopColumns = 12;
+    public $desktopGridSize = 12;
 
     /**
      * Get the icon for the block in the page builder UI.
@@ -35,9 +35,9 @@ abstract class Block extends Component
     public function getSharedProperties(): array
     {
         return [
-            new TextProperty('mobile_columns', 'Mobile Columns', defaultValue: 12),
-            new TextProperty('tablet_columns', 'Tablet Columns', defaultValue: 12),
-            new TextProperty('desktop_columns', 'Desktop Columns', defaultValue: 12),
+            new TextProperty('mobile_grid_size', 'Mobile Grid Size', defaultValue: 12),
+            new TextProperty('tablet_grid_size', 'Tablet Grid Size', defaultValue: 12),
+            new TextProperty('desktop_grid_size', 'Desktop Grid Size', defaultValue: 12),
         ];
     }
 

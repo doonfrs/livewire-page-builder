@@ -1,5 +1,6 @@
 <div x-data="{ selected: false }" class="{{ $cssClasses }}">
-    <div class="block-row relative border " :class="selected ? 'border-blue-500' : 'border-gray-300'"
+    <div class="block-row relative border transition-all duration-300 ease-in-out "
+        :class="selected ? 'border-blue-500' : 'border-gray-300'"
         x-on:block-selected.window="selected = $event.detail.blockId == '{{ $blockId }}'"
         x-on:row-selected.window="selected = false">
         <div class="cursor-pointer" wire:click="blockSelected()">

@@ -78,9 +78,9 @@ class RowBlock extends Block
 
     public function makeClasses(): string
     {
-        $mobile = $this->properties['mobile_columns'] ?? 12;
-        $tablet = $this->properties['tablet_columns'] ?? 12;
-        $desktop = $this->properties['desktop_columns'] ?? 12;
+        $mobile = $this->properties['mobile_grid_size'] ?? 12;
+        $tablet = $this->properties['tablet_grid_size'] ?? 12;
+        $desktop = $this->properties['desktop_grid_size'] ?? 12;
 
         return "col-span-$mobile md:col-span-$tablet lg:col-span-$desktop";
     }
