@@ -1,4 +1,4 @@
-<aside class="fixed top-[56px] right-0 h-[calc(100vh-56px)] w-72 bg-white border-l border-gray-200 shadow-lg overflow-y-auto z-20">
+<aside class="fixed top-[56px] right-0 h-[calc(100vh-56px)] bg-white border-l border-gray-200 shadow-lg overflow-y-auto z-20">
     <!-- Header -->
     <div class="sticky top-0 bg-gradient-to-r from-gray-800 to-gray-700 text-white px-4 py-3 border-b border-gray-700 shadow-md z-10">
         <h2 class="text-lg font-medium flex items-center">
