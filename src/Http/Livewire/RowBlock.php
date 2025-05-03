@@ -76,6 +76,14 @@ class RowBlock extends Block
         ];
     }
 
+    #[On('deleteBlock')]
+    public function deleteBlock($blockId)
+    {
+        if (isset($this->blocks[$blockId])) {
+            unset($this->blocks[$blockId]);
+        }
+    }
+
     public function makeClasses(): string
     {
         $mobile = $this->properties['mobile_grid_size'] ?? 12;
@@ -83,5 +91,38 @@ class RowBlock extends Block
         $desktop = $this->properties['desktop_grid_size'] ?? 12;
 
         return "col-span-$mobile md:col-span-$tablet lg:col-span-$desktop";
+    }
+
+    #[On('moveBlockUp')]
+    public function moveBlockUp($blockId)
+    {
+        $blockIds = array_keys($this->blocks);
+        $currentIndex = array_search($blockId, $blockIds);
+
+        if ($currentIndex > 0) {
+            $newOrder = $blockIds;
+            $temp = $newOrder[$currentIndex - 1];
+            $newOrder[$currentIndex - 1] = $newOrder[$currentIndex];
+            $newOrder[$currentIndex] = $temp;
+
+            $this->blocks = collect($newOrder)->mapWithKeys(fn ($id) => [$id => $this->blocks[$id]])->toArray();
+        }
+    }
+
+    #[On('moveBlockDown')]
+    public function moveBlockDown($blockId)
+    {
+        $blockIds = array_keys($this->blocks);
+        $currentIndex = array_search($blockId, $blockIds);
+        $lastIndex = count($blockIds) - 1;
+
+        if ($currentIndex !== false && $currentIndex < $lastIndex) {
+            $newOrder = $blockIds;
+            $temp = $newOrder[$currentIndex + 1];
+            $newOrder[$currentIndex + 1] = $newOrder[$currentIndex];
+            $newOrder[$currentIndex] = $temp;
+
+            $this->blocks = collect($newOrder)->mapWithKeys(fn ($id) => [$id => $this->blocks[$id]])->toArray();
+        }
     }
 }

@@ -13,21 +13,28 @@
     <!-- Modal for Adding Block -->
     @if($showBlockModal)
     <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-        <div class="bg-white rounded-lg shadow-lg w-full max-w-md p-6 relative">
-            <button wire:click="closeBlockModal" class="absolute top-2 right-2 text-gray-400 hover:text-gray-700">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl p-8 relative">
+            <button wire:click="closeBlockModal" class="absolute top-3 right-3 text-gray-400 hover:text-gray-700">
                 <x-heroicon-o-x-mark class="w-6 h-6" />
             </button>
-            <h2 class="text-lg font-semibold mb-4">Add Block</h2>
-            <input type="text" wire:model="blockFilter" placeholder="Search blocks..." class="w-full border rounded px-3 py-2 mb-4" />
-            <div class="max-h-64 overflow-y-auto">
+            <h2 class="text-xl font-bold mb-6 text-gray-800 flex items-center gap-2">
+                <x-heroicon-o-plus class="w-6 h-6 text-pink-500" />
+                Add Block
+            </h2>
+            <input type="text" wire:model="blockFilter" placeholder="Search blocks..." class="w-full border rounded-lg px-4 py-2 mb-6 focus:ring-2 focus:ring-pink-200 focus:border-pink-400 transition" />
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 @forelse($this->filteredBlocks as $block)
-                <button class="flex items-center w-full px-3 py-2 mb-2 border rounded hover:bg-gray-100"
-                    wire:click="addBlockToModalRow('{{ $block['alias'] }}')">
-                    <x-dynamic-component :component="$block['icon']" class="w-5 h-5 mr-2" />
-                    <span>{{ $block['label'] }}</span>
+                <button
+                    wire:click="addBlockToModalRow('{{ $block['alias'] }}')"
+                    class="group bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-lg transition-all duration-200 p-5 flex flex-col items-center text-center focus:outline-none focus:ring-2 focus:ring-pink-200"
+                >
+                    <x-dynamic-component :component="$block['icon'] ?? 'heroicon-o-cube'" class="w-10 h-10 mb-3 text-pink-500 group-hover:text-pink-600 transition-colors" />
+                    <div class="font-semibold text-gray-800 mb-1 text-base">
+                        {{ $block['label'] }}
+                    </div>
                 </button>
                 @empty
-                <div class="text-gray-400 text-center py-4">No blocks found.</div>
+                <div class="col-span-2 text-gray-400 text-center py-8">No blocks found.</div>
                 @endforelse
             </div>
         </div>

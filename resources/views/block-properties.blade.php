@@ -6,7 +6,7 @@
             Properties
         </h2>
         <div class="mt-1 text-xs font-mono bg-gray-900/50 rounded px-2 py-1 truncate">
-            {{ $blockClass ?? 'No block selected' }}
+            {{ $blockLabel ?? 'No block selected' }}
         </div>
     </div>
 
