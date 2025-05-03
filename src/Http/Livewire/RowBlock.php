@@ -55,6 +55,16 @@ class RowBlock extends Block
         $this->skipRender();
     }
 
+    public function moveRowUp()
+    {
+        $this->dispatch('moveRowUp', $this->rowId)->to('page-editor');
+    }
+
+    public function moveRowDown()
+    {
+        $this->dispatch('moveRowDown', $this->rowId)->to('page-editor');
+    }
+
     #[On('blockAdded')]
     public function blockAdded($rowId, $blockId, $blockAlias)
     {
