@@ -13,6 +13,8 @@ class RowBlock extends Block
 
     public ?array $properties;
 
+    public ?bool $viewMode = false;
+
     public $cssClasses;
 
     public function mount()
@@ -38,10 +40,17 @@ class RowBlock extends Block
 
     public function render()
     {
-        return view('page-builder::row', [
-            'rowId' => $this->rowId,
-            'properties' => $this->properties,
-        ]);
+        if ($this->viewMode) {
+            return view('page-builder::row-view', [
+                'rowId' => $this->rowId,
+                'properties' => $this->properties,
+            ]);
+        } else {
+            return view('page-builder::row', [
+                'rowId' => $this->rowId,
+                'properties' => $this->properties,
+            ]);
+        }
     }
 
     public function rowSelected()

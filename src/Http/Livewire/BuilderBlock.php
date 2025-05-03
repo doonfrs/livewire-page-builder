@@ -16,6 +16,8 @@ class BuilderBlock extends Component
 
     public $cssClasses;
 
+    public ?bool $viewMode = false;
+
     public function mount()
     {
         $block = app($this->getBlockClass());
@@ -25,11 +27,19 @@ class BuilderBlock extends Component
 
     public function render()
     {
-        return view('page-builder::builder-block', [
-            'blockAlias' => $this->blockAlias,
-            'blockId' => $this->blockId,
-            'properties' => $this->properties,
-        ]);
+        if ($this->viewMode) {
+            return view('page-builder::builder-block-view', [
+                'blockAlias' => $this->blockAlias,
+                'blockId' => $this->blockId,
+                'properties' => $this->properties,
+            ]);
+        } else {
+            return view('page-builder::builder-block', [
+                'blockAlias' => $this->blockAlias,
+                'blockId' => $this->blockId,
+                'properties' => $this->properties,
+            ]);
+        }
     }
 
     public function blockSelected()
