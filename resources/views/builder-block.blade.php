@@ -16,7 +16,7 @@
         }
     "
     @click.outside="showContextMenu = false">
-    <div class="block-row relative border transition-all duration-300 ease-in-out "
+    <div class="relative border transition-all duration-300 ease-in-out "
         :class="selected ? 'border-blue-500' : 'border-gray-300'"
         x-on:block-selected.window="selected = $event.detail.blockId == '{{ $blockId }}'"
         x-on:row-selected.window="selected = false">

@@ -17,6 +17,15 @@
             >
                 <x-heroicon-o-plus class="w-5 h-5" />
             </button>
+            <!-- Preview Button -->
+            <a
+                :href="'/page-builder/page/view/' + @js($pageKey ?? '') + (@js($pageTheme ?? '') ? '/' + @js($pageTheme ?? '') : '')"
+                target="_blank"
+                class="flex items-center gap-1 px-4 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-2 focus:ring-blue-200 transition-all duration-150 text-sm font-medium"
+                title="Preview Page"
+            >
+                <x-heroicon-o-eye class="w-5 h-5" />
+            </a>
             <!-- Save Button with animation placeholder -->
             <button
                 class="flex items-center w-14 gap-1 px-4 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-2 focus:ring-pink-200 transition-all duration-150 text-sm font-medium relative"
