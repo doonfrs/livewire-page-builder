@@ -1,4 +1,11 @@
-<div class="h-screen flex flex-col bg-gray-100 dark:bg-gray-900">
+<div class="h-screen flex flex-col bg-gray-100 dark:bg-gray-900"
+     x-data
+     x-on:row-added.window="setTimeout(() => { 
+            const el = document.getElementById('row-' + $event.detail.rowId); 
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' }); 
+            $dispatch('row-selected', { rowId: $event.detail.rowId, properties: $event.detail.properties });
+    }, 100);"
+>
     <!-- Header Toolbar -->
     <div class="flex items-center justify-between bg-gray-200 dark:bg-gray-800 shadow-md p-3 text-gray-900 dark:text-gray-100 sticky top-0 z-30">
         <div class="flex gap-2">
@@ -74,13 +81,15 @@
     <!-- Main Content and Properties Panel -->
     <div class="flex flex-1 min-h-0">
         <!-- Main Section (Scrollable) -->
-        <main class="flex-1 pt-10 p-6 pr-80 bg-gray-50 dark:bg-gray-900 overflow-auto min-h-0">
+        <main class="flex-1 pt-10 pb-50 p-6 pr-80 bg-gray-50 dark:bg-gray-900 overflow-auto min-h-0">
             @foreach($rows as $rowId=>$row)
-            <livewire:row-block 
-            :blocks="$row['blocks']"
-            :rowId="$rowId"
-            :properties="$row['properties']"
-            :key="$rowId" />
+            <div id="row-{{ $rowId }}">
+                <livewire:row-block 
+                :blocks="$row['blocks']"
+                :rowId="$rowId"
+                :properties="$row['properties']"
+                :key="$rowId" />
+            </div>
             @endforeach
         </main>
 

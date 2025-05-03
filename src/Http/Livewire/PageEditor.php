@@ -51,9 +51,14 @@ class PageEditor extends Component
     public function addRow()
     {
         $rowId = uniqid();
+        $rowBlock = app(RowBlock::class);
         $this->rows[$rowId] = [
             'blocks' => [],
-            'properties' => app(RowBlock::class)->getPropertyValues()];
+            'properties' => $rowBlock->getPropertyValues(),
+        ];
+        $this->dispatch('row-added',
+            rowId: $rowId,
+            properties: $this->rows[$rowId]['properties']);
     }
 
     #[On('addBlockToRow')]
