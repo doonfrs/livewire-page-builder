@@ -5,11 +5,13 @@
     <div class="mb-4 text-xs p-2 bg-gray-100 rounded">
         <div>Row ID: {{ $rowId ?? 'None' }}</div>
         <div>Block ID: {{ $blockId ?? 'None' }}</div>
+        <div>Block Class: {{ $blockClass ?? 'None' }}</div>
+        <div>Properties: {{ json_encode($properties) ?? 'None' }}</div>
     </div>
 
     <div class="space-y-3">
         @foreach($blockProperties as $property)
-        <div>
+        <div wire:key="property-{{ $blockId }}-{{ $property['name'] }}">
             <label class="block text-sm font-medium text-gray-700">{{ $property['label'] }}</label>
             @if($property['type'] === 'checkbox')
             <input

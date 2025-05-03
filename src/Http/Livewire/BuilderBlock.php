@@ -14,9 +14,19 @@ class BuilderBlock extends Component
 
     public $properties;
 
+    public $cssClasses;
+
+    public $mobileColumns = 12;
+
+    public $tabletColumns = 12;
+
+    public $desktopColumns = 12;
+
     public function mount()
     {
-        $this->properties = app($this->getBlockClass())->getPropertyValues();
+        $block = app($this->getBlockClass());
+        $this->properties = $block->getPropertyValues();
+        $this->cssClasses = $this->makeClasses();
     }
 
     public function render()
@@ -50,5 +60,15 @@ class BuilderBlock extends Component
             return;
         }
         $this->properties[$propertyName] = $value;
+        $this->cssClasses = $this->makeClasses();
+    }
+
+    public function makeClasses(): string
+    {
+        $mobile = $this->properties['mobile_columns'] ?? 12;
+        $tablet = $this->properties['tablet_columns'] ?? 12;
+        $desktop = $this->properties['desktop_columns'] ?? 12;
+
+        return "col-span-$mobile md:col-span-$tablet lg:col-span-$desktop";
     }
 }

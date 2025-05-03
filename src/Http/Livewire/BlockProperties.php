@@ -28,6 +28,7 @@ class BlockProperties extends Component
 
     public function updateBlockProperty($rowId, $blockId, $propertyName, $value)
     {
+        $this->properties[$propertyName] = $value;
         $this->dispatch('updateBlockProperty', $rowId, $blockId, $propertyName, $value);
     }
 
