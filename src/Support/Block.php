@@ -36,9 +36,9 @@ abstract class Block extends Component
     public function getSharedProperties(): array
     {
         return [
-            new TextProperty('mobile_grid_size', 'Mobile Grid Size', defaultValue: 12),
-            new TextProperty('tablet_grid_size', 'Tablet Grid Size', defaultValue: 12),
-            new TextProperty('desktop_grid_size', 'Desktop Grid Size', defaultValue: 12),
+            new TextProperty('mobile_grid_size', 'Mobile Grid Size', defaultValue: 12, min: 1, max: 12),
+            new TextProperty('tablet_grid_size', 'Tablet Grid Size', defaultValue: 12, min: 1, max: 12),
+            new TextProperty('desktop_grid_size', 'Desktop Grid Size', defaultValue: 12, min: 1, max: 12),
         ];
     }
 

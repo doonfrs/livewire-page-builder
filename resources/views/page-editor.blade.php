@@ -4,8 +4,8 @@
             <button class="w-8 h-8 p-1 hover:bg-gray-300 flex items-center justify-center" wire:click="addRow">
                 <x-heroicon-o-plus />
             </button>
-            <button class="w-8 h-8 p-1 hover:bg-gray-300 flex items-center justify-center">
-                <x-heroicon-o-trash />
+            <button class="w-8 h-8 p-1 hover:bg-gray-300 flex items-center justify-center" wire:click="$dispatch('save-page')">
+                <x-heroicon-o-check />
             </button>
         </div>
     </div>
@@ -26,8 +26,7 @@
                 @forelse($this->filteredBlocks as $block)
                 <button
                     wire:click="addBlockToModalRow('{{ $block['alias'] }}')"
-                    class="group bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-lg transition-all duration-200 p-5 flex flex-col items-center text-center focus:outline-none focus:ring-2 focus:ring-pink-200"
-                >
+                    class="group bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-lg transition-all duration-200 p-5 flex flex-col items-center text-center focus:outline-none focus:ring-2 focus:ring-pink-200">
                     <x-dynamic-component :component="$block['icon'] ?? 'heroicon-o-cube'" class="w-10 h-10 mb-3 text-pink-500 group-hover:text-pink-600 transition-colors" />
                     <div class="font-semibold text-gray-800 mb-1 text-base">
                         {{ $block['label'] }}
@@ -44,7 +43,11 @@
     <div class="flex flex-1 overflow-hidden">
         <main id="main" class="flex-1 pt-10 p-6 pr-80 bg-gray-50 overflow-auto">
             @foreach($rows as $rowId=>$row)
-            @livewire('row-block', ['rowId' => $rowId], key($rowId))
+            <livewire:row-block 
+            :blocks="$row['blocks']"
+            :rowId="$rowId"
+            :properties="$row['properties']"
+            :key="$rowId" />
             @endforeach
         </main>
     </div>

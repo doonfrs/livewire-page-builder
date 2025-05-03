@@ -4,11 +4,9 @@ namespace Trinavo\LivewirePageBuilder\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Page extends Model
+class BuilderPage extends Model
 {
-    protected $table = 'builder_pages';
-
-    protected $fillable = ['key', 'components'];
+    protected $fillable = ['key', 'components', 'theme'];
 
     protected $casts = [
         'components' => 'array',

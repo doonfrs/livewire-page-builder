@@ -4,6 +4,7 @@ namespace Trinavo\LivewirePageBuilder\Http\Livewire;
 
 use Livewire\Attributes\On;
 use Livewire\Component;
+use Trinavo\LivewirePageBuilder\Models\BuilderPage;
 use Trinavo\LivewirePageBuilder\Services\PageBuilderService;
 
 class PageEditor extends Component
@@ -18,9 +19,33 @@ class PageEditor extends Component
 
     public ?string $modalRowId = null;
 
+    public ?string $pageKey = null;
+
+    public ?string $pageTheme = null;
+
+    public BuilderPage $page;
+
     public function mount()
     {
         $this->availableBlocks = app(PageBuilderService::class)->getAvailableBlocks();
+
+        $this->pageKey = request()->route('pageKey');
+        $this->pageTheme = request()->route('pageTheme');
+
+        $this->page = BuilderPage::firstOrCreate([
+            'key' => $this->pageKey,
+            'theme' => $this->pageTheme,
+        ]);
+
+        $this->rows = $this->page->components ? json_decode($this->page->components, true) : [];
+
+    }
+
+    #[On('save-page')]
+    public function savePage()
+    {
+        $this->page->components = json_encode($this->rows);
+        $this->page->saveOrFail();
     }
 
     public function addRow()

@@ -12,14 +12,14 @@ class BuilderBlock extends Component
 
     public $blockId;
 
-    public $properties;
+    public ?array $properties;
 
     public $cssClasses;
 
     public function mount()
     {
         $block = app($this->getBlockClass());
-        $this->properties = $block->getPropertyValues();
+        $this->properties = $this->properties ?? $block->getPropertyValues();
         $this->cssClasses = $this->makeClasses();
     }
 
