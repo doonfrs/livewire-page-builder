@@ -16,12 +16,6 @@ class BuilderBlock extends Component
 
     public $cssClasses;
 
-    public $mobileColumns = 12;
-
-    public $tabletColumns = 12;
-
-    public $desktopColumns = 12;
-
     public function mount()
     {
         $block = app($this->getBlockClass());
@@ -56,7 +50,7 @@ class BuilderBlock extends Component
     #[On('updateBlockProperty')]
     public function updateBlockProperty($rowId, $blockId, $propertyName, $value)
     {
-        if ($blockId != $this->blockId) {
+        if ($rowId || $blockId != $this->blockId) {
             return;
         }
         $this->properties[$propertyName] = $value;

@@ -18,8 +18,6 @@ class PageEditor extends Component
 
     public ?string $modalRowId = null;
 
-    public $blockProperties = [];
-
     public function mount()
     {
         $this->availableBlocks = app(PageBuilderService::class)->getAvailableBlocks();
@@ -28,13 +26,14 @@ class PageEditor extends Component
     public function addRow()
     {
         $rowId = uniqid();
-        $this->rows[$rowId] = [];
+        $this->rows[$rowId] = [
+            'blocks' => [],
+            'properties' => app(RowBlock::class)->getPropertyValues()];
     }
 
     #[On('addBlockToRow')]
     public function addBlockToRow($rowId, $blockAlias)
     {
-        // Find the class name for this alias
         $blockClass = null;
         foreach ($this->availableBlocks as $block) {
             if ($block['alias'] === $blockAlias) {
@@ -43,13 +42,13 @@ class PageEditor extends Component
             }
         }
 
-        $this->rows[$rowId]['blocks'][uniqid()] = [
-            'type' => 'block',
-            'class' => $blockClass,
+        $blockId = uniqid();
+        $this->rows[$rowId]['blocks'][$blockId] = [
             'alias' => $blockAlias,
+            'properties' => app($blockClass)->getPropertyValues(),
         ];
 
-        $this->dispatch('blockAdded', $rowId, $blockAlias)->to('row-block');
+        $this->dispatch('blockAdded', $rowId, $blockId, $blockAlias)->to('row-block');
     }
 
     #[On('openBlockModal')]
@@ -84,6 +83,22 @@ class PageEditor extends Component
             $this->addBlockToRow($this->modalRowId, $blockAlias);
             $this->closeBlockModal();
         }
+    }
+
+    #[On('updateBlockProperty')]
+    public function updateBlockProperty($rowId, $blockId, $propertyName, $value)
+    {
+        if ($rowId) {
+            $this->rows[$rowId]['properties'][$propertyName] = $value;
+        } else {
+            foreach ($this->rows as $rowId => $row) {
+                if (isset($row['blocks'][$blockId])) {
+                    $this->rows[$rowId]['blocks'][$blockId]['properties'][$propertyName] = $value;
+                    break;
+                }
+            }
+        }
+        $this->skipRender();
     }
 
     public function render()
