@@ -4,6 +4,7 @@ namespace Trinavo\LivewirePageBuilder\Support;
 
 use Illuminate\Support\Str;
 use Livewire\Component;
+use Trinavo\LivewirePageBuilder\Support\Properties\CheckboxProperty;
 use Trinavo\LivewirePageBuilder\Support\Properties\TextProperty;
 
 abstract class Block extends Component
@@ -13,6 +14,12 @@ abstract class Block extends Component
     public $tabletGridSize = 12;
 
     public $desktopGridSize = 12;
+
+    public $hiddenMobile = false;
+
+    public $hiddenTablet = false;
+
+    public $hiddenDesktop = false;
 
     /**
      * Get the icon for the block in the page builder UI.
@@ -39,6 +46,9 @@ abstract class Block extends Component
             new TextProperty('mobile_grid_size', 'Mobile Grid Size', defaultValue: 12, min: 1, max: 12),
             new TextProperty('tablet_grid_size', 'Tablet Grid Size', defaultValue: 12, min: 1, max: 12),
             new TextProperty('desktop_grid_size', 'Desktop Grid Size', defaultValue: 12, min: 1, max: 12),
+            new CheckboxProperty('hidden_mobile', 'Hidden on Mobile', defaultValue: false),
+            new CheckboxProperty('hidden_tablet', 'Hidden on Tablet', defaultValue: false),
+            new CheckboxProperty('hidden_desktop', 'Hidden on Desktop', defaultValue: false),
         ];
     }
 
