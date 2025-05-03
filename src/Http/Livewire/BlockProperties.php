@@ -2,6 +2,7 @@
 
 namespace Trinavo\LivewirePageBuilder\Http\Livewire;
 
+use Illuminate\Support\Str;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use Trinavo\LivewirePageBuilder\Services\PageBuilderService;
@@ -18,6 +19,8 @@ class BlockProperties extends Component
     public $blockProperties = [];
 
     public $blockClass = null;
+
+    public $blockLabel = null;
 
     public function render()
     {
@@ -40,6 +43,7 @@ class BlockProperties extends Component
         $this->blockId = null;
         $this->properties = $properties;
         $this->blockClass = RowBlock::class;
+        $this->blockLabel = Str::headline(class_basename(RowBlock::class));
         $this->blockProperties =
             array_map(function (BlockProperty $property) {
                 return $property->toArray();
@@ -53,6 +57,7 @@ class BlockProperties extends Component
         $this->rowId = null;
         $this->properties = $properties;
         $this->blockClass = $this->resolveBlockClass($blockClass);
+        $this->blockLabel = Str::headline(class_basename($this->blockClass));
         $this->blockProperties =
             array_map(function (BlockProperty $property) {
                 return $property->toArray();

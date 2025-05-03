@@ -2,6 +2,7 @@
 
 namespace Trinavo\LivewirePageBuilder\Support;
 
+use Illuminate\Support\Str;
 use Livewire\Component;
 use Trinavo\LivewirePageBuilder\Support\Properties\TextProperty;
 
@@ -26,7 +27,7 @@ abstract class Block extends Component
      */
     public function getPageBuilderLabel(): string
     {
-        return class_basename(static::class);
+        return Str::headline(class_basename(static::class));
     }
 
     /**

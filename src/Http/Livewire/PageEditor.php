@@ -18,10 +18,6 @@ class PageEditor extends Component
 
     public ?string $modalRowId = null;
 
-    public ?string $selectedBlockId = null;
-
-    public ?string $selectedRowId = null;
-
     public function mount()
     {
         $this->availableBlocks = app(PageBuilderService::class)->getAvailableBlocks();
@@ -113,12 +109,10 @@ class PageEditor extends Component
 
         if ($currentIndex > 0) {
             $newOrder = $rowIds;
-            // Swap the current row with the previous one
             $temp = $newOrder[$currentIndex - 1];
             $newOrder[$currentIndex - 1] = $newOrder[$currentIndex];
             $newOrder[$currentIndex] = $temp;
 
-            // Rebuild the rows array in the new order
             $this->rows = collect($newOrder)->mapWithKeys(fn ($id) => [$id => $this->rows[$id]])->toArray();
         }
     }
@@ -130,14 +124,55 @@ class PageEditor extends Component
         $currentIndex = array_search($rowId, $rowIds);
         if ($currentIndex < count($this->rows) - 1) {
             $newOrder = $rowIds;
-            // Swap the current row with the next one
             $temp = $newOrder[$currentIndex + 1];
             $newOrder[$currentIndex + 1] = $newOrder[$currentIndex];
             $newOrder[$currentIndex] = $temp;
 
-            // Rebuild the rows array in the new order
             $this->rows = collect($newOrder)->mapWithKeys(fn ($id) => [$id => $this->rows[$id]])->toArray();
         }
+    }
+
+    #[On('moveBlockUp')]
+    public function moveBlockUp($blockId)
+    {
+        foreach ($this->rows as $rowId => $row) {
+            if (isset($row['blocks'][$blockId])) {
+                $blockIds = array_keys($row['blocks']);
+                $currentIndex = array_search($blockId, $blockIds);
+
+                if ($currentIndex > 0) {
+                    $newOrder = $blockIds;
+                    $temp = $newOrder[$currentIndex - 1];
+                    $newOrder[$currentIndex - 1] = $newOrder[$currentIndex];
+                    $newOrder[$currentIndex] = $temp;
+
+                    $this->rows[$rowId]['blocks'] = collect($newOrder)->mapWithKeys(fn ($id) => [$id => $row['blocks'][$id]])->toArray();
+                }
+            }
+        }
+
+        $this->skipRender();
+    }
+
+    #[On('moveBlockDown')]
+    public function moveBlockDown($blockId)
+    {
+        foreach ($this->rows as $rowId => $row) {
+            if (isset($row['blocks'][$blockId])) {
+                $blockIds = array_keys($row['blocks']);
+                $currentIndex = array_search($blockId, $blockIds);
+                if ($currentIndex < count($row['blocks']) - 1) {
+                    $newOrder = $blockIds;
+                    $temp = $newOrder[$currentIndex + 1];
+                    $newOrder[$currentIndex + 1] = $newOrder[$currentIndex];
+                    $newOrder[$currentIndex] = $temp;
+
+                    $this->rows[$rowId]['blocks'] = collect($newOrder)->mapWithKeys(fn ($id) => [$id => $row['blocks'][$id]])->toArray();
+                }
+            }
+        }
+
+        $this->skipRender();
     }
 
     #[On('deleteRow')]
@@ -148,11 +183,21 @@ class PageEditor extends Component
         }
     }
 
+    #[On('deleteBlock')]
+    public function deleteBlock($blockId)
+    {
+        foreach ($this->rows as $rowId => $row) {
+            if (isset($row['blocks'][$blockId])) {
+                unset($this->rows[$rowId]['blocks'][$blockId]);
+                break;
+            }
+        }
+        $this->skipRender();
+    }
+
     public function render()
     {
         return view('page-builder::page-editor', [
-            'selectedRowId' => $this->selectedRowId ?? null,
-            'selectedBlockId' => $this->selectedBlockId ?? null,
         ])->layout('page-builder::layouts.app');
     }
 }
