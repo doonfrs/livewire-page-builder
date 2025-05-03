@@ -48,14 +48,24 @@ class PageEditor extends Component
         $this->page->saveOrFail();
     }
 
-    public function addRow()
+    public function addRow($afterRowId = null)
     {
         $rowId = uniqid();
         $rowBlock = app(RowBlock::class);
-        $this->rows[$rowId] = [
+        $row = [
             'blocks' => [],
             'properties' => $rowBlock->getPropertyValues(),
         ];
+        if ($afterRowId) {
+            $this->rows = array_merge(
+                array_slice($this->rows, 0, $afterRowId),
+                [$rowId => $row],
+                array_slice($this->rows, $afterRowId)
+            );
+        } else {
+            $this->rows[$rowId] = $row;
+        }
+
         $this->dispatch('row-added',
             rowId: $rowId,
             properties: $this->rows[$rowId]['properties']);
@@ -227,7 +237,7 @@ class PageEditor extends Component
 
     public function render()
     {
-        return view('page-builder::page-editor', [
+        return view('page-builder::builder.page-editor', [
         ])->layout('page-builder::layouts.app');
     }
 }

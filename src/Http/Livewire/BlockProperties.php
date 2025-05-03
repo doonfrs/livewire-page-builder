@@ -24,7 +24,7 @@ class BlockProperties extends Component
 
     public function render()
     {
-        return view('page-builder::block-properties', [
+        return view('page-builder::builder.block-properties', [
             'blockProperties' => $this->blockProperties,
         ]);
     }
