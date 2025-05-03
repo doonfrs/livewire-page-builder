@@ -18,6 +18,10 @@ class PageEditor extends Component
 
     public ?string $modalRowId = null;
 
+    public ?string $selectedBlockId = null;
+
+    public ?string $selectedRowId = null;
+
     public function mount()
     {
         $this->availableBlocks = app(PageBuilderService::class)->getAvailableBlocks();
@@ -133,6 +137,14 @@ class PageEditor extends Component
 
             // Rebuild the rows array in the new order
             $this->rows = collect($newOrder)->mapWithKeys(fn ($id) => [$id => $this->rows[$id]])->toArray();
+        }
+    }
+
+    #[On('deleteRow')]
+    public function deleteRow($rowId)
+    {
+        if (isset($this->rows[$rowId])) {
+            unset($this->rows[$rowId]);
         }
     }
 

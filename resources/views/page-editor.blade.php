@@ -35,18 +35,14 @@
     @endif
 
     <div class="flex flex-1 overflow-hidden">
-        <div class="w-64">
-            @livewire('block-properties')
-        </div>
-
-        <main id="main" class="flex-1 p-6 bg-gray-50 overflow-auto">
+        <main id="main" class="flex-1 pt-10 p-6 pr-80 bg-gray-50 overflow-auto">
             @foreach($rows as $rowId=>$row)
             @livewire('row-block', ['rowId' => $rowId], key($rowId))
             @endforeach
         </main>
     </div>
 
-
+    @livewire('block-properties')
 
     {{--
         Tailwind safelist:
