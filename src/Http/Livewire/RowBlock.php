@@ -41,12 +41,12 @@ class RowBlock extends Block
     public function render()
     {
         if ($this->viewMode) {
-            return view('page-builder::row-view', [
+            return view('page-builder::view.row-view', [
                 'rowId' => $this->rowId,
                 'properties' => $this->properties,
             ]);
         } else {
-            return view('page-builder::row', [
+            return view('page-builder::builder.row', [
                 'rowId' => $this->rowId,
                 'properties' => $this->properties,
             ]);

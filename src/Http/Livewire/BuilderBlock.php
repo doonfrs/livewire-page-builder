@@ -28,13 +28,13 @@ class BuilderBlock extends Component
     public function render()
     {
         if ($this->viewMode) {
-            return view('page-builder::builder-block-view', [
+            return view('page-builder::view.builder-block-view', [
                 'blockAlias' => $this->blockAlias,
                 'blockId' => $this->blockId,
                 'properties' => $this->properties,
             ]);
         } else {
-            return view('page-builder::builder-block', [
+            return view('page-builder::builder.builder-block', [
                 'blockAlias' => $this->blockAlias,
                 'blockId' => $this->blockId,
                 'properties' => $this->properties,
