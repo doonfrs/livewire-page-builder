@@ -124,7 +124,7 @@ class RowBlock extends Block
             $classes[] = 'block';
         }
 
-        $classes[] = "col-span-$mobile md:col-span-$tablet lg:col-span-$desktop";
+        $classes[] = "col-span-$mobile @md:col-span-$tablet @lg:col-span-$desktop";
 
         $classes = array_unique($classes);
 

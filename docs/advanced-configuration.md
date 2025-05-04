@@ -61,6 +61,29 @@ By default, rendered pages use `<x-app-layout>`. If you want to change the layou
 
 > **Tip:** Only publish and modify the views you need to change. Unmodified views will continue to use the package defaults, ensuring you get updates and bug fixes from future package releases.
 
+## Security & Middleware
+
+To secure access to the page builder editor and page view routes, use the `middleware` option in your `config/page-builder.php`:
+
+```php
+'middleware' => ['auth', 'can:edit-pages'],
+```
+
+- By default, only the `web` middleware is applied.
+- You can add any middleware you need (e.g., `auth`, `can:edit-pages`, custom roles, etc).
+- The package will automatically merge your middleware with `web` and apply it to all `/page-builder` routes.
+
+**Example:**
+
+```php
+return [
+    'middleware' => ['auth', 'can:edit-pages'],
+    // ...
+];
+```
+
+> **Best Practice:** Always restrict access to the builder/editor in production to trusted users only.
+
 ---
 
 See [Custom Block Development](custom-block-development.md) for more on building your own blocks.
