@@ -32,8 +32,8 @@
             x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
             x-transition:leave="transition ease-in duration-75" x-transition:leave-start="opacity-100 scale-100"
             x-transition:leave-end="opacity-0 scale-95"
-            :style="`position: fixed; left: ${x}px; top: ${y}px; z-index: 50;`"
-            class="context-menu bg-white border border-gray-200 rounded-lg shadow-lg py-2 w-48">
+            :style="`position: fixed; left: ${x}px; top: ${y}px;`"
+            class="context-menu bg-white border border-gray-200 rounded-lg shadow-lg py-2 w-48 z-52">
             <button wire:click="blockSelected(); showContextMenu = false;"
                 class="flex items-center w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100">
                 <x-heroicon-o-cursor-arrow-rays class="w-4 h-4 mr-2 text-gray-500" />
