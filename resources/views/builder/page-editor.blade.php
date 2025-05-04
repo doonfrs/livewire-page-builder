@@ -1,11 +1,10 @@
 <div class="h-screen flex flex-col bg-gray-100 dark:bg-gray-900"
-     x-data="{ showPagesModal: false }"
-     x-on:row-added.window="setTimeout(() => { 
+    x-data="{ showPagesModal: false, deviceMode: 'desktop' }"
+    x-on:row-added.window="setTimeout(() => { 
             const el = document.getElementById('row-' + $event.detail.rowId); 
             if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' }); 
             $dispatch('row-selected', { rowId: $event.detail.rowId, properties: $event.detail.properties });
-    }, 100);"
->
+    }, 100);">
     <!-- Header Toolbar -->
     <div class="flex items-center justify-between bg-gray-200 dark:bg-gray-800 shadow-md p-3 text-gray-900 dark:text-gray-100 sticky top-0 z-30">
         <div class="flex gap-2">
@@ -13,25 +12,23 @@
             <button
                 class="flex items-center gap-1 px-4 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-2 focus:ring-pink-200 transition-all duration-150 text-sm font-medium"
                 wire:click="addRow"
-                title="Add Row"
-            >
+                title="Add Row">
                 <x-heroicon-o-plus class="w-5 h-5" />
             </button>
             <!-- Pages Button -->
             <button
                 x-on:click="showPagesModal = true"
                 class="flex items-center gap-1 px-4 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-2 focus:ring-blue-200 transition-all duration-150 text-sm font-medium"
-                title="Open Pages"
-            >
+                title="Open Pages">
                 <x-heroicon-o-document-text class="w-5 h-5" />
+                <span class="hidden sm:inline">Pages</span>
             </button>
             <!-- Preview Button -->
             <a
                 :href="'/page-builder/page/view/' + @js($pageKey ?? '') + (@js($pageTheme ?? '') ? '/' + @js($pageTheme ?? '') : '')"
                 target="_blank"
                 class="flex items-center gap-1 px-4 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-2 focus:ring-blue-200 transition-all duration-150 text-sm font-medium"
-                title="Preview Page"
-            >
+                title="Preview Page">
                 <x-heroicon-o-eye class="w-5 h-5" />
             </a>
             <!-- Save Button with animation placeholder -->
@@ -40,8 +37,7 @@
                 wire:click="$dispatch('save-page')"
                 x-data="{ saved: false }"
                 x-on:click="saved = true; setTimeout(() => saved = false, 1200);"
-                title="Save Page"
-            >
+                title="Save Page">
                 <span x-show="!saved" class="flex items-center gap-1 justify-center">
                     <x-heroicon-o-check class="w-5 h-5" />
                 </span>
@@ -52,13 +48,13 @@
         </div>
         <!-- Device Toggle Buttons -->
         <div class="flex gap-0 border border-gray-300 dark:border-gray-700 rounded-md overflow-hidden bg-white dark:bg-gray-900">
-            <button class="px-4 py-2 text-sm font-medium flex items-center gap-1 hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-2 focus:ring-pink-200 transition-all duration-150 border-r border-gray-200 dark:border-gray-800 last:border-r-0" title="Mobile View">
+            <button :class="deviceMode === 'mobile' ? 'bg-pink-100 dark:bg-pink-900 text-pink-600' : ''" x-on:click="deviceMode = 'mobile'" class="px-4 py-2 text-sm font-medium flex items-center gap-1 hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-2 focus:ring-pink-200 transition-all duration-150 border-r border-gray-200 dark:border-gray-800 last:border-r-0" title="Mobile View">
                 <x-heroicon-o-device-phone-mobile class="w-5 h-5" />
             </button>
-            <button class="px-4 py-2 text-sm font-medium flex items-center gap-1 hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-2 focus:ring-pink-200 transition-all duration-150 border-r border-gray-200 dark:border-gray-800 last:border-r-0" title="Tablet View">
+            <button :class="deviceMode === 'tablet' ? 'bg-pink-100 dark:bg-pink-900 text-pink-600' : ''" x-on:click="deviceMode = 'tablet'" class="px-4 py-2 text-sm font-medium flex items-center gap-1 hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-2 focus:ring-pink-200 transition-all duration-150 border-r border-gray-200 dark:border-gray-800 last:border-r-0" title="Tablet View">
                 <x-heroicon-o-device-tablet class="w-5 h-5" />
             </button>
-            <button class="px-4 py-2 text-sm font-medium flex items-center gap-1 hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-2 focus:ring-pink-200 transition-all duration-150" title="Desktop View">
+            <button :class="deviceMode === 'desktop' ? 'bg-pink-100 dark:bg-pink-900 text-pink-600' : ''" x-on:click="deviceMode = 'desktop'" class="px-4 py-2 text-sm font-medium flex items-center gap-1 hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-2 focus:ring-pink-200 transition-all duration-150" title="Desktop View">
                 <x-heroicon-o-computer-desktop class="w-5 h-5" />
             </button>
         </div>
@@ -107,18 +103,17 @@
             </h2>
             <ul>
                 @foreach(config('page-builder.pages', []) as $key => $page)
-                    @php
-                        $isAssoc = is_string($key) && is_array($page);
-                        $pageName = $isAssoc ? $key : $page;
-                    @endphp
-                    <li class="mb-2">
-                        <a
-                            href="{{ route('page-builder.page.edit', ['pageKey' => $pageName]) }}"
-                            class="block px-4 py-2 rounded hover:bg-blue-100 dark:hover:bg-blue-900 transition text-gray-800 dark:text-gray-100"
-                        >
-                            {{ $pageName }}
-                        </a>
-                    </li>
+                @php
+                $isAssoc = is_string($key) && is_array($page);
+                $pageName = $isAssoc ? $key : $page;
+                @endphp
+                <li class="mb-2">
+                    <a
+                        href="{{ route('page-builder.page.edit', ['pageKey' => $pageName]) }}"
+                        class="block px-4 py-2 rounded hover:bg-blue-100 dark:hover:bg-blue-900 transition text-gray-800 dark:text-gray-100">
+                        {{ $pageName }}
+                    </a>
+                </li>
                 @endforeach
             </ul>
         </div>
@@ -128,15 +123,24 @@
     <div class="flex flex-1 min-h-0">
         <!-- Main Section (Scrollable) -->
         <main class="flex-1 pt-10 pb-50 p-6 pr-80 bg-gray-50 dark:bg-gray-900 overflow-auto min-h-0">
-            @foreach($rows as $rowId=>$row)
-            <div id="row-{{ $rowId }}">
-                <livewire:row-block 
-                :blocks="$row['blocks']"
-                :rowId="$rowId"
-                :properties="$row['properties']"
-                :key="$rowId" />
+            <div 
+                class="mx-auto @container"
+                :class="{
+                    'w-[375px]': deviceMode === 'mobile',
+                    'w-[768px]': deviceMode === 'tablet',
+                    'w-full': deviceMode === 'desktop',
+                }"
+            >
+                @foreach($rows as $rowId=>$row)
+                <div id="row-{{ $rowId }}">
+                    <livewire:row-block
+                        :blocks="$row['blocks']"
+                        :rowId="$rowId"
+                        :properties="$row['properties']"
+                        :key="$rowId" />
+                </div>
+                @endforeach
             </div>
-            @endforeach
         </main>
 
         <!-- Properties Panel (Fixed/Sticky) -->
@@ -146,9 +150,15 @@
     </div>
 
     {{--
-        Tailwind safelist:
         col-span-1 col-span-2 col-span-3 col-span-4 col-span-5 col-span-6 col-span-7 col-span-8 col-span-9 col-span-10 col-span-11 col-span-12
         md:col-span-1 md:col-span-2 md:col-span-3 md:col-span-4 md:col-span-5 md:col-span-6 md:col-span-7 md:col-span-8 md:col-span-9 md:col-span-10 md:col-span-11 md:col-span-12
         lg:col-span-1 lg:col-span-2 lg:col-span-3 lg:col-span-4 lg:col-span-5 lg:col-span-6 lg:col-span-7 lg:col-span-8 lg:col-span-9 lg:col-span-10 lg:col-span-11 lg:col-span-12
+        @md:col-span-1 @md:col-span-2 @md:col-span-3 @md:col-span-4 @md:col-span-5 @md:col-span-6 @md:col-span-7 @md:col-span-8 @md:col-span-9 @md:col-span-10 @md:col-span-11 @md:col-span-12
+        @lg:col-span-1 @lg:col-span-2 @lg:col-span-3 @lg:col-span-4 @lg:col-span-5 @lg:col-span-6 @lg:col-span-7 @lg:col-span-8 @lg:col-span-9 @lg:col-span-10 @lg:col-span-11 @lg:col-span-12
+        @sm:block @sm:hidden 
+        @md:block @md:hidden
+        @lg:block @lg:hidden
+        @xl:block @xl:hidden
+        @sm @md @lg @xl
     --}}
 </div>
