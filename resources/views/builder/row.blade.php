@@ -1,4 +1,4 @@
-<div class="grid grid-cols-12 mb-2 ">
+<div class="grid grid-cols-12 mb-2 @container">
     <div x-data="{ selected: false }" class="{{ $cssClasses }} group">
         <div
             class="block-row border relative transition-all duration-300 ease-in-out"

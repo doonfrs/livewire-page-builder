@@ -106,19 +106,22 @@ class RowBlock extends Block
 
         $classes = [];
 
-        if ($hiddenMobile) {
+        if ($hiddenMobile && $hiddenTablet && $hiddenDesktop) {
             $classes[] = 'hidden';
-            $classes[] = 'md:hidden';
-        }
-
-        if ($hiddenTablet) {
-            $classes[] = 'hidden';
-            $classes[] = 'lg:hidden';
-        }
-
-        if ($hiddenDesktop) {
-            $classes[] = 'hidden';
-            $classes[] = 'lg:hidden';
+        } elseif ($hiddenMobile && $hiddenTablet) {
+            $classes[] = 'hidden @md:block';
+        } elseif ($hiddenMobile && $hiddenDesktop) {
+            $classes[] = 'hidden @sm:block @lg:hidden';
+        } elseif ($hiddenTablet && $hiddenDesktop) {
+            $classes[] = 'block @md:hidden';
+        } elseif ($hiddenMobile) {
+            $classes[] = 'hidden @sm:block';
+        } elseif ($hiddenTablet) {
+            $classes[] = 'block @md:hidden @lg:block';
+        } elseif ($hiddenDesktop) {
+            $classes[] = 'block @lg:hidden';
+        } else {
+            $classes[] = 'block';
         }
 
         $classes[] = "col-span-$mobile md:col-span-$tablet lg:col-span-$desktop";
