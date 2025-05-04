@@ -4,6 +4,7 @@ namespace Trinavo\LivewirePageBuilder\Services;
 
 use Illuminate\Support\Str;
 use Livewire\Livewire;
+use Trinavo\LivewirePageBuilder\Http\Livewire\BuilderPageBlock;
 
 class PageBuilderService
 {
@@ -22,12 +23,35 @@ class PageBuilderService
             ];
         }
 
+        foreach ($this->getConfigBlocksPages() as $blockName => $blockInfo) {
+            if (is_int($blockName)) {
+                continue;
+            }
+            if (isset($blockInfo['is_block']) && $blockInfo['is_block']) {
+                $instance = app(BuilderPageBlock::class);
+                $instance->blockPageName = $blockName;
+                $alias = 'builder-page-block';
+                $blocks[] = [
+                    'class' => BuilderPageBlock::class,
+                    'alias' => $alias,
+                    'label' => $instance->getPageBuilderLabel(),
+                    'icon' => $instance->getPageBuilderIcon(),
+                    'blockPageName' => $blockName,
+                ];
+            }
+        }
+
         return $blocks;
     }
 
     public function getConfigBlocks(): array
     {
         return config('page-builder.blocks', []);
+    }
+
+    public function getConfigBlocksPages(): array
+    {
+        return config('page-builder.pages', []);
     }
 
     public function registerBlocks(): void

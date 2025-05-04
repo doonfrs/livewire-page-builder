@@ -74,7 +74,7 @@ class PageEditor extends Component
     }
 
     #[On('addBlockToRow')]
-    public function addBlockToRow($rowId, $blockAlias)
+    public function addBlockToRow($rowId, $blockAlias, $blockPageName = null)
     {
         $blockClass = null;
         foreach ($this->availableBlocks as $block) {
@@ -84,10 +84,14 @@ class PageEditor extends Component
             }
         }
 
+        $properties = app($blockClass)->getPropertyValues();
+        if ($blockPageName) {
+            $properties['blockPageName'] = $blockPageName;
+        }
         $blockId = uniqid();
         $block = [
             'alias' => $blockAlias,
-            'properties' => app($blockClass)->getPropertyValues(),
+            'properties' => $properties,
         ];
         $this->rows[$rowId]['blocks'][$blockId] = $block;
 
@@ -120,10 +124,10 @@ class PageEditor extends Component
         }));
     }
 
-    public function addBlockToModalRow($blockAlias)
+    public function addBlockToModalRow($blockAlias, $blockPageName = null)
     {
         if ($this->modalRowId) {
-            $this->addBlockToRow($this->modalRowId, $blockAlias);
+            $this->addBlockToRow($this->modalRowId, $blockAlias, $blockPageName);
             $this->closeBlockModal();
         }
     }

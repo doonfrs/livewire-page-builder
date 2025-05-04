@@ -2,8 +2,10 @@
 
 return [
     'blocks' => [
-    /*
-        MainMenu::class,
-
-        */],
+        // MainMenu::class,
+    ],
+    'pages' => [
+        //  'home',
+        // 'header' => ['is_block' => true],
+    ],
 ];

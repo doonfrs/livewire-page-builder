@@ -56,7 +56,12 @@ class BlockProperties extends Component
         $this->blockId = $blockId;
         $this->rowId = null;
         $this->properties = $properties;
-        $this->blockClass = $this->resolveBlockClass($blockClass);
+
+        if (isset($this->properties['blockPageName'])) {
+            $this->blockClass = BuilderPageBlock::class;
+        } else {
+            $this->blockClass = $this->resolveBlockClass($blockClass);
+        }
         $this->blockLabel = Str::headline(class_basename($this->blockClass));
         $this->blockProperties =
             array_map(function (BlockProperty $property) {
