@@ -1,5 +1,5 @@
 <div class="h-screen flex flex-col bg-gray-100 dark:bg-gray-900"
-     x-data
+     x-data="{ showPagesModal: false }"
      x-on:row-added.window="setTimeout(() => { 
             const el = document.getElementById('row-' + $event.detail.rowId); 
             if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' }); 
@@ -16,6 +16,14 @@
                 title="Add Row"
             >
                 <x-heroicon-o-plus class="w-5 h-5" />
+            </button>
+            <!-- Pages Button -->
+            <button
+                x-on:click="showPagesModal = true"
+                class="flex items-center gap-1 px-4 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-2 focus:ring-blue-200 transition-all duration-150 text-sm font-medium"
+                title="Open Pages"
+            >
+                <x-heroicon-o-document-text class="w-5 h-5" />
             </button>
             <!-- Preview Button -->
             <a
@@ -72,7 +80,7 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 @forelse($this->filteredBlocks as $block)
                 <button
-                    wire:click="addBlockToModalRow('{{ $block['alias'] }}')"
+                    wire:click="addBlockToModalRow('{{ $block['alias'] }}', '{{ $block['blockPageName'] ?? null }}')"
                     class="group bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-sm hover:shadow-lg transition-all duration-200 p-5 flex flex-col items-center text-center focus:outline-none focus:ring-2 focus:ring-pink-200">
                     <x-dynamic-component :component="$block['icon'] ?? 'heroicon-o-cube'" class="w-10 h-10 mb-3 text-pink-500 group-hover:text-pink-600 transition-colors" />
                     <div class="font-semibold text-gray-800 dark:text-gray-100 mb-1 text-base">
@@ -86,6 +94,35 @@
         </div>
     </div>
     @endif
+
+    <!-- Pages Modal -->
+    <div x-show="showPagesModal" class="fixed inset-0 z-52 flex items-center justify-center bg-black/40" style="display: none;">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-lg p-8 relative">
+            <button @click="showPagesModal = false" class="absolute top-3 right-3 text-gray-400 hover:text-gray-700 dark:hover:text-gray-200">
+                <x-heroicon-o-x-mark class="w-6 h-6" />
+            </button>
+            <h2 class="text-xl font-bold mb-6 text-gray-800 dark:text-gray-100 flex items-center gap-2">
+                <x-heroicon-o-document-text class="w-6 h-6 text-blue-500" />
+                Pages
+            </h2>
+            <ul>
+                @foreach(config('page-builder.pages', []) as $key => $page)
+                    @php
+                        $isAssoc = is_string($key) && is_array($page);
+                        $pageName = $isAssoc ? $key : $page;
+                    @endphp
+                    <li class="mb-2">
+                        <a
+                            href="{{ route('page-builder.page.edit', ['pageKey' => $pageName]) }}"
+                            class="block px-4 py-2 rounded hover:bg-blue-100 dark:hover:bg-blue-900 transition text-gray-800 dark:text-gray-100"
+                        >
+                            {{ $pageName }}
+                        </a>
+                    </li>
+                @endforeach
+            </ul>
+        </div>
+    </div>
 
     <!-- Main Content and Properties Panel -->
     <div class="flex flex-1 min-h-0">

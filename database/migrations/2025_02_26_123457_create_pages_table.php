@@ -14,6 +14,7 @@ return new class extends Migration
             $table->string('theme')->nullable();
             $table->longText('components')->nullable();
             $table->unique(['key', 'theme']);
+            $table->boolean('is_block')->default(false);
             $table->timestamps();
         });
     }
