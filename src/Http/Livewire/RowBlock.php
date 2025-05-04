@@ -75,13 +75,14 @@ class RowBlock extends Block
     }
 
     #[On('blockAdded')]
-    public function blockAdded($rowId, $blockId, $blockAlias)
+    public function blockAdded($rowId, $blockId, $blockAlias, $properties)
     {
         if ($rowId != $this->rowId) {
             return;
         }
         $this->blocks[$blockId] = [
             'alias' => $blockAlias,
+            'properties' => $properties,
         ];
     }
 

@@ -37,7 +37,7 @@
             <div 
                 x-data="{ open: false }" 
                 x-on:toggle-row-options.window="if($event.detail.rowId === '{{$rowId}}') open = !open"
-                class="absolute top-[-35px] left-1/2 -translate-x-1/2 z-40">
+                class="absolute top-[-35px] left-1/2 -translate-x-1/2 z-51">
                 <div 
                     x-show="open" 
                     x-transition:enter="transition ease-out duration-200"
@@ -79,6 +79,15 @@
                         title="Move Row Down">
                         <x-heroicon-o-arrow-down class="w-4 h-4 mr-2" />
                         <span>Move Down</span>
+                    </button>
+                    <!-- Add Row After Button -->
+                    <button
+                        wire:click="$dispatch('addRow', {afterRowId: '{{$rowId}}'})"
+                        @click="open = false"
+                        class="flex items-center w-full px-3 py-2 text-left text-green-700 hover:bg-green-50"
+                        title="Add Row After">
+                        <x-heroicon-o-plus class="w-4 h-4 mr-2" />
+                        <span>Add Row After</span>
                     </button>
                 </div>
             </div>

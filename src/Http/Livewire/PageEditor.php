@@ -48,6 +48,7 @@ class PageEditor extends Component
         $this->page->saveOrFail();
     }
 
+    #[On('addRow')]
     public function addRow($afterRowId = null)
     {
         $rowId = uniqid();
@@ -57,10 +58,11 @@ class PageEditor extends Component
             'properties' => $rowBlock->getPropertyValues(),
         ];
         if ($afterRowId) {
+            $afterRowIndex = array_search($afterRowId, array_keys($this->rows)) + 1;
             $this->rows = array_merge(
-                array_slice($this->rows, 0, $afterRowId),
+                array_slice($this->rows, 0, $afterRowIndex),
                 [$rowId => $row],
-                array_slice($this->rows, $afterRowId)
+                array_slice($this->rows, $afterRowIndex)
             );
         } else {
             $this->rows[$rowId] = $row;
@@ -68,7 +70,7 @@ class PageEditor extends Component
 
         $this->dispatch('row-added',
             rowId: $rowId,
-            properties: $this->rows[$rowId]['properties']);
+            properties: $row['properties']);
     }
 
     #[On('addBlockToRow')]
@@ -83,12 +85,13 @@ class PageEditor extends Component
         }
 
         $blockId = uniqid();
-        $this->rows[$rowId]['blocks'][$blockId] = [
+        $block = [
             'alias' => $blockAlias,
             'properties' => app($blockClass)->getPropertyValues(),
         ];
+        $this->rows[$rowId]['blocks'][$blockId] = $block;
 
-        $this->dispatch('blockAdded', $rowId, $blockId, $blockAlias)->to('row-block');
+        $this->dispatch('blockAdded', $rowId, $blockId, $blockAlias, $block['properties'])->to('row-block');
     }
 
     #[On('openBlockModal')]
