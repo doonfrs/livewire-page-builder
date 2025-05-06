@@ -47,6 +47,12 @@ abstract class Block extends Component
 
     public $backgroundColor = null;
 
+    // Container properties
+    public $useContainer = false;
+
+    // Alignment properties
+    public $selfCentered = false;
+
     /**
      * Get the icon for the block in the page builder UI.
      */
@@ -72,7 +78,8 @@ abstract class Block extends Component
             $this->getResponsiveProperties(),
             $this->getVisibilityProperties(),
             $this->getSpacingProperties(),
-            $this->getStyleProperties()
+            $this->getStyleProperties(),
+            $this->getLayoutProperties()
         );
     }
 
@@ -150,6 +157,19 @@ abstract class Block extends Component
     }
 
     /**
+     * Get layout properties (container, alignment)
+     */
+    protected function getLayoutProperties(): array
+    {
+        return [
+            (new CheckboxProperty('use_container', 'Container', defaultValue: false))
+                ->setGroup('layout', 'Layout', 2, 'heroicon-o-rectangle-group'),
+            (new CheckboxProperty('self_centered', 'Self-centered (mx-auto)', defaultValue: false))
+                ->setGroup('layout', 'Layout', 2, 'heroicon-o-rectangle-group'),
+        ];
+    }
+
+    /**
      * Generate spacing CSS classes based on properties
      */
     public function getSpacingClasses(): string
@@ -207,6 +227,26 @@ abstract class Block extends Component
         // Add max width classes
         if ($this->maxWidth) {
             $classes[] = "max-w-{$this->maxWidth}";
+        }
+
+        return implode(' ', $classes);
+    }
+
+    /**
+     * Generate layout CSS classes based on properties
+     */
+    public function getLayoutClasses(): string
+    {
+        $classes = [];
+
+        // Add container class if enabled
+        if ($this->useContainer) {
+            $classes[] = 'container';
+        }
+
+        // Add self-centering (mx-auto) if enabled
+        if ($this->selfCentered) {
+            $classes[] = 'mx-auto';
         }
 
         return implode(' ', $classes);

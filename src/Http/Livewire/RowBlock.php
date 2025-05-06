@@ -119,6 +119,10 @@ class RowBlock extends Block
         $textColor = $this->properties['text_color'] ?? null;
         $backgroundColor = $this->properties['background_color'] ?? null;
 
+        // Layout properties
+        $useContainer = $this->properties['use_container'] ?? false;
+        $selfCentered = $this->properties['self_centered'] ?? false;
+
         $classes = [];
         $styles = [];
 
@@ -142,6 +146,16 @@ class RowBlock extends Block
         }
 
         $classes[] = 'col-span-12';
+
+        // Add container class if enabled
+        if ($useContainer) {
+            $classes[] = 'container';
+        }
+
+        // Add self-centering (mx-auto) if enabled
+        if ($selfCentered) {
+            $classes[] = 'mx-auto';
+        }
 
         // Add padding classes
         if ($paddingTop > 0) {

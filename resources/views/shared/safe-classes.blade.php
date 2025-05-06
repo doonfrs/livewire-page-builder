@@ -10,6 +10,9 @@
     <div class="@sm:block @sm:hidden @md:block @md:hidden @lg:block @lg:hidden @xl:block @xl:hidden"></div>
     <div class="block hidden"></div>
     
+    {{-- Layout classes --}}
+    <div class="container mx-auto md:container lg:container"></div>
+    
     {{-- Padding utilities --}}
     <div class="
         pt-0 pt-1 pt-2 pt-3 pt-4 pt-5 pt-6 pt-8 pt-10 pt-12 pt-16 pt-20 pt-24 pt-32 pt-40 pt-48 pt-56 pt-64
@@ -27,7 +30,7 @@
         mr-0 mr-1 mr-2 mr-3 mr-4 mr-5 mr-6 mr-8 mr-10 mr-12 mr-16 mr-20 mr-24 mr-32 mr-40 mr-48 mr-56 mr-64
         mb-0 mb-1 mb-2 mb-3 mb-4 mb-5 mb-6 mb-8 mb-10 mb-12 mb-16 mb-20 mb-24 mb-32 mb-40 mb-48 mb-56 mb-64
         ml-0 ml-1 ml-2 ml-3 ml-4 ml-5 ml-6 ml-8 ml-10 ml-12 ml-16 ml-20 ml-24 ml-32 ml-40 ml-48 ml-56 ml-64
-        mx-0 mx-1 mx-2 mx-3 mx-4 mx-5 mx-6 mx-8 mx-10 mx-12 mx-16 mx-20 mx-24 mx-32 mx-40 mx-48 mx-56 mx-64
+        mx-0 mx-1 mx-2 mx-3 mx-4 mx-5 mx-6 mx-8 mx-10 mx-12 mx-16 mx-20 mx-24 mx-32 mx-40 mx-48 mx-56 mx-64 mx-auto
         my-0 my-1 my-2 my-3 my-4 my-5 my-6 my-8 my-10 my-12 my-16 my-20 my-24 my-32 my-40 my-48 my-56 my-64
         m-0 m-1 m-2 m-3 m-4 m-5 m-6 m-8 m-10 m-12 m-16 m-20 m-24 m-32 m-40 m-48 m-56 m-64
     "></div>
