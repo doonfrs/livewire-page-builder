@@ -16,3 +16,4 @@ alwaysApply: true
 - We are using laravel 12
 - try to avoid writing @php inside livewire views please
 - Using Livewire 3, please make sure not to use deprecated method https://livewire.laravel.com/docs/upgrading#emitup
+- it is a laravel package the main folder is src/ not app/
