@@ -5,6 +5,7 @@ namespace Trinavo\LivewirePageBuilder\Support;
 use Illuminate\Support\Str;
 use Livewire\Component;
 use Trinavo\LivewirePageBuilder\Support\Properties\CheckboxProperty;
+use Trinavo\LivewirePageBuilder\Support\Properties\ColorProperty;
 use Trinavo\LivewirePageBuilder\Support\Properties\TextProperty;
 
 abstract class Block extends Component
@@ -20,6 +21,31 @@ abstract class Block extends Component
     public $hiddenTablet = false;
 
     public $hiddenDesktop = false;
+
+    // Padding properties
+    public $paddingTop = 0;
+
+    public $paddingRight = 0;
+
+    public $paddingBottom = 0;
+
+    public $paddingLeft = 0;
+
+    // Margin properties
+    public $marginTop = 0;
+
+    public $marginRight = 0;
+
+    public $marginBottom = 0;
+
+    public $marginLeft = 0;
+
+    // Style properties
+    public $maxWidth = null;
+
+    public $textColor = null;
+
+    public $backgroundColor = null;
 
     /**
      * Get the icon for the block in the page builder UI.
@@ -42,20 +68,148 @@ abstract class Block extends Component
      */
     public function getSharedProperties(): array
     {
+        return array_merge(
+            $this->getResponsiveProperties(),
+            $this->getVisibilityProperties(),
+            $this->getSpacingProperties(),
+            $this->getStyleProperties()
+        );
+    }
+
+    /**
+     * Get responsive properties (grid sizes)
+     */
+    protected function getResponsiveProperties(): array
+    {
         return [
             (new TextProperty('mobile_grid_size', 'Mobile', numeric: true, defaultValue: 12, min: 1, max: 12))
-                ->setGroup('grid_size', 'Grid Size', 3, 'heroicon-o-squares-2x2'),
+                ->setGroup('grid_size', 'Grid Size', 3, 'heroicon-o-device-phone-mobile'),
             (new TextProperty('tablet_grid_size', 'Tablet', numeric: true, defaultValue: 12, min: 1, max: 12))
-                ->setGroup('grid_size', 'Grid Size'),
+                ->setGroup('grid_size', 'Grid Size', 3, 'heroicon-o-device-tablet'),
             (new TextProperty('desktop_grid_size', 'Desktop', numeric: true, defaultValue: 12, min: 1, max: 12))
-                ->setGroup('grid_size', 'Grid Size'),
-            (new CheckboxProperty('hidden_mobile', 'Mobile', defaultValue: false))
-                ->setGroup('hidden', 'Hidden', 3, 'heroicon-o-eye'),
-            (new CheckboxProperty('hidden_tablet', 'Tablet', defaultValue: false))
-                ->setGroup('hidden', 'Hidden'),
-            (new CheckboxProperty('hidden_desktop', 'Desktop', defaultValue: false))
-                ->setGroup('hidden', 'Hidden'),
+                ->setGroup('grid_size', 'Grid Size', 3, 'heroicon-o-device-desktop'),
         ];
+    }
+
+    /**
+     * Get visibility properties
+     */
+    protected function getVisibilityProperties(): array
+    {
+        return [
+            (new CheckboxProperty('hidden_mobile', 'Mobile', defaultValue: false))
+                ->setGroup('hide', 'Hide', 3, 'heroicon-o-eye'),
+            (new CheckboxProperty('hidden_tablet', 'Tablet', defaultValue: false))
+                ->setGroup('hide', 'Hide', 3, 'heroicon-o-eye'),
+            (new CheckboxProperty('hidden_desktop', 'Desktop', defaultValue: false))
+                ->setGroup('hide', 'Hide', 3, 'heroicon-o-eye'),
+        ];
+    }
+
+    /**
+     * Get spacing properties (padding and margin)
+     */
+    protected function getSpacingProperties(): array
+    {
+        return [
+            // Padding properties
+            (new TextProperty('padding_top', 'Top', numeric: true, defaultValue: 0, min: 0))
+                ->setGroup('padding', 'Padding', 4, 'heroicon-o-square-2-stack'),
+            (new TextProperty('padding_right', 'Right', numeric: true, defaultValue: 0, min: 0))
+                ->setGroup('padding', 'Padding', 4, 'heroicon-o-square-2-stack'),
+            (new TextProperty('padding_bottom', 'Bottom', numeric: true, defaultValue: 0, min: 0))
+                ->setGroup('padding', 'Padding', 4, 'heroicon-o-square-2-stack'),
+            (new TextProperty('padding_left', 'Left', numeric: true, defaultValue: 0, min: 0))
+                ->setGroup('padding', 'Padding', 4, 'heroicon-o-square-2-stack'),
+
+            // Margin properties
+            (new TextProperty('margin_top', 'Top', numeric: true, defaultValue: 0, min: 0))
+                ->setGroup('margin', 'Margin', 4, 'heroicon-o-arrows-pointing-out'),
+            (new TextProperty('margin_right', 'Right', numeric: true, defaultValue: 0, min: 0))
+                ->setGroup('margin', 'Margin', 4, 'heroicon-o-arrows-pointing-out'),
+            (new TextProperty('margin_bottom', 'Bottom', numeric: true, defaultValue: 0, min: 0))
+                ->setGroup('margin', 'Margin', 4, 'heroicon-o-arrows-pointing-out'),
+            (new TextProperty('margin_left', 'Left', numeric: true, defaultValue: 0, min: 0))
+                ->setGroup('margin', 'Margin', 4, 'heroicon-o-arrows-pointing-out'),
+        ];
+    }
+
+    /**
+     * Get style properties (colors, max width)
+     */
+    protected function getStyleProperties(): array
+    {
+        return [
+            (new TextProperty('max_width', 'Max Width', numeric: true, defaultValue: null, min: 0))
+                ->setGroup('size', 'Size', 3, 'heroicon-o-swatch'),
+            (new ColorProperty('text_color', 'Text Color', defaultValue: null))
+                ->setGroup('color', 'Color', 2, 'heroicon-o-swatch'),
+            (new ColorProperty('background_color', 'Background Color', defaultValue: null))
+                ->setGroup('color', 'Color', 2, 'heroicon-o-swatch'),
+        ];
+    }
+
+    /**
+     * Generate spacing CSS classes based on properties
+     */
+    public function getSpacingClasses(): string
+    {
+        $classes = [];
+
+        // Add padding classes
+        if ($this->paddingTop > 0) {
+            $classes[] = "pt-{$this->paddingTop}";
+        }
+        if ($this->paddingRight > 0) {
+            $classes[] = "pr-{$this->paddingRight}";
+        }
+        if ($this->paddingBottom > 0) {
+            $classes[] = "pb-{$this->paddingBottom}";
+        }
+        if ($this->paddingLeft > 0) {
+            $classes[] = "pl-{$this->paddingLeft}";
+        }
+
+        // Add margin classes
+        if ($this->marginTop > 0) {
+            $classes[] = "mt-{$this->marginTop}";
+        }
+        if ($this->marginRight > 0) {
+            $classes[] = "mr-{$this->marginRight}";
+        }
+        if ($this->marginBottom > 0) {
+            $classes[] = "mb-{$this->marginBottom}";
+        }
+        if ($this->marginLeft > 0) {
+            $classes[] = "ml-{$this->marginLeft}";
+        }
+
+        return implode(' ', $classes);
+    }
+
+    /**
+     * Generate style CSS classes based on properties
+     */
+    public function getStyleClasses(): string
+    {
+        $classes = [];
+
+        // Add text color classes
+        if ($this->textColor) {
+            $classes[] = "text-{$this->textColor}";
+        }
+
+        // Add background color classes
+        if ($this->backgroundColor) {
+            $classes[] = "bg-{$this->backgroundColor}";
+        }
+
+        // Add max width classes
+        if ($this->maxWidth) {
+            $classes[] = "max-w-{$this->maxWidth}";
+        }
+
+        return implode(' ', $classes);
     }
 
     /**
@@ -85,14 +239,9 @@ abstract class Block extends Component
 
     public function getAllProperties(): array
     {
-        $all = [];
-        foreach ($this->getSharedProperties() as $property) {
-            $all[$property->name] = $property;
-        }
-        foreach ($this->getPageBuilderProperties() as $property) {
-            $all[$property->name] = $property;
-        }
-
-        return array_values($all);
+        return array_merge(
+            $this->getSharedProperties(),
+            $this->getPageBuilderProperties()
+        );
     }
 }

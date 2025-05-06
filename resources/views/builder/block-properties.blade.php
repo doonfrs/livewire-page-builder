@@ -1,6 +1,6 @@
 <div class="h-full overflow-y-auto">
     <!-- Header -->
-    <div class="sticky top-0 bg-gradient-to-r from-gray-800 to-gray-700 text-white px-4 py-3 border-b border-gray-700 shadow-md z-10">
+    <div class="sticky top-0 bg-gradient-to-r from-gray-800 to-gray-700 text-white px-4 py-3 border-b border-gray-700 shadow-md">
         <h2 class="text-lg font-medium flex items-center">
             <x-heroicon-o-adjustments-horizontal class="w-5 h-5 mr-2" />
             Properties
@@ -59,6 +59,19 @@
                             </div>
                             <!-- Image selector button would go here -->
                         </div>
+                    </div>
+                    @elseif($property['type'] === 'color')
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1 dark:text-gray-300">
+                            <span>{{ $property['label'] }}</span>
+                        </label>
+                        <livewire:color-picker 
+                            :property-name="$property['name']" 
+                            :current-value="$properties[$property['name']] ?? ''" 
+                            :row-id="$rowId" 
+                            :block-id="$blockId" 
+                            :key="'color-picker-' . ($rowId ?? '') . '-' . ($blockId ?? '') . '-' . $property['name']" 
+                        />
                     </div>
                     @else
                     <div>

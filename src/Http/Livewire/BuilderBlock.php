@@ -16,6 +16,8 @@ class BuilderBlock extends Component
 
     public $cssClasses;
 
+    public $inlineStyles;
+
     public ?bool $viewMode = false;
 
     public function mount()
@@ -77,7 +79,25 @@ class BuilderBlock extends Component
         $hiddenTablet = $this->properties['hidden_tablet'] ?? false;
         $hiddenDesktop = $this->properties['hidden_desktop'] ?? false;
 
+        // Padding properties
+        $paddingTop = $this->properties['padding_top'] ?? 0;
+        $paddingRight = $this->properties['padding_right'] ?? 0;
+        $paddingBottom = $this->properties['padding_bottom'] ?? 0;
+        $paddingLeft = $this->properties['padding_left'] ?? 0;
+
+        // Margin properties
+        $marginTop = $this->properties['margin_top'] ?? 0;
+        $marginRight = $this->properties['margin_right'] ?? 0;
+        $marginBottom = $this->properties['margin_bottom'] ?? 0;
+        $marginLeft = $this->properties['margin_left'] ?? 0;
+
+        // Style properties
+        $maxWidth = $this->properties['max_width'] ?? null;
+        $textColor = $this->properties['text_color'] ?? null;
+        $backgroundColor = $this->properties['background_color'] ?? null;
+
         $classes = [];
+        $styles = [];
 
         // Container query classes
         if ($hiddenMobile && $hiddenTablet && $hiddenDesktop) {
@@ -100,6 +120,67 @@ class BuilderBlock extends Component
 
         $classes[] = "col-span-$mobile @md:col-span-$tablet @lg:col-span-$desktop";
 
-        return implode(' ', array_unique($classes));
+        // Add padding classes
+        if ($paddingTop > 0) {
+            $classes[] = "pt-$paddingTop";
+        }
+        if ($paddingRight > 0) {
+            $classes[] = "pr-$paddingRight";
+        }
+        if ($paddingBottom > 0) {
+            $classes[] = "pb-$paddingBottom";
+        }
+        if ($paddingLeft > 0) {
+            $classes[] = "pl-$paddingLeft";
+        }
+
+        // Add margin classes
+        if ($marginTop > 0) {
+            $classes[] = "mt-$marginTop";
+        }
+        if ($marginRight > 0) {
+            $classes[] = "mr-$marginRight";
+        }
+        if ($marginBottom > 0) {
+            $classes[] = "mb-$marginBottom";
+        }
+        if ($marginLeft > 0) {
+            $classes[] = "ml-$marginLeft";
+        }
+
+        // Add style classes
+        if ($maxWidth) {
+            $classes[] = "max-w-$maxWidth";
+        }
+
+        // Add text color classes or inline styles for hex colors
+        if ($textColor) {
+            if (str_starts_with($textColor, '#')) {
+                $styles[] = "color: $textColor";
+            } else {
+                $classes[] = "text-$textColor";
+            }
+        }
+
+        // Add background color classes or inline styles for hex colors
+        if ($backgroundColor) {
+            if (str_starts_with($backgroundColor, '#')) {
+                $styles[] = "background-color: $backgroundColor";
+            } else {
+                $classes[] = "bg-$backgroundColor";
+            }
+        }
+
+        $classString = implode(' ', array_unique($classes));
+
+        // Add style attribute if we have inline styles
+        if (! empty($styles)) {
+            $styleString = implode('; ', $styles);
+            $this->inlineStyles = $styleString;
+        } else {
+            $this->inlineStyles = null;
+        }
+
+        return $classString;
     }
 }

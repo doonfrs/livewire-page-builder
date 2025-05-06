@@ -1,5 +1,7 @@
 <div class="grid grid-cols-12 mb-2">
-    <div x-data="{ selected: false }" class="{{ $cssClasses }} group">
+    <div x-data="{ selected: false }" 
+         class="{{ $cssClasses }} group"
+         @if(!empty($inlineStyles))style="{{ $inlineStyles }}"@endif>
         <div
             class="block-row border relative transition-all duration-300 ease-in-out"
             :class="selected ? 'border-pink-500' : 'border-gray-300'"

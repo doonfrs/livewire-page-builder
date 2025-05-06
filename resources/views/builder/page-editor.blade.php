@@ -72,12 +72,14 @@
                 <x-heroicon-o-plus class="w-6 h-6 text-pink-500" />
                 Add Block
             </h2>
-            <input type="text" wire:model="blockFilter" placeholder="Search blocks..." class="w-full border rounded-lg px-4 py-2 mb-6 focus:ring-2 focus:ring-pink-200 focus:border-pink-400 transition dark:bg-gray-900 dark:border-gray-700 dark:text-gray-100" />
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <input type="text" wire:model.live.debounce.500ms="blockFilter"
+                placeholder="Search blocks..."
+                class="w-full border rounded-lg px-4 py-2 mb-6 focus:ring-2 focus:ring-pink-200 focus:border-pink-400 transition dark:bg-gray-900 dark:border-gray-700 dark:text-gray-100" />
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-6 h-[40vh] overflow-auto">
                 @forelse($this->filteredBlocks as $block)
                 <button
                     wire:click="addBlockToModalRow('{{ $block['alias'] }}', '{{ $block['blockPageName'] ?? null }}')"
-                    class="group bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-sm hover:shadow-lg transition-all duration-200 p-5 flex flex-col items-center text-center focus:outline-none focus:ring-2 focus:ring-pink-200">
+                    class="group h-40 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-sm hover:shadow-lg transition-all duration-200 p-5 flex flex-col items-center text-center focus:outline-none focus:ring-2 focus:ring-pink-200">
                     <x-dynamic-component :component="$block['icon'] ?? 'heroicon-o-cube'" class="w-10 h-10 mb-3 text-pink-500 group-hover:text-pink-600 transition-colors" />
                     <div class="font-semibold text-gray-800 dark:text-gray-100 mb-1 text-base">
                         {{ $block['label'] }}
@@ -129,14 +131,13 @@
 
         <!-- Main Section (Scrollable) -->
         <main class="flex-1 pt-10 pb-50 pr-0 bg-gray-50 dark:bg-gray-900 overflow-auto min-h-0 w-[80%]">
-            <div 
+            <div
                 class="mx-auto @container ps-4 pe-4"
                 :class="{
                     'w-[375px]': deviceMode === 'mobile',
                     'w-[768px]': deviceMode === 'tablet',
                     'w-full': deviceMode === 'desktop',
-                }"
-            >
+                }">
                 @foreach($rows as $rowId=>$row)
                 <div id="row-{{ $rowId }}">
                     <livewire:row-block
@@ -149,17 +150,5 @@
             </div>
         </main>
     </div>
-
-    {{--
-        col-span-1 col-span-2 col-span-3 col-span-4 col-span-5 col-span-6 col-span-7 col-span-8 col-span-9 col-span-10 col-span-11 col-span-12
-        md:col-span-1 md:col-span-2 md:col-span-3 md:col-span-4 md:col-span-5 md:col-span-6 md:col-span-7 md:col-span-8 md:col-span-9 md:col-span-10 md:col-span-11 md:col-span-12
-        lg:col-span-1 lg:col-span-2 lg:col-span-3 lg:col-span-4 lg:col-span-5 lg:col-span-6 lg:col-span-7 lg:col-span-8 lg:col-span-9 lg:col-span-10 lg:col-span-11 lg:col-span-12
-        @md:col-span-1 @md:col-span-2 @md:col-span-3 @md:col-span-4 @md:col-span-5 @md:col-span-6 @md:col-span-7 @md:col-span-8 @md:col-span-9 @md:col-span-10 @md:col-span-11 @md:col-span-12
-        @lg:col-span-1 @lg:col-span-2 @lg:col-span-3 @lg:col-span-4 @lg:col-span-5 @lg:col-span-6 @lg:col-span-7 @lg:col-span-8 @lg:col-span-9 @lg:col-span-10 @lg:col-span-11 @lg:col-span-12
-        @sm:block @sm:hidden 
-        @md:block @md:hidden
-        @lg:block @lg:hidden
-        @xl:block @xl:hidden
-        @sm @md @lg @xl
-    --}}
+    @include('page-builder::shared.safe-classes')
 </div>
