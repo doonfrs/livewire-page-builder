@@ -31,6 +31,11 @@ class PageBuilderServiceProvider extends ServiceProvider
             __DIR__.'/../../resources/views' => resource_path('views/vendor/page-builder'),
         ], 'page-builder-views');
 
+        // Add asset publishing for Vite build files
+        $this->publishes([
+            __DIR__.'/../../public/build' => public_path('vendor/page-builder/build'),
+        ], 'page-builder-assets');
+
         Livewire::component('page-editor', PageEditor::class);
         Livewire::component('builder-block', BuilderBlock::class);
         Livewire::component('block-properties', BlockProperties::class);

@@ -78,19 +78,77 @@
    composer require trinavo/livewire-page-builder
    ```
 
-2. **Publish Assets & Config:**
+2. **Run the installer:**
 
    ```bash
-   php artisan vendor:publish --provider="Trinavo\LivewirePageBuilder\Providers\PageBuilderServiceProvider"
+   php artisan pagebuilder:install
    ```
 
-3. **Install NPM dependencies:**
+   This command will:
+   - Add the required Tailwind source path to your CSS
+   - Publish configuration files
+   - Copy built assets to the correct location
+   - Optionally publish views and run migrations
+
+3. **Register your blocks and configure your pages:**
+
+   Edit `config/page-builder.php` to add your blocks and pages:
+
+   ```php
+   // config/page-builder.php
+   'blocks' => [
+       'hero' => App\Http\Livewire\Blocks\HeroBlock::class,
+   ],
+   'pages' => [
+       'home',
+       'about',
+       // ...
+   ],
+   ```
+
+4. **Access the builder:**
+
+   Visit `/page-builder` in your browser to start using the visual editor.
+
+---
+
+## 🛠️ Manual Installation (if needed)
+
+If you prefer more control over the installation process:
+
+1. **Install via Composer:**
 
    ```bash
-   npm install && npm run build
+   composer require trinavo/livewire-page-builder
    ```
 
-4. **Migrate Database:**
+2. **Publish configuration:**
+
+   ```bash
+   php artisan vendor:publish --tag=config --provider="Trinavo\LivewirePageBuilder\Providers\PageBuilderServiceProvider" 
+   ```
+
+3. **Publish views (optional):**
+
+   ```bash
+   php artisan vendor:publish --tag=page-builder-views --provider="Trinavo\LivewirePageBuilder\Providers\PageBuilderServiceProvider"
+   ```
+
+4. **Publish assets:**
+
+   ```bash
+   php artisan vendor:publish --tag=page-builder-assets --provider="Trinavo\LivewirePageBuilder\Providers\PageBuilderServiceProvider"
+   ```
+
+5. **Add Tailwind source path:**
+
+   Add this line to your CSS file:
+
+   ```css
+   @source '../../vendor/trinavo/livewire-page-builder/resources/**/*.blade.php';
+   ```
+
+6. **Run migrations:**
 
    ```bash
    php artisan migrate
