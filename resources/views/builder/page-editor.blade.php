@@ -6,7 +6,7 @@
             $dispatch('row-selected', { rowId: $event.detail.rowId, properties: $event.detail.properties });
     }, 100);">
     <!-- Header Toolbar -->
-    <div class="flex items-center justify-between bg-gray-200 dark:bg-gray-800 shadow-md p-3 text-gray-900 dark:text-gray-100 sticky top-0 z-30">
+    <div class="flex items-center justify-between bg-gray-200 dark:bg-gray-800 shadow-md p-3 text-gray-900 dark:text-gray-100 z-30">
         <div class="flex gap-2">
             <!-- Add Button -->
             <button
@@ -121,10 +121,16 @@
 
     <!-- Main Content and Properties Panel -->
     <div class="flex flex-1 min-h-0">
+
+        <!-- Properties Panel (Fixed/Sticky) -->
+        <aside class="hidden lg:block w-[20%] h-[calc(100vh-56px)] bg-white dark:bg-gray-800 border-l border-gray-200 dark:border-gray-700 shadow-lg overflow-y-auto">
+            @livewire('block-properties')
+        </aside>
+
         <!-- Main Section (Scrollable) -->
-        <main class="flex-1 pt-10 pb-50 p-6 pr-80 bg-gray-50 dark:bg-gray-900 overflow-auto min-h-0">
+        <main class="flex-1 pt-10 pb-50 pr-0 bg-gray-50 dark:bg-gray-900 overflow-auto min-h-0 w-[80%]">
             <div 
-                class="mx-auto @container"
+                class="mx-auto @container ps-4 pe-4"
                 :class="{
                     'w-[375px]': deviceMode === 'mobile',
                     'w-[768px]': deviceMode === 'tablet',
@@ -142,11 +148,6 @@
                 @endforeach
             </div>
         </main>
-
-        <!-- Properties Panel (Fixed/Sticky) -->
-        <aside class="hidden lg:block h-full fixed right-0 top-[56px] z-40 bg-white dark:bg-gray-800 border-l border-gray-200 dark:border-gray-700 shadow-lg overflow-y-auto">
-            @livewire('block-properties')
-        </aside>
     </div>
 
     {{--

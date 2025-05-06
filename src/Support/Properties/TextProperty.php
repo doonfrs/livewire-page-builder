@@ -39,6 +39,10 @@ class TextProperty extends BlockProperty
             'min' => $this->min,
             'max' => $this->max,
             'numeric' => $this->numeric,
+            'group' => $this->group,
+            'groupLabel' => $this->groupLabel,
+            'groupIcon' => $this->groupIcon,
+            'groupColumns' => $this->groupColumns,
         ];
     }
 }

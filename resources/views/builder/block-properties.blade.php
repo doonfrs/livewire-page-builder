@@ -1,4 +1,4 @@
-<aside class="fixed top-[56px] right-0 h-[calc(100vh-56px)] bg-white border-l border-gray-200 shadow-lg overflow-y-auto z-20">
+<div class="h-full overflow-y-auto">
     <!-- Header -->
     <div class="sticky top-0 bg-gradient-to-r from-gray-800 to-gray-700 text-white px-4 py-3 border-b border-gray-700 shadow-md z-10">
         <h2 class="text-lg font-medium flex items-center">
@@ -13,100 +13,72 @@
     <!-- Empty State -->
     @if(empty($blockProperties) || empty($properties))
     <div class="flex flex-col items-center justify-center h-64 text-center p-6">
-        <x-heroicon-o-square-3-stack-3d class="w-12 h-12 text-gray-300 mb-3" />
-        <div class="text-gray-500 font-medium">No properties available</div>
-        <div class="text-gray-400 text-sm mt-1">Select a block to view and edit its properties</div>
+        <x-heroicon-o-square-3-stack-3d class="w-12 h-12 text-gray-300 mb-3 dark:text-gray-600" />
+        <div class="text-gray-500 font-medium dark:text-gray-400">No properties available</div>
+        <div class="text-gray-400 text-sm mt-1 dark:text-gray-500">Select a block to view and edit its properties</div>
     </div>
     @else
 
     <!-- Properties Groups -->
-    <div class="divide-y divide-gray-100">
-        <!-- General Properties -->
-        <div class="p-4">
-            <div class="text-sm font-medium text-gray-500 uppercase tracking-wider mb-3">Block Settings</div>
+    <div class="divide-y divide-gray-100 dark:divide-gray-800">
+        <!-- Property Groups -->
+        @foreach($propertyGroups as $groupName => $group)
+        <div class="p-4 @if($loop->even) bg-gray-50 dark:bg-gray-800/50 @endif">
+            <div class="text-sm font-medium text-gray-500 uppercase tracking-wider mb-3 flex items-center dark:text-gray-400">
+                <x-dynamic-component :component="$group['icon']" class="w-4 h-4 mr-1" />
+                {{ $group['label'] }}
+            </div>
 
-            <div class="space-y-4">
-                @foreach($blockProperties as $property)
-                @if(!in_array($property['name'], ['mobile_grid_size', 'tablet_grid_size', 'desktop_grid_size']))
+            <div class="space-y-4 {{ $group['columns'] > 1 ? 'grid grid-cols-'.$group['columns'].' gap-3 space-y-0' : '' }}" 
+                 wire:key="group-{{ $blockId }}-{{ $groupName }}">
+                @foreach($group['properties'] as $property)
                 <div wire:key="property-{{ $blockId }}-{{ $property['name'] }}" class="group">
                     @if($property['type'] === 'checkbox')
                     <div class="flex items-center">
                         <input
                             type="checkbox"
                             id="property-{{ $property['name'] }}"
-                            class="form-checkbox h-5 w-5 text-blue-600 rounded transition duration-150 ease-in-out border-gray-300 focus:ring-2 focus:ring-blue-200"
+                            class="form-checkbox h-5 w-5 text-blue-600 rounded transition duration-150 ease-in-out border-gray-300 focus:ring-2 focus:ring-blue-200 dark:border-gray-600 dark:bg-gray-800 dark:ring-offset-gray-800"
                             @if(($properties[$property['name']] ?? false)) checked @endif
                             wire:change.debounce.500ms="updateBlockProperty('{{ $rowId }}', '{{ $blockId }}', '{{ $property['name'] }}', $event.target.checked)">
                         <label
                             for="property-{{ $property['name'] }}"
-                            class="ml-2 ms-2 text-sm font-medium text-gray-700 cursor-pointer">
+                            class="ml-2 ms-2 text-sm font-medium text-gray-700 cursor-pointer dark:text-gray-300">
                             {{ $property['label'] }}
                         </label>
                     </div>
+                    @elseif($property['type'] === 'image')
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1 dark:text-gray-300">
+                            <span>{{ $property['label'] }}</span>
+                        </label>
+                        <div class="mt-1">
+                            <!-- Image placeholder or preview -->
+                            <div class="border border-gray-300 rounded bg-gray-100 h-24 flex items-center justify-center dark:bg-gray-800 dark:border-gray-700">
+                                <x-heroicon-o-photo class="w-8 h-8 text-gray-400 dark:text-gray-600" />
+                            </div>
+                            <!-- Image selector button would go here -->
+                        </div>
+                    </div>
                     @else
-                    <label class="flex justify-between text-sm font-medium text-gray-700 mb-1">
-                        <span>{{ $property['label'] }}</span>
-                        <span class="text-xs text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity">{{ $property['name'] }}</span>
-                    </label>
-                    <input
-                        type="{{ $property['numeric'] ? 'number' : 'text' }}"
-                        class="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-200 focus:border-blue-400 transition-all duration-200"
-                        value="{{ $properties[$property['name']] ?? '' }}"
-                        wire:input.debounce.500ms="updateBlockProperty('{{ $rowId }}', '{{ $blockId }}', '{{ $property['name'] }}', $event.target.value)">
-                    @endif
-
-                    @if(isset($property['description']))
-                    <p class="mt-1 text-xs text-gray-500">{{ $property['description'] }}</p>
+                    <div>
+                        <label class="flex justify-between text-sm font-medium text-gray-700 mb-1 dark:text-gray-300">
+                            <span>{{ $property['label'] }}</span>
+                        </label>
+                        <input
+                            type="{{ $property['numeric'] ? 'number' : 'text' }}"
+                            @if(isset($property['min'])) min="{{ $property['min'] }}" @endif
+                            @if(isset($property['max'])) max="{{ $property['max'] }}" @endif
+                            class="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-200 focus:border-blue-400 transition-all duration-200 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300"
+                            value="{{ $properties[$property['name']] ?? $property['defaultValue'] ?? '' }}"
+                            wire:input.debounce.500ms="updateBlockProperty('{{ $rowId }}', '{{ $blockId }}', '{{ $property['name'] }}', $event.target.value)">
+                    </div>
                     @endif
                 </div>
-                @endif
                 @endforeach
             </div>
         </div>
-
-        <!-- Responsive Settings -->
-        @if(isset($properties['mobile_grid_size']) || isset($properties['tablet_grid_size']) || isset($properties['desktop_grid_size']))
-        <div class="p-4 bg-gray-50">
-            <div class="text-sm font-medium text-gray-500 uppercase tracking-wider mb-3 flex items-center">
-                <x-heroicon-o-device-phone-mobile class="w-4 h-4 mr-1" />
-                Responsive
-            </div>
-
-            <!-- Separate responsive properties if needed -->
-            <div class="grid grid-cols-3 gap-3" wire:key="responsive-properties-{{ $blockId }}">
-                <div>
-                    <label class="block text-xs font-medium text-gray-700 mb-1">Mobile</label>
-                    <input
-                        type="number"
-                        min="1"
-                        max="12"
-                        class="w-full p-2 border border-gray-300 rounded focus:ring focus:ring-gray-300"
-                        value="{{ $properties['mobile_grid_size'] ?? 12 }}"
-                        wire:input.debounce.500ms="updateBlockProperty('{{ $rowId }}', '{{ $blockId }}', 'mobile_grid_size', $event.target.value)">
-                </div>
-                <div>
-                    <label class="block text-xs font-medium text-gray-700 mb-1">Tablet</label>
-                    <input
-                        type="number"
-                        min="1"
-                        max="12"
-                        class="w-full p-2 border border-gray-300 rounded focus:ring focus:ring-gray-300"
-                        value="{{ $properties['tablet_grid_size'] ?? 12 }}"
-                        wire:input.debounce.500ms="updateBlockProperty('{{ $rowId }}', '{{ $blockId }}', 'tablet_grid_size', $event.target.value)">
-                </div>
-                <div>
-                    <label class="block text-xs font-medium text-gray-700 mb-1">Desktop</label>
-                    <input
-                        type="number"
-                        min="1"
-                        max="12"
-                        class="w-full p-2 border border-gray-300 rounded focus:ring focus:ring-gray-300"
-                        value="{{ $properties['desktop_grid_size'] ?? 12 }}"
-                        wire:input.debounce.500ms="updateBlockProperty('{{ $rowId }}', '{{ $blockId }}', 'desktop_grid_size', $event.target.value)">
-                </div>
-            </div>
-        </div>
-        @endif
+        @endforeach
     </div>
     @endif
-</aside>
+</div>
