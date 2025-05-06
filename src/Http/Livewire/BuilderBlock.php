@@ -96,6 +96,10 @@ class BuilderBlock extends Component
         $textColor = $this->properties['text_color'] ?? null;
         $backgroundColor = $this->properties['background_color'] ?? null;
 
+        // Layout properties
+        $useContainer = $this->properties['use_container'] ?? false;
+        $selfCentered = $this->properties['self_centered'] ?? false;
+
         $classes = [];
         $styles = [];
 
@@ -119,6 +123,16 @@ class BuilderBlock extends Component
         }
 
         $classes[] = "col-span-$mobile @md:col-span-$tablet @lg:col-span-$desktop";
+
+        // Add container class if enabled
+        if ($useContainer) {
+            $classes[] = 'container';
+        }
+
+        // Add self-centering (mx-auto) if enabled
+        if ($selfCentered) {
+            $classes[] = 'mx-auto';
+        }
 
         // Add padding classes
         if ($paddingTop > 0) {
