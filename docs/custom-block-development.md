@@ -37,6 +37,45 @@ public function getPageBuilderProperties(): array
 }
 ```
 
+### Property Groups
+
+You can organize related properties into groups using the `setGroup` method:
+
+```php
+public function getPageBuilderProperties(): array
+{
+    return [
+        (new TextProperty('title', 'Title'))
+            ->setGroup('content', 'Content Settings', 1, 'heroicon-o-document-text'),
+        (new TextProperty('subtitle', 'Subtitle'))
+            ->setGroup('content', 'Content Settings', 1, 'heroicon-o-document-text'),
+        (new ImageProperty('background', 'Background Image'))
+            ->setGroup('appearance', 'Appearance', 2, 'heroicon-o-swatch'),
+        (new CheckboxProperty('dark_overlay', 'Dark Overlay'))
+            ->setGroup('appearance', 'Appearance', 2, 'heroicon-o-swatch'),
+    ];
+}
+```
+
+The `setGroup` method accepts four parameters:
+
+- `group`: The group identifier (string)
+- `groupLabel`: The display name for the group (optional)
+- `columns`: Number of columns to display properties in (default: 1)
+- `groupIcon`: Blade icon name for the group header (optional)
+
+#### Default Group Icons
+
+If not specified, the following default icons will be used for common group names:
+
+- `responsive`: heroicon-o-device-phone-mobile
+- `visibility`: heroicon-o-eye
+- `appearance`: heroicon-o-swatch
+- `content`: heroicon-o-document-text
+- `layout`: heroicon-o-rectangle-group
+- `animation`: heroicon-o-arrow-path
+- Others: heroicon-o-tag
+
 ### Available Property Types
 
 - `TextProperty` — text input (optionally numeric, min/max)
@@ -48,6 +87,8 @@ You can also create your own property types by extending `BlockProperty`.
 ### Shared Properties
 
 - The base `Block` class provides shared properties for grid size and device visibility (mobile, tablet, desktop). These are automatically included in the builder UI.
+- Responsive properties (mobile, tablet, desktop grid sizes) are grouped in the "Responsive" section.
+- Visibility properties (hidden on mobile, tablet, desktop) are grouped in the "Visibility Settings" section.
 
 ## Example: Hero Block
 
@@ -59,12 +100,12 @@ use Trinavo\LivewirePageBuilder\Support\Properties\CheckboxProperty;
 
 class HeroBlock extends Block
 {
-    public function getPageBuilderIcon()
+    public function getPageBuilderIcon(): string
     {
-        return 'heroicon-o-sparkles';
+        return 'heroicon-o-photo';
     }
 
-    public function getPageBuilderLabel()
+    public function getPageBuilderLabel(): string
     {
         return 'Hero Section';
     }
@@ -72,10 +113,22 @@ class HeroBlock extends Block
     public function getPageBuilderProperties(): array
     {
         return [
-            new TextProperty('title', 'Title'),
-            new ImageProperty('image', 'Image'),
-            new CheckboxProperty('show_button', 'Show Button'),
+            (new TextProperty('title', 'Title'))
+                ->setGroup('content', 'Content Settings', 1, 'heroicon-o-document-text'),
+            (new TextProperty('subtitle', 'Subtitle'))
+                ->setGroup('content', 'Content Settings', 1, 'heroicon-o-document-text'),
+            (new ImageProperty('background', 'Background'))
+                ->setGroup('appearance', 'Appearance', 2, 'heroicon-o-swatch'),
+            (new CheckboxProperty('overlay', 'Add Dark Overlay'))
+                ->setGroup('appearance', 'Appearance', 2, 'heroicon-o-swatch'),
+            (new CheckboxProperty('center_text', 'Center Text'))
+                ->setGroup('appearance', 'Appearance', 2, 'heroicon-o-swatch'),
         ];
+    }
+
+    public function render()
+    {
+        return view('blocks.hero');
     }
 }
 ```

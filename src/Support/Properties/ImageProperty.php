@@ -24,6 +24,10 @@ class ImageProperty extends BlockProperty
             'label' => $this->label,
             'type' => $this->getType(),
             'defaultValue' => $this->defaultValue,
+            'group' => $this->group,
+            'groupLabel' => $this->groupLabel,
+            'groupIcon' => $this->groupIcon,
+            'groupColumns' => $this->groupColumns,
         ];
     }
 }

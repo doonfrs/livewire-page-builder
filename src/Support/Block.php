@@ -43,12 +43,18 @@ abstract class Block extends Component
     public function getSharedProperties(): array
     {
         return [
-            new TextProperty('mobile_grid_size', 'Mobile Grid Size', defaultValue: 12, min: 1, max: 12),
-            new TextProperty('tablet_grid_size', 'Tablet Grid Size', defaultValue: 12, min: 1, max: 12),
-            new TextProperty('desktop_grid_size', 'Desktop Grid Size', defaultValue: 12, min: 1, max: 12),
-            new CheckboxProperty('hidden_mobile', 'Hidden on Mobile', defaultValue: false),
-            new CheckboxProperty('hidden_tablet', 'Hidden on Tablet', defaultValue: false),
-            new CheckboxProperty('hidden_desktop', 'Hidden on Desktop', defaultValue: false),
+            (new TextProperty('mobile_grid_size', 'Mobile', numeric: true, defaultValue: 12, min: 1, max: 12))
+                ->setGroup('grid_size', 'Grid Size', 3, 'heroicon-o-squares-2x2'),
+            (new TextProperty('tablet_grid_size', 'Tablet', numeric: true, defaultValue: 12, min: 1, max: 12))
+                ->setGroup('grid_size', 'Grid Size'),
+            (new TextProperty('desktop_grid_size', 'Desktop', numeric: true, defaultValue: 12, min: 1, max: 12))
+                ->setGroup('grid_size', 'Grid Size'),
+            (new CheckboxProperty('hidden_mobile', 'Mobile', defaultValue: false))
+                ->setGroup('hidden', 'Hidden', 3, 'heroicon-o-eye'),
+            (new CheckboxProperty('hidden_tablet', 'Tablet', defaultValue: false))
+                ->setGroup('hidden', 'Hidden'),
+            (new CheckboxProperty('hidden_desktop', 'Desktop', defaultValue: false))
+                ->setGroup('hidden', 'Hidden'),
         ];
     }
 

@@ -10,6 +10,14 @@ abstract class BlockProperty
 
     public $defaultValue = null;
 
+    public ?string $group = null;
+
+    public ?string $groupLabel = null;
+
+    public ?string $groupIcon = null;
+
+    public ?int $groupColumns = null;
+
     public function __construct(
         string $name,
         ?string $label = null,
@@ -18,6 +26,19 @@ abstract class BlockProperty
         $this->name = $name;
         $this->label = $label ?? $name;
         $this->defaultValue = $defaultValue;
+    }
+
+    /**
+     * Set the property group information
+     */
+    public function setGroup(?string $group, ?string $groupLabel = null, ?int $columns = 1, ?string $groupIcon = null): self
+    {
+        $this->group = $group;
+        $this->groupLabel = $groupLabel ?? ucfirst($group);
+        $this->groupColumns = $columns;
+        $this->groupIcon = $groupIcon;
+
+        return $this;
     }
 
     abstract public function getType(): string;
