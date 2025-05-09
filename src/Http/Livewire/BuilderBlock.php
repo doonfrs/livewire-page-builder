@@ -35,21 +35,19 @@ class BuilderBlock extends Component
     {
         $blockClass = $this->getBlockClass();
 
-        if (! class_exists($blockClass)) {
-            return '<div>Unknown block: '.$this->blockAlias.'</div>';
-        }
-
         if ($this->viewMode) {
             return view('page-builder::view.builder-block-view', [
                 'blockAlias' => $this->blockAlias,
                 'blockId' => $this->blockId,
                 'properties' => $this->properties,
+                'classExists' => class_exists($blockClass),
             ]);
         } else {
             return view('page-builder::builder.builder-block', [
                 'blockAlias' => $this->blockAlias,
                 'blockId' => $this->blockId,
                 'properties' => $this->properties,
+                'classExists' => class_exists($blockClass),
             ]);
         }
     }

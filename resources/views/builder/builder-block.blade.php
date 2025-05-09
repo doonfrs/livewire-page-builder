@@ -24,7 +24,11 @@
         x-on:row-selected.window="selected = false">
         <div class="cursor-pointer" wire:click="blockSelected()">
             <div class="builder-block relative">
-                @livewire($blockAlias, $properties, key($blockId . '-' . md5(json_encode($properties))))
+                @if(!$classExists)
+                    <div class="text-red-500">Unknown block: {{ $blockAlias }}</div>
+                @else
+                    @livewire($blockAlias, $properties, key($blockId . '-' . md5(json_encode($properties))))
+                @endif
                 <div class="absolute inset-0 z-50" style="pointer-events: all;"></div>
             </div>
         </div>
