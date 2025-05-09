@@ -36,7 +36,7 @@ class BuilderBlock extends Component
         $blockClass = $this->getBlockClass();
 
         if (! class_exists($blockClass)) {
-            return '<div>Unknown block: '.$blockClass.'</div>';
+            return '<div>Unknown block: '.$this->blockAlias.'</div>';
         }
 
         if ($this->viewMode) {
