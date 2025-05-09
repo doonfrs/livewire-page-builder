@@ -73,6 +73,9 @@ class PageBuilderService
 
     public function getClassNameFromAlias($alias): ?string
     {
+        if ($alias === 'builder-page-block') {
+            return BuilderPageBlock::class;
+        }
         foreach ($this->getConfigBlocks() as $blockClass) {
             if ($this->getClassAlias($blockClass) === $alias) {
                 return $blockClass;

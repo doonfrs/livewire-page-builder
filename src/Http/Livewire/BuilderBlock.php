@@ -22,13 +22,23 @@ class BuilderBlock extends Component
 
     public function mount()
     {
-        $block = app($this->getBlockClass());
-        $this->properties = $this->properties ?? $block->getPropertyValues();
-        $this->cssClasses = $this->makeClasses();
+        $blockClass = $this->getBlockClass();
+        if (class_exists($blockClass)) {
+            $block = app($blockClass);
+            $this->properties = $this->properties ?? $block->getPropertyValues();
+            $this->cssClasses = $this->makeClasses();
+        }
+
     }
 
     public function render()
     {
+        $blockClass = $this->getBlockClass();
+
+        if (! class_exists($blockClass)) {
+            return '<div>Unknown block: '.$blockClass.'</div>';
+        }
+
         if ($this->viewMode) {
             return view('page-builder::view.builder-block-view', [
                 'blockAlias' => $this->blockAlias,
