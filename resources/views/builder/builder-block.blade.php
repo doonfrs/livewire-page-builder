@@ -43,35 +43,35 @@
             <button wire:click="blockSelected(); showContextMenu = false;"
                 class="flex items-center w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100">
                 <x-heroicon-o-cursor-arrow-rays class="w-4 h-4 mr-2 text-gray-500" />
-                <span>Select</span>
+                <span>{{ __('Select') }}</span>
             </button>
             <button wire:click="$dispatch('deleteBlock', { blockId: '{{ $blockId }}'}); showContextMenu = false;"
                 onclick="return confirm('Are you sure you want to delete this row?')"
                 class="flex items-center w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50">
                 <x-heroicon-o-trash class="w-4 h-4 mr-2 text-red-500" />
-                <span>Delete</span>
+                <span>{{ __('Delete') }}</span>
             </button>
             <div class="border-t border-gray-200 my-1"></div>
             <button wire:click="$dispatch('moveBlockUp', { blockId: '{{ $blockId }}'}); showContextMenu = false;"
                 class="flex items-center w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100">
                 <x-heroicon-o-arrow-up class="w-4 h-4 mr-2 text-gray-500" />
-                <span>Move Up</span>
+                <span>{{ __('Move Up') }}</span>
             </button>
             <button wire:click="$dispatch('moveBlockDown', { blockId: '{{ $blockId }}'}); showContextMenu = false;"
                 class="flex items-center w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100">
                 <x-heroicon-o-arrow-down class="w-4 h-4 mr-2 text-gray-500" />
-                <span>Move Down</span>
+                <span>{{ __('Move Down') }}</span>
             </button>
             <div class="border-t border-gray-200 my-1"></div>
             <button wire:click="$dispatch('openBlockModal', { rowId: '{{ $rowId }}', beforeBlockId: '{{ $blockId }}' }); showContextMenu = false;"
                 class="flex items-center w-full px-4 py-2 text-left text-sm text-green-600 hover:bg-green-50">
                 <x-heroicon-o-plus-circle class="w-4 h-4 mr-2 text-green-500" />
-                <span>Add Block Before</span>
+                <span>{{ __('Add Block Before') }}</span>
             </button>
             <button wire:click="$dispatch('openBlockModal', { rowId: '{{ $rowId }}', afterBlockId: '{{ $blockId }}' }); showContextMenu = false;"
                 class="flex items-center w-full px-4 py-2 text-left text-sm text-green-600 hover:bg-green-50">
                 <x-heroicon-o-plus class="w-4 h-4 mr-2 text-green-500" />
-                <span>Add Block After</span>
+                <span>{{ __('Add Block After') }}</span>
             </button>
         </div>
     </div>

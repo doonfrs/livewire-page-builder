@@ -30,6 +30,17 @@ class InstallPageBuilderCommand extends Command
             $this->publishViews();
         }
 
+        // 4. Publish translations (only if --force or not silent mode and confirmed)
+        if ($this->option('force') ||
+            (! $this->option('silent') && $this->confirm('Would you like to publish the translations?', false))) {
+            $this->publishTranslations();
+
+            if (! $this->option('silent')) {
+                $this->info('✓ Translations published to lang/vendor/page-builder directory');
+                $this->info('  To customize translations, edit the JSON files in this directory.');
+            }
+        }
+
         // 5. Run migrations (default in silent mode)
         if ($this->option('silent') || $this->confirm('Would you like to run migrations?', true)) {
             $this->call('migrate', $this->option('silent') ? ['--quiet' => true] : []);
@@ -89,5 +100,20 @@ class InstallPageBuilderCommand extends Command
         }
 
         $this->call('vendor:publish', array_merge($params, ['--tag' => 'page-builder-views']));
+    }
+
+    protected function publishTranslations()
+    {
+        $params = ['--provider' => 'Trinavo\\LivewirePageBuilder\\Providers\\PageBuilderServiceProvider'];
+
+        if ($this->option('force')) {
+            $params['--force'] = true;
+        }
+
+        if ($this->option('silent')) {
+            $params['--quiet'] = true;
+        }
+
+        $this->call('vendor:publish', array_merge($params, ['--tag' => 'page-builder-translations']));
     }
 }

@@ -4,6 +4,7 @@ namespace Trinavo\LivewirePageBuilder\Http\Livewire;
 
 use Illuminate\Support\Str;
 use Trinavo\LivewirePageBuilder\Models\BuilderPage;
+use Trinavo\LivewirePageBuilder\Services\PageBuilderService;
 use Trinavo\LivewirePageBuilder\Support\Block;
 
 class BuilderPageBlock extends Block
@@ -36,6 +37,21 @@ class BuilderPageBlock extends Block
 
     public function getPageBuilderLabel(): string
     {
+        foreach (app(PageBuilderService::class)->getConfigBlocksPages() as $blockName => $blockInfo) {
+            if (is_int($blockName)) {
+                continue;
+            }
+            if ($blockName === $this->blockPageName) {
+                if (isset($blockInfo['label'])) {
+                    if (is_callable($blockInfo['label'])) {
+                        return $blockInfo['label']();
+                    }
+
+                    return $blockInfo['label'];
+                }
+            }
+        }
+
         return Str::headline($this->blockPageName);
     }
 }
