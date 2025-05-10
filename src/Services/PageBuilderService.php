@@ -126,23 +126,24 @@ class PageBuilderService
 
         $classes = [];
 
-        // Container query classes
-        if ($hiddenMobile && $hiddenTablet && $hiddenDesktop) {
-            $classes[] = 'hidden';
-        } elseif ($hiddenMobile && $hiddenTablet) {
-            $classes[] = 'hidden @md:block';
-        } elseif ($hiddenMobile && $hiddenDesktop) {
-            $classes[] = 'hidden @sm:block @lg:hidden';
-        } elseif ($hiddenTablet && $hiddenDesktop) {
-            $classes[] = 'block @md:hidden';
-        } elseif ($hiddenMobile) {
-            $classes[] = 'hidden @sm:block';
-        } elseif ($hiddenTablet) {
-            $classes[] = 'block @md:hidden @lg:block';
-        } elseif ($hiddenDesktop) {
-            $classes[] = 'block @lg:hidden';
-        } else {
-            $classes[] = 'block';
+        if ($hiddenDesktop || $hiddenMobile || $hiddenTablet) {
+            if ($hiddenMobile) {
+                $classes[] = 'hidden';
+            } else {
+                $classes[] = 'block';
+            }
+
+            if ($hiddenTablet) {
+                $classes[] = '@md:hidden';
+            } else {
+                $classes[] = '@md:block';
+            }
+
+            if ($hiddenDesktop) {
+                $classes[] = '@lg:hidden';
+            } else {
+                $classes[] = '@lg:block';
+            }
         }
 
         if ($useContainer) {
@@ -185,9 +186,7 @@ class PageBuilderService
             $classes[] = 'w-full';
         }
 
-        if ($flex) {
-            $classes[] = 'flex';
-        } elseif ($gridColumns) {
+        if ($gridColumns) {
             $classes[] = "grid grid-cols-$gridColumns";
         }
 
@@ -220,11 +219,11 @@ class PageBuilderService
         }
 
         if ($gapTablet) {
-            $classes[] = '@md:gap-$gapTablet';
+            $classes[] = "@md:gap-$gapTablet";
         }
 
         if ($gapDesktop) {
-            $classes[] = '@lg:gap-$gapDesktop';
+            $classes[] = "@lg:gap-$gapDesktop";
         }
 
         if ($textColor) {
