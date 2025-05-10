@@ -63,7 +63,19 @@ abstract class Block extends Component
 
     public bool $editMode = false;
 
-    public $fullWidth = false;
+    public ?bool $fullWidth = false;
+
+    public ?bool $flexMobile = false;
+
+    public ?bool $flexTablet = false;
+
+    public ?bool $flexDesktop = false;
+
+    public ?int $gapMobile = null;
+
+    public ?int $gapTablet = null;
+
+    public ?int $gapDesktop = null;
 
     /**
      * Get the icon for the block in the page builder UI.
@@ -108,6 +120,20 @@ abstract class Block extends Component
                 ->setGroup('grid_size', 'Grid Size', 3, 'heroicon-o-device-tablet'),
             (new TextProperty('desktop_grid_size', 'Desktop', numeric: true, defaultValue: 12, min: 1, max: 12))
                 ->setGroup('grid_size', 'Grid Size', 3, 'heroicon-o-device-desktop'),
+
+            (new CheckboxProperty('flex_mobile', 'Mobile', defaultValue: false))
+                ->setGroup('flex', 'Flex', 2, 'heroicon-o-arrows-pointing-out'),
+            (new CheckboxProperty('flex_tablet', 'Tablet', defaultValue: false))
+                ->setGroup('flex', 'Flex', 2, 'heroicon-o-arrows-pointing-out'),
+            (new CheckboxProperty('flex_desktop', 'Desktop', defaultValue: false))
+                ->setGroup('flex', 'Flex', 2, 'heroicon-o-arrows-pointing-out'),
+
+            (new TextProperty('gap_mobile', 'Mobile', numeric: true, defaultValue: null, min: 0, max: 10))
+                ->setGroup('gap', 'Gap', 2, 'heroicon-o-arrows-pointing-out'),
+            (new TextProperty('gap_tablet', 'Tablet', numeric: true, defaultValue: null, min: 0, max: 10))
+                ->setGroup('gap', 'Gap', 2, 'heroicon-o-arrows-pointing-out'),
+            (new TextProperty('gap_desktop', 'Desktop', numeric: true, defaultValue: null, min: 0, max: 10))
+                ->setGroup('gap', 'Gap', 2, 'heroicon-o-arrows-pointing-out'),
         ];
     }
 

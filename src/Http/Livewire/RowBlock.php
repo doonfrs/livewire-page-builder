@@ -5,7 +5,6 @@ namespace Trinavo\LivewirePageBuilder\Http\Livewire;
 use Livewire\Attributes\On;
 use Trinavo\LivewirePageBuilder\Services\PageBuilderService;
 use Trinavo\LivewirePageBuilder\Support\Block;
-use Trinavo\LivewirePageBuilder\Support\Properties\CheckboxProperty;
 use Trinavo\LivewirePageBuilder\Support\Properties\TextProperty;
 
 class RowBlock extends Block
@@ -21,8 +20,6 @@ class RowBlock extends Block
     public $inlineStyles;
 
     public $gridColumns = 12;
-
-    public $flex = false;
 
     public function mount()
     {
@@ -197,11 +194,6 @@ class RowBlock extends Block
                 label: 'Grid Columns',
                 numeric: true,
                 defaultValue: 12,
-            ),
-            new CheckboxProperty(
-                name: 'flex',
-                label: 'Flexible ( Ignore Grid Columns )',
-                defaultValue: false,
             ),
         ];
     }

@@ -10,6 +10,10 @@
     <div class="flex flex-row flex-col"></div>
     <div class="@md:flex @md:flex-row @md:flex-col"></div>
     <div class="@lg:flex @lg:flex-row @lg:flex-col"></div>
+    <div class="gap-0 gap-1 gap-2 gap-3 gap-4 gap-5 gap-6 gap-8 gap-10 gap-12 gap-16 gap-20 gap-24 gap-32 gap-40 gap-48 gap-56 gap-64"></div>
+    <div class="@md:gap-0 @md:gap-1 @md:gap-2 @md:gap-3 @md:gap-4 @md:gap-5 @md:gap-6 @md:gap-8 @md:gap-10 @md:gap-12 @md:gap-16 @md:gap-20 @md:gap-24 @md:gap-32 @md:gap-40 @md:gap-48 @md:gap-56 @md:gap-64"></div>
+    <div class="@lg:gap-0 @lg:gap-1 @lg:gap-2 @lg:gap-3 @lg:gap-4 @lg:gap-5 @lg:gap-6 @lg:gap-8 @lg:gap-10 @lg:gap-12 @lg:gap-16 @lg:gap-20 @lg:gap-24 @lg:gap-32 @lg:gap-40 @lg:gap-48 @lg:gap-56 @lg:gap-64"></div>
+
     
     {{-- Responsive visibility --}}
     <div class="@sm:block @sm:hidden @md:block @md:hidden @lg:block @lg:hidden @xl:block @xl:hidden"></div>
