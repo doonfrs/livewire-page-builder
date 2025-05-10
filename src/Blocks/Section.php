@@ -19,7 +19,7 @@ class Section extends Block
     public function render()
     {
         if ($this->editMode) {
-            return "<div class='text-gray-500 text-xs italic'>
+            return "<div class='text-gray-400 italic'>
                 {{__('Section')}}
             </div>";
         } else {
