@@ -122,18 +122,18 @@ abstract class Block extends Component
                 ->setGroup('grid_size', 'Grid Size', 3, 'heroicon-o-device-desktop'),
 
             (new CheckboxProperty('flex_mobile', 'Mobile', defaultValue: false))
-                ->setGroup('flex', 'Flex', 2, 'heroicon-o-arrows-pointing-out'),
+                ->setGroup('flex', 'Flex', 3, 'heroicon-o-arrows-pointing-out'),
             (new CheckboxProperty('flex_tablet', 'Tablet', defaultValue: false))
-                ->setGroup('flex', 'Flex', 2, 'heroicon-o-arrows-pointing-out'),
+                ->setGroup('flex', 'Flex', 3, 'heroicon-o-arrows-pointing-out'),
             (new CheckboxProperty('flex_desktop', 'Desktop', defaultValue: false))
-                ->setGroup('flex', 'Flex', 2, 'heroicon-o-arrows-pointing-out'),
+                ->setGroup('flex', 'Flex', 3, 'heroicon-o-arrows-pointing-out'),
 
             (new TextProperty('gap_mobile', 'Mobile', numeric: true, defaultValue: null, min: 0, max: 10))
-                ->setGroup('gap', 'Gap', 2, 'heroicon-o-arrows-pointing-out'),
+                ->setGroup('gap', 'Gap', 3, 'heroicon-o-arrows-pointing-out'),
             (new TextProperty('gap_tablet', 'Tablet', numeric: true, defaultValue: null, min: 0, max: 10))
-                ->setGroup('gap', 'Gap', 2, 'heroicon-o-arrows-pointing-out'),
+                ->setGroup('gap', 'Gap', 3, 'heroicon-o-arrows-pointing-out'),
             (new TextProperty('gap_desktop', 'Desktop', numeric: true, defaultValue: null, min: 0, max: 10))
-                ->setGroup('gap', 'Gap', 2, 'heroicon-o-arrows-pointing-out'),
+                ->setGroup('gap', 'Gap', 3, 'heroicon-o-arrows-pointing-out'),
         ];
     }
 
