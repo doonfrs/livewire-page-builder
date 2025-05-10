@@ -43,15 +43,11 @@ class BuilderPageBlock extends Block
             }
             if ($blockName === $this->blockPageName) {
                 if (isset($blockInfo['label'])) {
-                    if (is_callable($blockInfo['label'])) {
-                        return $blockInfo['label']();
-                    }
-
-                    return $blockInfo['label'];
+                    return __($blockInfo['label']);
                 }
             }
         }
 
-        return Str::headline($this->blockPageName);
+        return __(Str::headline($this->blockPageName));
     }
 }
