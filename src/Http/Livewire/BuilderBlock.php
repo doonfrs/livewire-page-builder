@@ -12,6 +12,8 @@ class BuilderBlock extends Component
 
     public $blockId;
 
+    public $rowId;
+
     public ?array $properties;
 
     public $cssClasses;

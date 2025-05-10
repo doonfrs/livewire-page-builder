@@ -19,6 +19,10 @@ class PageEditor extends Component
 
     public ?string $modalRowId = null;
 
+    public ?string $beforeBlockId = null;
+
+    public ?string $afterBlockId = null;
+
     public ?string $pageKey = null;
 
     public ?string $pageTheme = null;
@@ -49,7 +53,7 @@ class PageEditor extends Component
     }
 
     #[On('addRow')]
-    public function addRow($afterRowId = null)
+    public function addRow($afterRowId = null, $beforeRowId = null)
     {
         $rowId = uniqid();
         $rowBlock = app(RowBlock::class);
@@ -64,6 +68,13 @@ class PageEditor extends Component
                 [$rowId => $row],
                 array_slice($this->rows, $afterRowIndex)
             );
+        } elseif ($beforeRowId) {
+            $beforeRowIndex = array_search($beforeRowId, array_keys($this->rows));
+            $this->rows = array_merge(
+                array_slice($this->rows, 0, $beforeRowIndex),
+                [$rowId => $row],
+                array_slice($this->rows, $beforeRowIndex)
+            );
         } else {
             $this->rows[$rowId] = $row;
         }
@@ -73,7 +84,6 @@ class PageEditor extends Component
             properties: $row['properties']);
     }
 
-    #[On('addBlockToRow')]
     public function addBlockToRow($rowId, $blockAlias, $blockPageName = null)
     {
         $blockClass = null;
@@ -93,23 +103,54 @@ class PageEditor extends Component
             'alias' => $blockAlias,
             'properties' => $properties,
         ];
-        $this->rows[$rowId]['blocks'][$blockId] = $block;
+        if ($this->beforeBlockId) {
+            $blockIds = array_keys($this->rows[$rowId]['blocks']);
+            $position = array_search($this->beforeBlockId, $blockIds);
 
-        $this->dispatch('blockAdded', $rowId, $blockId, $blockAlias, $block['properties'])->to('row-block');
+            $newBlocks = [];
+            foreach ($blockIds as $index => $id) {
+                if ($index === $position) {
+                    $newBlocks[$blockId] = $block; // Add new block before
+                }
+                $newBlocks[$id] = $this->rows[$rowId]['blocks'][$id]; // Add existing block
+            }
+            $this->rows[$rowId]['blocks'] = $newBlocks;
+        } elseif ($this->afterBlockId) {
+            $blockIds = array_keys($this->rows[$rowId]['blocks']);
+            $position = array_search($this->afterBlockId, $blockIds);
+
+            // Create new array in the correct order
+            $newBlocks = [];
+            foreach ($blockIds as $index => $id) {
+                $newBlocks[$id] = $this->rows[$rowId]['blocks'][$id]; // Add existing block
+                if ($index === $position) {
+                    $newBlocks[$blockId] = $block; // Add new block after
+                }
+            }
+            $this->rows[$rowId]['blocks'] = $newBlocks;
+        } else {
+            $this->rows[$rowId]['blocks'][$blockId] = $block;
+        }
+
+        $this->dispatch('blockAdded', $rowId, $blockId, $blockAlias, $block['properties'], $this->beforeBlockId, $this->afterBlockId)->to('row-block');
     }
 
     #[On('openBlockModal')]
-    public function openBlockModal($rowId)
+    public function openBlockModal($rowId, $beforeBlockId = null, $afterBlockId = null)
     {
         $this->showBlockModal = true;
         $this->blockFilter = '';
         $this->modalRowId = $rowId;
+        $this->beforeBlockId = $beforeBlockId;
+        $this->afterBlockId = $afterBlockId;
     }
 
     public function closeBlockModal()
     {
         $this->showBlockModal = false;
         $this->modalRowId = null;
+        $this->beforeBlockId = null;
+        $this->afterBlockId = null;
     }
 
     public function getFilteredBlocksProperty()
