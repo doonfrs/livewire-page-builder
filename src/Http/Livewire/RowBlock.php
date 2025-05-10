@@ -85,15 +85,52 @@ class RowBlock extends Block
     }
 
     #[On('blockAdded')]
-    public function blockAdded($rowId, $blockId, $blockAlias, $properties)
+    public function blockAdded($rowId, $blockId, $blockAlias, $properties, $beforeBlockId = null, $afterBlockId = null)
     {
         if ($rowId != $this->rowId) {
             return;
         }
-        $this->blocks[$blockId] = [
-            'alias' => $blockAlias,
-            'properties' => $properties,
-        ];
+
+        if ($beforeBlockId) {
+            $block = [
+                'alias' => $blockAlias,
+                'properties' => $properties,
+            ];
+            $blockIds = array_keys($this->blocks);
+            $position = array_search($beforeBlockId, $blockIds);
+
+            // Create new array in the correct order
+            $newBlocks = [];
+            foreach ($blockIds as $index => $id) {
+                if ($index === $position) {
+                    $newBlocks[$blockId] = $block; // Add new block before
+                }
+                $newBlocks[$id] = $this->blocks[$id]; // Add existing block
+            }
+            $this->blocks = $newBlocks;
+        } elseif ($afterBlockId) {
+            $block = [
+                'alias' => $blockAlias,
+                'properties' => $properties,
+            ];
+            $blockIds = array_keys($this->blocks);
+            $position = array_search($afterBlockId, $blockIds);
+
+            // Create new array in the correct order
+            $newBlocks = [];
+            foreach ($blockIds as $index => $id) {
+                $newBlocks[$id] = $this->blocks[$id]; // Add existing block
+                if ($index === $position) {
+                    $newBlocks[$blockId] = $block; // Add new block after
+                }
+            }
+            $this->blocks = $newBlocks;
+        } else {
+            $this->blocks[$blockId] = [
+                'alias' => $blockAlias,
+                'properties' => $properties,
+            ];
+        }
     }
 
     #[On('deleteBlock')]

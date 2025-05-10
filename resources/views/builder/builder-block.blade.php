@@ -62,6 +62,17 @@
                 <x-heroicon-o-arrow-down class="w-4 h-4 mr-2 text-gray-500" />
                 <span>Move Down</span>
             </button>
+            <div class="border-t border-gray-200 my-1"></div>
+            <button wire:click="$dispatch('openBlockModal', { rowId: '{{ $rowId }}', beforeBlockId: '{{ $blockId }}' }); showContextMenu = false;"
+                class="flex items-center w-full px-4 py-2 text-left text-sm text-green-600 hover:bg-green-50">
+                <x-heroicon-o-plus-circle class="w-4 h-4 mr-2 text-green-500" />
+                <span>Add Block Before</span>
+            </button>
+            <button wire:click="$dispatch('openBlockModal', { rowId: '{{ $rowId }}', afterBlockId: '{{ $blockId }}' }); showContextMenu = false;"
+                class="flex items-center w-full px-4 py-2 text-left text-sm text-green-600 hover:bg-green-50">
+                <x-heroicon-o-plus class="w-4 h-4 mr-2 text-green-500" />
+                <span>Add Block After</span>
+            </button>
         </div>
     </div>
 </div>

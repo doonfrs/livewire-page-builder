@@ -75,6 +75,14 @@
                     <x-heroicon-o-plus class="w-4 h-4 mr-2" />
                     <span>Add Row After</span>
                 </button>
+
+                <!-- Add Row Before Button -->
+                <button wire:click="$dispatch('addRow', {beforeRowId: '{{ $rowId }}'})" @click="open = false"
+                    class="flex items-center w-full px-3 py-2 text-left text-green-700 hover:bg-green-50"
+                    title="Add Row Before">
+                    <x-heroicon-o-plus-circle class="w-4 h-4 mr-2" />
+                    <span>Add Row Before</span>
+                </button>
             </div>
         </div>
 
@@ -86,6 +94,7 @@
                         [
                             'blockAlias' => $block['alias'],
                             'blockId' => $blockId,
+                            'rowId' => $rowId,
                             'properties' => $block['properties'] ?? [],
                         ],
                         key($blockId)

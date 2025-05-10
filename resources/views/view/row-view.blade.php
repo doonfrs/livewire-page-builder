@@ -6,6 +6,7 @@
                 [
                     'blockAlias' => $block['alias'],
                     'blockId' => $blockId,
+                    'rowId' => $rowId,
                     'properties' => $block['properties'] ?? [],
                     'viewMode' => true,
                 ],
