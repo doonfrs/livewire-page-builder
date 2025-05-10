@@ -2,14 +2,18 @@
 
 namespace Trinavo\LivewirePageBuilder\Http\Livewire;
 
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Livewire\Attributes\On;
 use Livewire\Component;
+use Livewire\WithFileUploads;
 use Trinavo\LivewirePageBuilder\Services\PageBuilderService;
 use Trinavo\LivewirePageBuilder\Support\Properties\BlockProperty;
 
 class BlockProperties extends Component
 {
+    use WithFileUploads;
+
     public $rowId = null;
 
     public $blockId = null;
@@ -23,6 +27,8 @@ class BlockProperties extends Component
     public $blockClass = null;
 
     public $blockLabel = null;
+
+    public $uploadedImage;
 
     public function render()
     {
@@ -100,6 +106,20 @@ class BlockProperties extends Component
         $this->properties[$propertyName] = $value;
         $this->dispatch('updateBlockProperty', $rowId, $blockId, $propertyName, $value);
         $this->skipRender();
+    }
+
+    public function uploadImage($rowId, $blockId, $propertyName)
+    {
+        if (! $this->uploadedImage) {
+            return;
+        }
+
+        $path = $this->uploadedImage->store('page-builder', 'public');
+        $url = Storage::url($path);
+        $this->properties[$propertyName] = $url;
+        $this->uploadedImage = null;
+
+        $this->dispatch('updateBlockProperty', $rowId, $blockId, $propertyName, $url);
     }
 
     #[On('row-selected')]

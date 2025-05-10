@@ -1,10 +1,67 @@
 <div class="h-screen flex flex-col bg-gray-100 dark:bg-gray-900"
-    x-data="{ showPagesModal: false, deviceMode: 'desktop' }"
+    x-data="{ showPagesModal: false, deviceMode: 'desktop', loading: true }"
     x-on:row-added.window="setTimeout(() => { 
             const el = document.getElementById('row-' + $event.detail.rowId); 
             if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' }); 
             $dispatch('row-selected', { rowId: $event.detail.rowId, properties: $event.detail.properties });
-    }, 100);">
+    }, 100);"
+    x-init="() => {
+        // Wait for DOM content to be fully loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            // Wait for all components and images to be loaded
+            window.addEventListener('load', () => {
+                setTimeout(() => {
+                    loading = false;
+                }, );
+            });
+            
+            // If window.load takes too long, still hide the loader after a maximum time
+            setTimeout(() => {
+                loading = false;
+            }, 2000);
+        });
+        
+        // Also listen for Livewire page loads
+        window.addEventListener('livewire:navigating', () => {
+            loading = true;
+        });
+        
+        window.addEventListener('livewire:navigated', () => {
+            setTimeout(() => {
+                loading = false;
+            }, 300);
+        });
+    }"
+    wire:loading.class="cursor-wait">
+    
+    <!-- Loading Overlay -->
+    <div x-show="loading" 
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         class="fixed inset-0 z-100 flex items-center justify-center bg-gray-100 dark:bg-gray-900">
+        <div class="text-center">
+            <svg class="w-16 h-16 mx-auto text-pink-500 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <p class="mt-4 text-lg font-medium text-gray-800 dark:text-gray-200"></p>
+        </div>
+    </div>
+
+    <!-- Livewire Operations Loading Indicator -->
+    <div wire:loading.delay wire:target="addRow, closeBlockModal, addBlockToModalRow" 
+         class="fixed top-0 right-0 z-50 m-4 p-2 bg-pink-100 dark:bg-pink-900 rounded-lg shadow-lg flex items-center text-pink-600 dark:text-pink-300 text-sm font-medium">
+        <svg class="w-5 h-5 mr-2 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        {{ __('Processing...') }}
+    </div>
+
     <!-- Header Toolbar -->
     <div class="flex items-center justify-between bg-gray-200 dark:bg-gray-800 shadow-md p-3 text-gray-900 dark:text-gray-100 z-30">
         <div class="flex gap-2">
