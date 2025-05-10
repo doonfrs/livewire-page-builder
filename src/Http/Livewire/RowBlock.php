@@ -44,6 +44,7 @@ class RowBlock extends Block
         }
         $this->properties[$propertyName] = $value;
         $this->cssClasses = $this->makeClasses();
+        $this->inlineStyles = $this->makeInlineStyles();
     }
 
     public function render()

@@ -32,7 +32,7 @@
                 class="hidden" 
                 accept="image/*" 
                 wire:model="uploadedImage"
-                wire:change="uploadImage('{{ $rowId }}', '{{ $blockId }}', '{{ $property['name'] }}')" />
+                wire:change.debounce.500ms="uploadImage('{{ $rowId }}', '{{ $blockId }}', '{{ $property['name'] }}')" />
             <button
                 type="button"
                 class="w-full inline-flex justify-center items-center px-3 py-1.5 text-xs font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:bg-blue-700 dark:hover:bg-blue-800 dark:focus:ring-offset-gray-800"

@@ -29,6 +29,7 @@ class BuilderBlock extends Component
             $block = app($blockClass);
             $this->properties = $this->properties ?? $block->getPropertyValues();
             $this->cssClasses = $this->makeClasses();
+            $this->inlineStyles = $this->makeInlineStyles();
         }
 
     }
@@ -78,11 +79,9 @@ class BuilderBlock extends Component
         }
         $this->properties[$propertyName] = $value;
 
-        // Make sure editMode is preserved
-        $this->properties['editMode'] = $this->editMode;
-
         $this->cssClasses = $this->makeClasses();
         $this->inlineStyles = $this->makeInlineStyles();
+
     }
 
     public function makeClasses(): string
