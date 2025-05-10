@@ -117,6 +117,12 @@ class PageBuilderService
         $flex = $properties['flex'] ?? false;
         $textColor = $properties['text_color'] ?? null;
         $backgroundColor = $properties['background_color'] ?? null;
+        $flexMobile = $properties['flex_mobile'] ?? false;
+        $flexTablet = $properties['flex_tablet'] ?? false;
+        $flexDesktop = $properties['flex_desktop'] ?? false;
+        $gapMobile = $properties['gap_mobile'] ?? null;
+        $gapTablet = $properties['gap_tablet'] ?? null;
+        $gapDesktop = $properties['gap_desktop'] ?? null;
 
         $classes = [];
 
@@ -195,6 +201,30 @@ class PageBuilderService
 
         if ($desktopGridSize) {
             $classes[] = "@lg:col-span-$desktopGridSize";
+        }
+
+        if ($flexMobile) {
+            $classes[] = 'flex';
+        }
+
+        if ($flexTablet) {
+            $classes[] = '@md:flex';
+        }
+
+        if ($flexDesktop) {
+            $classes[] = '@lg:flex';
+        }
+
+        if ($gapMobile) {
+            $classes[] = "gap-$gapMobile";
+        }
+
+        if ($gapTablet) {
+            $classes[] = '@md:gap-$gapTablet';
+        }
+
+        if ($gapDesktop) {
+            $classes[] = '@lg:gap-$gapDesktop';
         }
 
         if ($textColor) {
