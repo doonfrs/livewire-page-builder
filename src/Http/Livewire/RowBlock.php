@@ -3,7 +3,10 @@
 namespace Trinavo\LivewirePageBuilder\Http\Livewire;
 
 use Livewire\Attributes\On;
+use Trinavo\LivewirePageBuilder\Services\PageBuilderService;
 use Trinavo\LivewirePageBuilder\Support\Block;
+use Trinavo\LivewirePageBuilder\Support\Properties\CheckboxProperty;
+use Trinavo\LivewirePageBuilder\Support\Properties\TextProperty;
 
 class RowBlock extends Block
 {
@@ -19,10 +22,15 @@ class RowBlock extends Block
 
     public $inlineStyles;
 
+    public $gridColumns = 12;
+
+    public $flex = false;
+
     public function mount()
     {
         $this->properties = $this->properties ?? $this->getPropertyValues();
         $this->cssClasses = $this->makeClasses();
+        $this->inlineStyles = $this->makeInlineStyles();
     }
 
     public function openBlockModal()
@@ -98,127 +106,16 @@ class RowBlock extends Block
 
     public function makeClasses(): string
     {
-        $hiddenMobile = $this->properties['hidden_mobile'] ?? false;
-        $hiddenTablet = $this->properties['hidden_tablet'] ?? false;
-        $hiddenDesktop = $this->properties['hidden_desktop'] ?? false;
-
-        // Padding properties
-        $paddingTop = $this->properties['padding_top'] ?? 0;
-        $paddingRight = $this->properties['padding_right'] ?? 0;
-        $paddingBottom = $this->properties['padding_bottom'] ?? 0;
-        $paddingLeft = $this->properties['padding_left'] ?? 0;
-
-        // Margin properties
-        $marginTop = $this->properties['margin_top'] ?? 0;
-        $marginRight = $this->properties['margin_right'] ?? 0;
-        $marginBottom = $this->properties['margin_bottom'] ?? 0;
-        $marginLeft = $this->properties['margin_left'] ?? 0;
-
-        // Style properties
-        $maxWidth = $this->properties['max_width'] ?? null;
-        $textColor = $this->properties['text_color'] ?? null;
-        $backgroundColor = $this->properties['background_color'] ?? null;
-
-        // Layout properties
-        $useContainer = $this->properties['use_container'] ?? false;
-        $selfCentered = $this->properties['self_centered'] ?? false;
-
-        $classes = [];
-        $styles = [];
-
-        // Container query classes
-        if ($hiddenMobile && $hiddenTablet && $hiddenDesktop) {
-            $classes[] = 'hidden';
-        } elseif ($hiddenMobile && $hiddenTablet) {
-            $classes[] = 'hidden @md:block';
-        } elseif ($hiddenMobile && $hiddenDesktop) {
-            $classes[] = 'hidden @sm:block @lg:hidden';
-        } elseif ($hiddenTablet && $hiddenDesktop) {
-            $classes[] = 'block @md:hidden';
-        } elseif ($hiddenMobile) {
-            $classes[] = 'hidden @sm:block';
-        } elseif ($hiddenTablet) {
-            $classes[] = 'block @md:hidden @lg:block';
-        } elseif ($hiddenDesktop) {
-            $classes[] = 'block @lg:hidden';
-        } else {
-            $classes[] = 'block';
-        }
-
-        $classes[] = 'col-span-12';
-
-        // Add container class if enabled
-        if ($useContainer) {
-            $classes[] = 'container';
-        }
-
-        // Add self-centering (mx-auto) if enabled
-        if ($selfCentered) {
-            $classes[] = 'mx-auto';
-        }
-
-        // Add padding classes
-        if ($paddingTop > 0) {
-            $classes[] = "pt-$paddingTop";
-        }
-        if ($paddingRight > 0) {
-            $classes[] = "pr-$paddingRight";
-        }
-        if ($paddingBottom > 0) {
-            $classes[] = "pb-$paddingBottom";
-        }
-        if ($paddingLeft > 0) {
-            $classes[] = "pl-$paddingLeft";
-        }
-
-        // Add margin classes
-        if ($marginTop > 0) {
-            $classes[] = "mt-$marginTop";
-        }
-        if ($marginRight > 0) {
-            $classes[] = "mr-$marginRight";
-        }
-        if ($marginBottom > 0) {
-            $classes[] = "mb-$marginBottom";
-        }
-        if ($marginLeft > 0) {
-            $classes[] = "ml-$marginLeft";
-        }
-
-        // Add style classes
-        if ($maxWidth) {
-            $classes[] = "max-w-$maxWidth";
-        }
-
-        // Add text color classes or inline styles for hex colors
-        if ($textColor) {
-            if (str_starts_with($textColor, '#')) {
-                $styles[] = "color: $textColor";
-            } else {
-                $classes[] = "text-$textColor";
-            }
-        }
-
-        // Add background color classes or inline styles for hex colors
-        if ($backgroundColor) {
-            if (str_starts_with($backgroundColor, '#')) {
-                $styles[] = "background-color: $backgroundColor";
-            } else {
-                $classes[] = "bg-$backgroundColor";
-            }
-        }
-
-        $classString = implode(' ', array_unique($classes));
-
-        // Add style attribute if we have inline styles
-        if (! empty($styles)) {
-            $styleString = implode('; ', $styles);
-            $this->inlineStyles = $styleString;
-        } else {
-            $this->inlineStyles = null;
-        }
+        $classString = app(PageBuilderService::class)->getCssClassesFromProperties($this->properties, isRowBlock: true);
 
         return $classString;
+    }
+
+    public function makeInlineStyles(): string
+    {
+        $styleString = app(PageBuilderService::class)->getInlineStylesFromProperties($this->properties);
+
+        return $styleString;
     }
 
     #[On('moveBlockUp')]
@@ -252,5 +149,22 @@ class RowBlock extends Block
 
             $this->blocks = collect($newOrder)->mapWithKeys(fn ($id) => [$id => $this->blocks[$id]])->toArray();
         }
+    }
+
+    public function getPageBuilderProperties(): array
+    {
+        return [
+            new TextProperty(
+                name: 'grid_columns',
+                label: 'Grid Columns',
+                numeric: true,
+                defaultValue: 12,
+            ),
+            new CheckboxProperty(
+                name: 'flex',
+                label: 'Flexible ( Ignore Grid Columns )',
+                defaultValue: false,
+            ),
+        ];
     }
 }
