@@ -159,6 +159,7 @@
                 @foreach($rows as $rowId=>$row)
                 <div id="row-{{ $rowId }}">
                     <livewire:row-block
+                        :edit-mode="true"
                         :blocks="$row['blocks']"
                         :rowId="$rowId"
                         :properties="$row['properties']"

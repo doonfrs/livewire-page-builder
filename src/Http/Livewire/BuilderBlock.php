@@ -20,7 +20,7 @@ class BuilderBlock extends Component
 
     public $inlineStyles;
 
-    public ?bool $viewMode = false;
+    public ?bool $editMode = false;
 
     public function mount()
     {
@@ -36,19 +36,20 @@ class BuilderBlock extends Component
     public function render()
     {
         $blockClass = $this->getBlockClass();
+        $this->properties['editMode'] = $this->editMode;
 
-        if ($this->viewMode) {
+        if (! $this->editMode) {
             return view('page-builder::view.builder-block-view', [
                 'blockAlias' => $this->blockAlias,
                 'blockId' => $this->blockId,
-                'properties' => $this->properties,
+                'editMode' => $this->editMode,
                 'classExists' => class_exists($blockClass),
             ]);
         } else {
             return view('page-builder::builder.builder-block', [
                 'blockAlias' => $this->blockAlias,
                 'blockId' => $this->blockId,
-                'properties' => $this->properties,
+                'editMode' => $this->editMode,
                 'classExists' => class_exists($blockClass),
             ]);
         }
@@ -76,6 +77,10 @@ class BuilderBlock extends Component
             return;
         }
         $this->properties[$propertyName] = $value;
+
+        // Make sure editMode is preserved
+        $this->properties['editMode'] = $this->editMode;
+
         $this->cssClasses = $this->makeClasses();
         $this->inlineStyles = $this->makeInlineStyles();
     }

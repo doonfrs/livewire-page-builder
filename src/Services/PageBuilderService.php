@@ -4,6 +4,7 @@ namespace Trinavo\LivewirePageBuilder\Services;
 
 use Illuminate\Support\Str;
 use Livewire\Livewire;
+use Trinavo\LivewirePageBuilder\Blocks\Section;
 use Trinavo\LivewirePageBuilder\Http\Livewire\BuilderPageBlock;
 
 class PageBuilderService
@@ -46,7 +47,10 @@ class PageBuilderService
 
     public function getConfigBlocks(): array
     {
-        return config('page-builder.blocks', []);
+        $blocks = config('page-builder.blocks', []);
+        $blocks[] = Section::class;
+
+        return $blocks;
     }
 
     public function getConfigBlocksPages(): array
@@ -93,7 +97,7 @@ class PageBuilderService
         $mobileGridSize = $properties['mobile_grid_size'] ?? 12;
         $tabletGridSize = $properties['tablet_grid_size'] ?? 12;
         $desktopGridSize = $properties['desktop_grid_size'] ?? 12;
-
+        $fullWidth = $properties['full_width'] ?? false;
         // Padding properties
         $paddingTop = $properties['padding_top'] ?? 0;
         $paddingRight = $properties['padding_right'] ?? 0;
@@ -105,9 +109,6 @@ class PageBuilderService
         $marginRight = $properties['margin_right'] ?? 0;
         $marginBottom = $properties['margin_bottom'] ?? 0;
         $marginLeft = $properties['margin_left'] ?? 0;
-
-        // Style properties
-        $maxWidth = $properties['max_width'] ?? null;
 
         // Layout properties
         $useContainer = $properties['use_container'] ?? false;
@@ -174,9 +175,8 @@ class PageBuilderService
             $classes[] = "ml-$marginLeft";
         }
 
-        // Add style classes
-        if ($maxWidth) {
-            $classes[] = "max-w-$maxWidth";
+        if ($fullWidth) {
+            $classes[] = 'w-full';
         }
 
         if ($flex) {
