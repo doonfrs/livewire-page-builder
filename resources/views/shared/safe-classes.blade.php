@@ -1,10 +1,15 @@
 <div class="hidden">
     {{-- Grid classes --}}
-    <div class="col-span-1 col-span-2 col-span-3 col-span-4 col-span-5 col-span-6 col-span-7 col-span-8 col-span-9 col-span-10 col-span-11 col-span-12"></div>
-    <div class="md:col-span-1 md:col-span-2 md:col-span-3 md:col-span-4 md:col-span-5 md:col-span-6 md:col-span-7 md:col-span-8 md:col-span-9 md:col-span-10 md:col-span-11 md:col-span-12"></div>
-    <div class="lg:col-span-1 lg:col-span-2 lg:col-span-3 lg:col-span-4 lg:col-span-5 lg:col-span-6 lg:col-span-7 lg:col-span-8 lg:col-span-9 lg:col-span-10 lg:col-span-11 lg:col-span-12"></div>
-    <div class="@md:col-span-1 @md:col-span-2 @md:col-span-3 @md:col-span-4 @md:col-span-5 @md:col-span-6 @md:col-span-7 @md:col-span-8 @md:col-span-9 @md:col-span-10 @md:col-span-11 @md:col-span-12"></div>
-    <div class="@lg:col-span-1 @lg:col-span-2 @lg:col-span-3 @lg:col-span-4 @lg:col-span-5 @lg:col-span-6 @lg:col-span-7 @lg:col-span-8 @lg:col-span-9 @lg:col-span-10 @lg:col-span-11 @lg:col-span-12"></div>
+    <div class="col-span-1 col-span-2 col-span-3 col-span-4 col-span-5 col-span-6 col-span-7 col-span-8 col-span-9 col-span-10 col-span-11 col-span-12 col-span-13 col-span-14 col-span-15 col-span-16 col-span-17 col-span-18 col-span-19 col-span-20"></div>
+    <div class="md:col-span-1 md:col-span-2 md:col-span-3 md:col-span-4 md:col-span-5 md:col-span-6 md:col-span-7 md:col-span-8 md:col-span-9 md:col-span-10 md:col-span-11 md:col-span-12 md:col-span-13 md:col-span-14 md:col-span-15 md:col-span-16 md:col-span-17 md:col-span-18 md:col-span-19 md:col-span-20"></div>
+    <div class="lg:col-span-1 lg:col-span-2 lg:col-span-3 lg:col-span-4 lg:col-span-5 lg:col-span-6 lg:col-span-7 lg:col-span-8 lg:col-span-9 lg:col-span-10 lg:col-span-11 lg:col-span-12 @lg:col-span-13 @lg:col-span-14 @lg:col-span-15 @lg:col-span-16 @lg:col-span-17 @lg:col-span-18 @lg:col-span-19 @lg:col-span-20"></div>
+    <div class="@md:col-span-1 @md:col-span-2 @md:col-span-3 @md:col-span-4 @md:col-span-5 @md:col-span-6 @md:col-span-7 @md:col-span-8 @md:col-span-9 @md:col-span-10 @md:col-span-11 @md:col-span-12 @md:col-span-13 @md:col-span-14 @md:col-span-15 @md:col-span-16 @md:col-span-17 @md:col-span-18 @md:col-span-19 @md:col-span-20"></div>
+    <div class="@lg:col-span-1 @lg:col-span-2 @lg:col-span-3 @lg:col-span-4 @lg:col-span-5 @lg:col-span-6 @lg:col-span-7 @lg:col-span-8 @lg:col-span-9 @lg:col-span-10 @lg:col-span-11 @lg:col-span-12 @lg:col-span-13 @lg:col-span-14 @lg:col-span-15 @lg:col-span-16 @lg:col-span-17 @lg:col-span-18 @lg:col-span-19 @lg:col-span-20"></div>
+    <div class="grid grid-cols-1 grid-cols-2 grid-cols-3 grid-cols-4 grid-cols-5 grid-cols-6 grid-cols-7 grid-cols-8 grid-cols-9 grid-cols-10 grid-cols-11 grid-cols-12 grid-cols-13 grid-cols-14 grid-cols-15 grid-cols-16 grid-cols-17 grid-cols-18 grid-cols-19 grid-cols-20"></div>
+
+    <div class="flex flex-row flex-col"></div>
+    <div class="@md:flex @md:flex-row @md:flex-col"></div>
+    <div class="@lg:flex @lg:flex-row @lg:flex-col"></div>
     
     {{-- Responsive visibility --}}
     <div class="@sm:block @sm:hidden @md:block @md:hidden @lg:block @lg:hidden @xl:block @xl:hidden"></div>

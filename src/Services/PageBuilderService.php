@@ -84,4 +84,157 @@ class PageBuilderService
 
         return null;
     }
+
+    public function getCssClassesFromProperties(array $properties, bool $isRowBlock = false): ?string
+    {
+        $hiddenMobile = $properties['hidden_mobile'] ?? false;
+        $hiddenTablet = $properties['hidden_tablet'] ?? false;
+        $hiddenDesktop = $properties['hidden_desktop'] ?? false;
+        $mobileGridSize = $properties['mobile_grid_size'] ?? 12;
+        $tabletGridSize = $properties['tablet_grid_size'] ?? 12;
+        $desktopGridSize = $properties['desktop_grid_size'] ?? 12;
+
+        // Padding properties
+        $paddingTop = $properties['padding_top'] ?? 0;
+        $paddingRight = $properties['padding_right'] ?? 0;
+        $paddingBottom = $properties['padding_bottom'] ?? 0;
+        $paddingLeft = $properties['padding_left'] ?? 0;
+
+        // Margin properties
+        $marginTop = $properties['margin_top'] ?? 0;
+        $marginRight = $properties['margin_right'] ?? 0;
+        $marginBottom = $properties['margin_bottom'] ?? 0;
+        $marginLeft = $properties['margin_left'] ?? 0;
+
+        // Style properties
+        $maxWidth = $properties['max_width'] ?? null;
+
+        // Layout properties
+        $useContainer = $properties['use_container'] ?? false;
+        $selfCentered = $properties['self_centered'] ?? false;
+        $gridColumns = $properties['grid_columns'] ?? null;
+        $flex = $properties['flex'] ?? false;
+        $textColor = $properties['text_color'] ?? null;
+        $backgroundColor = $properties['background_color'] ?? null;
+
+        $classes = [];
+
+        // Container query classes
+        if ($hiddenMobile && $hiddenTablet && $hiddenDesktop) {
+            $classes[] = 'hidden';
+        } elseif ($hiddenMobile && $hiddenTablet) {
+            $classes[] = 'hidden @md:block';
+        } elseif ($hiddenMobile && $hiddenDesktop) {
+            $classes[] = 'hidden @sm:block @lg:hidden';
+        } elseif ($hiddenTablet && $hiddenDesktop) {
+            $classes[] = 'block @md:hidden';
+        } elseif ($hiddenMobile) {
+            $classes[] = 'hidden @sm:block';
+        } elseif ($hiddenTablet) {
+            $classes[] = 'block @md:hidden @lg:block';
+        } elseif ($hiddenDesktop) {
+            $classes[] = 'block @lg:hidden';
+        } else {
+            $classes[] = 'block';
+        }
+
+        if ($useContainer) {
+            $classes[] = 'container';
+        }
+
+        if ($selfCentered) {
+            $classes[] = 'mx-auto';
+        }
+
+        // Add padding classes
+        if ($paddingTop > 0) {
+            $classes[] = "pt-$paddingTop";
+        }
+        if ($paddingRight > 0) {
+            $classes[] = "pr-$paddingRight";
+        }
+        if ($paddingBottom > 0) {
+            $classes[] = "pb-$paddingBottom";
+        }
+        if ($paddingLeft > 0) {
+            $classes[] = "pl-$paddingLeft";
+        }
+
+        // Add margin classes
+        if ($marginTop > 0) {
+            $classes[] = "mt-$marginTop";
+        }
+        if ($marginRight > 0) {
+            $classes[] = "mr-$marginRight";
+        }
+        if ($marginBottom > 0) {
+            $classes[] = "mb-$marginBottom";
+        }
+        if ($marginLeft > 0) {
+            $classes[] = "ml-$marginLeft";
+        }
+
+        // Add style classes
+        if ($maxWidth) {
+            $classes[] = "max-w-$maxWidth";
+        }
+
+        if ($flex) {
+            $classes[] = 'flex';
+        } elseif ($gridColumns) {
+            $classes[] = "grid grid-cols-$gridColumns";
+        }
+
+        if ($mobileGridSize) {
+            $classes[] = "col-span-$mobileGridSize";
+        }
+
+        if ($tabletGridSize) {
+            $classes[] = "@md:col-span-$tabletGridSize";
+        }
+
+        if ($desktopGridSize) {
+            $classes[] = "@lg:col-span-$desktopGridSize";
+        }
+
+        if ($textColor) {
+            if (! str_starts_with($textColor, '#')) {
+                $classes[] = "text-$textColor";
+            }
+        }
+
+        // Add background color classes or inline styles for hex colors
+        if ($backgroundColor) {
+            if (! str_starts_with($backgroundColor, '#')) {
+                $classes[] = "bg-$backgroundColor";
+            }
+        }
+
+        $classString = implode(' ', array_unique($classes));
+
+        return $classString;
+    }
+
+    public function getInlineStylesFromProperties(array $properties): ?string
+    {
+        $textColor = $properties['text_color'] ?? null;
+        $backgroundColor = $properties['background_color'] ?? null;
+
+        $styles = [];
+        // Add text color classes or inline styles for hex colors
+        if ($textColor) {
+            if (str_starts_with($textColor, '#')) {
+                $styles[] = "color: $textColor";
+            }
+        }
+
+        // Add background color classes or inline styles for hex colors
+        if ($backgroundColor) {
+            if (str_starts_with($backgroundColor, '#')) {
+                $styles[] = "background-color: $backgroundColor";
+            }
+        }
+
+        return implode(';', $styles);
+    }
 }
