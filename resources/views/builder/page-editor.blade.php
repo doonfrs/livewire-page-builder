@@ -168,11 +168,7 @@
                     $pageName = $key;
                     $pageLabel = null;
                     if(isset($page['label'])) {
-                        if(is_callable($page['label'])) {
-                            $pageLabel = $page['label']();
-                        } else {
-                            $pageLabel = $page['label'];
-                        }
+                        $pageLabel = $page['label'];
                     }else{
                         $pageLabel = Str::headline($key);
                     }
@@ -180,6 +176,7 @@
                     $pageName = $page;
                     $pageLabel = Str::headline($page);
                 }
+                $pageLabel = __($pageLabel);
                 @endphp
                 <li class="mb-2">
                     <a
