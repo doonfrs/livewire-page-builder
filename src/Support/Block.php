@@ -6,6 +6,8 @@ use Illuminate\Support\Str;
 use Livewire\Component;
 use Trinavo\LivewirePageBuilder\Support\Properties\CheckboxProperty;
 use Trinavo\LivewirePageBuilder\Support\Properties\ColorProperty;
+use Trinavo\LivewirePageBuilder\Support\Properties\ImageProperty;
+use Trinavo\LivewirePageBuilder\Support\Properties\SelectProperty;
 use Trinavo\LivewirePageBuilder\Support\Properties\TextProperty;
 
 abstract class Block extends Component
@@ -44,6 +46,15 @@ abstract class Block extends Component
 
     public $backgroundColor = null;
 
+    // Background image properties
+    public $backgroundImage = null;
+
+    public $backgroundPosition = 'center';
+
+    public $backgroundSize = 'cover';
+
+    public $backgroundRepeat = 'no-repeat';
+
     // Container properties
     public $useContainer = false;
 
@@ -80,6 +91,7 @@ abstract class Block extends Component
             $this->getVisibilityProperties(),
             $this->getSpacingProperties(),
             $this->getStyleProperties(),
+            $this->getBackgroundImageProperties(),
             $this->getLayoutProperties()
         );
     }
@@ -158,6 +170,43 @@ abstract class Block extends Component
     }
 
     /**
+     * Get background image properties
+     */
+    protected function getBackgroundImageProperties(): array
+    {
+        return [
+            (new ImageProperty('background_image', 'Image', defaultValue: null))
+                ->setGroup('background_image', 'Background Image', 1, 'heroicon-o-photo'),
+            (new SelectProperty('background_position', 'Position', [
+                'center' => 'Center',
+                'top' => 'Top',
+                'right' => 'Right',
+                'bottom' => 'Bottom',
+                'left' => 'Left',
+                'top-left' => 'Top Left',
+                'top-right' => 'Top Right',
+                'bottom-left' => 'Bottom Left',
+                'bottom-right' => 'Bottom Right',
+            ], defaultValue: 'center'))
+                ->setGroup('background_image-options', 'Background Image Options', 2, 'heroicon-o-photo'),
+            (new SelectProperty('background_size', 'Size', [
+                'cover' => 'Cover',
+                'contain' => 'Contain',
+                'auto' => 'Auto',
+                '100%' => '100%',
+            ], defaultValue: 'cover'))
+                ->setGroup('background_image-options', 'Background Image Options', 2, 'heroicon-o-photo'),
+            (new SelectProperty('background_repeat', 'Repeat', [
+                'no-repeat' => 'No Repeat',
+                'repeat' => 'Repeat',
+                'repeat-x' => 'Repeat X',
+                'repeat-y' => 'Repeat Y',
+            ], defaultValue: 'no-repeat'))
+                ->setGroup('background_image-options', 'Background Image Options', 2, 'heroicon-o-photo'),
+        ];
+    }
+
+    /**
      * Get layout properties (container, alignment)
      */
     protected function getLayoutProperties(): array
@@ -226,6 +275,21 @@ abstract class Block extends Component
         }
 
         return implode(' ', $classes);
+    }
+
+    /**
+     * Generate background image style based on properties
+     */
+    public function getBackgroundImageStyle(): string
+    {
+        if (empty($this->backgroundImage)) {
+            return '';
+        }
+
+        return "background-image: url('{$this->backgroundImage}'); 
+                background-position: {$this->backgroundPosition}; 
+                background-size: {$this->backgroundSize}; 
+                background-repeat: {$this->backgroundRepeat};";
     }
 
     /**

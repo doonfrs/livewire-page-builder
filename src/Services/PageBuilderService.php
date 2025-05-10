@@ -219,6 +219,10 @@ class PageBuilderService
     {
         $textColor = $properties['text_color'] ?? null;
         $backgroundColor = $properties['background_color'] ?? null;
+        $backgroundImage = $properties['background_image'] ?? null;
+        $backgroundPosition = $properties['background_position'] ?? 'center';
+        $backgroundSize = $properties['background_size'] ?? 'cover';
+        $backgroundRepeat = $properties['background_repeat'] ?? 'no-repeat';
 
         $styles = [];
         // Add text color classes or inline styles for hex colors
@@ -233,6 +237,14 @@ class PageBuilderService
             if (str_starts_with($backgroundColor, '#')) {
                 $styles[] = "background-color: $backgroundColor";
             }
+        }
+
+        // Add background image styles
+        if ($backgroundImage) {
+            $styles[] = "background-image: url('$backgroundImage')";
+            $styles[] = "background-position: $backgroundPosition";
+            $styles[] = "background-size: $backgroundSize";
+            $styles[] = "background-repeat: $backgroundRepeat";
         }
 
         return implode(';', $styles);

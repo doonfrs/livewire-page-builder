@@ -2,6 +2,7 @@
 
 namespace Trinavo\LivewirePageBuilder\Providers;
 
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
 use Trinavo\LivewirePageBuilder\Console\InstallPageBuilderCommand;
@@ -24,6 +25,13 @@ class PageBuilderServiceProvider extends ServiceProvider
 
         // Also register the lang directory for JSON translations
         $this->loadJsonTranslationsFrom(__DIR__.'/../../lang', 'page-builder');
+
+        // Register blade components with namespace
+        $this->loadViewsFrom(__DIR__.'/../../resources/views/components', 'page-builder');
+
+        // Register anonymous blade components
+        $this->loadViewComponentsAs('page-builder', []);
+        Blade::componentNamespace('Trinavo\\LivewirePageBuilder\\View\\Components', 'page-builder');
 
         $this->publishes([
             __DIR__.'/../../config/page-builder.php' => config_path('page-builder.php'),
