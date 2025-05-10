@@ -1,4 +1,4 @@
-<div class="{{ $cssClasses }}" @if(!empty($inlineStyles))style="{{ $inlineStyles }}"@endif>
+<div class="{{ $cssClasses }}" style="{{ $inlineStyles }}">
     @if(!$classExists)
         <div class="text-red-500">Unknown block: {{ $blockAlias }}</div>
     @else

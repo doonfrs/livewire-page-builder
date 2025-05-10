@@ -105,20 +105,14 @@ class BlockProperties extends Component
     {
         $this->properties[$propertyName] = $value;
         $this->dispatch('updateBlockProperty', $rowId, $blockId, $propertyName, $value);
-        $this->skipRender();
     }
 
     public function uploadImage($rowId, $blockId, $propertyName)
     {
-        if (! $this->uploadedImage) {
-            return;
-        }
-
         $path = $this->uploadedImage->store('page-builder', 'public');
         $url = Storage::url($path);
-        $this->properties[$propertyName] = $url;
-        $this->uploadedImage = null;
 
+        $this->properties[$propertyName] = $url;
         $this->dispatch('updateBlockProperty', $rowId, $blockId, $propertyName, $url);
     }
 

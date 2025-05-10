@@ -1,6 +1,6 @@
 <div x-data="{ selected: false, showContextMenu: false, x: 0, y: 0 }" 
     class="{{ $cssClasses }}"
-    @if(!empty($inlineStyles))style="{{ $inlineStyles }}"@endif
+    style="{{ $inlineStyles }}"
     @contextmenu.prevent="
         Livewire.dispatch('show-block-context-menu', {
             blockId: '{{ $blockId }}',
