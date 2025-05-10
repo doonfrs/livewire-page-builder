@@ -48,15 +48,6 @@
         -ml-1 -ml-2 -ml-3 -ml-4 -ml-5 -ml-6 -ml-8 -ml-10 -ml-12 -ml-16 -ml-20 -ml-24 -ml-32 -ml-40 -ml-48 -ml-56 -ml-64
     "></div>
 
-
-    
-    {{-- Max width utilities --}}
-    <div class="
-        max-w-none max-w-xs max-w-sm max-w-md max-w-lg max-w-xl max-w-2xl max-w-3xl max-w-4xl 
-        max-w-5xl max-w-6xl max-w-7xl max-w-full max-w-min max-w-max max-w-fit max-w-prose
-        max-w-screen-sm max-w-screen-md max-w-screen-lg max-w-screen-xl max-w-screen-2xl
-    "></div>
-    
     {{-- Text color utilities --}}
     <div class="
         text-gray-50 text-gray-100 text-gray-200 text-gray-300 text-gray-400 

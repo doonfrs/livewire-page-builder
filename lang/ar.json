@@ -1,18 +1,20 @@
 {
     "Move Up": "نقل للأعلى",
     "Move Down": "نقل للأسفل",
-    "Add Block Before": "إضافة كتلة أمامية",
-    "Add Block After": "إضافة كتلة بعدية",
+    "Add Block Before": "إضافة كتلة قبل",
+    "Add Block After": "إضافة كتلة بعد",
     "Delete": "حذف",
     "Select": "تحديد",
     "Row Actions": "إجراءات الصف",
-    "Add Row After": "إضافة صف بعدي",
-    "Add Row Before": "إضافة صف أمامي",
+    "Add Row After": "إضافة صف بعد",
+    "Add Row Before": "إضافة صف قبل",
     "No properties available": "لا يوجد خصائص متاحة",
     "Select a block to view and edit its properties": "اختر كتلة لعرض وتعديل خصائصها",
     "No block selected": "لا يوجد كتلة محددة",
     "Add Block": "إضافة كتلة",
     "Pages": "الصفحات",
     "Search blocks...": "ابحث عن كتلة",
-    "Properties": "الخصائص"
+    "Properties": "الخصائص",
+    "Section": "قسم",
+    "Unknown block": "كتلة غير معروفة"
 }

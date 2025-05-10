@@ -55,7 +55,7 @@ class InstallPageBuilderCommand extends Command
     protected function addTailwindSourcePath()
     {
         $cssPath = base_path('resources/css/app.css');
-        $sourceLine = "@source '../../vendor/trinavo/livewire-page-builder/resources/**/*.blade.php';\n";
+        $sourceLine = "@source '../../vendor/trinavo/livewire-page-builder/resources/**/*.php';\n";
 
         if (file_exists($cssPath)) {
             $css = file_get_contents($cssPath);

@@ -40,9 +40,6 @@ abstract class Block extends Component
 
     public $marginLeft = 0;
 
-    // Style properties
-    public $maxWidth = null;
-
     public $textColor = null;
 
     public $backgroundColor = null;
@@ -52,6 +49,10 @@ abstract class Block extends Component
 
     // Alignment properties
     public $selfCentered = false;
+
+    public bool $editMode = false;
+
+    public $fullWidth = false;
 
     /**
      * Get the icon for the block in the page builder UI.
@@ -142,13 +143,13 @@ abstract class Block extends Component
     }
 
     /**
-     * Get style properties (colors, max width)
+     * Get style properties (colors)
      */
     protected function getStyleProperties(): array
     {
         return [
-            (new TextProperty('max_width', 'Max Width', numeric: true, defaultValue: null, min: 0))
-                ->setGroup('size', 'Size', 3, 'heroicon-o-swatch'),
+            (new CheckboxProperty('full_width', 'Full Width', defaultValue: false))
+                ->setGroup('width', 'Width', 2, 'heroicon-o-swatch'),
             (new ColorProperty('text_color', 'Text Color', defaultValue: null))
                 ->setGroup('color', 'Color', 2, 'heroicon-o-swatch'),
             (new ColorProperty('background_color', 'Background Color', defaultValue: null))
@@ -202,31 +203,6 @@ abstract class Block extends Component
         }
         if ($this->marginLeft > 0) {
             $classes[] = "ml-{$this->marginLeft}";
-        }
-
-        return implode(' ', $classes);
-    }
-
-    /**
-     * Generate style CSS classes based on properties
-     */
-    public function getStyleClasses(): string
-    {
-        $classes = [];
-
-        // Add text color classes
-        if ($this->textColor) {
-            $classes[] = "text-{$this->textColor}";
-        }
-
-        // Add background color classes
-        if ($this->backgroundColor) {
-            $classes[] = "bg-{$this->backgroundColor}";
-        }
-
-        // Add max width classes
-        if ($this->maxWidth) {
-            $classes[] = "max-w-{$this->maxWidth}";
         }
 
         return implode(' ', $classes);

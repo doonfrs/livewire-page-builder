@@ -8,7 +8,6 @@
                     'blockId' => $blockId,
                     'rowId' => $rowId,
                     'properties' => $block['properties'] ?? [],
-                    'viewMode' => true,
                 ],
                 key($blockId)
             )

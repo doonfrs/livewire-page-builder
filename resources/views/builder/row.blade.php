@@ -88,6 +88,7 @@
 
         <div class="{{ count($blocks) == 0 ? 'pt-4 pb-4' : '' }}">
             <div class="row-blocks {{ $cssClasses }}" style="{{ $inlineStyles }}">
+
                 @foreach ($blocks as $blockId => $block)
                     @livewire(
                         'builder-block',
@@ -96,6 +97,7 @@
                             'blockId' => $blockId,
                             'rowId' => $rowId,
                             'properties' => $block['properties'] ?? [],
+                            'editMode' => true,
                         ],
                         key($blockId)
                     )

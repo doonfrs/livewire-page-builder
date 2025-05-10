@@ -25,7 +25,7 @@
         <div class="cursor-pointer" wire:click="blockSelected()">
             <div class="builder-block relative">
                 @if(!$classExists)
-                    <div class="text-red-500">Unknown block: {{ $blockAlias }}</div>
+                    <div class="text-red-500">{{ __('Unknown block') }}: {{ $blockAlias }}</div>
                 @else
                     @livewire($blockAlias, $properties, key($blockId . '-' . md5(json_encode($properties))))
                 @endif
