@@ -3,10 +3,10 @@
     <div class="sticky top-0 bg-gradient-to-r from-gray-800 to-gray-700 text-white px-4 py-3 border-b border-gray-700 shadow-md">
         <h2 class="text-lg font-medium flex items-center">
             <x-heroicon-o-adjustments-horizontal class="w-5 h-5 mr-2" />
-            Properties
+            {{ __('Properties') }}
         </h2>
         <div class="mt-1 text-xs font-mono bg-gray-900/50 rounded px-2 py-1 truncate">
-            {{ $blockLabel ?? 'No block selected' }}
+            {{ $blockLabel ?? __('No block selected') }}
         </div>
     </div>
 
@@ -14,8 +14,8 @@
     @if(empty($blockProperties) || empty($properties))
     <div class="flex flex-col items-center justify-center h-64 text-center p-6">
         <x-heroicon-o-square-3-stack-3d class="w-12 h-12 text-gray-300 mb-3 dark:text-gray-600" />
-        <div class="text-gray-500 font-medium dark:text-gray-400">No properties available</div>
-        <div class="text-gray-400 text-sm mt-1 dark:text-gray-500">Select a block to view and edit its properties</div>
+        <div class="text-gray-500 font-medium dark:text-gray-400">{{ __('No properties available') }}</div>
+        <div class="text-gray-400 text-sm mt-1 dark:text-gray-500">{{ __('Select a block to view and edit its properties') }}</div>
     </div>
     @else
 

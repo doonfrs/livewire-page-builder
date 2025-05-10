@@ -42,7 +42,7 @@
                 class="absolute top-[45px] left-1/2 -translate-x-1/2 bg-white shadow-xl rounded-lg border border-gray-200 py-2 w-[200px]">
 
                 <div class="px-3 py-1 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                    Row Actions
+                    {{ __('Row Actions') }}
                 </div>
 
                 <!-- Row Select Button -->
@@ -50,15 +50,15 @@
                     class="flex items-center w-full px-3 py-2 text-left text-gray-700 hover:bg-gray-100"
                     title="Select Row">
                     <x-heroicon-o-cursor-arrow-rays class="w-4 h-4 mr-2" />
-                    <span>Select</span>
+                    <span>{{ __('Select') }}</span>
                 </button>
 
                 <!-- Row Move Up Button -->
                 <button wire:click="moveRowUp()" @click="open = false"
                     class="flex items-center w-full px-3 py-2 text-left text-gray-700 hover:bg-gray-100"
-                    title="Move Row Up">
+                    title="{{ __('Move Row Up') }}">
                     <x-heroicon-o-arrow-up class="w-4 h-4 mr-2" />
-                    <span>Move Up</span>
+                    <span>{{ __('Move Up') }}</span>
                 </button>
 
                 <!-- Row Move Down Button -->
@@ -66,22 +66,22 @@
                     class="flex items-center w-full px-3 py-2 text-left text-gray-700 hover:bg-gray-100"
                     title="Move Row Down">
                     <x-heroicon-o-arrow-down class="w-4 h-4 mr-2" />
-                    <span>Move Down</span>
+                    <span>{{ __('Move Down') }}</span>
                 </button>
                 <!-- Add Row After Button -->
                 <button wire:click="$dispatch('addRow', {afterRowId: '{{ $rowId }}'})" @click="open = false"
                     class="flex items-center w-full px-3 py-2 text-left text-green-700 hover:bg-green-50"
-                    title="Add Row After">
+                    title="{{ __('Add Row After') }}">
                     <x-heroicon-o-plus class="w-4 h-4 mr-2" />
-                    <span>Add Row After</span>
+                    <span>{{ __('Add Row After') }}</span>
                 </button>
 
                 <!-- Add Row Before Button -->
                 <button wire:click="$dispatch('addRow', {beforeRowId: '{{ $rowId }}'})" @click="open = false"
                     class="flex items-center w-full px-3 py-2 text-left text-green-700 hover:bg-green-50"
-                    title="Add Row Before">
+                    title="{{ __('Add Row Before') }}">
                     <x-heroicon-o-plus-circle class="w-4 h-4 mr-2" />
-                    <span>Add Row Before</span>
+                    <span>{{ __('Add Row Before') }}</span>
                 </button>
             </div>
         </div>

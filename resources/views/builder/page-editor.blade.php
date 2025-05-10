@@ -12,23 +12,23 @@
             <button
                 class="flex items-center gap-1 px-4 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-2 focus:ring-pink-200 transition-all duration-150 text-sm font-medium"
                 wire:click="addRow"
-                title="Add Row">
+                title="{{ __('Add Row') }}">
                 <x-heroicon-o-plus class="w-5 h-5" />
             </button>
             <!-- Pages Button -->
             <button
                 x-on:click="showPagesModal = true"
                 class="flex items-center gap-1 px-4 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-2 focus:ring-blue-200 transition-all duration-150 text-sm font-medium"
-                title="Open Pages">
+                title="{{ __('Open Pages') }}">
                 <x-heroicon-o-document-text class="w-5 h-5" />
-                <span class="hidden sm:inline">Pages</span>
+                <span class="hidden sm:inline">{{ __('Pages') }}</span>
             </button>
             <!-- Preview Button -->
             <a
                 :href="'/page-builder/page/view/' + @js($pageKey ?? '') + (@js($pageTheme ?? '') ? '/' + @js($pageTheme ?? '') : '')"
                 target="_blank"
                 class="flex items-center gap-1 px-4 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-2 focus:ring-blue-200 transition-all duration-150 text-sm font-medium"
-                title="Preview Page">
+                title="{{ __('Preview Page') }}">
                 <x-heroicon-o-eye class="w-5 h-5" />
             </a>
             <!-- Save Button with animation placeholder -->
@@ -37,7 +37,7 @@
                 wire:click="$dispatch('save-page')"
                 x-data="{ saved: false }"
                 x-on:click="saved = true; setTimeout(() => saved = false, 1200);"
-                title="Save Page">
+                title="{{ __('Save Page') }}">
                 <span x-show="!saved" class="flex items-center gap-1 justify-center">
                     <x-heroicon-o-check class="w-5 h-5" />
                 </span>
@@ -70,10 +70,10 @@
             </button>
             <h2 class="text-xl font-bold mb-6 text-gray-800 dark:text-gray-100 flex items-center gap-2">
                 <x-heroicon-o-plus class="w-6 h-6 text-pink-500" />
-                Add Block
+                {{ __('Add Block') }}
             </h2>
             <input type="text" wire:model.live.debounce.500ms="blockFilter"
-                placeholder="Search blocks..."
+                placeholder="{{ __('Search blocks...') }}"
                 class="w-full border rounded-lg px-4 py-2 mb-6 focus:ring-2 focus:ring-pink-200 focus:border-pink-400 transition dark:bg-gray-900 dark:border-gray-700 dark:text-gray-100" />
             <div class="grid grid-cols-2 sm:grid-cols-3 gap-6 h-[40vh] overflow-auto">
                 @forelse($this->filteredBlocks as $block)
@@ -101,19 +101,37 @@
             </button>
             <h2 class="text-xl font-bold mb-6 text-gray-800 dark:text-gray-100 flex items-center gap-2">
                 <x-heroicon-o-document-text class="w-6 h-6 text-blue-500" />
-                Pages
+                {{ __('Pages') }}
             </h2>
             <ul>
                 @foreach(config('page-builder.pages', []) as $key => $page)
                 @php
                 $isAssoc = is_string($key) && is_array($page);
-                $pageName = $isAssoc ? $key : $page;
+                if($isAssoc) {
+                    $pageName = $key;
+                    $pageLabel = null;
+                    if(isset($page['label'])) {
+                        if(is_callable($page['label'])) {
+                            $pageLabel = $page['label']();
+                        } else {
+                            $pageLabel = $page['label'];
+                        }
+                    }else{
+                        $pageLabel = Str::headline($key);
+                    }
+                } else {
+                    $pageName = $page;
+                    $pageLabel = Str::headline($page);
+                }
                 @endphp
                 <li class="mb-2">
                     <a
                         href="{{ route('page-builder.page.edit', ['pageKey' => $pageName]) }}"
                         class="block px-4 py-2 rounded hover:bg-blue-100 dark:hover:bg-blue-900 transition text-gray-800 dark:text-gray-100">
-                        {{ $pageName }}
+                        <div class="flex items-center border-b border-gray-200 dark:border-gray-700 pb-2">
+                            <x-heroicon-o-document-text class="w-4 h-4 mr-2 me-2" />
+                            {{ $pageLabel }}
+                        </div>
                     </a>
                 </li>
                 @endforeach

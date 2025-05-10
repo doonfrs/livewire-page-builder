@@ -20,6 +20,10 @@ class PageBuilderServiceProvider extends ServiceProvider
         $this->loadRoutesFrom(__DIR__.'/../../routes/web.php');
         $this->loadMigrationsFrom(__DIR__.'/../../database/migrations');
         $this->loadViewsFrom(__DIR__.'/../../resources/views', 'page-builder');
+        $this->loadTranslationsFrom(__DIR__.'/../../lang', 'page-builder');
+
+        // Also register the lang directory for JSON translations
+        $this->loadJsonTranslationsFrom(__DIR__.'/../../lang', 'page-builder');
 
         $this->publishes([
             __DIR__.'/../../config/page-builder.php' => config_path('page-builder.php'),
@@ -35,6 +39,11 @@ class PageBuilderServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__.'/../../public/build' => public_path('vendor/page-builder/build'),
         ], 'page-builder-assets');
+
+        // Publish translation files
+        $this->publishes([
+            __DIR__.'/../../lang' => lang_path('vendor/page-builder'),
+        ], 'page-builder-translations');
 
         Livewire::component('page-editor', PageEditor::class);
         Livewire::component('builder-block', BuilderBlock::class);

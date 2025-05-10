@@ -18,6 +18,7 @@
 - **Context Menus & Toolbars**: Intuitive UI for block/row actions, including context menus, toolbars, and modals.
 - **Configurable Site Structure**: Define your site's pages, blocks, and structure in a single config file.
 - **Publishable Views**: Easily override any package view for full customization, while keeping unmodified views up-to-date.
+- **Multilingual Support**: Built-in translation system for internationalizing the UI in multiple languages.
 - **Extensible & Developer-Friendly**: Add new property types, extend the builder, and integrate with other Livewire or Laravel packages.
 - **MIT Licensed & Open Source**: Use it freely in any project, commercial or personal.
 
@@ -88,7 +89,7 @@
    - Add the required Tailwind source path to your CSS
    - Publish configuration files
    - Copy built assets to the correct location
-   - Optionally publish views and run migrations
+   - Optionally publish views, translations, and run migrations
 
 3. **Register your blocks and configure your pages:**
 
@@ -134,13 +135,19 @@ If you prefer more control over the installation process:
    php artisan vendor:publish --tag=page-builder-views --provider="Trinavo\LivewirePageBuilder\Providers\PageBuilderServiceProvider"
    ```
 
-4. **Publish assets:**
+4. **Publish translations (optional):**
+
+   ```bash
+   php artisan vendor:publish --tag=page-builder-translations --provider="Trinavo\LivewirePageBuilder\Providers\PageBuilderServiceProvider"
+   ```
+
+5. **Publish assets:**
 
    ```bash
    php artisan vendor:publish --tag=page-builder-assets --provider="Trinavo\LivewirePageBuilder\Providers\PageBuilderServiceProvider"
    ```
 
-5. **Add Tailwind source path:**
+6. **Add Tailwind source path:**
 
    Add this line to your CSS file:
 
@@ -148,7 +155,7 @@ If you prefer more control over the installation process:
    @source '../../vendor/trinavo/livewire-page-builder/resources/**/*.blade.php';
    ```
 
-6. **Run migrations:**
+7. **Run migrations:**
 
    ```bash
    php artisan migrate
@@ -283,3 +290,52 @@ See the `docs/` folder for:
 ## 📝 License
 
 MIT
+
+---
+
+## 🌐 Translations
+
+Livewire Page Builder supports translations through Laravel's JSON localization system. The package comes with translation files in the `lang` directory.
+
+### Using Translations
+
+To access translations in your views, simply use the standard Laravel `__()` helper:
+
+```php
+{{ __('Move Up') }}
+```
+
+JSON translations are automatically loaded from the package's `lang` directory, and Laravel will look for the matching keys in the JSON files based on the current locale.
+
+### Publishing Translations
+
+You can publish the package's translation files to your application to customize them:
+
+```bash
+php artisan vendor:publish --tag=page-builder-translations --provider="Trinavo\LivewirePageBuilder\Providers\PageBuilderServiceProvider"
+```
+
+This will copy the translation files to the `lang/vendor/page-builder` directory of your application.
+
+### Adding New Translations
+
+To add new translations for additional languages:
+
+1. Create a JSON file in the `lang` directory with the language code (e.g., `fr.json`, `de.json`).
+2. Add your translations in JSON format:
+
+```json
+{
+    "Move Up": "Déplacer vers le haut",
+    "Move Down": "Déplacer vers le bas",
+    "Add Block Before": "Ajouter un bloc avant",
+    "Add Block After": "Ajouter un bloc après",
+    "Delete": "Supprimer",
+    "Select": "Sélectionner",
+    "Row Actions": "Actions de ligne",
+    "Add Row After": "Ajouter une ligne après",
+    "Add Row Before": "Ajouter une ligne avant"
+}
+```
+
+The translations will be automatically picked up by the application based on the user's locale.

@@ -83,9 +83,9 @@
             
             <!-- Popover Header -->
             <div class="flex items-center justify-between p-2 border-b border-gray-200 dark:border-gray-700">
-                <h3 class="text-xs font-medium text-gray-900 dark:text-gray-100">Select Color</h3>
+                <h3 class="text-xs font-medium text-gray-900 dark:text-gray-100">{{ __('Select Color') }}</h3>
                 <button @click="closePopover()" type="button" class="text-gray-400 hover:text-gray-500 dark:hover:text-gray-300">
-                    <span class="sr-only">Close</span>
+                    <span class="sr-only">{{ __('Close') }}</span>
                     <x-heroicon-o-x-mark class="h-4 w-4" />
                 </button>
             </div>
@@ -133,7 +133,7 @@
                             type="button"
                             wire:click="selectCustomColor"
                             class="px-2 py-1 text-xs bg-blue-500 text-white rounded hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 transition-colors">
-                            Apply
+                            {{ __('Apply') }}
                         </button>
                     </div>
                 </div>
@@ -144,13 +144,13 @@
                         type="button"
                         wire:click="clearColor"
                         class="rounded bg-white dark:bg-gray-700 px-2 py-1 text-xs font-medium text-gray-900 dark:text-gray-200 shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600">
-                        Clear
+                        {{ __('Clear') }}
                     </button>
                     <button
                         type="button"
                         @click="closePopover()"
                         class="rounded bg-gray-200 dark:bg-gray-600 px-2 py-1 text-xs font-medium text-gray-900 dark:text-gray-200 shadow-sm hover:bg-gray-300 dark:hover:bg-gray-500">
-                        Close
+                        {{ __('Close') }}
                     </button>
                 </div>
             </div>
