@@ -126,19 +126,18 @@ class PageBuilderService
 
         $classes = [];
 
-        // 2x for tablet, 5x for desktop
         if ($hiddenMobile && $hiddenTablet && $hiddenDesktop) {
             $classes[] = 'hidden';
         } elseif ($hiddenMobile && $hiddenTablet) {
-            $classes[] = 'hidden @2xl:block';
+            $classes[] = 'hidden @3xl:block';
         } elseif ($hiddenMobile && $hiddenDesktop) {
-            $classes[] = 'hidden @2xl:block @5xl:hidden';
+            $classes[] = 'hidden @xl:block @5xl:hidden';
         } elseif ($hiddenTablet && $hiddenDesktop) {
-            $classes[] = 'block @2xl:hidden';
+            $classes[] = 'block @xl:hidden';
         } elseif ($hiddenMobile) {
-            $classes[] = 'hidden';
+            $classes[] = 'hidden @xl:block';
         } elseif ($hiddenTablet) {
-            $classes[] = 'block @2xl:hidden @5xl:block';
+            $classes[] = 'block @xl:hidden @5xl:block';
         } elseif ($hiddenDesktop) {
             $classes[] = 'block @5xl:hidden';
         } else {
