@@ -126,24 +126,23 @@ class PageBuilderService
 
         $classes = [];
 
-        if ($hiddenDesktop || $hiddenMobile || $hiddenTablet) {
-            if ($hiddenMobile) {
-                $classes[] = 'hidden';
-            } else {
-                $classes[] = 'block';
-            }
-
-            if ($hiddenTablet) {
-                $classes[] = '@md:hidden';
-            } else {
-                $classes[] = '@md:block';
-            }
-
-            if ($hiddenDesktop) {
-                $classes[] = '@lg:hidden';
-            } else {
-                $classes[] = '@lg:block';
-            }
+        // 2x for tablet, 5x for desktop
+        if ($hiddenMobile && $hiddenTablet && $hiddenDesktop) {
+            $classes[] = 'hidden';
+        } elseif ($hiddenMobile && $hiddenTablet) {
+            $classes[] = 'hidden @2xl:block';
+        } elseif ($hiddenMobile && $hiddenDesktop) {
+            $classes[] = 'hidden @2xl:block @5xl:hidden';
+        } elseif ($hiddenTablet && $hiddenDesktop) {
+            $classes[] = 'block @2xl:hidden';
+        } elseif ($hiddenMobile) {
+            $classes[] = 'hidden';
+        } elseif ($hiddenTablet) {
+            $classes[] = 'block @2xl:hidden @5xl:block';
+        } elseif ($hiddenDesktop) {
+            $classes[] = 'block @5xl:hidden';
+        } else {
+            $classes[] = 'block';
         }
 
         if ($useContainer) {
@@ -186,32 +185,37 @@ class PageBuilderService
             $classes[] = 'w-full';
         }
 
-        if ($gridColumns) {
-            $classes[] = "grid grid-cols-$gridColumns";
-        }
-
         if ($mobileGridSize) {
             $classes[] = "col-span-$mobileGridSize";
         }
 
         if ($tabletGridSize) {
-            $classes[] = "@md:col-span-$tabletGridSize";
+            $classes[] = "@3xl:col-span-$tabletGridSize";
         }
 
         if ($desktopGridSize) {
-            $classes[] = "@lg:col-span-$desktopGridSize";
+            $classes[] = "@5xl:col-span-$desktopGridSize";
         }
 
         if ($flexMobile) {
             $classes[] = 'flex';
+        } elseif ($gridColumns) {
+            $classes[] = 'grid';
+            $classes[] = "grid-cols-$gridColumns";
         }
 
         if ($flexTablet) {
-            $classes[] = '@md:flex';
+            $classes[] = '@3xl:flex';
+        } elseif ($gridColumns) {
+            $classes[] = '@3xl:grid';
+            $classes[] = "@3xl:grid-cols-$gridColumns";
         }
 
         if ($flexDesktop) {
-            $classes[] = '@lg:flex';
+            $classes[] = '@5xl:flex';
+        } elseif ($gridColumns) {
+            $classes[] = '@5xl:grid';
+            $classes[] = "@5xl:grid-cols-$gridColumns";
         }
 
         if ($gapMobile) {
@@ -219,11 +223,11 @@ class PageBuilderService
         }
 
         if ($gapTablet) {
-            $classes[] = "@md:gap-$gapTablet";
+            $classes[] = "@3xl:gap-$gapTablet";
         }
 
         if ($gapDesktop) {
-            $classes[] = "@lg:gap-$gapDesktop";
+            $classes[] = "@5xl:gap-$gapDesktop";
         }
 
         if ($textColor) {
