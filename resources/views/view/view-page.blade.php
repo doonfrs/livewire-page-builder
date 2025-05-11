@@ -7,5 +7,4 @@
             </div>
         @endforeach
     </main>
-    @include('page-builder::shared.safe-classes')
 </x-app-layout>
