@@ -222,5 +222,4 @@
             </div>
         </main>
     </div>
-    @include('page-builder::shared.safe-classes')
 </div>
