@@ -5,6 +5,12 @@
     <div class="lg:col-span-1 lg:col-span-2 lg:col-span-3 lg:col-span-4 lg:col-span-5 lg:col-span-6 lg:col-span-7 lg:col-span-8 lg:col-span-9 lg:col-span-10 lg:col-span-11 lg:col-span-12 @lg:col-span-13 @lg:col-span-14 @lg:col-span-15 @lg:col-span-16 @lg:col-span-17 @lg:col-span-18 @lg:col-span-19 @lg:col-span-20"></div>
     <div class="@md:col-span-1 @md:col-span-2 @md:col-span-3 @md:col-span-4 @md:col-span-5 @md:col-span-6 @md:col-span-7 @md:col-span-8 @md:col-span-9 @md:col-span-10 @md:col-span-11 @md:col-span-12 @md:col-span-13 @md:col-span-14 @md:col-span-15 @md:col-span-16 @md:col-span-17 @md:col-span-18 @md:col-span-19 @md:col-span-20"></div>
     <div class="@lg:col-span-1 @lg:col-span-2 @lg:col-span-3 @lg:col-span-4 @lg:col-span-5 @lg:col-span-6 @lg:col-span-7 @lg:col-span-8 @lg:col-span-9 @lg:col-span-10 @lg:col-span-11 @lg:col-span-12 @lg:col-span-13 @lg:col-span-14 @lg:col-span-15 @lg:col-span-16 @lg:col-span-17 @lg:col-span-18 @lg:col-span-19 @lg:col-span-20"></div>
+    <div class="@xl:col-span-1 @xl:col-span-2 @xl:col-span-3 @xl:col-span-4 @xl:col-span-5 @xl:col-span-6 @xl:col-span-7 @xl:col-span-8 @xl:col-span-9 @xl:col-span-10 @xl:col-span-11 @xl:col-span-12 @xl:col-span-13 @xl:col-span-14 @xl:col-span-15 @xl:col-span-16 @xl:col-span-17 @xl:col-span-18 @xl:col-span-19 @xl:col-span-20"></div>
+    <div class="@2xl:col-span-1 @2xl:col-span-2 @2xl:col-span-3 @2xl:col-span-4 @2xl:col-span-5 @2xl:col-span-6 @2xl:col-span-7 @2xl:col-span-8 @2xl:col-span-9 @2xl:col-span-10 @2xl:col-span-11 @2xl:col-span-12 @2xl:col-span-13 @2xl:col-span-14 @2xl:col-span-15 @2xl:col-span-16 @2xl:col-span-17 @2xl:col-span-18 @2xl:col-span-19 @2xl:col-span-20"></div>
+    <div class="@3xl:col-span-1 @3xl:col-span-2 @3xl:col-span-3 @3xl:col-span-4 @3xl:col-span-5 @3xl:col-span-6 @3xl:col-span-7 @3xl:col-span-8 @3xl:col-span-9 @3xl:col-span-10 @3xl:col-span-11 @3xl:col-span-12 @3xl:col-span-13 @3xl:col-span-14 @3xl:col-span-15 @3xl:col-span-16 @3xl:col-span-17 @3xl:col-span-18 @3xl:col-span-19 @3xl:col-span-20"></div>
+    <div class="@4xl:col-span-1 @4xl:col-span-2 @4xl:col-span-3 @4xl:col-span-4 @4xl:col-span-5 @4xl:col-span-6 @4xl:col-span-7 @4xl:col-span-8 @4xl:col-span-9 @4xl:col-span-10 @4xl:col-span-11 @4xl:col-span-12 @4xl:col-span-13 @4xl:col-span-14 @4xl:col-span-15 @4xl:col-span-16 @4xl:col-span-17 @4xl:col-span-18 @4xl:col-span-19 @4xl:col-span-20"></div>
+    <div class="@5xl:col-span-1 @5xl:col-span-2 @5xl:col-span-3 @5xl:col-span-4 @5xl:col-span-5 @5xl:col-span-6 @5xl:col-span-7 @5xl:col-span-8 @5xl:col-span-9 @5xl:col-span-10 @5xl:col-span-11 @5xl:col-span-12 @5xl:col-span-13 @5xl:col-span-14 @5xl:col-span-15 @5xl:col-span-16 @5xl:col-span-17 @5xl:col-span-18 @5xl:col-span-19 @5xl:col-span-20"></div>
+    
     <div class="grid grid-cols-1 grid-cols-2 grid-cols-3 grid-cols-4 grid-cols-5 grid-cols-6 grid-cols-7 grid-cols-8 grid-cols-9 grid-cols-10 grid-cols-11 grid-cols-12 grid-cols-13 grid-cols-14 grid-cols-15 grid-cols-16 grid-cols-17 grid-cols-18 grid-cols-19 grid-cols-20"></div>
 
     <div class="flex flex-row flex-col"></div>
@@ -13,10 +19,16 @@
     <div class="gap-0 gap-1 gap-2 gap-3 gap-4 gap-5 gap-6 gap-8 gap-10 gap-12 gap-16 gap-20 gap-24 gap-32 gap-40 gap-48 gap-56 gap-64"></div>
     <div class="@md:gap-0 @md:gap-1 @md:gap-2 @md:gap-3 @md:gap-4 @md:gap-5 @md:gap-6 @md:gap-8 @md:gap-10 @md:gap-12 @md:gap-16 @md:gap-20 @md:gap-24 @md:gap-32 @md:gap-40 @md:gap-48 @md:gap-56 @md:gap-64"></div>
     <div class="@lg:gap-0 @lg:gap-1 @lg:gap-2 @lg:gap-3 @lg:gap-4 @lg:gap-5 @lg:gap-6 @lg:gap-8 @lg:gap-10 @lg:gap-12 @lg:gap-16 @lg:gap-20 @lg:gap-24 @lg:gap-32 @lg:gap-40 @lg:gap-48 @lg:gap-56 @lg:gap-64"></div>
+    <div class="@xl:gap-0 @xl:gap-1 @xl:gap-2 @xl:gap-3 @xl:gap-4 @xl:gap-5 @xl:gap-6 @xl:gap-8 @xl:gap-10 @xl:gap-12 @xl:gap-16 @xl:gap-20 @xl:gap-24 @xl:gap-32 @xl:gap-40 @xl:gap-48 @xl:gap-56 @xl:gap-64"></div>
+    <div class="@2xl:gap-0 @2xl:gap-1 @2xl:gap-2 @2xl:gap-3 @2xl:gap-4 @2xl:gap-5 @2xl:gap-6 @2xl:gap-8 @2xl:gap-10 @2xl:gap-12 @2xl:gap-16 @2xl:gap-20 @2xl:gap-24 @2xl:gap-32 @2xl:gap-40 @2xl:gap-48 @2xl:gap-56 @2xl:gap-64"></div>
+    <div class="@3xl:gap-0 @3xl:gap-1 @3xl:gap-2 @3xl:gap-3 @3xl:gap-4 @3xl:gap-5 @3xl:gap-6 @3xl:gap-8 @3xl:gap-10 @3xl:gap-12 @3xl:gap-16 @3xl:gap-20 @3xl:gap-24 @3xl:gap-32 @3xl:gap-40 @3xl:gap-48 @3xl:gap-56 @3xl:gap-64"></div>
+    <div class="@4xl:gap-0 @4xl:gap-1 @4xl:gap-2 @4xl:gap-3 @4xl:gap-4 @4xl:gap-5 @4xl:gap-6 @4xl:gap-8 @4xl:gap-10 @4xl:gap-12 @4xl:gap-16 @4xl:gap-20 @4xl:gap-24 @4xl:gap-32 @4xl:gap-40 @4xl:gap-48 @4xl:gap-56 @4xl:gap-64"></div>
+    <div class="@5xl:gap-0 @5xl:gap-1 @5xl:gap-2 @5xl:gap-3 @5xl:gap-4 @5xl:gap-5 @5xl:gap-6 @5xl:gap-8 @5xl:gap-10 @5xl:gap-12 @5xl:gap-16 @5xl:gap-20 @5xl:gap-24 @5xl:gap-32 @5xl:gap-40 @5xl:gap-48 @5xl:gap-56 @5xl:gap-64"></div>
 
     
     {{-- Responsive visibility --}}
-    <div class="@sm:block @sm:hidden @md:block @md:hidden @lg:block @lg:hidden @xl:block @xl:hidden"></div>
+    <div class="@sm:block @sm:hidden @md:block @md:hidden @lg:block @lg:hidden @xl:block @xl:hidden @2xl:block @2xl:hidden @3xl:block @3xl:hidden @4xl:block @4xl:hidden @5xl:block @5xl:hidden"></div>
+    <div class="sm:block sm:hidden md:block md:hidden lg:block lg:hidden xl:block xl:hidden 2xl:block 2xl:hidden 3xl:block 3xl:hidden 4xl:block 4xl:hidden 5xl:block 5xl:hidden"></div>
     <div class="block hidden"></div>
     
     {{-- Layout classes --}}
