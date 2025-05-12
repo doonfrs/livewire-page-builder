@@ -7,6 +7,7 @@ Welcome to the documentation for the Livewire Page Builder package.
 - [Fast Installation & Usage](../README.md)
 - [Advanced Configuration](advanced-configuration.md)
 - [Custom Block Development](custom-block-development.md)
+- [Performance Optimization](performance-optimization.md)
 
 ---
 
@@ -17,6 +18,7 @@ Livewire Page Builder is a modern, extensible page builder for Laravel 12 and Li
 - **Container Queries:** For the best preview experience, use [Tailwind CSS container queries](https://tailwindcss.com/docs/responsive-design#what-are-container-queries) in your blocks.
 - **Custom Blocks:** Easily register and configure your own Livewire blocks.
 - **Reusable Pages:** Use pages as blocks (e.g., header, footer) for maximum flexibility.
+- **Optimized for Speed:** Separate edit and view modes with blade rendering for production views.
 
 ---
 
