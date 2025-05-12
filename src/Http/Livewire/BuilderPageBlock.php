@@ -30,7 +30,7 @@ class BuilderPageBlock extends Block
 
     public function render()
     {
-        return view('page-builder::builder.builder-page-block', [
+        return view('page-builder::livewire.builder.builder-page-block', [
             'blockPageName' => $this->blockPageName,
         ]);
     }

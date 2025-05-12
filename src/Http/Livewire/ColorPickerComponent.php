@@ -89,6 +89,6 @@ class ColorPickerComponent extends Component
 
     public function render()
     {
-        return view('page-builder::livewire.color-picker-component');
+        return view('page-builder::livewire.builder.block-properties.color-picker');
     }
 }

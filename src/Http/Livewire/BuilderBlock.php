@@ -39,21 +39,13 @@ class BuilderBlock extends Component
         $blockClass = $this->getBlockClass();
         $this->properties['editMode'] = $this->editMode;
 
-        if (! $this->editMode) {
-            return view('page-builder::view.builder-block-view', [
-                'blockAlias' => $this->blockAlias,
-                'blockId' => $this->blockId,
-                'editMode' => $this->editMode,
-                'classExists' => class_exists($blockClass),
-            ]);
-        } else {
-            return view('page-builder::builder.builder-block', [
-                'blockAlias' => $this->blockAlias,
-                'blockId' => $this->blockId,
-                'editMode' => $this->editMode,
-                'classExists' => class_exists($blockClass),
-            ]);
-        }
+        return view('page-builder::livewire.builder.builder-block', [
+            'blockAlias' => $this->blockAlias,
+            'blockId' => $this->blockId,
+            'editMode' => $this->editMode,
+            'classExists' => class_exists($blockClass),
+        ]);
+
     }
 
     public function blockSelected()

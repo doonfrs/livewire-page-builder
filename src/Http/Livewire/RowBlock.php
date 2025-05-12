@@ -48,17 +48,12 @@ class RowBlock extends Block
     {
         $properties = $this->properties;
         $properties['editMode'] = $this->editMode;
-        if (! $this->editMode) {
-            return view('page-builder::view.row-view', [
-                'rowId' => $this->rowId,
-                'properties' => $properties,
-            ]);
-        } else {
-            return view('page-builder::builder.row', [
-                'rowId' => $this->rowId,
-                'properties' => $properties,
-            ]);
-        }
+
+        return view('page-builder::livewire.builder.row', [
+            'rowId' => $this->rowId,
+            'properties' => $properties,
+        ]);
+
     }
 
     public function rowSelected()

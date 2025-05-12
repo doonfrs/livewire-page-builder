@@ -36,7 +36,7 @@ class BlockProperties extends Component
             $this->organizeProperties();
         }
 
-        return view('page-builder::builder.block-properties', [
+        return view('page-builder::livewire.builder.block-properties', [
             'blockProperties' => $this->blockProperties,
             'propertyGroups' => $this->propertyGroups,
         ]);
