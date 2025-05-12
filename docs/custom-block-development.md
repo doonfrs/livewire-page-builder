@@ -26,6 +26,8 @@ Implement `getPageBuilderProperties()` to define editable properties for your bl
 use Trinavo\LivewirePageBuilder\Support\Properties\TextProperty;
 use Trinavo\LivewirePageBuilder\Support\Properties\ImageProperty;
 use Trinavo\LivewirePageBuilder\Support\Properties\CheckboxProperty;
+use Trinavo\LivewirePageBuilder\Support\Properties\ColorProperty;
+use Trinavo\LivewirePageBuilder\Support\Properties\SelectProperty;
 
 public function getPageBuilderProperties(): array
 {
@@ -33,6 +35,12 @@ public function getPageBuilderProperties(): array
         new CheckboxProperty('featured', 'Featured'),
         new TextProperty('title', 'Title'),
         new ImageProperty('image', 'Image'),
+        new ColorProperty('accent_color', 'Accent Color'),
+        new SelectProperty('alignment', 'Text Alignment', [
+            'left' => 'Left',
+            'center' => 'Center', 
+            'right' => 'Right'
+        ]),
     ];
 }
 ```
@@ -78,17 +86,78 @@ If not specified, the following default icons will be used for common group name
 
 ### Available Property Types
 
-- `TextProperty` — text input (optionally numeric, min/max)
-- `ImageProperty` — image upload/selector
-- `CheckboxProperty` — boolean toggle
+- `TextProperty` — text input with optional parameters:
+  - `numeric` (boolean): Whether the input accepts numbers only
+  - `min` (integer): Minimum value (for numeric inputs)
+  - `max` (integer): Maximum value (for numeric inputs)
+  - `defaultValue`: Default value for the property
+
+- `ImageProperty` — image upload/selector with:
+  - `defaultValue`: Default image URL
+
+- `CheckboxProperty` — boolean toggle with:
+  - `defaultValue`: Default checked state (true/false)
+
+- `ColorProperty` — color picker with:
+  - `defaultValue`: Default color value
+
+- `SelectProperty` — dropdown selector with:
+  - `options` (array): Key-value pairs for dropdown options
+  - `defaultValue`: Default selected option key
 
 You can also create your own property types by extending `BlockProperty`.
 
 ### Shared Properties
 
-- The base `Block` class provides shared properties for grid size and device visibility (mobile, tablet, desktop). These are automatically included in the builder UI.
-- Responsive properties (mobile, tablet, desktop grid sizes) are grouped in the "Responsive" section.
-- Visibility properties (hidden on mobile, tablet, desktop) are grouped in the "Visibility Settings" section.
+The base `Block` class automatically provides the following shared properties:
+
+#### Responsive Width Properties
+
+- Mobile, tablet and desktop width settings with options like full width, auto, 1/2, 1/3, etc.
+
+#### Visibility Settings
+
+- Show/hide options for mobile, tablet, and desktop views
+
+#### Spacing Properties
+
+- Padding (top, right, bottom, left)
+- Margin (top, right, bottom, left)
+
+#### Style Properties
+
+- Text color
+- Background color
+
+#### Background Image Properties
+
+- Image upload
+- Position (center, top, right, bottom, left, etc.)
+- Size (cover, contain, auto, 100%)
+- Repeat (no-repeat, repeat, repeat-x, repeat-y)
+
+#### Layout Properties
+
+- Container setting (applies the container class)
+- Self-centered setting (applies mx-auto)
+
+## Using Properties in Your Templates
+
+In your Blade templates, you can access these properties directly:
+
+```blade
+<div class="hero-block {{ $this->getSpacingClasses() }} {{ $this->getLayoutClasses() }}"
+     style="{{ $this->getBackgroundImageStyle() }}">
+    <h1>{{ $title }}</h1>
+    <p>{{ $subtitle }}</p>
+</div>
+```
+
+The base Block class provides helper methods:
+
+- `getSpacingClasses()`: Returns Tailwind classes for padding and margin
+- `getLayoutClasses()`: Returns Tailwind classes for layout settings (container, mx-auto)
+- `getBackgroundImageStyle()`: Returns inline CSS for background images
 
 ## Example: Hero Block
 
@@ -97,6 +166,7 @@ use Trinavo\LivewirePageBuilder\Block;
 use Trinavo\LivewirePageBuilder\Support\Properties\TextProperty;
 use Trinavo\LivewirePageBuilder\Support\Properties\ImageProperty;
 use Trinavo\LivewirePageBuilder\Support\Properties\CheckboxProperty;
+use Trinavo\LivewirePageBuilder\Support\Properties\ColorProperty;
 
 class HeroBlock extends Block
 {
@@ -120,6 +190,8 @@ class HeroBlock extends Block
             (new ImageProperty('background', 'Background'))
                 ->setGroup('appearance', 'Appearance', 2, 'heroicon-o-swatch'),
             (new CheckboxProperty('overlay', 'Add Dark Overlay'))
+                ->setGroup('appearance', 'Appearance', 2, 'heroicon-o-swatch'),
+            (new ColorProperty('overlay_color', 'Overlay Color', defaultValue: '#000000'))
                 ->setGroup('appearance', 'Appearance', 2, 'heroicon-o-swatch'),
             (new CheckboxProperty('center_text', 'Center Text'))
                 ->setGroup('appearance', 'Appearance', 2, 'heroicon-o-swatch'),
