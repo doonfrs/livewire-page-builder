@@ -112,16 +112,8 @@ class PageBuilderService
         // Layout properties
         $useContainer = $properties['use_container'] ?? false;
         $selfCentered = $properties['self_centered'] ?? false;
-        $gridColumns = $properties['grid_columns'] ?? null;
-        $flex = $properties['flex'] ?? false;
         $textColor = $properties['text_color'] ?? null;
         $backgroundColor = $properties['background_color'] ?? null;
-        $flexMobile = $properties['flex_mobile'] ?? false;
-        $flexTablet = $properties['flex_tablet'] ?? false;
-        $flexDesktop = $properties['flex_desktop'] ?? false;
-        $gapMobile = $properties['gap_mobile'] ?? null;
-        $gapTablet = $properties['gap_tablet'] ?? null;
-        $gapDesktop = $properties['gap_desktop'] ?? null;
 
         $classes = [];
 
