@@ -1,6 +1,6 @@
 <div x-data="{
     selected: false
-}" class="{{ $cssClasses }} inline-block" style="{{ $inlineStyles }} font-size:initial"
+}" class="{{ $cssClasses }}" style="{{ $inlineStyles }} font-size:initial"
 >
     <div class="block-row border relative transition-all duration-300 ease-in-out group"
         :class="selected ? 'border-pink-500' : 'border-gray-300'"
