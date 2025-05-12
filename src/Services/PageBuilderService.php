@@ -137,6 +137,8 @@ class PageBuilderService
 
         if ($useContainer) {
             $classes[] = 'container';
+        } else {
+            $classes[] = 'inline-block';
         }
 
         if ($selfCentered) {
