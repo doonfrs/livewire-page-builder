@@ -40,8 +40,45 @@ class RowBlock extends Block
             return;
         }
         $this->properties[$propertyName] = $value;
+
+        // Update local properties for consistency but don't trigger re-render
         $this->cssClasses = $this->makeClasses();
         $this->inlineStyles = $this->makeInlineStyles();
+
+        // Dispatch Alpine.js events to update the DOM without re-rendering
+        $this->dispatch('css-classes-updated', [
+            'rowId' => $this->rowId,
+            'classes' => $this->cssClasses,
+        ]);
+
+        $this->dispatch('inline-styles-updated', [
+            'rowId' => $this->rowId,
+            'styles' => $this->inlineStyles,
+        ]);
+
+        // Skip re-rendering the component
+        $this->skipRender();
+    }
+
+    /**
+     * Update styles and classes explicitly
+     */
+    public function updateStylesAndClasses()
+    {
+        $this->cssClasses = $this->makeClasses();
+        $this->inlineStyles = $this->makeInlineStyles();
+
+        $this->dispatch('css-classes-updated', [
+            'rowId' => $this->rowId,
+            'classes' => $this->cssClasses,
+        ]);
+
+        $this->dispatch('inline-styles-updated', [
+            'rowId' => $this->rowId,
+            'styles' => $this->inlineStyles,
+        ]);
+
+        $this->skipRender();
     }
 
     public function render()

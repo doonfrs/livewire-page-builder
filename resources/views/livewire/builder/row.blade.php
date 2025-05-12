@@ -1,4 +1,10 @@
-<div x-data="{ selected: false }">
+<div x-data="{
+    selected: false,
+    classes: '{{ $cssClasses }}',
+    styles: '{{ $inlineStyles }}'
+}"
+    x-on:css-classes-updated.window="if($event.detail.rowId === '{{ $rowId }}') classes = $event.detail.classes"
+    x-on:inline-styles-updated.window="if($event.detail.rowId === '{{ $rowId }}') styles = $event.detail.styles">
     <div class="block-row border relative transition-all duration-300 ease-in-out group"
         :class="selected ? 'border-pink-500' : 'border-gray-300'"
         x-on:row-selected.window="selected = $event.detail.rowId == '{{ $rowId }}'"
@@ -39,15 +45,15 @@
                 x-transition:leave="transition ease-in duration-150"
                 x-transition:leave-start="opacity-100 transform translate-y-0"
                 x-transition:leave-end="opacity-0 transform translate-y-2" @click.outside="open = false"
-                class="absolute top-[45px] left-1/2 -translate-x-1/2 bg-white shadow-xl rounded-lg border border-gray-200 py-2 w-[200px]">
+                class="absolute top-[45px] left-1/2 -translate-x-1/2 bg-white shadow-xl rounded-lg border border-gray-200 py-2 w-[200px] dark:bg-gray-800 dark:border-gray-700">
 
-                <div class="px-3 py-1 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                <div class="px-3 py-1 text-xs font-semibold text-gray-500 uppercase tracking-wider dark:text-gray-400">
                     {{ __('Row Actions') }}
                 </div>
 
                 <!-- Row Select Button -->
                 <button wire:click="rowSelected()" @click="open = false"
-                    class="flex items-center w-full px-3 py-2 text-left text-gray-700 hover:bg-gray-100"
+                    class="flex items-center w-full px-3 py-2 text-left text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
                     title="Select Row">
                     <x-heroicon-o-cursor-arrow-rays class="w-4 h-4 mr-2" />
                     <span>{{ __('Select') }}</span>
@@ -55,7 +61,7 @@
 
                 <!-- Row Move Up Button -->
                 <button wire:click="moveRowUp()" @click="open = false"
-                    class="flex items-center w-full px-3 py-2 text-left text-gray-700 hover:bg-gray-100"
+                    class="flex items-center w-full px-3 py-2 text-left text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
                     title="{{ __('Move Row Up') }}">
                     <x-heroicon-o-arrow-up class="w-4 h-4 mr-2" />
                     <span>{{ __('Move Up') }}</span>
@@ -63,14 +69,14 @@
 
                 <!-- Row Move Down Button -->
                 <button wire:click="moveRowDown()" @click="open = false"
-                    class="flex items-center w-full px-3 py-2 text-left text-gray-700 hover:bg-gray-100"
+                    class="flex items-center w-full px-3 py-2 text-left text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
                     title="Move Row Down">
                     <x-heroicon-o-arrow-down class="w-4 h-4 mr-2" />
                     <span>{{ __('Move Down') }}</span>
                 </button>
                 <!-- Add Row After Button -->
                 <button wire:click="$dispatch('addRow', {afterRowId: '{{ $rowId }}'})" @click="open = false"
-                    class="flex items-center w-full px-3 py-2 text-left text-green-700 hover:bg-green-50"
+                    class="flex items-center w-full px-3 py-2 text-left text-green-700 hover:bg-green-50 dark:text-green-400 dark:hover:bg-green-900/20"
                     title="{{ __('Add Row After') }}">
                     <x-heroicon-o-plus class="w-4 h-4 mr-2" />
                     <span>{{ __('Add Row After') }}</span>
@@ -78,7 +84,7 @@
 
                 <!-- Add Row Before Button -->
                 <button wire:click="$dispatch('addRow', {beforeRowId: '{{ $rowId }}'})" @click="open = false"
-                    class="flex items-center w-full px-3 py-2 text-left text-green-700 hover:bg-green-50"
+                    class="flex items-center w-full px-3 py-2 text-left text-green-700 hover:bg-green-50 dark:text-green-400 dark:hover:bg-green-900/20"
                     title="{{ __('Add Row Before') }}">
                     <x-heroicon-o-plus-circle class="w-4 h-4 mr-2" />
                     <span>{{ __('Add Row Before') }}</span>
@@ -87,7 +93,7 @@
         </div>
 
         <div class="{{ count($blocks) == 0 ? 'pt-4 pb-4' : '' }}">
-            <div class="row-blocks {{ $cssClasses }}" style="{{ $inlineStyles }}">
+            <div class="row-blocks" :class="classes" :style="styles">
 
                 @foreach ($blocks as $blockId => $block)
                     @livewire(
