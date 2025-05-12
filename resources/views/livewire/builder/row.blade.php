@@ -1,10 +1,6 @@
 <div x-data="{
-    selected: false,
-    classes: '{{ $cssClasses }}',
-    styles: '{{ $inlineStyles }}'
-}"
-    x-on:css-classes-updated.window="if($event.detail.rowId === '{{ $rowId }}') classes = $event.detail.classes"
-    x-on:inline-styles-updated.window="if($event.detail.rowId === '{{ $rowId }}') styles = $event.detail.styles">
+    selected: false
+}">
     <div class="block-row border relative transition-all duration-300 ease-in-out group"
         :class="selected ? 'border-pink-500' : 'border-gray-300'"
         x-on:row-selected.window="selected = $event.detail.rowId == '{{ $rowId }}'"
@@ -92,23 +88,22 @@
             </div>
         </div>
 
-        <div class="{{ count($blocks) == 0 ? 'pt-4 pb-4' : '' }}">
-            <div class="row-blocks" :class="classes" :style="styles">
+        <div class="row-blocks {{ count($blocks) == 0 ? 'pt-4 pb-4' : '' }} {{ $cssClasses }}"
+            style="{{ $inlineStyles }}">
 
-                @foreach ($blocks as $blockId => $block)
-                    @livewire(
-                        'builder-block',
-                        [
-                            'blockAlias' => $block['alias'],
-                            'blockId' => $blockId,
-                            'rowId' => $rowId,
-                            'properties' => $block['properties'] ?? [],
-                            'editMode' => true,
-                        ],
-                        key($blockId)
-                    )
-                @endforeach
-            </div>
+            @foreach ($blocks as $blockId => $block)
+                @livewire(
+                    'builder-block',
+                    [
+                        'blockAlias' => $block['alias'],
+                        'blockId' => $blockId,
+                        'rowId' => $rowId,
+                        'properties' => $block['properties'] ?? [],
+                        'editMode' => true,
+                    ],
+                    key($blockId)
+                )
+            @endforeach
         </div>
     </div>
 </div>
