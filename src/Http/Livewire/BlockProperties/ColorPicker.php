@@ -10,9 +10,11 @@ class ColorPicker extends Component
 
     public $blockId = null;
 
-    public $propertyName = '';
+    public $propertyName;
 
-    public $currentValue = '';
+    public $propertyLabel;
+
+    public $currentValue;
 
     public $showModal = false;
 
@@ -32,14 +34,8 @@ class ColorPicker extends Component
         'indigo' => ['indigo-300', 'indigo-400', 'indigo-500', 'indigo-600', 'indigo-700'],
     ];
 
-    public function mount($propertyName, $currentValue = null, $rowId = null, $blockId = null)
+    public function mount()
     {
-        $this->propertyName = $propertyName;
-        $this->currentValue = $currentValue ?? '';
-        $this->rowId = $rowId;
-        $this->blockId = $blockId;
-
-        // Check if current value is a custom color (hex code)
         if (str_starts_with($this->currentValue, '#')) {
             $this->customColor = $this->currentValue;
         }

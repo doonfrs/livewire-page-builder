@@ -34,7 +34,10 @@
                     <div class="space-y-4 {{ $group['columns'] > 1 ? 'grid grid-cols-' . $group['columns'] . ' gap-3 space-y-0' : '' }}"
                         wire:key="group-{{ $blockId }}-{{ $groupName }}">
                         @foreach ($group['properties'] as $property)
-                            <div wire:key="property-{{ $blockId }}-{{ $property['name'] }}" class="group">
+                            @php
+                                $key = ($rowId ?? '') . '-' . ($blockId ?? '') . '-' . $property['name'];
+                            @endphp
+                            <div wire:key="property-{{ $key }}" class="group">
                                 @if ($property['type'] === 'checkbox')
                                     <div class="flex items-center">
                                         <input type="checkbox" id="property-{{ $property['name'] }}"
@@ -47,24 +50,19 @@
                                         </label>
                                     </div>
                                 @elseif($property['type'] === 'image')
-                                    <livewire:block-properties.image-property :property="$property" :properties="$properties"
-                                        :row-id="$rowId" :block-id="$blockId" />
+                                    <livewire:block-properties.image-property :property-name="$property['name']" :property-label="$property['label']" :current-value="$properties[$property['name']] ?? ''" :row-id="$rowId"
+                                        :block-id="$blockId" :key="'image-property-' . $key" />
                                 @elseif($property['type'] === 'color')
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700 mb-1 dark:text-gray-300">
                                             <span>{{ $property['label'] }}</span>
                                         </label>
-                                        <livewire:block-properties.color-picker :property-name="$property['name']" :current-value="$properties[$property['name']] ?? ''" :row-id="$rowId"
-                                            :block-id="$blockId" :key="'color-picker-' .
-                                                ($rowId ?? '') .
-                                                '-' .
-                                                ($blockId ?? '') .
-                                                '-' .
-                                                $property['name']" />
+                                        <livewire:block-properties.color-picker :property-name="$property['name']" :property-label="$property['label']" :current-value="$properties[$property['name']] ?? ''" :row-id="$rowId"
+                                            :block-id="$blockId" :key="'color-picker-' . $key" />
                                     </div>
                                 @elseif($property['type'] === 'select')
-                                    <livewire:block-properties.select-property :property="$property" :properties="$properties"
-                                        :row-id="$rowId" :block-id="$blockId" />
+                                    <livewire:block-properties.select-property :property-name="$property['name']" :property-label="$property['label']" :property-options="$property['options']" :default-value="$property['defaultValue']" :current-value="$properties[$property['name']] ?? ''" :row-id="$rowId"
+                                        :block-id="$blockId" :key="'select-property-' . $key" />
                                 @else
                                     <div>
                                         <label

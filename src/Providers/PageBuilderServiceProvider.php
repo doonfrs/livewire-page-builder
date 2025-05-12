@@ -55,6 +55,11 @@ class PageBuilderServiceProvider extends ServiceProvider
             __DIR__.'/../../lang' => lang_path('vendor/page-builder'),
         ], 'page-builder-translations');
 
+        // Add vite resources
+        $this->publishes([
+            __DIR__.'/../../resources/js' => resource_path('js/vendor/page-builder'),
+        ], 'page-builder-js');
+
         Livewire::component('page-editor', PageEditor::class);
         Livewire::component('builder-block', BuilderBlock::class);
         Livewire::component('block-properties', BlockProperties::class);
