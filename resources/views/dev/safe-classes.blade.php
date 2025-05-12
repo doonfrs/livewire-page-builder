@@ -94,4 +94,8 @@
         bg-purple-300 bg-purple-400 bg-purple-500 bg-purple-600 bg-purple-700
         bg-indigo-300 bg-indigo-400 bg-indigo-500 bg-indigo-600 bg-indigo-700
     "></div>
+
+    <div class="items-start items-center items-end items-baseline items-stretch"></div>
+    <div class="justify-start justify-center justify-end justify-between justify-around justify-evenly justify-stretch"></div>
+    <div class="content-start content-center content-end content-baseline content-stretch"></div>
 </div>
