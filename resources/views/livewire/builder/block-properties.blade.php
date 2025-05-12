@@ -47,7 +47,7 @@
                                         </label>
                                     </div>
                                 @elseif($property['type'] === 'image')
-                                    <x-page-builder::image-property :property="$property" :properties="$properties"
+                                    <x-page-builder::block-properties.image-property :property="$property" :properties="$properties"
                                         :row-id="$rowId" :block-id="$blockId" />
                                 @elseif($property['type'] === 'color')
                                     <div>
@@ -63,7 +63,7 @@
                                                 $property['name']" />
                                     </div>
                                 @elseif($property['type'] === 'select')
-                                    <x-page-builder::select-property :property="$property" :properties="$properties"
+                                    <x-page-builder::block-properties.select-property :property="$property" :properties="$properties"
                                         :row-id="$rowId" :block-id="$blockId" />
                                 @else
                                     <div>

@@ -285,7 +285,7 @@ class PageEditor extends Component
 
     public function render()
     {
-        return view('page-builder::builder.page-editor', [
+        return view('page-builder::livewire.builder.page-editor', [
         ])->layout('page-builder::layouts.app');
     }
 }
