@@ -197,9 +197,8 @@ class PageBuilderService
             }
         }
 
-        if (! $isRowBlock) {
-            $classes[] = 'items-center';
-        }
+        $classes[] = 'items-center';
+        $classes[] = 'content-center';
 
         $classString = implode(' ', array_unique($classes));
 

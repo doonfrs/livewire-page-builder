@@ -1,5 +1,5 @@
 <div x-data="{ selected: false, showContextMenu: false, x: 0, y: 0 }" 
-    class="{{ $cssClasses }} items-center"
+    class="{{ $cssClasses }}"
     style="{{ $inlineStyles }}"
     @contextmenu.prevent="
         Livewire.dispatch('show-block-context-menu', {
