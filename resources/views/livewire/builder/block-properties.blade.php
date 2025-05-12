@@ -63,13 +63,16 @@
                                 @elseif($property['type'] === 'select')
                                     <livewire:block-properties.select-property :property-name="$property['name']" :property-label="$property['label']" :property-options="$property['options']" :default-value="$property['defaultValue']" :current-value="$properties[$property['name']] ?? ''" :row-id="$rowId"
                                         :block-id="$blockId" :key="'select-property-' . $key" />
+                                @elseif($property['type'] === 'richtext')
+                                    <livewire:block-properties.richtext-property :property-name="$property['name']" :property-label="$property['label']" :current-value="$properties[$property['name']] ?? ''" :row-id="$rowId"
+                                        :block-id="$blockId" :key="'richtext-property-' . $key" />
                                 @else
                                     <div>
                                         <label
                                             class="flex justify-between text-sm font-medium text-gray-700 mb-1 dark:text-gray-300">
                                             <span>{{ $property['label'] }}</span>
                                         </label>
-                                        <input type="{{ $property['numeric'] ? 'number' : 'text' }}"
+                                        <input type="{{ ($property['numeric'] ?? false) ? 'number' : 'text' }}"
                                             @if (isset($property['min'])) min="{{ $property['min'] }}" @endif
                                             @if (isset($property['max'])) max="{{ $property['max'] }}" @endif
                                             class="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-200 focus:border-blue-400 transition-all duration-200 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300"

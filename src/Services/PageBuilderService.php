@@ -4,6 +4,7 @@ namespace Trinavo\LivewirePageBuilder\Services;
 
 use Illuminate\Support\Str;
 use Livewire\Livewire;
+use Trinavo\LivewirePageBuilder\Blocks\RichText;
 use Trinavo\LivewirePageBuilder\Blocks\Section;
 use Trinavo\LivewirePageBuilder\Http\Livewire\BuilderPageBlock;
 
@@ -49,6 +50,7 @@ class PageBuilderService
     {
         $blocks = config('page-builder.blocks', []);
         $blocks[] = Section::class;
+        $blocks[] = RichText::class;
 
         return $blocks;
     }
