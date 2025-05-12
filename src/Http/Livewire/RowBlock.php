@@ -5,7 +5,7 @@ namespace Trinavo\LivewirePageBuilder\Http\Livewire;
 use Livewire\Attributes\On;
 use Trinavo\LivewirePageBuilder\Services\PageBuilderService;
 use Trinavo\LivewirePageBuilder\Support\Block;
-use Trinavo\LivewirePageBuilder\Support\Properties\TextProperty;
+use Trinavo\LivewirePageBuilder\Support\Properties\SelectProperty;
 
 class RowBlock extends Block
 {
@@ -19,7 +19,7 @@ class RowBlock extends Block
 
     public $inlineStyles;
 
-    public $gridColumns = 12;
+    public $flex = null;
 
     public function mount()
     {
@@ -50,10 +50,22 @@ class RowBlock extends Block
         $properties = $this->properties;
         $properties['editMode'] = $this->editMode;
 
-        return view('page-builder::livewire.builder.row', [
-            'rowId' => $this->rowId,
-            'properties' => $properties,
-        ]);
+        $this->flex = $properties['flex'] ?? null;
+        if ($this->flex == 'none') {
+            $this->flex = null;
+        }
+
+        if ($this->editMode) {
+            return view('page-builder::livewire.builder.row', [
+                'rowId' => $this->rowId,
+                'properties' => $properties,
+            ]);
+        } else {
+            return view('page-builder::livewire.builder.row-view', [
+                'rowId' => $this->rowId,
+                'properties' => $properties,
+            ]);
+        }
 
     }
 
@@ -185,11 +197,17 @@ class RowBlock extends Block
     public function getPageBuilderProperties(): array
     {
         return [
-            new TextProperty(
-                name: 'grid_columns',
-                label: 'Grid Columns',
-                numeric: true,
-                defaultValue: 12,
+            new SelectProperty(
+                name: 'flex',
+                label: 'Flex',
+                defaultValue: 'row',
+                options: [
+                    'none' => 'None',
+                    'row' => 'Row',
+                    'row-reverse' => 'Row Reverse',
+                    'col' => 'Column',
+                    'col-reverse' => 'Column Reverse',
+                ],
             ),
         ];
     }

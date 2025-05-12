@@ -13,6 +13,11 @@
     
     <div class="grid grid-cols-1 grid-cols-2 grid-cols-3 grid-cols-4 grid-cols-5 grid-cols-6 grid-cols-7 grid-cols-8 grid-cols-9 grid-cols-10 grid-cols-11 grid-cols-12 grid-cols-13 grid-cols-14 grid-cols-15 grid-cols-16 grid-cols-17 grid-cols-18 grid-cols-19 grid-cols-20"></div>
 
+    {{-- Width utilities --}}
+    <div class="w-1/10 w-1/5 w-3/10 w-2/5 w-1/2 w-3/5 w-7/10 w-4/5 w-9/10 w-1/3 w-1/4 w-2/3 w-3/4 w-full w-auto"></div>
+    <div class="@3xl:w-1/10 @3xl:w-1/5 @3xl:w-3/10 @3xl:w-2/5 @3xl:w-1/2 @3xl:w-3/5 @3xl:w-7/10 @3xl:w-4/5 @3xl:w-9/10 @3xl:w-1/3 @3xl:w-1/4 @3xl:w-2/3 @3xl:w-3/4 @3xl:w-full @3xl:w-auto"></div>
+    <div class="@5xl:w-1/10 @5xl:w-1/5 @5xl:w-3/10 @5xl:w-2/5 @5xl:w-1/2 @5xl:w-3/5 @5xl:w-7/10 @5xl:w-4/5 @5xl:w-9/10 @5xl:w-1/3 @5xl:w-1/4 @5xl:w-2/3 @5xl:w-3/4 @5xl:w-full @5xl:w-auto"></div>
+
     <div class="flex flex-row flex-col"></div>
     <div class="@md:flex @md:flex-row @md:flex-col"></div>
     <div class="@lg:flex @lg:flex-row @lg:flex-col"></div>
@@ -29,7 +34,7 @@
     {{-- Responsive visibility --}}
     <div class="@sm:block @sm:hidden @md:block @md:hidden @lg:block @lg:hidden @xl:block @xl:hidden @2xl:block @2xl:hidden @3xl:block @3xl:hidden @4xl:block @4xl:hidden @5xl:block @5xl:hidden"></div>
     <div class="sm:block sm:hidden md:block md:hidden lg:block lg:hidden xl:block xl:hidden 2xl:block 2xl:hidden 3xl:block 3xl:hidden 4xl:block 4xl:hidden 5xl:block 5xl:hidden"></div>
-    <div class="block hidden"></div>
+    <div class="inline-block block hidden"></div>
     
     {{-- Layout classes --}}
     <div class="container mx-auto md:container lg:container"></div>
