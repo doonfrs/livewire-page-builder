@@ -1,6 +1,6 @@
 <div x-data="{
     selected: false
-}" class="{{ $cssClasses }}" style="{{ $inlineStyles }}">
+}" class="{{ $cssClasses }} inline-block" style="{{ $inlineStyles }}">
     <div class="block-row border relative transition-all duration-300 ease-in-out group"
         :class="selected ? 'border-pink-500' : 'border-gray-300'"
         x-on:row-selected.window="selected = $event.detail.rowId == '{{ $rowId }}'"
