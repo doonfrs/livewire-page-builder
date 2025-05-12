@@ -1,4 +1,4 @@
-<div class="{{ $cssClasses }}" style="{{ $inlineStyles }}">
+<div class="{{ $cssClasses }} inline-block" style="{{ $inlineStyles }}">
     <div class="row-blocks {{ count($blocks) == 0 ? 'pt-4 pb-4' : '' }} {{ $flex ? "flex flex-{$flex}" : '' }}">
         @foreach ($blocks as $blockId => $block)
             @livewire(

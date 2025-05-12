@@ -4,6 +4,7 @@ namespace Trinavo\LivewirePageBuilder\Support;
 
 use Illuminate\Support\Str;
 use Livewire\Component;
+use Trinavo\LivewirePageBuilder\Http\Livewire\RowBlock;
 use Trinavo\LivewirePageBuilder\Support\Properties\CheckboxProperty;
 use Trinavo\LivewirePageBuilder\Support\Properties\ColorProperty;
 use Trinavo\LivewirePageBuilder\Support\Properties\ImageProperty;
@@ -125,12 +126,18 @@ abstract class Block extends Component
             'w-full' => 'full',
         ];
 
+        if (static::class == RowBlock::class) {
+            $defaultValue = 'w-full';
+        } else {
+            $defaultValue = 'w-auto';
+        }
+
         return [
-            (new SelectProperty('mobile_width', 'Mobile', $widths, defaultValue: 'w-auto'))
+            (new SelectProperty('mobile_width', 'Mobile', $widths, defaultValue: $defaultValue))
                 ->setGroup('width', 'Width', 3, 'heroicon-o-device-phone-mobile'),
-            (new SelectProperty('tablet_width', 'Tablet', $widths, defaultValue: 'w-auto'))
+            (new SelectProperty('tablet_width', 'Tablet', $widths, defaultValue: $defaultValue))
                 ->setGroup('width', 'Width', 3, 'heroicon-o-device-tablet'),
-            (new SelectProperty('desktop_width', 'Desktop', $widths, defaultValue: 'w-auto'))
+            (new SelectProperty('desktop_width', 'Desktop', $widths, defaultValue: $defaultValue))
                 ->setGroup('width', 'Width', 3, 'heroicon-o-device-desktop'),
         ];
     }
