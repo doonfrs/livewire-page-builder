@@ -12,11 +12,11 @@ use Trinavo\LivewirePageBuilder\Support\Properties\TextProperty;
 
 abstract class Block extends Component
 {
-    public $mobileGridSize = 12;
+    public $mobileWidth = 'w-auto';
 
-    public $tabletGridSize = 12;
+    public $tabletWidth = 'w-auto';
 
-    public $desktopGridSize = 12;
+    public $desktopWidth = 'w-auto';
 
     public $hiddenMobile = false;
 
@@ -62,8 +62,6 @@ abstract class Block extends Component
     public $selfCentered = false;
 
     public bool $editMode = false;
-
-    public ?bool $fullWidth = false;
 
     public ?bool $flexMobile = false;
 
@@ -113,27 +111,27 @@ abstract class Block extends Component
      */
     protected function getResponsiveProperties(): array
     {
+        $widths = [
+            'w-auto' => 'Auto',
+            'w-1/3' => '1/3',
+            'w-2/3' => '2/3',
+            'w-1/2' => '1/2',
+            'w-1/4' => '1/4',
+            'w-3/4' => '3/4',
+            'w-1/5' => '1/5',
+            'w-2/5' => '2/5',
+            'w-3/5' => '3/5',
+            'w-4/5' => '4/5',
+            'w-full' => 'full',
+        ];
+
         return [
-            (new TextProperty('mobile_grid_size', 'Mobile', numeric: true, defaultValue: 12, min: 1, max: 12))
-                ->setGroup('grid_size', 'Grid Size', 3, 'heroicon-o-device-phone-mobile'),
-            (new TextProperty('tablet_grid_size', 'Tablet', numeric: true, defaultValue: 12, min: 1, max: 12))
-                ->setGroup('grid_size', 'Grid Size', 3, 'heroicon-o-device-tablet'),
-            (new TextProperty('desktop_grid_size', 'Desktop', numeric: true, defaultValue: 12, min: 1, max: 12))
-                ->setGroup('grid_size', 'Grid Size', 3, 'heroicon-o-device-desktop'),
-
-            (new CheckboxProperty('flex_mobile', 'Mobile', defaultValue: false))
-                ->setGroup('flex', 'Flex', 3, 'heroicon-o-arrows-pointing-out'),
-            (new CheckboxProperty('flex_tablet', 'Tablet', defaultValue: false))
-                ->setGroup('flex', 'Flex', 3, 'heroicon-o-arrows-pointing-out'),
-            (new CheckboxProperty('flex_desktop', 'Desktop', defaultValue: false))
-                ->setGroup('flex', 'Flex', 3, 'heroicon-o-arrows-pointing-out'),
-
-            (new TextProperty('gap_mobile', 'Mobile', numeric: true, defaultValue: null, min: 0, max: 10))
-                ->setGroup('gap', 'Gap', 3, 'heroicon-o-arrows-pointing-out'),
-            (new TextProperty('gap_tablet', 'Tablet', numeric: true, defaultValue: null, min: 0, max: 10))
-                ->setGroup('gap', 'Gap', 3, 'heroicon-o-arrows-pointing-out'),
-            (new TextProperty('gap_desktop', 'Desktop', numeric: true, defaultValue: null, min: 0, max: 10))
-                ->setGroup('gap', 'Gap', 3, 'heroicon-o-arrows-pointing-out'),
+            (new SelectProperty('mobile_width', 'Mobile', $widths, defaultValue: 'w-auto'))
+                ->setGroup('width', 'Width', 3, 'heroicon-o-device-phone-mobile'),
+            (new SelectProperty('tablet_width', 'Tablet', $widths, defaultValue: 'w-auto'))
+                ->setGroup('width', 'Width', 3, 'heroicon-o-device-tablet'),
+            (new SelectProperty('desktop_width', 'Desktop', $widths, defaultValue: 'w-auto'))
+                ->setGroup('width', 'Width', 3, 'heroicon-o-device-desktop'),
         ];
     }
 
@@ -186,8 +184,6 @@ abstract class Block extends Component
     protected function getStyleProperties(): array
     {
         return [
-            (new CheckboxProperty('full_width', 'Full Width', defaultValue: false))
-                ->setGroup('width', 'Width', 2, 'heroicon-o-swatch'),
             (new ColorProperty('text_color', 'Text Color', defaultValue: null))
                 ->setGroup('color', 'Color', 2, 'heroicon-o-swatch'),
             (new ColorProperty('background_color', 'Background Color', defaultValue: null))

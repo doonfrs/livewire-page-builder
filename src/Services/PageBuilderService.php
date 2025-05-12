@@ -94,10 +94,9 @@ class PageBuilderService
         $hiddenMobile = $properties['hidden_mobile'] ?? false;
         $hiddenTablet = $properties['hidden_tablet'] ?? false;
         $hiddenDesktop = $properties['hidden_desktop'] ?? false;
-        $mobileGridSize = $properties['mobile_grid_size'] ?? 12;
-        $tabletGridSize = $properties['tablet_grid_size'] ?? 12;
-        $desktopGridSize = $properties['desktop_grid_size'] ?? 12;
-        $fullWidth = $properties['full_width'] ?? false;
+        $mobileWidth = $properties['mobile_width'] ?? 'w-full';
+        $tabletWidth = $properties['tablet_width'] ?? 'w-full';
+        $desktopWidth = $properties['desktop_width'] ?? 'w-full';
         // Padding properties
         $paddingTop = $properties['padding_top'] ?? 0;
         $paddingRight = $properties['padding_right'] ?? 0;
@@ -180,53 +179,15 @@ class PageBuilderService
             $classes[] = "ml-$marginLeft";
         }
 
-        if ($fullWidth) {
-            $classes[] = 'w-full';
+        $classes[] = $mobileWidth;
+
+        // Only add tablet/desktop widths if they're different from mobile
+        if ($tabletWidth !== $mobileWidth) {
+            $classes[] = '@3xl:'.$tabletWidth;
         }
 
-        if ($mobileGridSize) {
-            $classes[] = "col-span-$mobileGridSize";
-        }
-
-        if ($tabletGridSize) {
-            $classes[] = "@3xl:col-span-$tabletGridSize";
-        }
-
-        if ($desktopGridSize) {
-            $classes[] = "@5xl:col-span-$desktopGridSize";
-        }
-
-        if ($flexMobile) {
-            $classes[] = 'flex';
-        } elseif ($gridColumns) {
-            $classes[] = 'grid';
-            $classes[] = "grid-cols-$gridColumns";
-        }
-
-        if ($flexTablet) {
-            $classes[] = '@3xl:flex';
-        } elseif ($gridColumns) {
-            $classes[] = '@3xl:grid';
-            $classes[] = "@3xl:grid-cols-$gridColumns";
-        }
-
-        if ($flexDesktop) {
-            $classes[] = '@5xl:flex';
-        } elseif ($gridColumns) {
-            $classes[] = '@5xl:grid';
-            $classes[] = "@5xl:grid-cols-$gridColumns";
-        }
-
-        if ($gapMobile) {
-            $classes[] = "gap-$gapMobile";
-        }
-
-        if ($gapTablet) {
-            $classes[] = "@3xl:gap-$gapTablet";
-        }
-
-        if ($gapDesktop) {
-            $classes[] = "@5xl:gap-$gapDesktop";
+        if ($desktopWidth !== $tabletWidth) {
+            $classes[] = '@5xl:'.$desktopWidth;
         }
 
         if ($textColor) {

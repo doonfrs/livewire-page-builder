@@ -1,6 +1,6 @@
 <div x-data="{
     selected: false
-}">
+}" class="{{ $cssClasses }}" style="{{ $inlineStyles }}">
     <div class="block-row border relative transition-all duration-300 ease-in-out group"
         :class="selected ? 'border-pink-500' : 'border-gray-300'"
         x-on:row-selected.window="selected = $event.detail.rowId == '{{ $rowId }}'"
@@ -88,8 +88,7 @@
             </div>
         </div>
 
-        <div class="row-blocks {{ count($blocks) == 0 ? 'pt-4 pb-4' : '' }} {{ $cssClasses }}"
-            style="{{ $inlineStyles }}">
+        <div class="row-blocks {{ count($blocks) == 0 ? 'pt-4 pb-4' : '' }} {{ $flex ? "flex flex-{$flex}" : '' }}">
 
             @foreach ($blocks as $blockId => $block)
                 @livewire(
