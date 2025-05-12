@@ -1,5 +1,4 @@
-<div class="{{ $row['cssClasses'] }} group" style="font-size:initial"
-    @if (!empty($row['inlineStyles'])) style="{{ $row['inlineStyles'] }}" @endif>
+<div class="{{ $row['cssClasses'] }} group" style="{{ $row['inlineStyles'] }}">
     <div class="{{ $row['rowCssClasses'] }}">
         @foreach ($row['blocks'] as $blockId => $block)
             <div class="{{ $block['cssClasses'] }}" style="{{ $block['inlineStyles'] }}">

@@ -132,13 +132,15 @@ class PageBuilderService
         } elseif ($hiddenDesktop) {
             $classes[] = 'block @5xl:hidden';
         } else {
-            $classes[] = 'block';
+            if ($useContainer) {
+                $classes[] = 'block';
+            } else {
+                $classes[] = 'inline-block';
+            }
         }
 
         if ($useContainer) {
             $classes[] = 'container';
-        } else {
-            $classes[] = 'inline-block';
         }
 
         if ($selfCentered) {
