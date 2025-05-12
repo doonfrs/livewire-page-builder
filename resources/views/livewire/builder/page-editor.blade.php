@@ -219,9 +219,11 @@
                     'w-[375px]': deviceMode === 'mobile',
                     'w-[768px]': deviceMode === 'tablet',
                     'w-full': deviceMode === 'desktop',
-                }">
+                }"
+                style="font-size:0"
+                >
                 @foreach ($rows as $rowId => $row)
-                    <div ca <livewire:row-block :edit-mode="true" :blocks="$row['blocks']" :rowId="$rowId" :properties="$row['properties']"
+                    <livewire:row-block :edit-mode="true" :blocks="$row['blocks']" :rowId="$rowId" :properties="$row['properties']"
                         :key="$rowId" />
                 @endforeach
             </div>

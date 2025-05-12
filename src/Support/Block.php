@@ -4,6 +4,7 @@ namespace Trinavo\LivewirePageBuilder\Support;
 
 use Illuminate\Support\Str;
 use Livewire\Component;
+use Trinavo\LivewirePageBuilder\Http\Livewire\BuilderPageBlock;
 use Trinavo\LivewirePageBuilder\Http\Livewire\RowBlock;
 use Trinavo\LivewirePageBuilder\Support\Properties\CheckboxProperty;
 use Trinavo\LivewirePageBuilder\Support\Properties\ColorProperty;
@@ -127,6 +128,8 @@ abstract class Block extends Component
         ];
 
         if (static::class == RowBlock::class) {
+            $defaultValue = 'w-full';
+        } elseif (static::class == BuilderPageBlock::class) {
             $defaultValue = 'w-full';
         } else {
             $defaultValue = 'w-auto';

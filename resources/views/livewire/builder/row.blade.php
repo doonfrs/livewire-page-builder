@@ -1,6 +1,7 @@
 <div x-data="{
     selected: false
-}" class="{{ $cssClasses }} inline-block" style="{{ $inlineStyles }}">
+}" class="{{ $cssClasses }} inline-block" style="{{ $inlineStyles }} font-size:initial"
+>
     <div class="block-row border relative transition-all duration-300 ease-in-out group"
         :class="selected ? 'border-pink-500' : 'border-gray-300'"
         x-on:row-selected.window="selected = $event.detail.rowId == '{{ $rowId }}'"
@@ -8,12 +9,11 @@
         <!-- Elementor-style Row Controls -->
         <div
             class="absolute top-[-35px] left-1/2 -translate-x-1/2 bg-pink-500 shadow-lg px-1 py-1 rounded-lg flex items-center space-x-1 z-50 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none group-hover:pointer-events-auto">
-            <!-- Delete Button -->
-            <button wire:click="$dispatch('deleteRow', {rowId: '{{ $rowId }}'})"
-                onclick="return confirm('Are you sure you want to delete this row?')"
+            <!-- Select Button -->
+            <button wire:click="rowSelected()"
                 class="w-7 h-7 flex items-center justify-center text-white hover:bg-pink-600 rounded transition-colors duration-150"
-                title="Delete Row">
-                <x-heroicon-o-x-mark class="w-5 h-5" />
+                title="Select Row">
+                <x-heroicon-o-cursor-arrow-rays class="w-5 h-5" />
             </button>
 
             <!-- Handle/Options Button -->
@@ -85,10 +85,22 @@
                     <x-heroicon-o-plus-circle class="w-4 h-4 mr-2" />
                     <span>{{ __('Add Row Before') }}</span>
                 </button>
+
+                <!-- Remove Row Button -->
+                <button @click="
+                confirm('Are you sure you want to delete this row?') 
+                && $dispatch('deleteRow', {rowId: '{{ $rowId }}'})
+                " @click="open = false"
+                    class="flex items-center w-full px-3 py-2 text-left text-red-700 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20"
+                    title="{{ __('Remove Row') }}">
+                    <x-heroicon-o-trash class="w-4 h-4 mr-2" />
+                    <span>{{ __('Remove Row') }}</span>
+                </button>
             </div>
         </div>
 
-        <div class="row-blocks {{ count($blocks) == 0 ? 'pt-4 pb-4' : '' }} {{ $flex ? "flex flex-{$flex}" : '' }}">
+        <div 
+            class="row-blocks {{ count($blocks) == 0 ? 'pt-4 pb-4' : '' }} {{ $flex ? "flex flex-{$flex}" : '' }}">
 
             @foreach ($blocks as $blockId => $block)
                 @livewire(
