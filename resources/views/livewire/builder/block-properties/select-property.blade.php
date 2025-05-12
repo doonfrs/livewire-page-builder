@@ -1,10 +1,3 @@
-@props([
-    'property',
-    'properties',
-    'rowId',
-    'blockId'
-])
-
 <div>
     <label class="block text-sm font-medium text-gray-700 mb-1 dark:text-gray-300">
         <span>{{ $property['label'] }}</span>
