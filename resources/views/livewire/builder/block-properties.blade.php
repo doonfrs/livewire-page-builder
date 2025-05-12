@@ -47,14 +47,14 @@
                                         </label>
                                     </div>
                                 @elseif($property['type'] === 'image')
-                                    <x-page-builder::block-properties.image-property :property="$property" :properties="$properties"
+                                    <livewire:block-properties.image-property :property="$property" :properties="$properties"
                                         :row-id="$rowId" :block-id="$blockId" />
                                 @elseif($property['type'] === 'color')
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700 mb-1 dark:text-gray-300">
                                             <span>{{ $property['label'] }}</span>
                                         </label>
-                                        <livewire:color-picker :property-name="$property['name']" :current-value="$properties[$property['name']] ?? ''" :row-id="$rowId"
+                                        <livewire:block-properties.color-picker :property-name="$property['name']" :current-value="$properties[$property['name']] ?? ''" :row-id="$rowId"
                                             :block-id="$blockId" :key="'color-picker-' .
                                                 ($rowId ?? '') .
                                                 '-' .
@@ -63,7 +63,7 @@
                                                 $property['name']" />
                                     </div>
                                 @elseif($property['type'] === 'select')
-                                    <x-page-builder::block-properties.select-property :property="$property" :properties="$properties"
+                                    <livewire:block-properties.select-property :property="$property" :properties="$properties"
                                         :row-id="$rowId" :block-id="$blockId" />
                                 @else
                                     <div>

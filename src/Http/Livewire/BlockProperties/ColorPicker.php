@@ -1,10 +1,10 @@
 <?php
 
-namespace Trinavo\LivewirePageBuilder\Http\Livewire;
+namespace Trinavo\LivewirePageBuilder\Http\Livewire\BlockProperties;
 
 use Livewire\Component;
 
-class ColorPickerComponent extends Component
+class ColorPicker extends Component
 {
     public $rowId = null;
 

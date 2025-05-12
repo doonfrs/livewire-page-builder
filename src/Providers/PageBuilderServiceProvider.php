@@ -7,9 +7,11 @@ use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
 use Trinavo\LivewirePageBuilder\Console\InstallPageBuilderCommand;
 use Trinavo\LivewirePageBuilder\Http\Livewire\BlockProperties;
+use Trinavo\LivewirePageBuilder\Http\Livewire\BlockProperties\ColorPicker;
+use Trinavo\LivewirePageBuilder\Http\Livewire\BlockProperties\ImageProperty;
+use Trinavo\LivewirePageBuilder\Http\Livewire\BlockProperties\SelectProperty;
 use Trinavo\LivewirePageBuilder\Http\Livewire\BuilderBlock;
 use Trinavo\LivewirePageBuilder\Http\Livewire\BuilderPageBlock;
-use Trinavo\LivewirePageBuilder\Http\Livewire\ColorPickerComponent;
 use Trinavo\LivewirePageBuilder\Http\Livewire\PageEditor;
 use Trinavo\LivewirePageBuilder\Http\Livewire\RowBlock;
 use Trinavo\LivewirePageBuilder\Services\PageBuilderService;
@@ -58,7 +60,9 @@ class PageBuilderServiceProvider extends ServiceProvider
         Livewire::component('block-properties', BlockProperties::class);
         Livewire::component('row-block', RowBlock::class);
         Livewire::component('builder-page-block', BuilderPageBlock::class);
-        Livewire::component('color-picker', ColorPickerComponent::class);
+        Livewire::component('block-properties.color-picker', ColorPicker::class);
+        Livewire::component('block-properties.image-property', ImageProperty::class);
+        Livewire::component('block-properties.select-property', SelectProperty::class);
 
         app(PageBuilderService::class)->registerBlocks();
     }
