@@ -92,6 +92,9 @@ If not specified, the following default icons will be used for common group name
   - `max` (integer): Maximum value (for numeric inputs)
   - `defaultValue`: Default value for the property
 
+- `RichTextProperty` — rich text editor with formatting options (uses Quill, Trix, or TipTap; stores HTML)
+  - `defaultValue`: Default HTML content for the editor
+
 - `ImageProperty` — image upload/selector with:
   - `defaultValue`: Default image URL
 
