@@ -265,8 +265,26 @@ public function getPageBuilderProperties(): array
 #### **Available Property Types**
 
 - `TextProperty` — text input (optionally numeric, min/max)
+  - `numeric` (boolean): Whether the input accepts numbers only
+  - `min` (integer): Minimum value (for numeric inputs)
+  - `max` (integer): Maximum value (for numeric inputs)
+  - `defaultValue`: Default value for the property
+
+- `RichTextProperty` — rich text editor with formatting options (uses Quill, Trix, or TipTap; stores HTML)
+  - `defaultValue`: Default HTML content for the editor
+
 - `ImageProperty` — image upload/selector
+  - `defaultValue`: Default image URL
+
 - `CheckboxProperty` — boolean toggle
+  - `defaultValue`: Default checked state (true/false)
+
+- `ColorProperty` — color picker
+  - `defaultValue`: Default color value
+
+- `SelectProperty` — dropdown selector
+  - `options` (array): Key-value pairs for dropdown options
+  - `defaultValue`: Default selected option key
 
 You can also create your own property types by extending `BlockProperty`.
 
@@ -297,16 +315,6 @@ MIT
 
 Livewire Page Builder supports translations through Laravel's JSON localization system. The package comes with translation files in the `lang` directory.
 
-### Using Translations
-
-To access translations in your views, simply use the standard Laravel `__()` helper:
-
-```php
-{{ __('Move Up') }}
-```
-
-JSON translations are automatically loaded from the package's `lang` directory, and Laravel will look for the matching keys in the JSON files based on the current locale.
-
 ### Publishing Translations
 
 You can publish the package's translation files to your application to customize them:
@@ -316,26 +324,3 @@ php artisan vendor:publish --tag=page-builder-translations --provider="Trinavo\L
 ```
 
 This will copy the translation files to the `lang/vendor/page-builder` directory of your application.
-
-### Adding New Translations
-
-To add new translations for additional languages:
-
-1. Create a JSON file in the `lang` directory with the language code (e.g., `fr.json`, `de.json`).
-2. Add your translations in JSON format:
-
-```json
-{
-    "Move Up": "Déplacer vers le haut",
-    "Move Down": "Déplacer vers le bas",
-    "Add Block Before": "Ajouter un bloc avant",
-    "Add Block After": "Ajouter un bloc après",
-    "Delete": "Supprimer",
-    "Select": "Sélectionner",
-    "Row Actions": "Actions de ligne",
-    "Add Row After": "Ajouter une ligne après",
-    "Add Row Before": "Ajouter une ligne avant"
-}
-```
-
-The translations will be automatically picked up by the application based on the user's locale.
