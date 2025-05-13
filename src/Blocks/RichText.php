@@ -28,6 +28,7 @@ class RichText extends Block
 
     public function render()
     {
+
         if ($this->editMode) {
             return '<div>
                 '.$this->content.'

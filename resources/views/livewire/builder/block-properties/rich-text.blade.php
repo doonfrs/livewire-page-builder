@@ -1,13 +1,53 @@
-<div>
-    <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">
-        @if(isset($propertyLabel))
-            <x-heroicon-o-document-text class="inline w-4 h-4 mr-1 align-text-bottom text-gray-400 dark:text-gray-500" />
-            {{ $propertyLabel }}
-        @endif
-    </label>
-    <textarea
-        wire:model.live="currentValue"
-        class="w-full min-h-[120px] rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
-        placeholder="Enter rich text..."
-    ></textarea>
-</div> 
+<div wire:ignore x-data="{
+    debounceTimer: null,
+    initEditor() {
+        const quill = new Quill('#rich-text-editor-{{ $propertyName }}', {
+            theme: 'snow',
+            modules: {
+                resize: {
+                    tools: [
+                        'left',
+                        'center',
+                        'right',
+                        'full',
+                        'edit',
+                        {
+                            text: 'Alt',
+                            verify(activeEle) {
+                                return activeEle && activeEle.tagName === 'IMG';
+                            },
+                            handler(evt, button, activeEle) {
+                                let alt = activeEle.alt || '';
+                                alt = window.prompt('Alt for image', alt);
+                                if (alt == null) return;
+                                activeEle.setAttribute('alt', alt);
+
+                                $wire.set('currentValue', quill.getSemanticHTML());
+                            },
+                        },
+                    ],
+                },
+                toolbar: [
+                    [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+                    ['bold', 'italic', 'underline', 'strike'],
+                    [{ 'color': [] }, { 'background': [] }],
+                    [{ 'align': [] }],
+                    ['link', 'image'],
+                    ['clean']
+                ]
+            }
+        });
+
+        quill.on('text-change', () => {
+            clearTimeout(this.debounceTimer);
+            this.debounceTimer = setTimeout(() => {
+                $wire.set('currentValue', quill.getSemanticHTML());
+            }, 500); // 500ms debounce
+        });
+
+    }
+}" x-init="initEditor()">
+
+    <div id="rich-text-editor-{{ $propertyName }}">{!! $currentValue !!}</div>
+
+</div>

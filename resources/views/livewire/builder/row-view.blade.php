@@ -1,4 +1,4 @@
-<div class="{{ $cssClasses }}" style="{{ $inlineStyles }}" style="font-size:initial">
+<div class="{{ $cssClasses }}" style="{{ $inlineStyles }} font-size:initial">
     <div class="row-blocks {{ $flex ? "flex flex-{$flex}" : '' }}">
         @foreach ($blocks as $blockId => $block)
             @livewire(

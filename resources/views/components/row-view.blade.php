@@ -9,7 +9,9 @@
                         @endforeach
                     </div>
                 @else
-                    @livewire($block['alias'], $block['properties'], key($blockId))
+                    <div style="font-size:initial">
+                        @livewire($block['alias'], $block['properties'], key($blockId))
+                    </div>
                 @endif
             </div>
         @endforeach
