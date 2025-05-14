@@ -8,6 +8,17 @@ class PageBuilderRender
 {
     public function renderPage($pageKey, $pageTheme = null)
     {
+        $page = $this->parsePage($pageKey);
+
+        return view('page-builder::view-page', [
+            'pageKey' => $pageKey,
+            'pageTheme' => $pageTheme,
+            'rows' => $page['rows'],
+        ]);
+    }
+
+    public function parsePage($pageKey)
+    {
         $page = BuilderPage::where('key', $pageKey)->first();
         if (! $page) {
             return 'Page not found';
@@ -16,11 +27,7 @@ class PageBuilderRender
 
         $rows = array_map([$this, 'prepareRow'], $rows);
 
-        return view('page-builder::view-page', [
-            'pageKey' => $pageKey,
-            'pageTheme' => $pageTheme,
-            'rows' => $rows,
-        ]);
+        return ['rows' => $rows];
     }
 
     public function prepareRow($row)
