@@ -272,6 +272,13 @@ public function getPageBuilderProperties(): array
 
 - `RichTextProperty` — rich text editor with formatting options (uses Quill, Trix, or TipTap; stores HTML)
   - `defaultValue`: Default HTML content for the editor
+  
+  Example:
+
+  ```php
+  use Trinavo\LivewirePageBuilder\Support\Properties\RichTextProperty;
+  new RichTextProperty('content', 'Content')
+  ```
 
 - `ImageProperty` — image upload/selector
   - `defaultValue`: Default image URL
@@ -279,10 +286,10 @@ public function getPageBuilderProperties(): array
 - `CheckboxProperty` — boolean toggle
   - `defaultValue`: Default checked state (true/false)
 
-- `ColorProperty` — color picker
-  - `defaultValue`: Default color value
+- `ColorProperty` — color picker with preset and custom color options
+  - `defaultValue`: Default color value (Tailwind class name or hex code)
 
-- `SelectProperty` — dropdown selector
+- `SelectProperty` — dropdown selector for predefined options
   - `options` (array): Key-value pairs for dropdown options
   - `defaultValue`: Default selected option key
 
@@ -311,9 +318,114 @@ MIT
 
 ---
 
-## 🌐 Translations
+## 🌐 Translations and Multilingual Content
 
-Livewire Page Builder supports translations through Laravel's JSON localization system. The package comes with translation files in the `lang` directory.
+Livewire Page Builder supports both UI translation and multilingual content editing.
+
+### Configuring Supported Locales
+
+You can specify which languages your page builder should support in your `config/page-builder.php` file:
+
+```php
+'localization' => [
+    // UI locales affect the builder interface (buttons, labels, etc.)
+    'ui_locales' => [
+        'en' => 'English',
+        'ar' => 'العربية',
+        'fr' => 'Français',
+    ],
+    
+    // Content locales are used for multilingual content in the builder
+    'content_locales' => [
+        'en' => 'English',
+        'ar' => 'العربية',
+        'fr' => 'Français',
+    ],
+    
+    // Default locale for new content
+    'default_content_locale' => 'en',
+],
+```
+
+The configuration has two separate locale settings:
+
+1. **UI Locales** - Control the language of the builder interface itself
+2. **Content Locales** - Enable multilingual content editing in properties like RichText
+
+### Dynamic Localization
+
+You can set locales dynamically at runtime using the `LocalizationService`:
+
+```php
+use Trinavo\LivewirePageBuilder\Services\LocalizationService;
+
+// In your service provider or controller:
+public function boot(LocalizationService $localizationService)
+{
+    // Get locales from your database or another source
+    $dbLocales = YourLocaleModel::all()->pluck('name', 'code')->toArray();
+    
+    // Set UI locales dynamically
+    $localizationService->setUiLocales($dbLocales);
+    
+    // Set content locales dynamically
+    $localizationService->setContentLocales($dbLocales);
+    
+    // Set default content locale
+    $localizationService->setDefaultContentLocale('fr');
+    
+    // Apply changes to views
+    $localizationService->shareWithViews();
+    
+    // Add or remove individual locales
+    $localizationService->addContentLocale('de', 'German');
+    $localizationService->removeContentLocale('fr');
+}
+```
+
+This allows you to customize localization based on user preferences, database settings, or other runtime factors.
+
+### Multilingual Content Editing
+
+The `RichTextProperty` supports multilingual content editing out of the box. When multiple content locales are configured, editors will see language tabs above the editor to switch between languages.
+
+```php
+// In your block class:
+use Trinavo\LivewirePageBuilder\Support\Properties\RichTextProperty;
+
+public function getPageBuilderProperties(): array
+{
+    return [
+        new RichTextProperty('content', 'Content', null, true), // Last parameter enables multilingual mode
+        // Or disable multilingual mode:
+        // new RichTextProperty('content', 'Content')->setMultilingual(false),
+    ];
+}
+```
+
+Content is automatically stored in a structured format that preserves all translations:
+
+```php
+[
+    'multilingual' => true,
+    'values' => [
+        'en' => 'English content...',
+        'ar' => 'المحتوى العربي...',
+        'fr' => 'Contenu français...',
+    ],
+    'default_locale' => 'en'
+]
+```
+
+### Using Translations
+
+To access UI translations in your views, simply use the standard Laravel `__()` helper:
+
+```php
+{{ __('Move Up') }}
+```
+
+JSON translations are automatically loaded from the package's `lang` directory, and Laravel will look for the matching keys in the JSON files based on the current locale.
 
 ### Publishing Translations
 
