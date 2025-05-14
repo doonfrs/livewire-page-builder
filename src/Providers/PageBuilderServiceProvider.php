@@ -2,6 +2,7 @@
 
 namespace Trinavo\LivewirePageBuilder\Providers;
 
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
@@ -15,52 +16,109 @@ use Trinavo\LivewirePageBuilder\Http\Livewire\BuilderBlock;
 use Trinavo\LivewirePageBuilder\Http\Livewire\BuilderPageBlock;
 use Trinavo\LivewirePageBuilder\Http\Livewire\PageEditor;
 use Trinavo\LivewirePageBuilder\Http\Livewire\RowBlock;
+use Trinavo\LivewirePageBuilder\Services\LocalizationService;
 use Trinavo\LivewirePageBuilder\Services\PageBuilderService;
 
 class PageBuilderServiceProvider extends ServiceProvider
 {
+    /**
+     * @var LocalizationService
+     */
+    protected LocalizationService $localizationService;
+
     public function boot(): void
     {
-        $this->loadRoutesFrom(__DIR__.'/../../routes/web.php');
-        $this->loadMigrationsFrom(__DIR__.'/../../database/migrations');
-        $this->loadViewsFrom(__DIR__.'/../../resources/views', 'page-builder');
-        $this->loadTranslationsFrom(__DIR__.'/../../lang', 'page-builder');
+        $this->loadRoutesFrom(__DIR__ . '/../../routes/web.php');
+        $this->loadMigrationsFrom(__DIR__ . '/../../database/migrations');
+        $this->loadViewsFrom(__DIR__ . '/../../resources/views', 'page-builder');
 
-        // Also register the lang directory for JSON translations
-        $this->loadJsonTranslationsFrom(__DIR__.'/../../lang', 'page-builder');
+        // Load the configuration first
+        $this->mergeConfigFrom(__DIR__ . '/../../config/page-builder.php', 'page-builder');
+
+        // Get the localization service
+        $this->localizationService = app(LocalizationService::class);
+
+        // Set up localization using the service
+        $this->setupLocalization();
+
+        // Load translations
+        $this->loadTranslationsFrom(__DIR__ . '/../../lang', 'page-builder');
 
         // Register blade components with namespace
-        $this->loadViewsFrom(__DIR__.'/../../resources/views/components', 'page-builder');
+        $this->loadViewsFrom(__DIR__ . '/../../resources/views/components', 'page-builder');
 
         // Register anonymous blade components
         $this->loadViewComponentsAs('page-builder', []);
         Blade::componentNamespace('Trinavo\\LivewirePageBuilder\\View\\Components', 'page-builder');
 
         $this->publishes([
-            __DIR__.'/../../config/page-builder.php' => config_path('page-builder.php'),
+            __DIR__ . '/../../config/page-builder.php' => config_path('page-builder.php'),
         ], 'config');
 
-        $this->mergeConfigFrom(__DIR__.'/../../config/page-builder.php', 'page-builder');
-
         $this->publishes([
-            __DIR__.'/../../resources/views' => resource_path('views/vendor/page-builder'),
+            __DIR__ . '/../../resources/views' => resource_path('views/vendor/page-builder'),
         ], 'page-builder-views');
 
         // Add asset publishing for Vite build files
         $this->publishes([
-            __DIR__.'/../../public/build' => public_path('vendor/page-builder/build'),
+            __DIR__ . '/../../public/build' => public_path('vendor/page-builder/build'),
         ], 'page-builder-assets');
 
         // Publish translation files
         $this->publishes([
-            __DIR__.'/../../lang' => lang_path('vendor/page-builder'),
+            __DIR__ . '/../../lang' => lang_path('vendor/page-builder'),
         ], 'page-builder-translations');
 
         // Add vite resources
         $this->publishes([
-            __DIR__.'/../../resources/js' => resource_path('js/vendor/page-builder'),
+            __DIR__ . '/../../resources/js' => resource_path('js/vendor/page-builder'),
         ], 'page-builder-js');
 
+        // Register Livewire components
+        $this->registerLivewireComponents();
+
+        // Register blocks
+        app(PageBuilderService::class)->registerBlocks();
+    }
+
+    public function register(): void
+    {
+        // Register the localization service
+        $this->app->singleton(LocalizationService::class, function ($app) {
+            return new LocalizationService();
+        });
+
+        // Register commands
+        $this->commands([
+            InstallPageBuilderCommand::class,
+        ]);
+    }
+
+    /**
+     * Set up localization using the LocalizationService
+     */
+    protected function setupLocalization(): void
+    {
+        // Register JSON translations for all UI locales
+        $this->localizationService->registerJsonTranslations(__DIR__ . '/../../lang');
+
+        // Share localization data with views
+        $this->localizationService->shareWithViews();
+    }
+
+    /**
+     * Get the localization service
+     */
+    public function getLocalizationService(): LocalizationService
+    {
+        return $this->localizationService;
+    }
+
+    /**
+     * Register Livewire components
+     */
+    protected function registerLivewireComponents(): void
+    {
         Livewire::component('page-editor', PageEditor::class);
         Livewire::component('builder-block', BuilderBlock::class);
         Livewire::component('block-properties', BlockProperties::class);
@@ -70,15 +128,5 @@ class PageBuilderServiceProvider extends ServiceProvider
         Livewire::component('block-properties.image-property', ImageProperty::class);
         Livewire::component('block-properties.select-property', SelectProperty::class);
         Livewire::component('block-properties.richtext-property', RichTextProperty::class);
-
-        app(PageBuilderService::class)->registerBlocks();
-    }
-
-    public function register(): void
-    {
-        // Bindings or services can be registered here if needed.
-        $this->commands([
-            InstallPageBuilderCommand::class,
-        ]);
     }
 }

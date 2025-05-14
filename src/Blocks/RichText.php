@@ -28,14 +28,16 @@ class RichText extends Block
 
     public function render()
     {
+        // Use the global namespace helper function to get localized content
+        $content = \pb_localize_content($this->content);
 
         if ($this->editMode) {
             return '<div>
-                '.$this->content.'
+                ' . $content . '
             </div>';
         } else {
             return '<div>
-                '.$this->content.'
+                ' . $content . '
             </div>';
         }
     }
