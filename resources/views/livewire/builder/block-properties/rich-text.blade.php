@@ -12,29 +12,13 @@
                         </button>
                     </li>
                 @endforeach
-
-                <!-- Toggle Multilingual Button -->
-                <li class="ml-auto">
-                    <button type="button"
-                        class="inline-block p-2 text-xs text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
-                        wire:click="toggleMultilingual">
-                        @if ($multilingual)
-                            <x-heroicon-o-globe-alt class="inline w-4 h-4 mr-1 align-text-bottom" />
-                            {{ __('Single Language Mode') }}
-                        @else
-                            <x-heroicon-o-language class="inline w-4 h-4 mr-1 align-text-bottom" />
-                            {{ __('Multilingual Mode') }}
-                        @endif
-                    </button>
-                </li>
             </ul>
         </div>
     @endif
 
     <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">
         @if (isset($propertyLabel))
-            <x-heroicon-o-document-text
-                class="inline w-4 h-4 mr-1 align-text-bottom text-gray-400 dark:text-gray-500" />
+            <x-heroicon-o-document-text class="inline w-4 h-4 mr-1 align-text-bottom text-gray-400 dark:text-gray-500" />
             {{ $propertyLabel }}
             @if ($multilingual && count($contentLocales) > 1)
                 <span
