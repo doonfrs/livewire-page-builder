@@ -42,7 +42,6 @@ class PageEditor extends Component
         ]);
 
         $this->rows = $this->page->components ? json_decode($this->page->components, true) : [];
-
     }
 
     #[On('save-page')]
@@ -79,9 +78,11 @@ class PageEditor extends Component
             $this->rows[$rowId] = $row;
         }
 
-        $this->dispatch('row-added',
+        $this->dispatch(
+            'row-added',
             rowId: $rowId,
-            properties: $row['properties']);
+            properties: $row['properties']
+        );
     }
 
     public function addBlockToRow($rowId, $blockAlias, $blockPageName = null)
@@ -165,6 +166,23 @@ class PageEditor extends Component
         }));
     }
 
+    public function getAllBlocksProperty()
+    {
+        // Prepare blocks data for Alpine.js, including HTML icon representation
+        return collect($this->availableBlocks)->map(function ($block) {
+            // Get the icon component name and convert it to HTML
+            $iconComponent = $block['icon'] ?? 'heroicon-o-cube';
+
+            // Return block data with iconHtml added
+            return [
+                'alias' => $block['alias'],
+                'label' => $block['label'],
+                'blockPageName' => $block['blockPageName'] ?? null,
+                'iconHtml' => '<x-' . $iconComponent . ' class="w-10 h-10" />'
+            ];
+        })->values()->toArray();
+    }
+
     public function addBlockToModalRow($blockAlias, $blockPageName = null)
     {
         if ($this->modalRowId) {
@@ -201,7 +219,7 @@ class PageEditor extends Component
             $newOrder[$currentIndex - 1] = $newOrder[$currentIndex];
             $newOrder[$currentIndex] = $temp;
 
-            $this->rows = collect($newOrder)->mapWithKeys(fn ($id) => [$id => $this->rows[$id]])->toArray();
+            $this->rows = collect($newOrder)->mapWithKeys(fn($id) => [$id => $this->rows[$id]])->toArray();
         }
     }
 
@@ -216,7 +234,7 @@ class PageEditor extends Component
             $newOrder[$currentIndex + 1] = $newOrder[$currentIndex];
             $newOrder[$currentIndex] = $temp;
 
-            $this->rows = collect($newOrder)->mapWithKeys(fn ($id) => [$id => $this->rows[$id]])->toArray();
+            $this->rows = collect($newOrder)->mapWithKeys(fn($id) => [$id => $this->rows[$id]])->toArray();
         }
     }
 
@@ -234,7 +252,7 @@ class PageEditor extends Component
                     $newOrder[$currentIndex - 1] = $newOrder[$currentIndex];
                     $newOrder[$currentIndex] = $temp;
 
-                    $this->rows[$rowId]['blocks'] = collect($newOrder)->mapWithKeys(fn ($id) => [$id => $row['blocks'][$id]])->toArray();
+                    $this->rows[$rowId]['blocks'] = collect($newOrder)->mapWithKeys(fn($id) => [$id => $row['blocks'][$id]])->toArray();
                 }
             }
         }
@@ -255,7 +273,7 @@ class PageEditor extends Component
                     $newOrder[$currentIndex + 1] = $newOrder[$currentIndex];
                     $newOrder[$currentIndex] = $temp;
 
-                    $this->rows[$rowId]['blocks'] = collect($newOrder)->mapWithKeys(fn ($id) => [$id => $row['blocks'][$id]])->toArray();
+                    $this->rows[$rowId]['blocks'] = collect($newOrder)->mapWithKeys(fn($id) => [$id => $row['blocks'][$id]])->toArray();
                 }
             }
         }
@@ -285,7 +303,29 @@ class PageEditor extends Component
 
     public function render()
     {
+        // Format blocks for the modal
+        $formattedBlocks = collect($this->availableBlocks)->map(function ($block) {
+            $iconComponent = $block['icon'] ?? 'heroicon-o-cube';
+
+            return [
+                'alias' => $block['alias'],
+                'label' => $block['label'],
+                'blockPageName' => $block['blockPageName'] ?? null,
+                'iconHtml' => '<x-' . $iconComponent . ' class="w-10 h-10" />'
+            ];
+        })->values()->toArray();
+
+        // Apply filter if needed
+        if ($this->blockFilter) {
+            $filter = strtolower($this->blockFilter);
+            $formattedBlocks = collect($formattedBlocks)->filter(function ($block) use ($filter) {
+                return str_contains(strtolower($block['label']), $filter) ||
+                    str_contains(strtolower($block['alias']), $filter);
+            })->values()->toArray();
+        }
+
         return view('page-builder::livewire.builder.page-editor', [
+            'formattedBlocks' => $formattedBlocks
         ])->layout('page-builder::layouts.app');
     }
 }
