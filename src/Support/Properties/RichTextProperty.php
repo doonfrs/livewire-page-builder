@@ -39,13 +39,23 @@ class RichTextProperty extends BlockProperty
         // Get localization service
         $localizationService = app(LocalizationService::class);
         $contentLocales = $localizationService->getContentLocales();
-        $defaultLocale = $localizationService->getDefaultContentLocale();
+
+        // Use current app locale as default
+        $currentLocale = app()->getLocale();
 
         // Initialize values for all locales
         $this->localizedValues = array_fill_keys(array_keys($contentLocales), '');
 
-        // Set the default value for the default locale
-        $this->localizedValues[$defaultLocale] = $value;
+        // Set the default value for the current locale
+        if (array_key_exists($currentLocale, $contentLocales)) {
+            $this->localizedValues[$currentLocale] = $value;
+        } else {
+            // Fallback to the first locale if current locale isn't in content locales
+            $firstLocale = array_key_first($contentLocales);
+            if ($firstLocale) {
+                $this->localizedValues[$firstLocale] = $value;
+            }
+        }
     }
 
     public function getType(): string

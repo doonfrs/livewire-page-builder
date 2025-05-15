@@ -39,8 +39,13 @@ class RichTextProperty extends Component
         // Get locales directly from the service
         $this->contentLocales = $localizationService->getContentLocales();
 
-        // Set initial current locale
-        $this->currentLocale = $localizationService->getDefaultContentLocale();
+        // Set current locale to the application locale
+        $this->currentLocale = app()->getLocale();
+
+        // Fallback to first content locale if app locale isn't in content locales
+        if (!array_key_exists($this->currentLocale, $this->contentLocales)) {
+            $this->currentLocale = array_key_first($this->contentLocales);
+        }
 
         // Initialize localized values if they don't exist
         if (empty($this->localizedValues) && !empty($this->currentValue)) {
@@ -97,32 +102,12 @@ class RichTextProperty extends Component
             // Create a structured value for storage using the service
             $valueToStore = $this->getLocalizationService()->createMultilingualContent(
                 $this->localizedValues,
-                $this->getLocalizationService()->getDefaultContentLocale()
+                app()->getLocale() // Use current app locale as default
             );
 
             $this->dispatch('updateBlockProperty', $this->rowId, $this->blockId, $this->propertyName, $valueToStore);
         } else {
             // Single language mode - just update the current value
-            $this->updateProperty();
-        }
-    }
-
-    public function toggleMultilingual()
-    {
-        $this->multilingual = !$this->multilingual;
-
-        if ($this->multilingual) {
-            // Going from single to multilingual
-            // Use current value as the value for the current locale
-            foreach (array_keys($this->contentLocales) as $locale) {
-                $this->localizedValues[$locale] = $locale === $this->currentLocale ? $this->currentValue : '';
-            }
-
-            $this->updatedCurrentValue();
-        } else {
-            // Going from multilingual to single
-            // Use current locale's value as the single value
-            $this->currentValue = $this->localizedValues[$this->currentLocale] ?? '';
             $this->updateProperty();
         }
     }
