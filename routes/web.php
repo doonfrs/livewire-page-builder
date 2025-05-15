@@ -5,15 +5,17 @@ use Trinavo\LivewirePageBuilder\Http\Livewire\PageEditor;
 use Trinavo\LivewirePageBuilder\Services\PageBuilderRender;
 
 $middleware = array_merge(
-    ['web'],
+    ['web', 'page-builder-localization'],
     config('page-builder.middleware', [])
 );
 
 Route::middleware($middleware)->prefix('page-builder')->group(function () {
     Route::get(
         '/page/edit/{pageKey}/{pageTheme?}',
-        PageEditor::class)->name('page-builder.page.edit'
-        );
+        PageEditor::class
+    )->name(
+        'page-builder.page.edit'
+    );
     Route::get(
         '/page/view/{pageKey}/{pageTheme?}',
         function ($pageKey, $pageTheme = null) {

@@ -2,7 +2,6 @@
 
 namespace Trinavo\LivewirePageBuilder\Providers;
 
-use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
@@ -26,6 +25,9 @@ class PageBuilderServiceProvider extends ServiceProvider
      */
     protected LocalizationService $localizationService;
 
+    /**
+     * Bootstrap any package services.
+     */
     public function boot(): void
     {
         $this->loadRoutesFrom(__DIR__ . '/../../routes/web.php');
@@ -34,6 +36,14 @@ class PageBuilderServiceProvider extends ServiceProvider
 
         // Load the configuration first
         $this->mergeConfigFrom(__DIR__ . '/../../config/page-builder.php', 'page-builder');
+
+        // Register middleware with the router
+        if ($this->app->bound('router')) {
+            $this->app->make('router')->aliasMiddleware(
+                'page-builder-localization',
+                \Trinavo\LivewirePageBuilder\Http\Middleware\LocalizationMiddleware::class
+            );
+        }
 
         // Get the localization service
         $this->localizationService = app(LocalizationService::class);
@@ -88,6 +98,9 @@ class PageBuilderServiceProvider extends ServiceProvider
             return new LocalizationService();
         });
 
+        // Register middleware for handling language switching
+        $this->app->singleton(\Trinavo\LivewirePageBuilder\Http\Middleware\LocalizationMiddleware::class);
+
         // Register commands
         $this->commands([
             InstallPageBuilderCommand::class,
@@ -128,5 +141,6 @@ class PageBuilderServiceProvider extends ServiceProvider
         Livewire::component('block-properties.image-property', ImageProperty::class);
         Livewire::component('block-properties.select-property', SelectProperty::class);
         Livewire::component('block-properties.richtext-property', RichTextProperty::class);
+        Livewire::component('language-switcher', \Trinavo\LivewirePageBuilder\Http\Livewire\LanguageSwitcher::class);
     }
 }
