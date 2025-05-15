@@ -14,7 +14,7 @@
                        (block.alias && block.alias.toLowerCase().includes(searchTerm));
             });
         }
-    }" x-init="console.log('Alpine blocks count:', allBlocks.length)">
+    }">
     <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-2xl p-8 relative"
         @click.outside="$wire.closeBlockModal()">
         <button wire:click="closeBlockModal"

@@ -3,7 +3,11 @@
             const el = document.getElementById('row-' + $event.detail.rowId); 
             if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' }); 
             $dispatch('row-selected', { rowId: $event.detail.rowId, properties: $event.detail.properties });
-    }, 100);"
+    }, 200);"
+    x-on:block-added.window="setTimeout(() => { 
+            const el = document.getElementById('block-' + $event.detail.blockId); 
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' }); 
+    }, 200);"
     x-init="() => {
         // Wait for DOM content to be fully loaded
         document.addEventListener('DOMContentLoaded', () => {
@@ -129,7 +133,7 @@
 
     <!-- Modal for Adding Block -->
     @if ($showBlockModal)
-        @include('page-builder::livewire.builder.partials.blocks-modal', ['allBlocks' => $formattedBlocks])
+    @include('page-builder::livewire.builder.partials.blocks-modal', ['allBlocks' => $formattedBlocks])
     @endif
 
     <!-- Pages Modal -->
@@ -154,8 +158,8 @@
                 }"
                 style="font-size:0">
                 @foreach ($rows as $rowId => $row)
-                    <livewire:row-block :edit-mode="true" :blocks="$row['blocks']" :rowId="$rowId" :properties="$row['properties']"
-                        :key="$rowId" />
+                <livewire:row-block :edit-mode="true" :blocks="$row['blocks']" :rowId="$rowId" :properties="$row['properties']"
+                    :key="$rowId" />
                 @endforeach
             </div>
         </main>
