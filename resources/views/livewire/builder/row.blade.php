@@ -1,7 +1,8 @@
-<div x-data="{
+<div id="row-{{ $rowId }}" x-data="{
     selected: false
-}" class="{{ $cssClasses }}" style="{{ $inlineStyles }} font-size:initial"
->
+}"
+
+    class="{{ $cssClasses }}" style="{{ $inlineStyles }} font-size:initial">
     <div class="block-row border relative transition-all duration-300 ease-in-out group"
         :class="selected ? 'border-pink-500' : 'border-gray-300'"
         x-on:row-selected.window="selected = $event.detail.rowId == '{{ $rowId }}'"
@@ -26,7 +27,7 @@
             <!-- Add Block Button -->
             <button wire:click="openBlockModal()"
                 class="w-7 h-7 flex items-center justify-center text-white hover:bg-pink-600 rounded transition-colors duration-150"
-                title="Add Block">
+                title="{{ __('Add Block') }}">
                 <x-heroicon-o-plus class="w-5 h-5" />
             </button>
         </div>
@@ -87,10 +88,12 @@
                 </button>
 
                 <!-- Remove Row Button -->
-                <button @click="
+                <button
+                    @click="
                 confirm('Are you sure you want to delete this row?') 
                 && $dispatch('deleteRow', {rowId: '{{ $rowId }}'})
-                " @click="open = false"
+                "
+                    @click="open = false"
                     class="flex items-center w-full px-3 py-2 text-left text-red-700 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20"
                     title="{{ __('Remove Row') }}">
                     <x-heroicon-o-trash class="w-4 h-4 mr-2" />
@@ -99,21 +102,19 @@
             </div>
         </div>
 
-        <div 
-            class="row-blocks pt-4 pb-4 {{ $flex ? "flex flex-{$flex}" : '' }}">
-
+        <div class="row-blocks pt-4 pb-4 {{ $flex ? "flex flex-{$flex}" : '' }}">
             @foreach ($blocks as $blockId => $block)
-                @livewire(
-                    'builder-block',
-                    [
-                        'blockAlias' => $block['alias'],
-                        'blockId' => $blockId,
-                        'rowId' => $rowId,
-                        'properties' => $block['properties'] ?? [],
-                        'editMode' => true,
-                    ],
-                    key($blockId)
-                )
+            @livewire(
+            'builder-block',
+            [
+            'blockAlias' => $block['alias'],
+            'blockId' => $blockId,
+            'rowId' => $rowId,
+            'properties' => $block['properties'] ?? [],
+            'editMode' => true,
+            ],
+            key($blockId)
+            )
             @endforeach
         </div>
     </div>

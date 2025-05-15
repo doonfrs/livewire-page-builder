@@ -66,7 +66,6 @@ class RowBlock extends Block
                 'properties' => $properties,
             ]);
         }
-
     }
 
     public function rowSelected()
@@ -90,7 +89,7 @@ class RowBlock extends Block
         $this->dispatch('moveRowDown', $this->rowId)->to('page-editor');
     }
 
-    #[On('blockAdded')]
+    #[On('block-added')]
     public function blockAdded($rowId, $blockId, $blockAlias, $properties, $beforeBlockId = null, $afterBlockId = null)
     {
         if ($rowId != $this->rowId) {
@@ -173,7 +172,7 @@ class RowBlock extends Block
             $newOrder[$currentIndex - 1] = $newOrder[$currentIndex];
             $newOrder[$currentIndex] = $temp;
 
-            $this->blocks = collect($newOrder)->mapWithKeys(fn ($id) => [$id => $this->blocks[$id]])->toArray();
+            $this->blocks = collect($newOrder)->mapWithKeys(fn($id) => [$id => $this->blocks[$id]])->toArray();
         }
     }
 
@@ -190,7 +189,7 @@ class RowBlock extends Block
             $newOrder[$currentIndex + 1] = $newOrder[$currentIndex];
             $newOrder[$currentIndex] = $temp;
 
-            $this->blocks = collect($newOrder)->mapWithKeys(fn ($id) => [$id => $this->blocks[$id]])->toArray();
+            $this->blocks = collect($newOrder)->mapWithKeys(fn($id) => [$id => $this->blocks[$id]])->toArray();
         }
     }
 

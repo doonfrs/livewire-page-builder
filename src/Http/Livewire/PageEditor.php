@@ -133,7 +133,16 @@ class PageEditor extends Component
             $this->rows[$rowId]['blocks'][$blockId] = $block;
         }
 
-        $this->dispatch('blockAdded', $rowId, $blockId, $blockAlias, $block['properties'], $this->beforeBlockId, $this->afterBlockId)->to('row-block');
+        // Dispatch to row-block component
+        $this->dispatch(
+            'block-added',
+            rowId: $rowId,
+            blockId: $blockId,
+            blockAlias: $blockAlias,
+            properties: $block['properties'],
+            beforeBlockId: $this->beforeBlockId,
+            afterBlockId: $this->afterBlockId
+        );
     }
 
     #[On('openBlockModal')]
