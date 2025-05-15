@@ -20,13 +20,13 @@ class PageBuilderRender
     public function parsePage($pageKey)
     {
         $page = BuilderPage::where('key', $pageKey)->first();
-        if (! $page) {
-            return 'Page not found';
-        }
-        $rows = json_decode($page->components, true);
+        $rows = [];
+        if ($page) {
+            $rows = json_decode($page->components, true);
 
-        if ($rows) {
-            $rows = array_map([$this, 'prepareRow'], $rows);
+            if ($rows) {
+                $rows = array_map([$this, 'prepareRow'], $rows);
+            }
         }
 
         return ['rows' => $rows ?? []];
