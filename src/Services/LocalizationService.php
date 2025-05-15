@@ -207,4 +207,38 @@ class LocalizationService
             'default_locale' => $defaultLocale ?? $this->getDefaultContentLocale()
         ];
     }
+
+    /**
+     * Set the UI locale and load translations
+     * 
+     * @param string $locale The locale code to set
+     * @return self
+     */
+    public function setUiLocale(string $locale): self
+    {
+        if (!array_key_exists($locale, static::$cache['ui_locales'])) {
+            // If locale doesn't exist in UI locales, don't change it
+            return $this;
+        }
+
+        // Set the application locale
+        app()->setLocale($locale);
+
+        // Re-register JSON translations for this locale
+        $this->registerJsonTranslationsForLocale(app()->langPath(), $locale);
+
+        return $this;
+    }
+
+    /**
+     * Register JSON translations for a specific locale
+     * 
+     * @param string $path The path to load translations from
+     * @param string $locale The locale to load
+     * @return void
+     */
+    public function registerJsonTranslationsForLocale(string $path, string $locale): void
+    {
+        app()->make('translator')->addJsonPath($path, $locale);
+    }
 }
