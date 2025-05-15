@@ -46,7 +46,6 @@ class RichTextProperty extends BlockProperty
 
         // Set the default value for the default locale
         $this->localizedValues[$defaultLocale] = $value;
-
     }
 
     public function getType(): string
@@ -54,30 +53,43 @@ class RichTextProperty extends BlockProperty
         return 'richtext';
     }
 
+    /**
+     * Enable or disable multilingual support for this property
+     */
+    public function multilingual(bool $value = true): self
+    {
+        $this->multilingual = $value;
+        return $this;
+    }
+
     public function toArray(): array
     {
-        return [
+        $baseArray = [
             'name' => $this->name,
             'label' => $this->label,
             'type' => $this->getType(),
-            'defaultValue' => $this->multilingual ?
-                app(LocalizationService::class)->createMultilingualContent($this->localizedValues) :
-                $this->defaultValue,
             'group' => $this->group,
             'groupLabel' => $this->groupLabel,
             'groupIcon' => $this->groupIcon,
             'groupColumns' => $this->groupColumns,
             'multilingual' => $this->multilingual,
-            'localizedValues' => $this->localizedValues,
         ];
+
+        if ($this->multilingual) {
+            $baseArray['defaultValue'] = app(LocalizationService::class)->createMultilingualContent($this->localizedValues);
+            $baseArray['localizedValues'] = $this->localizedValues;
+        } else {
+            $baseArray['defaultValue'] = $this->defaultValue;
+        }
+
+        return $baseArray;
     }
 
     /**
-     * Set this property to be multilingual or not
+     * Create a new instance of this property
      */
-    public function setMultilingual(bool $multilingual): self
+    public static function make(string $name, ?string $label = null, $defaultValue = null, bool $multilingual = true): self
     {
-        $this->multilingual = $multilingual;
-        return $this;
+        return new self($name, $label, $defaultValue, $multilingual);
     }
 }

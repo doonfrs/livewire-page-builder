@@ -30,4 +30,12 @@ class ColorProperty extends BlockProperty
             'groupColumns' => $this->groupColumns,
         ];
     }
+
+    /**
+     * Create a new instance of this property
+     */
+    public static function make(string $name, ?string $label = null, $defaultValue = null): self
+    {
+        return new self($name, $label, $defaultValue);
+    }
 }
