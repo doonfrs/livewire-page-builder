@@ -25,9 +25,11 @@ class PageBuilderRender
         }
         $rows = json_decode($page->components, true);
 
-        $rows = array_map([$this, 'prepareRow'], $rows);
+        if ($rows) {
+            $rows = array_map([$this, 'prepareRow'], $rows);
+        }
 
-        return ['rows' => $rows];
+        return ['rows' => $rows ?? []];
     }
 
     public function prepareRow($row)
