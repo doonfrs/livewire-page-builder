@@ -45,4 +45,12 @@ class TextProperty extends BlockProperty
             'groupColumns' => $this->groupColumns,
         ];
     }
+
+    /**
+     * Create a new instance of this property
+     */
+    public static function make(string $name, ?string $label = null, bool $numeric = false, $defaultValue = null, $min = null, $max = null): self
+    {
+        return new self($name, $label, $numeric, $defaultValue, $min, $max);
+    }
 }

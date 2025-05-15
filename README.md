@@ -18,7 +18,7 @@
 - **Context Menus & Toolbars**: Intuitive UI for block/row actions, including context menus, toolbars, and modals.
 - **Configurable Site Structure**: Define your site's pages, blocks, and structure in a single config file.
 - **Publishable Views**: Easily override any package view for full customization, while keeping unmodified views up-to-date.
-- **Multilingual Support**: Built-in translation system for internationalizing the UI in multiple languages.
+- **Multilingual Support**: Comprehensive localization for both UI and content with language switcher, enabling you to build fully multilingual sites with content edited in multiple languages.
 - **Extensible & Developer-Friendly**: Add new property types, extend the builder, and integrate with other Livewire or Laravel packages.
 - **MIT Licensed & Open Source**: Use it freely in any project, commercial or personal.
 

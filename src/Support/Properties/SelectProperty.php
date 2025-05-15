@@ -35,4 +35,12 @@ class SelectProperty extends BlockProperty
             'groupColumns' => $this->groupColumns,
         ];
     }
+
+    /**
+     * Create a new instance of this property
+     */
+    public static function make(string $name, ?string $label = null, array $options = [], $defaultValue = null): static
+    {
+        return new static($name, $label, $options, $defaultValue);
+    }
 }

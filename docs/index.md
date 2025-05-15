@@ -8,6 +8,7 @@ Welcome to the documentation for the Livewire Page Builder package.
 - [Advanced Configuration](advanced-configuration.md)
 - [Custom Block Development](custom-block-development.md)
 - [Performance Optimization](performance-optimization.md)
+- [Multilingual Support](multilingual-support.md)
 
 ---
 
@@ -19,6 +20,7 @@ Livewire Page Builder is a modern, extensible page builder for Laravel 12 and Li
 - **Custom Blocks:** Easily register and configure your own Livewire blocks.
 - **Reusable Pages:** Use pages as blocks (e.g., header, footer) for maximum flexibility.
 - **Optimized for Speed:** Separate edit and view modes with blade rendering for production views.
+- **Multilingual Ready:** Support for content in multiple languages and UI localization with easy switching.
 
 ---
 

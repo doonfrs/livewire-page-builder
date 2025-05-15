@@ -41,6 +41,15 @@ abstract class BlockProperty
         return $this;
     }
 
+    /**
+     * Set the label for this property
+     */
+    public function label(string $label): self
+    {
+        $this->label = $label;
+        return $this;
+    }
+
     abstract public function getType(): string;
 
     abstract public function toArray(): array;
