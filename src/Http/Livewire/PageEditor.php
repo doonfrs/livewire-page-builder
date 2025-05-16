@@ -15,6 +15,8 @@ class PageEditor extends Component
 
     public bool $showBlockModal = false;
 
+    public bool $showPageBlocksModal = false;
+
     public string $blockFilter = '';
 
     public ?string $modalRowId = null;
@@ -163,6 +165,17 @@ class PageEditor extends Component
         $this->afterBlockId = null;
     }
 
+    #[On('openPageBlocksModal')]
+    public function openPageBlocksModal()
+    {
+        $this->showPageBlocksModal = true;
+    }
+
+    public function closePageBlocksModal()
+    {
+        $this->showPageBlocksModal = false;
+    }
+
     public function getFilteredBlocksProperty()
     {
         if (! $this->blockFilter) {
@@ -187,7 +200,7 @@ class PageEditor extends Component
                 'alias' => $block['alias'],
                 'label' => $block['label'],
                 'blockPageName' => $block['blockPageName'] ?? null,
-                'iconHtml' => '<x-' . $iconComponent . ' class="w-10 h-10" />'
+                'iconHtml' => '<x-'.$iconComponent.' class="w-10 h-10" />',
             ];
         })->values()->toArray();
     }
@@ -228,7 +241,7 @@ class PageEditor extends Component
             $newOrder[$currentIndex - 1] = $newOrder[$currentIndex];
             $newOrder[$currentIndex] = $temp;
 
-            $this->rows = collect($newOrder)->mapWithKeys(fn($id) => [$id => $this->rows[$id]])->toArray();
+            $this->rows = collect($newOrder)->mapWithKeys(fn ($id) => [$id => $this->rows[$id]])->toArray();
         }
     }
 
@@ -243,7 +256,7 @@ class PageEditor extends Component
             $newOrder[$currentIndex + 1] = $newOrder[$currentIndex];
             $newOrder[$currentIndex] = $temp;
 
-            $this->rows = collect($newOrder)->mapWithKeys(fn($id) => [$id => $this->rows[$id]])->toArray();
+            $this->rows = collect($newOrder)->mapWithKeys(fn ($id) => [$id => $this->rows[$id]])->toArray();
         }
     }
 
@@ -261,7 +274,7 @@ class PageEditor extends Component
                     $newOrder[$currentIndex - 1] = $newOrder[$currentIndex];
                     $newOrder[$currentIndex] = $temp;
 
-                    $this->rows[$rowId]['blocks'] = collect($newOrder)->mapWithKeys(fn($id) => [$id => $row['blocks'][$id]])->toArray();
+                    $this->rows[$rowId]['blocks'] = collect($newOrder)->mapWithKeys(fn ($id) => [$id => $row['blocks'][$id]])->toArray();
                 }
             }
         }
@@ -282,7 +295,7 @@ class PageEditor extends Component
                     $newOrder[$currentIndex + 1] = $newOrder[$currentIndex];
                     $newOrder[$currentIndex] = $temp;
 
-                    $this->rows[$rowId]['blocks'] = collect($newOrder)->mapWithKeys(fn($id) => [$id => $row['blocks'][$id]])->toArray();
+                    $this->rows[$rowId]['blocks'] = collect($newOrder)->mapWithKeys(fn ($id) => [$id => $row['blocks'][$id]])->toArray();
                 }
             }
         }
@@ -320,7 +333,7 @@ class PageEditor extends Component
                 'alias' => $block['alias'],
                 'label' => $block['label'],
                 'blockPageName' => $block['blockPageName'] ?? null,
-                'iconHtml' => '<x-' . $iconComponent . ' class="w-10 h-10" />'
+                'iconHtml' => '<x-'.$iconComponent.' class="w-10 h-10" />',
             ];
         })->values()->toArray();
 
@@ -333,8 +346,40 @@ class PageEditor extends Component
             })->values()->toArray();
         }
 
+        // Get all blocks in the page
+        $allPageBlocks = $this->getAllPageBlocks();
+
         return view('page-builder::livewire.builder.page-editor', [
-            'formattedBlocks' => $formattedBlocks
+            'formattedBlocks' => $formattedBlocks,
+            'allPageBlocks' => $allPageBlocks,
         ])->layout('page-builder::layouts.app');
+    }
+
+    public function getAllPageBlocks()
+    {
+        $blocks = [];
+
+        foreach ($this->rows as $rowId => $row) {
+            foreach ($row['blocks'] as $blockId => $block) {
+                $blockClass = app(PageBuilderService::class)->getClassNameFromAlias($block['alias']);
+                if (! $blockClass) {
+                    continue;
+                }
+
+                $blockInstance = app($blockClass);
+                $label = $blockInstance->getPageBuilderLabel();
+                $icon = $blockInstance->getPageBuilderIcon() ?? 'heroicon-o-cube';
+
+                $blocks[] = [
+                    'id' => $blockId,
+                    'rowId' => $rowId,
+                    'alias' => $block['alias'],
+                    'label' => $label,
+                    'icon' => $icon,
+                ];
+            }
+        }
+
+        return $blocks;
     }
 }

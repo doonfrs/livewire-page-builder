@@ -48,6 +48,19 @@ class BuilderBlock extends Component
 
     }
 
+    #[On('select-block')]
+    public function selectBlock($blockId)
+    {
+        if ($blockId != $this->blockId) {
+            return;
+        }
+        $this->dispatch('block-selected',
+            blockId: $this->blockId,
+            properties: $this->properties,
+            blockClass: md5($this->getBlockClass()),
+        );
+    }
+
     public function blockSelected()
     {
         $this->dispatch(
