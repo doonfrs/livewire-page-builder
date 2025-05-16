@@ -8,6 +8,12 @@
             const el = document.getElementById('block-' + $event.detail.blockId); 
             if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' }); 
     }, 200);"
+    x-on:select-block.window="
+        setTimeout(() => {
+            const el = document.getElementById('block-' + $event.detail.blockId);
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 100);
+    "
     x-init="() => {
         // Wait for DOM content to be fully loaded
         document.addEventListener('DOMContentLoaded', () => {
@@ -76,12 +82,17 @@
                 wire:click="addRow" title="{{ __('Add Row') }}">
                 <x-heroicon-o-plus class="w-5 h-5" />
             </button>
+            <!-- List Blocks Button -->
+            <button
+                class="flex items-center gap-1 px-4 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-2 focus:ring-pink-200 transition-all duration-150 text-sm font-medium"
+                wire:click="$dispatch('openPageBlocksModal')" title="{{ __('List Blocks') }}">
+                <x-heroicon-o-list-bullet class="w-5 h-5" />
+            </button>
             <!-- Pages Button -->
             <button x-on:click="showPagesModal = true"
                 class="flex items-center gap-1 px-4 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-2 focus:ring-blue-200 transition-all duration-150 text-sm font-medium"
                 title="{{ __('Open Pages') }}">
                 <x-heroicon-o-document-text class="w-5 h-5" />
-                <span class="hidden sm:inline">{{ __('Pages') }}</span>
             </button>
             <!-- Preview Button -->
             <a :href="'/page-builder/page/view/' + @js($pageKey ?? '') + (@js($pageTheme ?? '') ? '/' +
@@ -133,7 +144,14 @@
 
     <!-- Modal for Adding Block -->
     @if ($showBlockModal)
-    @include('page-builder::livewire.builder.partials.blocks-modal', ['allBlocks' => $formattedBlocks])
+        @include('page-builder::livewire.builder.partials.blocks-modal', ['allBlocks' => $formattedBlocks])
+    @endif
+
+    <!-- Modal for Page Blocks -->
+    @if ($showPageBlocksModal)
+        @include('page-builder::livewire.builder.partials.page-blocks-modal', [
+            'allPageBlocks' => $allPageBlocks,
+        ])
     @endif
 
     <!-- Pages Modal -->
@@ -158,8 +176,8 @@
                 }"
                 style="font-size:0">
                 @foreach ($rows as $rowId => $row)
-                <livewire:row-block :edit-mode="true" :blocks="$row['blocks']" :rowId="$rowId" :properties="$row['properties']"
-                    :key="$rowId" />
+                    <livewire:row-block :edit-mode="true" :blocks="$row['blocks']" :rowId="$rowId" :properties="$row['properties']"
+                        :key="$rowId" />
                 @endforeach
             </div>
         </main>
