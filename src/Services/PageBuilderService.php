@@ -72,7 +72,7 @@ class PageBuilderService
     {
         $alias = Str::kebab(str_replace('\\', '-', $blockClass));
         $alias = str_replace('--', '-', $alias);
-        $alias = 'page-builder-'.$alias;
+        $alias = 'page-builder-' . $alias;
 
         return $alias;
     }
@@ -120,19 +120,19 @@ class PageBuilderService
         $classes = [];
 
         if ($hiddenMobile && $hiddenTablet && $hiddenDesktop) {
-            $classes[] = 'hidden';
+            $classes[] = "hidden";
         } elseif ($hiddenMobile && $hiddenTablet) {
-            $classes[] = 'hidden @3xl:block';
+            $classes[] = "hidden @3xl:block";
         } elseif ($hiddenMobile && $hiddenDesktop) {
-            $classes[] = 'hidden @xl:block @5xl:hidden';
+            $classes[] = "hidden @xl:block @5xl:hidden";
         } elseif ($hiddenTablet && $hiddenDesktop) {
-            $classes[] = 'block @xl:hidden';
+            $classes[] = "block @xl:hidden";
         } elseif ($hiddenMobile) {
-            $classes[] = 'hidden @xl:block';
+            $classes[] = "hidden @xl:block";
         } elseif ($hiddenTablet) {
-            $classes[] = 'block @xl:hidden @5xl:block';
+            $classes[] = "block @xl:hidden @5xl:block";
         } elseif ($hiddenDesktop) {
-            $classes[] = 'block @5xl:hidden';
+            $classes[] = "block @5xl:hidden";
         } else {
             if ($useContainer) {
                 $classes[] = 'block';
@@ -181,11 +181,11 @@ class PageBuilderService
 
         // Only add tablet/desktop widths if they're different from mobile
         if ($tabletWidth !== $mobileWidth) {
-            $classes[] = '@3xl:'.$tabletWidth;
+            $classes[] = '@3xl:' . $tabletWidth;
         }
 
         if ($desktopWidth !== $tabletWidth) {
-            $classes[] = '@5xl:'.$desktopWidth;
+            $classes[] = '@5xl:' . $desktopWidth;
         }
 
         if ($textColor) {
