@@ -1,6 +1,7 @@
 <div>
     <div x-data="{ 
         isOpen: false,
+        activeTab: @entangle('activeTab'),
         getColorName(color) {
             if (!color) return 'None';
             return color.includes('#') ? color : color.replace('-', ' ').replace(/^\w/, c => c.toUpperCase());
@@ -52,6 +53,15 @@
         closePopover() {
             this.isOpen = false;
             $wire.showModal = false;
+        },
+        customColorDebounce: null,
+        applyCustomColorWithDebounce(color) {
+            if (this.customColorDebounce) {
+                clearTimeout(this.customColorDebounce);
+            }
+            this.customColorDebounce = setTimeout(() => {
+                $wire.selectCustomColor();
+            }, 500);
         }
     }" class="relative">
         <!-- Color Display and Button -->
@@ -90,52 +100,102 @@
                 </button>
             </div>
 
+            <!-- Tabs -->
+            <div class="flex border-b border-gray-200 dark:border-gray-700">
+                <button 
+                    @click="activeTab = 'theme'; $wire.setTab('theme')"
+                    :class="{'bg-gray-100 dark:bg-gray-700 border-b-2 border-blue-500': activeTab === 'theme'}"
+                    class="flex-1 py-2 text-xs font-medium text-center">
+                    {{ __('Theme Colors') }}
+                </button>
+                <button 
+                    @click="activeTab = 'tailwind'; $wire.setTab('tailwind')"
+                    :class="{'bg-gray-100 dark:bg-gray-700 border-b-2 border-blue-500': activeTab === 'tailwind'}"
+                    class="flex-1 py-2 text-xs font-medium text-center">
+                    {{ __('Tailwind') }}
+                </button>
+                <button 
+                    @click="activeTab = 'custom'; $wire.setTab('custom')"
+                    :class="{'bg-gray-100 dark:bg-gray-700 border-b-2 border-blue-500': activeTab === 'custom'}"
+                    class="flex-1 py-2 text-xs font-medium text-center">
+                    {{ __('Custom') }}
+                </button>
+            </div>
+
             <div class="p-2 max-h-[300px] overflow-y-auto">
-                <!-- All Colors in a flat grid -->
-                <div class="mb-3">
-                    <!-- Flat color grid -->
-                    <div class="grid grid-cols-8 gap-1 mb-2">
-                        @foreach ($presetColors['gray'] as $color)
-                        <button
-                            wire:click="selectColor('{{ $color }}')"
-                            class="w-5 h-5 rounded-sm border border-gray-300 dark:border-gray-600 transition-all hover:scale-110 hover:shadow bg-{{ $color }}"
-                            title="{{ ucwords(str_replace('-', ' ', $color)) }}">
-                        </button>
-                        @endforeach
-                    </div>
-                    
-                    <div class="grid grid-cols-8 gap-1">
-                        @foreach (['red', 'blue', 'green', 'yellow', 'pink', 'purple', 'indigo'] as $colorGroup)
-                            @foreach ($presetColors[$colorGroup] as $color)
+                <!-- Theme Colors Tab -->
+                <div x-show="activeTab === 'theme'" class="mb-3">
+                    @foreach ($themeColors as $colorGroup => $colors)
+                    <div class="mb-2">
+                        <h4 class="text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">{{ ucfirst($colorGroup) }}</h4>
+                        <div class="grid grid-cols-4 gap-1">
+                            @foreach ($colors as $color)
                             <button
-                                wire:click="selectColor('{{ $color }}')"
-                                class="w-5 h-5 rounded-sm border border-gray-300 dark:border-gray-600 transition-all hover:scale-110 hover:shadow bg-{{ $color }}"
-                                title="{{ ucwords(str_replace('-', ' ', $color)) }}">
+                                wire:click="selectColor('{{ $color }}'); $dispatch('color-selected')"
+                                @color-selected.window="closePopover()"
+                                class="flex flex-col items-center p-1 rounded border border-gray-200 dark:border-gray-700 transition-all hover:bg-gray-50 dark:hover:bg-gray-700">
+                                <div class="w-full h-5 rounded-sm border border-gray-300 dark:border-gray-600 bg-{{ $color }}"></div>
+                                <span class="text-[10px] mt-1 truncate">{{ $color }}</span>
                             </button>
                             @endforeach
-                        @endforeach
+                        </div>
                     </div>
+                    @endforeach
                 </div>
 
-                <!-- Custom Color Picker -->
-                <div class="mb-2">
-                    <div class="flex gap-1 items-center">
+                <!-- Tailwind Colors Tab -->
+                <div x-show="activeTab === 'tailwind'" class="mb-3">
+                    <!-- Gray Colors -->
+                    <div class="mb-2">
+                        <h4 class="text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Gray</h4>
+                        <div class="grid grid-cols-5 gap-1">
+                            @foreach ($presetColors['gray'] as $color)
+                            <button
+                                wire:click="selectColor('{{ $color }}'); $dispatch('color-selected')"
+                                @color-selected.window="closePopover()"
+                                class="w-full h-10 rounded-sm border border-gray-300 dark:border-gray-600 transition-all hover:scale-105 hover:shadow bg-{{ $color }} flex items-end justify-center pb-1"
+                                title="{{ ucwords(str_replace('-', ' ', $color)) }}">
+                                <span class="text-[9px] text-white text-shadow">{{ explode('-', $color)[1] }}</span>
+                            </button>
+                            @endforeach
+                        </div>
+                    </div>
+                    
+                    <!-- Other Color Groups -->
+                    @foreach (['red', 'blue', 'green', 'yellow', 'pink', 'purple', 'indigo'] as $colorGroup)
+                    <div class="mb-2">
+                        <h4 class="text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">{{ ucfirst($colorGroup) }}</h4>
+                        <div class="grid grid-cols-5 gap-1">
+                            @foreach ($presetColors[$colorGroup] as $color)
+                            <button
+                                wire:click="selectColor('{{ $color }}'); $dispatch('color-selected')"
+                                @color-selected.window="closePopover()"
+                                class="w-full h-10 rounded-sm border border-gray-300 dark:border-gray-600 transition-all hover:scale-105 hover:shadow bg-{{ $color }} flex items-end justify-center pb-1"
+                                title="{{ ucwords(str_replace('-', ' ', $color)) }}">
+                                <span class="text-[9px] text-white text-shadow">{{ explode('-', $color)[1] }}</span>
+                            </button>
+                            @endforeach
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+
+                <!-- Custom Color Picker Tab -->
+                <div x-show="activeTab === 'custom'" class="mb-3">
+                    <div class="flex gap-1 items-center mb-3">
                         <input
                             type="color"
                             wire:model.live="customColor"
-                            class="cursor-pointer h-7 w-7 border-0 p-0" />
+                            @input="applyCustomColorWithDebounce($event.target.value)"
+                            class="cursor-pointer h-10 w-10 border-0 p-0" />
                         <input
                             type="text"
                             wire:model.live="customColor"
+                            @input="applyCustomColorWithDebounce($event.target.value)"
                             placeholder="Hex color"
-                            class="flex-1 p-1 text-xs border border-gray-300 rounded dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200" />
-                        <button
-                            type="button"
-                            wire:click="selectCustomColor"
-                            class="px-2 py-1 text-xs bg-blue-500 text-white rounded hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 transition-colors">
-                            {{ __('Apply') }}
-                        </button>
+                            class="flex-1 p-2 text-sm border border-gray-300 rounded dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200" />
                     </div>
+                    <div class="h-10 w-full rounded border border-gray-300 dark:border-gray-600 mb-4" :style="getColorStyle('{{ $customColor }}')"></div>
                 </div>
 
                 <!-- Footer Actions -->

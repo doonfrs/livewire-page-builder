@@ -20,6 +20,8 @@ class ColorPicker extends Component
 
     public $customColor = '';
 
+    public $activeTab = 'theme';
+
     public $presetColors = [
         'gray' => [
             'gray-50', 'gray-100', 'gray-200', 'gray-300', 'gray-400',
@@ -34,10 +36,41 @@ class ColorPicker extends Component
         'indigo' => ['indigo-300', 'indigo-400', 'indigo-500', 'indigo-600', 'indigo-700'],
     ];
 
+    public $themeColors = [
+        'base' => [
+            'base-100', 'base-200', 'base-300', 'base-content',
+        ],
+        'primary' => [
+            'primary', 'primary-content',
+        ],
+        'secondary' => [
+            'secondary', 'secondary-content',
+        ],
+        'accent' => [
+            'accent', 'accent-content',
+        ],
+        'neutral' => [
+            'neutral', 'neutral-content',
+        ],
+        'info' => [
+            'info', 'info-content',
+        ],
+        'success' => [
+            'success', 'success-content',
+        ],
+        'warning' => [
+            'warning', 'warning-content',
+        ],
+        'error' => [
+            'error', 'error-content',
+        ],
+    ];
+
     public function mount()
     {
         if (str_starts_with($this->currentValue, '#')) {
             $this->customColor = $this->currentValue;
+            $this->activeTab = 'custom';
         }
     }
 
@@ -54,6 +87,11 @@ class ColorPicker extends Component
     public function toggleModal()
     {
         $this->showModal = ! $this->showModal;
+    }
+
+    public function setTab($tab)
+    {
+        $this->activeTab = $tab;
     }
 
     public function selectColor($color)
