@@ -123,7 +123,7 @@ class PageBuilderService
         if ($hiddenMobile && $hiddenTablet && $hiddenDesktop) {
             $classes[] = 'hidden';
         } elseif ($hiddenMobile && $hiddenTablet) {
-            $classes[] = 'hidden @3xl:block';
+            $classes[] = 'hidden @5xl:block';
         } elseif ($hiddenMobile && $hiddenDesktop) {
             $classes[] = 'hidden @xl:block @5xl:hidden';
         } elseif ($hiddenTablet && $hiddenDesktop) {
