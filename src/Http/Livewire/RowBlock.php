@@ -21,6 +21,12 @@ class RowBlock extends Block
 
     public $flex = null;
 
+    public $mobileWidth = 'w-full';
+
+    public $tabletWidth = 'w-full';
+
+    public $desktopWidth = 'w-full';
+
     public function mount()
     {
         $this->properties = $this->properties ?? $this->getPropertyValues();
@@ -172,7 +178,7 @@ class RowBlock extends Block
             $newOrder[$currentIndex - 1] = $newOrder[$currentIndex];
             $newOrder[$currentIndex] = $temp;
 
-            $this->blocks = collect($newOrder)->mapWithKeys(fn($id) => [$id => $this->blocks[$id]])->toArray();
+            $this->blocks = collect($newOrder)->mapWithKeys(fn ($id) => [$id => $this->blocks[$id]])->toArray();
         }
     }
 
@@ -189,7 +195,7 @@ class RowBlock extends Block
             $newOrder[$currentIndex + 1] = $newOrder[$currentIndex];
             $newOrder[$currentIndex] = $temp;
 
-            $this->blocks = collect($newOrder)->mapWithKeys(fn($id) => [$id => $this->blocks[$id]])->toArray();
+            $this->blocks = collect($newOrder)->mapWithKeys(fn ($id) => [$id => $this->blocks[$id]])->toArray();
         }
     }
 
