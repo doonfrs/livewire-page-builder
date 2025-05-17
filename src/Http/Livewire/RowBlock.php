@@ -27,6 +27,10 @@ class RowBlock extends Block
 
     public $desktopWidth = 'w-full';
 
+    public $useContainer = true;
+
+    public $selfCentered = false;
+
     public function mount()
     {
         $this->properties = $this->properties ?? $this->getPropertyValues();
