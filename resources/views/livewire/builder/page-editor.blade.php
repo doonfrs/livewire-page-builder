@@ -168,7 +168,7 @@
 
         <!-- Main Section (Scrollable) -->
         <main class="flex-1 pt-10 pb-50 pr-0 bg-gray-50 dark:bg-gray-900 overflow-auto min-h-0 w-[80%]">
-            <div class="mx-auto @container ps-4 pe-4"
+            <div class="mx-auto @container"
                 :class="{
                     'w-[375px]': deviceMode === 'mobile',
                     'w-[768px]': deviceMode === 'tablet',
