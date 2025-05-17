@@ -9,7 +9,7 @@ use Trinavo\LivewirePageBuilder\Support\Block;
 
 class BuilderPageBlock extends Block
 {
-    public ?string $blockPageName;
+    public ?string $blockPageName = null;
 
     public ?array $rows;
 
