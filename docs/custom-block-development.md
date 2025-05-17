@@ -139,29 +139,6 @@ The base `Block` class automatically provides the following shared properties:
 - Size (cover, contain, auto, 100%)
 - Repeat (no-repeat, repeat, repeat-x, repeat-y)
 
-#### Layout Properties
-
-- Container setting (applies the container class)
-- Self-centered setting (applies mx-auto)
-
-## Using Properties in Your Templates
-
-In your Blade templates, you can access these properties directly:
-
-```blade
-<div class="hero-block {{ $this->getSpacingClasses() }} {{ $this->getLayoutClasses() }}"
-     style="{{ $this->getBackgroundImageStyle() }}">
-    <h1>{{ $title }}</h1>
-    <p>{{ $subtitle }}</p>
-</div>
-```
-
-The base Block class provides helper methods:
-
-- `getSpacingClasses()`: Returns Tailwind classes for padding and margin
-- `getLayoutClasses()`: Returns Tailwind classes for layout settings (container, mx-auto)
-- `getBackgroundImageStyle()`: Returns inline CSS for background images
-
 ## Example: Hero Block
 
 ```php

@@ -5,6 +5,7 @@ namespace Trinavo\LivewirePageBuilder\Http\Livewire;
 use Livewire\Attributes\On;
 use Trinavo\LivewirePageBuilder\Services\PageBuilderService;
 use Trinavo\LivewirePageBuilder\Support\Block;
+use Trinavo\LivewirePageBuilder\Support\Properties\CheckboxProperty;
 use Trinavo\LivewirePageBuilder\Support\Properties\SelectProperty;
 
 class RowBlock extends Block
@@ -26,8 +27,6 @@ class RowBlock extends Block
     public $tabletWidth = 'w-full';
 
     public $desktopWidth = 'w-full';
-
-    public $useContainer = true;
 
     public $selfCentered = false;
 
