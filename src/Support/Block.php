@@ -70,10 +70,6 @@ abstract class Block extends Component
 
     public $backgroundRepeat = 'no-repeat';
 
-    // Container properties
-    public $useContainer = false;
-
-    // Alignment properties
     public $selfCentered = false;
 
     public bool $editMode = false;
@@ -137,6 +133,19 @@ abstract class Block extends Component
             'w-2/5' => '2/5',
             'w-3/5' => '3/5',
             'w-4/5' => '4/5',
+            'w-3xs' => '3xs (256px)',
+            'w-2xs' => '2xs (288px)',
+            'w-xs' => 'xs (320px)',
+            'w-sm' => 'sm (384px)',
+            'w-md' => 'md (448px)',
+            'w-lg' => 'lg (512px)',
+            'w-xl' => 'xl (576px)',
+            'w-2xl' => '2xl (672px)',
+            'w-3xl' => '3xl (768px)',
+            'w-4xl' => '4xl (896px)',
+            'w-5xl' => '5xl (1024px)',
+            'w-6xl' => '6xl (1152px)',
+            'w-7xl' => '7xl (1280px)',
             'w-full' => 'full',
         ];
 
@@ -271,84 +280,9 @@ abstract class Block extends Component
     protected function getLayoutProperties(): array
     {
         return [
-            (new CheckboxProperty('useContainer', 'Container', defaultValue: false))
-                ->setGroup('layout', 'Layout', 2, 'heroicon-o-rectangle-group'),
             (new CheckboxProperty('selfCentered', 'Self-centered (mx-auto)', defaultValue: false))
                 ->setGroup('layout', 'Layout', 2, 'heroicon-o-rectangle-group'),
         ];
-    }
-
-    /**
-     * Generate spacing CSS classes based on properties
-     */
-    public function getSpacingClasses(): string
-    {
-        $classes = [];
-
-        // Add padding classes
-        if ($this->paddingTop > 0) {
-            $classes[] = "pt-{$this->paddingTop}";
-        }
-        if ($this->paddingRight > 0) {
-            $classes[] = "pr-{$this->paddingRight}";
-        }
-        if ($this->paddingBottom > 0) {
-            $classes[] = "pb-{$this->paddingBottom}";
-        }
-        if ($this->paddingLeft > 0) {
-            $classes[] = "pl-{$this->paddingLeft}";
-        }
-
-        // Add margin classes
-        if ($this->marginTop > 0) {
-            $classes[] = "mt-{$this->marginTop}";
-        }
-        if ($this->marginRight > 0) {
-            $classes[] = "mr-{$this->marginRight}";
-        }
-        if ($this->marginBottom > 0) {
-            $classes[] = "mb-{$this->marginBottom}";
-        }
-        if ($this->marginLeft > 0) {
-            $classes[] = "ml-{$this->marginLeft}";
-        }
-
-        return implode(' ', $classes);
-    }
-
-    /**
-     * Generate layout CSS classes based on properties
-     */
-    public function getLayoutClasses(): string
-    {
-        $classes = [];
-
-        // Add container class if enabled
-        if ($this->useContainer) {
-            $classes[] = 'container';
-        }
-
-        // Add self-centering (mx-auto) if enabled
-        if ($this->selfCentered) {
-            $classes[] = 'mx-auto';
-        }
-
-        return implode(' ', $classes);
-    }
-
-    /**
-     * Generate background image style based on properties
-     */
-    public function getBackgroundImageStyle(): string
-    {
-        if (empty($this->backgroundImage)) {
-            return '';
-        }
-
-        return "background-image: url('{$this->backgroundImage}'); 
-                background-position: {$this->backgroundPosition}; 
-                background-size: {$this->backgroundSize}; 
-                background-repeat: {$this->backgroundRepeat};";
     }
 
     /**

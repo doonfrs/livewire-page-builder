@@ -14,9 +14,9 @@
     <div class="grid grid-cols-1 grid-cols-2 grid-cols-3 grid-cols-4 grid-cols-5 grid-cols-6 grid-cols-7 grid-cols-8 grid-cols-9 grid-cols-10 grid-cols-11 grid-cols-12 grid-cols-13 grid-cols-14 grid-cols-15 grid-cols-16 grid-cols-17 grid-cols-18 grid-cols-19 grid-cols-20"></div>
 
     {{-- Width utilities --}}
-    <div class="w-1/10 w-1/5 w-3/10 w-2/5 w-1/2 w-3/5 w-7/10 w-4/5 w-9/10 w-1/3 w-1/4 w-2/3 w-3/4 w-full w-auto"></div>
-    <div class="@3xl:w-1/10 @3xl:w-1/5 @3xl:w-3/10 @3xl:w-2/5 @3xl:w-1/2 @3xl:w-3/5 @3xl:w-7/10 @3xl:w-4/5 @3xl:w-9/10 @3xl:w-1/3 @3xl:w-1/4 @3xl:w-2/3 @3xl:w-3/4 @3xl:w-full @3xl:w-auto"></div>
-    <div class="@5xl:w-1/10 @5xl:w-1/5 @5xl:w-3/10 @5xl:w-2/5 @5xl:w-1/2 @5xl:w-3/5 @5xl:w-7/10 @5xl:w-4/5 @5xl:w-9/10 @5xl:w-1/3 @5xl:w-1/4 @5xl:w-2/3 @5xl:w-3/4 @5xl:w-full @5xl:w-auto"></div>
+    <div class="w-1/10 w-1/5 w-3/10 w-2/5 w-1/2 w-3/5 w-7/10 w-4/5 w-9/10 w-1/3 w-1/4 w-2/3 w-3/4 w-full w-auto w-screen w-fit w-3xs w-2xs w-xs w-sm w-md w-lg w-xl w-2xl w-3xl w-4xl w-5xl w-6xl w-7xl"></div>
+    <div class="@3xl:w-1/10 @3xl:w-1/5 @3xl:w-3/10 @3xl:w-2/5 @3xl:w-1/2 @3xl:w-3/5 @3xl:w-7/10 @3xl:w-4/5 @3xl:w-9/10 @3xl:w-1/3 @3xl:w-1/4 @3xl:w-2/3 @3xl:w-3/4 @3xl:w-full @3xl:w-auto @3xl:w-screen @3xl:w-fit @3xl:w-3xs @3xl:w-2xs @3xl:w-xs @3xl:w-sm @3xl:w-md @3xl:w-lg @3xl:w-xl @3xl:w-2xl @3xl:w-3xl @3xl:w-4xl @3xl:w-5xl @3xl:w-6xl @3xl:w-7xl"></div>
+    <div class="@5xl:w-1/10 @5xl:w-1/5 @5xl:w-3/10 @5xl:w-2/5 @5xl:w-1/2 @5xl:w-3/5 @5xl:w-7/10 @5xl:w-4/5 @5xl:w-9/10 @5xl:w-1/3 @5xl:w-1/4 @5xl:w-2/3 @5xl:w-3/4 @5xl:w-full @5xl:w-auto @5xl:w-screen @5xl:w-fit @5xl:w-3xs @5xl:w-2xs @5xl:w-xs @5xl:w-sm @5xl:w-md @5xl:w-lg @5xl:w-xl @5xl:w-2xl @5xl:w-3xl @5xl:w-4xl @5xl:w-5xl @5xl:w-6xl @5xl:w-7xl"></div>
 
     {{-- Height utilities --}}
     <div class="h-0 h-px h-1 h-2 h-4 h-8 h-12 h-16 h-24 h-32 h-48 h-64 h-80 h-96 h-1/2 h-1/3 h-2/3 h-1/4 h-3/4 h-1/5 h-2/5 h-3/5 h-4/5 h-full h-screen h-auto"></div>

@@ -112,8 +112,6 @@ class PageBuilderService
         $marginBottom = $properties['marginBottom'] ?? 0;
         $marginLeft = $properties['marginLeft'] ?? 0;
 
-        // Layout properties
-        $useContainer = $properties['useContainer'] ?? false;
         $selfCentered = $properties['selfCentered'] ?? false;
         $textColor = $properties['textColor'] ?? null;
         $backgroundColor = $properties['backgroundColor'] ?? null;
@@ -135,15 +133,11 @@ class PageBuilderService
         } elseif ($hiddenDesktop) {
             $classes[] = 'block @5xl:hidden';
         } else {
-            if ($useContainer) {
+            if ($selfCentered) {
                 $classes[] = 'block';
             } else {
                 $classes[] = 'inline-block';
             }
-        }
-
-        if ($useContainer) {
-            $classes[] = 'container';
         }
 
         if ($selfCentered) {

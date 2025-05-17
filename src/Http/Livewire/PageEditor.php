@@ -29,8 +29,6 @@ class PageEditor extends Component
 
     public ?string $pageTheme = null;
 
-    public $useContainer = true;
-
     public $selfCentered = false;
 
     public BuilderPage $page;
