@@ -4,8 +4,6 @@ namespace Trinavo\LivewirePageBuilder\Support;
 
 use Illuminate\Support\Str;
 use Livewire\Component;
-use Trinavo\LivewirePageBuilder\Http\Livewire\BuilderPageBlock;
-use Trinavo\LivewirePageBuilder\Http\Livewire\RowBlock;
 use Trinavo\LivewirePageBuilder\Services\PageBuilderService;
 use Trinavo\LivewirePageBuilder\Support\Properties\CheckboxProperty;
 use Trinavo\LivewirePageBuilder\Support\Properties\ColorProperty;
@@ -122,61 +120,28 @@ abstract class Block extends Component
      */
     protected function getResponsiveProperties(): array
     {
-        $widths = [
-            'w-auto' => 'Auto',
-            'w-1/3' => '1/3',
-            'w-2/3' => '2/3',
-            'w-1/2' => '1/2',
-            'w-1/4' => '1/4',
-            'w-3/4' => '3/4',
-            'w-1/5' => '1/5',
-            'w-2/5' => '2/5',
-            'w-3/5' => '3/5',
-            'w-4/5' => '4/5',
-            'w-3xs' => '3xs (256px)',
-            'w-2xs' => '2xs (288px)',
-            'w-xs' => 'xs (320px)',
-            'w-sm' => 'sm (384px)',
-            'w-md' => 'md (448px)',
-            'w-lg' => 'lg (512px)',
-            'w-xl' => 'xl (576px)',
-            'w-2xl' => '2xl (672px)',
-            'w-3xl' => '3xl (768px)',
-            'w-4xl' => '4xl (896px)',
-            'w-5xl' => '5xl (1024px)',
-            'w-6xl' => '6xl (1152px)',
-            'w-7xl' => '7xl (1280px)',
-            'w-full' => 'full',
-        ];
-
-        if (static::class == RowBlock::class) {
-            $defaultValue = 'w-full';
-        } elseif (static::class == BuilderPageBlock::class) {
-            $defaultValue = 'w-full';
-        } else {
-            $defaultValue = 'w-auto';
-        }
+        $widths = $this->getPageBuilderWidthList();
 
         return [
-            (new SelectProperty('mobileWidth', 'Mobile', $widths, defaultValue: $defaultValue))
+            (new SelectProperty('mobileWidth', 'Mobile', $widths, defaultValue: $this->mobileWidth))
                 ->setGroup('width', 'Width', 3, 'heroicon-o-device-phone-mobile'),
-            (new SelectProperty('tabletWidth', 'Tablet', $widths, defaultValue: $defaultValue))
+            (new SelectProperty('tabletWidth', 'Tablet', $widths, defaultValue: $this->tabletWidth))
                 ->setGroup('width', 'Width', 3, 'heroicon-o-device-tablet'),
-            (new SelectProperty('desktopWidth', 'Desktop', $widths, defaultValue: $defaultValue))
+            (new SelectProperty('desktopWidth', 'Desktop', $widths, defaultValue: $this->desktopWidth))
                 ->setGroup('width', 'Width', 3, 'heroicon-o-device-desktop'),
 
-            (new TextProperty('mobileHeight', 'Mobile', numeric: true, defaultValue: null, min: 0))
+            (new TextProperty('mobileHeight', 'Mobile', numeric: true, defaultValue: $this->mobileHeight, min: 0))
                 ->setGroup('height', 'Height', 3, 'heroicon-o-device-phone-mobile'),
-            (new TextProperty('tabletHeight', 'Tablet', numeric: true, defaultValue: null, min: 0))
+            (new TextProperty('tabletHeight', 'Tablet', numeric: true, defaultValue: $this->tabletHeight, min: 0))
                 ->setGroup('height', 'Height', 3, 'heroicon-o-device-tablet'),
-            (new TextProperty('desktopHeight', 'Desktop', numeric: true, defaultValue: null, min: 0))
+            (new TextProperty('desktopHeight', 'Desktop', numeric: true, defaultValue: $this->desktopHeight, min: 0))
                 ->setGroup('height', 'Height', 3, 'heroicon-o-device-desktop'),
 
-            (new TextProperty('mobileMinHeight', 'Mobile', numeric: true, defaultValue: null, min: 0))
+            (new TextProperty('mobileMinHeight', 'Mobile', numeric: true, defaultValue: $this->mobileMinHeight, min: 0))
                 ->setGroup('min_height', 'Min Height', 3, 'heroicon-o-device-phone-mobile'),
-            (new TextProperty('tabletMinHeight', 'Tablet', numeric: true, defaultValue: null, min: 0))
+            (new TextProperty('tabletMinHeight', 'Tablet', numeric: true, defaultValue: $this->tabletMinHeight, min: 0))
                 ->setGroup('min_height', 'Min Height', 3, 'heroicon-o-device-tablet'),
-            (new TextProperty('desktopMinHeight', 'Desktop', numeric: true, defaultValue: null, min: 0))
+            (new TextProperty('desktopMinHeight', 'Desktop', numeric: true, defaultValue: $this->desktopMinHeight, min: 0))
                 ->setGroup('min_height', 'Min Height', 3, 'heroicon-o-device-desktop'),
         ];
     }
@@ -187,11 +152,11 @@ abstract class Block extends Component
     protected function getVisibilityProperties(): array
     {
         return [
-            (new CheckboxProperty('hiddenMobile', 'Mobile', defaultValue: false))
+            (new CheckboxProperty('hiddenMobile', 'Mobile', defaultValue: $this->hiddenMobile))
                 ->setGroup('hide', 'Hide', 3, 'heroicon-o-eye'),
-            (new CheckboxProperty('hiddenTablet', 'Tablet', defaultValue: false))
+            (new CheckboxProperty('hiddenTablet', 'Tablet', defaultValue: $this->hiddenTablet))
                 ->setGroup('hide', 'Hide', 3, 'heroicon-o-eye'),
-            (new CheckboxProperty('hiddenDesktop', 'Desktop', defaultValue: false))
+            (new CheckboxProperty('hiddenDesktop', 'Desktop', defaultValue: $this->hiddenDesktop))
                 ->setGroup('hide', 'Hide', 3, 'heroicon-o-eye'),
         ];
     }
@@ -203,23 +168,23 @@ abstract class Block extends Component
     {
         return [
             // Padding properties
-            (new TextProperty('paddingTop', 'Top', numeric: true, defaultValue: 0, min: 0))
+            (new TextProperty('paddingTop', 'Top', numeric: true, defaultValue: $this->paddingTop, min: 0))
                 ->setGroup('padding', 'Padding', 4, 'heroicon-o-square-2-stack'),
-            (new TextProperty('paddingRight', 'Right', numeric: true, defaultValue: 0, min: 0))
+            (new TextProperty('paddingRight', 'Right', numeric: true, defaultValue: $this->paddingRight, min: 0))
                 ->setGroup('padding', 'Padding', 4, 'heroicon-o-square-2-stack'),
-            (new TextProperty('paddingBottom', 'Bottom', numeric: true, defaultValue: 0, min: 0))
+            (new TextProperty('paddingBottom', 'Bottom', numeric: true, defaultValue: $this->paddingBottom, min: 0))
                 ->setGroup('padding', 'Padding', 4, 'heroicon-o-square-2-stack'),
-            (new TextProperty('paddingLeft', 'Left', numeric: true, defaultValue: 0, min: 0))
+            (new TextProperty('paddingLeft', 'Left', numeric: true, defaultValue: $this->paddingLeft, min: 0))
                 ->setGroup('padding', 'Padding', 4, 'heroicon-o-square-2-stack'),
 
             // Margin properties
-            (new TextProperty('marginTop', 'Top', numeric: true, defaultValue: 0, min: 0))
+            (new TextProperty('marginTop', 'Top', numeric: true, defaultValue: $this->marginTop, min: 0))
                 ->setGroup('margin', 'Margin', 4, 'heroicon-o-arrows-pointing-out'),
-            (new TextProperty('marginRight', 'Right', numeric: true, defaultValue: 0, min: 0))
+            (new TextProperty('marginRight', 'Right', numeric: true, defaultValue: $this->marginRight, min: 0))
                 ->setGroup('margin', 'Margin', 4, 'heroicon-o-arrows-pointing-out'),
-            (new TextProperty('marginBottom', 'Bottom', numeric: true, defaultValue: 0, min: 0))
+            (new TextProperty('marginBottom', 'Bottom', numeric: true, defaultValue: $this->marginBottom, min: 0))
                 ->setGroup('margin', 'Margin', 4, 'heroicon-o-arrows-pointing-out'),
-            (new TextProperty('marginLeft', 'Left', numeric: true, defaultValue: 0, min: 0))
+            (new TextProperty('marginLeft', 'Left', numeric: true, defaultValue: $this->marginLeft, min: 0))
                 ->setGroup('margin', 'Margin', 4, 'heroicon-o-arrows-pointing-out'),
         ];
     }
@@ -230,9 +195,9 @@ abstract class Block extends Component
     protected function getStyleProperties(): array
     {
         return [
-            (new ColorProperty('textColor', 'Text Color', defaultValue: null))
+            (new ColorProperty('textColor', 'Text Color', defaultValue: $this->textColor))
                 ->setGroup('color', 'Color', 2, 'heroicon-o-swatch'),
-            (new ColorProperty('backgroundColor', 'Background Color', defaultValue: null))
+            (new ColorProperty('backgroundColor', 'Background Color', defaultValue: $this->backgroundColor))
                 ->setGroup('color', 'Color', 2, 'heroicon-o-swatch'),
         ];
     }
@@ -243,7 +208,7 @@ abstract class Block extends Component
     protected function getBackgroundImageProperties(): array
     {
         return [
-            (new ImageProperty('backgroundImage', 'Image', defaultValue: null))
+            (new ImageProperty('backgroundImage', 'Image', defaultValue: $this->backgroundImage))
                 ->setGroup('background_image', 'Background Image', 1, 'heroicon-o-photo'),
             (new SelectProperty('backgroundPosition', 'Position', [
                 'center' => 'Center',
@@ -255,21 +220,21 @@ abstract class Block extends Component
                 'top-right' => 'Top Right',
                 'bottom-left' => 'Bottom Left',
                 'bottom-right' => 'Bottom Right',
-            ], defaultValue: 'center'))
+            ], defaultValue: $this->backgroundPosition))
                 ->setGroup('backgroundImageOptions', 'Background Image Options', 2, 'heroicon-o-photo'),
             (new SelectProperty('backgroundSize', 'Size', [
                 'cover' => 'Cover',
                 'contain' => 'Contain',
                 'auto' => 'Auto',
                 '100%' => '100%',
-            ], defaultValue: 'cover'))
+            ], defaultValue: $this->backgroundSize))
                 ->setGroup('backgroundImageOptions', 'Background Image Options', 2, 'heroicon-o-photo'),
             (new SelectProperty('backgroundRepeat', 'Repeat', [
                 'no-repeat' => 'No Repeat',
                 'repeat' => 'Repeat',
                 'repeat-x' => 'Repeat X',
                 'repeat-y' => 'Repeat Y',
-            ], defaultValue: 'no-repeat'))
+            ], defaultValue: $this->backgroundRepeat))
                 ->setGroup('backgroundImageOptions', 'Background Image Options', 2, 'heroicon-o-photo'),
         ];
     }
@@ -280,7 +245,7 @@ abstract class Block extends Component
     protected function getLayoutProperties(): array
     {
         return [
-            (new CheckboxProperty('selfCentered', 'Self-centered (mx-auto)', defaultValue: false))
+            (new CheckboxProperty('selfCentered', 'Self Centered', defaultValue: $this->selfCentered))
                 ->setGroup('layout', 'Layout', 2, 'heroicon-o-rectangle-group'),
         ];
     }
@@ -330,5 +295,35 @@ abstract class Block extends Component
         ];
 
         return app(PageBuilderService::class)->getHeightCssClassesFromProperties($properties);
+    }
+
+    public function getPageBuilderWidthList(): array
+    {
+        return [
+            'w-auto' => 'Auto',
+            'w-1/3' => '1/3',
+            'w-2/3' => '2/3',
+            'w-1/2' => '1/2',
+            'w-1/4' => '1/4',
+            'w-3/4' => '3/4',
+            'w-1/5' => '1/5',
+            'w-2/5' => '2/5',
+            'w-3/5' => '3/5',
+            'w-4/5' => '4/5',
+            'w-3xs' => '3xs (256px)',
+            'w-2xs' => '2xs (288px)',
+            'w-xs' => 'xs (320px)',
+            'w-sm' => 'sm (384px)',
+            'w-md' => 'md (448px)',
+            'w-lg' => 'lg (512px)',
+            'w-xl' => 'xl (576px)',
+            'w-2xl' => '2xl (672px)',
+            'w-3xl' => '3xl (768px)',
+            'w-4xl' => '4xl (896px)',
+            'w-5xl' => '5xl (1024px)',
+            'w-6xl' => '6xl (1152px)',
+            'w-7xl' => '7xl (1280px)',
+            'w-full' => 'full',
+        ];
     }
 }

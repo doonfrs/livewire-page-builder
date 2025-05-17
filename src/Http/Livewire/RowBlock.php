@@ -5,6 +5,7 @@ namespace Trinavo\LivewirePageBuilder\Http\Livewire;
 use Livewire\Attributes\On;
 use Trinavo\LivewirePageBuilder\Services\PageBuilderService;
 use Trinavo\LivewirePageBuilder\Support\Block;
+use Trinavo\LivewirePageBuilder\Support\Properties\CheckboxProperty;
 use Trinavo\LivewirePageBuilder\Support\Properties\SelectProperty;
 
 class RowBlock extends Block
@@ -25,9 +26,17 @@ class RowBlock extends Block
 
     public $tabletWidth = 'w-full';
 
-    public $desktopWidth = 'w-full';
+    public $desktopWidth = 'w-7xl';
 
-    public $selfCentered = false;
+    public $selfCentered = true;
+
+    public $contentWidthDesktop = 'w-full';
+
+    public $contentWidthTablet = 'w-full';
+
+    public $contentWidthMobile = 'w-full';
+
+    public $contentCentered = true;
 
     public function mount()
     {
@@ -63,15 +72,19 @@ class RowBlock extends Block
             $this->flex = null;
         }
 
+        $rowCssClasses = app(PageBuilderService::class)->getRowCssClassesFromProperties($properties);
+
         if ($this->editMode) {
             return view('page-builder::livewire.builder.row', [
                 'rowId' => $this->rowId,
                 'properties' => $properties,
+                'rowCssClasses' => $rowCssClasses,
             ]);
         } else {
             return view('page-builder::livewire.builder.row-view', [
                 'rowId' => $this->rowId,
                 'properties' => $properties,
+                'rowCssClasses' => $rowCssClasses,
             ]);
         }
     }
@@ -224,6 +237,29 @@ class RowBlock extends Block
                     'col-reverse' => 'Column Reverse',
                 ],
             ),
+            (new CheckboxProperty(
+                name: 'contentCentered',
+                label: 'Content Centered',
+                defaultValue: $this->contentCentered,
+            )),
+            (new SelectProperty(
+                name: 'contentWidthMobile',
+                label: 'Mobile',
+                defaultValue: $this->contentWidthMobile,
+                options: $this->getPageBuilderWidthList(),
+            ))->setGroup('contentWidth', 'Content Width', 3, 'heroicon-o-rectangle-group'),
+            (new SelectProperty(
+                name: 'contentWidthTablet',
+                label: 'Tablet',
+                defaultValue: $this->contentWidthTablet,
+                options: $this->getPageBuilderWidthList(),
+            ))->setGroup('contentWidth', 'Content Width', 3, 'heroicon-o-rectangle-group'),
+            (new SelectProperty(
+                name: 'contentWidthDesktop',
+                label: 'Desktop',
+                defaultValue: $this->contentWidthDesktop,
+                options: $this->getPageBuilderWidthList(),
+            ))->setGroup('contentWidth', 'Content Width', 3, 'heroicon-o-rectangle-group'),
         ];
     }
 

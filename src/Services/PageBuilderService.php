@@ -91,14 +91,44 @@ class PageBuilderService
         return null;
     }
 
+    public function getRowCssClassesFromProperties($properties): string
+    {
+        $rowCssClasses = [];
+        $flex = $properties['flex'] ?? null;
+        if ($flex) {
+            $rowCssClasses[] = "flex flex-{$flex}";
+        }
+
+        $contentWidthMobile = $properties['contentWidthMobile'] ?? 'w-full';
+        $contentWidthTablet = $properties['contentWidthTablet'] ?? 'w-full';
+        $contentWidthDesktop = $properties['contentWidthDesktop'] ?? 'w-full';
+
+        if ($contentWidthMobile) {
+            $rowCssClasses[] = $contentWidthMobile;
+        }
+
+        // Only add tablet/desktop widths if they're different from mobile
+        if ($contentWidthTablet !== $contentWidthMobile) {
+            $rowCssClasses[] = '@3xl:'.$contentWidthTablet;
+        }
+
+        if ($contentWidthDesktop !== $contentWidthTablet) {
+            $rowCssClasses[] = '@5xl:'.$contentWidthDesktop;
+        }
+
+        $contentCentered = $properties['contentCentered'] ?? false;
+        if ($contentCentered) {
+            $rowCssClasses[] = 'mx-auto';
+        }
+
+        return implode(' ', $rowCssClasses);
+    }
+
     public function getCssClassesFromProperties(array $properties, bool $isRowBlock = false): ?string
     {
         $hiddenMobile = $properties['hiddenMobile'] ?? false;
         $hiddenTablet = $properties['hiddenTablet'] ?? false;
         $hiddenDesktop = $properties['hiddenDesktop'] ?? false;
-        $mobileWidth = $properties['mobileWidth'] ?? 'w-auto';
-        $tabletWidth = $properties['tabletWidth'] ?? 'w-auto';
-        $desktopWidth = $properties['desktopWidth'] ?? 'w-auto';
 
         // Padding properties
         $paddingTop = $properties['paddingTop'] ?? 0;
@@ -172,17 +202,6 @@ class PageBuilderService
             $classes[] = "ml-$marginLeft";
         }
 
-        $classes[] = $mobileWidth;
-
-        // Only add tablet/desktop widths if they're different from mobile
-        if ($tabletWidth !== $mobileWidth) {
-            $classes[] = '@3xl:'.$tabletWidth;
-        }
-
-        if ($desktopWidth !== $tabletWidth) {
-            $classes[] = '@5xl:'.$desktopWidth;
-        }
-
         if ($textColor) {
             if (! str_starts_with($textColor, '#')) {
                 $classes[] = "text-$textColor";
@@ -206,7 +225,32 @@ class PageBuilderService
             $classString .= ' '.$heightClasses;
         }
 
+        $widthClasses = $this->getWidthCssClassesFromProperties($properties);
+        if (count($widthClasses) > 0) {
+            $classString .= ' '.implode(' ', $widthClasses);
+        }
+
         return $classString;
+    }
+
+    public function getWidthCssClassesFromProperties(array $properties): array
+    {
+        $mobileWidth = $properties['mobileWidth'] ?? 'w-auto';
+        $tabletWidth = $properties['tabletWidth'] ?? 'w-auto';
+        $desktopWidth = $properties['desktopWidth'] ?? 'w-auto';
+
+        $classes[] = $mobileWidth;
+
+        // Only add tablet/desktop widths if they're different from mobile
+        if ($tabletWidth !== $mobileWidth) {
+            $classes[] = '@3xl:'.$tabletWidth;
+        }
+
+        if ($desktopWidth !== $tabletWidth) {
+            $classes[] = '@5xl:'.$desktopWidth;
+        }
+
+        return $classes;
     }
 
     public function getInlineStylesFromProperties(array $properties): ?string

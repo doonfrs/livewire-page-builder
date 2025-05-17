@@ -102,7 +102,7 @@
             </div>
         </div>
 
-        <div class="row-blocks pt-4 pb-4 {{ $flex ? "flex flex-{$flex}" : '' }}">
+        <div class="row-blocks pt-4 pb-4 {{ $rowCssClasses }}">
             @foreach ($blocks as $blockId => $block)
             @livewire(
             'builder-block',

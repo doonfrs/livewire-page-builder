@@ -39,11 +39,7 @@ class PageBuilderRender
 
         $row['blocks'] = array_map([$this, 'prepareBlock'], $row['blocks']);
 
-        $row['rowCssClasses'] = '';
-        $flex = $row['properties']['flex'] ?? null;
-        if ($flex) {
-            $row['rowCssClasses'] = "flex flex-{$flex}";
-        }
+        $row['rowCssClasses'] = app(PageBuilderService::class)->getRowCssClassesFromProperties($row['properties']);
 
         return $row;
     }
