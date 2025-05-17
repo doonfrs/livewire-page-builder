@@ -5,7 +5,6 @@ namespace Trinavo\LivewirePageBuilder\Http\Livewire;
 use Livewire\Attributes\On;
 use Trinavo\LivewirePageBuilder\Services\PageBuilderService;
 use Trinavo\LivewirePageBuilder\Support\Block;
-use Trinavo\LivewirePageBuilder\Support\Properties\CheckboxProperty;
 use Trinavo\LivewirePageBuilder\Support\Properties\SelectProperty;
 
 class RowBlock extends Block
@@ -86,6 +85,14 @@ class RowBlock extends Block
         );
 
         $this->skipRender();
+    }
+
+    #[On('edit-row')]
+    public function editRow($rowId)
+    {
+        if ($rowId == $this->rowId) {
+            $this->rowSelected();
+        }
     }
 
     public function moveRowUp()
@@ -218,5 +225,17 @@ class RowBlock extends Block
                 ],
             ),
         ];
+    }
+
+    #[On('select-row')]
+    public function selectRow($rowId)
+    {
+        if ($rowId != $this->rowId) {
+            return;
+        }
+        $this->dispatch('row-selected',
+            rowId: $this->rowId,
+            properties: $this->properties,
+        );
     }
 }
