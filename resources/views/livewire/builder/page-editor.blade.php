@@ -14,6 +14,12 @@
             if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }, 100);
     "
+    x-on:select-row.window="
+        setTimeout(() => {
+            const el = document.getElementById('row-' + $event.detail.rowId);
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 100);
+    "
     x-init="() => {
         // Wait for DOM content to be fully loaded
         document.addEventListener('DOMContentLoaded', () => {

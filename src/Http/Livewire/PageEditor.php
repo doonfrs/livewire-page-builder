@@ -351,9 +351,13 @@ class PageEditor extends Component
         // Get all blocks in the page
         $allPageBlocks = $this->getAllPageBlocks();
 
+        // Group blocks by row for the tree view
+        $groupedPageBlocks = $this->getGroupedPageBlocks();
+
         return view('page-builder::livewire.builder.page-editor', [
             'formattedBlocks' => $formattedBlocks,
             'allPageBlocks' => $allPageBlocks,
+            'groupedPageBlocks' => $groupedPageBlocks,
         ])->layout('page-builder::layouts.app');
     }
 
@@ -383,5 +387,38 @@ class PageEditor extends Component
         }
 
         return $blocks;
+    }
+
+    public function getGroupedPageBlocks()
+    {
+        $grouped = [];
+
+        foreach ($this->rows as $rowId => $row) {
+            $blocks = [];
+
+            foreach ($row['blocks'] as $blockId => $block) {
+                $blockClass = app(PageBuilderService::class)->getClassNameFromAlias($block['alias']);
+                if (! $blockClass) {
+                    continue;
+                }
+
+                $blockInstance = app($blockClass);
+                $label = $blockInstance->getPageBuilderLabel();
+                $icon = $blockInstance->getPageBuilderIcon() ?? 'heroicon-o-cube';
+
+                $blocks[] = [
+                    'id' => $blockId,
+                    'alias' => $block['alias'],
+                    'label' => $label,
+                    'icon' => $icon,
+                ];
+            }
+
+            $grouped[$rowId] = [
+                'blocks' => $blocks,
+            ];
+        }
+
+        return $grouped;
     }
 }
