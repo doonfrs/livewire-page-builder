@@ -18,6 +18,16 @@
     <div class="@3xl:w-1/10 @3xl:w-1/5 @3xl:w-3/10 @3xl:w-2/5 @3xl:w-1/2 @3xl:w-3/5 @3xl:w-7/10 @3xl:w-4/5 @3xl:w-9/10 @3xl:w-1/3 @3xl:w-1/4 @3xl:w-2/3 @3xl:w-3/4 @3xl:w-full @3xl:w-auto"></div>
     <div class="@5xl:w-1/10 @5xl:w-1/5 @5xl:w-3/10 @5xl:w-2/5 @5xl:w-1/2 @5xl:w-3/5 @5xl:w-7/10 @5xl:w-4/5 @5xl:w-9/10 @5xl:w-1/3 @5xl:w-1/4 @5xl:w-2/3 @5xl:w-3/4 @5xl:w-full @5xl:w-auto"></div>
 
+    {{-- Height utilities --}}
+    <div class="h-0 h-px h-1 h-2 h-4 h-8 h-12 h-16 h-24 h-32 h-48 h-64 h-80 h-96 h-1/2 h-1/3 h-2/3 h-1/4 h-3/4 h-1/5 h-2/5 h-3/5 h-4/5 h-full h-screen h-auto"></div>
+    <div class="@3xl:h-0 @3xl:h-px @3xl:h-1 @3xl:h-2 @3xl:h-4 @3xl:h-8 @3xl:h-12 @3xl:h-16 @3xl:h-24 @3xl:h-32 @3xl:h-48 @3xl:h-64 @3xl:h-80 @3xl:h-96 @3xl:h-1/2 @3xl:h-1/3 @3xl:h-2/3 @3xl:h-1/4 @3xl:h-3/4 @3xl:h-1/5 @3xl:h-2/5 @3xl:h-3/5 @3xl:h-4/5 @3xl:h-full @3xl:h-screen @3xl:h-auto"></div>
+    <div class="@5xl:h-0 @5xl:h-px @5xl:h-1 @5xl:h-2 @5xl:h-4 @5xl:h-8 @5xl:h-12 @5xl:h-16 @5xl:h-24 @5xl:h-32 @5xl:h-48 @5xl:h-64 @5xl:h-80 @5xl:h-96 @5xl:h-1/2 @5xl:h-1/3 @5xl:h-2/3 @5xl:h-1/4 @5xl:h-3/4 @5xl:h-1/5 @5xl:h-2/5 @5xl:h-3/5 @5xl:h-4/5 @5xl:h-full @5xl:h-screen @5xl:h-auto"></div>
+    
+    {{-- Min Height utilities --}}
+    <div class="min-h-0 min-h-px min-h-1 min-h-2 min-h-4 min-h-8 min-h-12 min-h-16 min-h-24 min-h-32 min-h-48 min-h-64 min-h-80 min-h-96 min-h-1/2 min-h-1/3 min-h-2/3 min-h-1/4 min-h-3/4 min-h-1/5 min-h-2/5 min-h-3/5 min-h-4/5 min-h-full min-h-screen"></div>
+    <div class="@3xl:min-h-0 @3xl:min-h-px @3xl:min-h-1 @3xl:min-h-2 @3xl:min-h-4 @3xl:min-h-8 @3xl:min-h-12 @3xl:min-h-16 @3xl:min-h-24 @3xl:min-h-32 @3xl:min-h-48 @3xl:min-h-64 @3xl:min-h-80 @3xl:min-h-96 @3xl:min-h-1/2 @3xl:min-h-1/3 @3xl:min-h-2/3 @3xl:min-h-1/4 @3xl:min-h-3/4 @3xl:min-h-1/5 @3xl:min-h-2/5 @3xl:min-h-3/5 @3xl:min-h-4/5 @3xl:min-h-full @3xl:min-h-screen"></div>
+    <div class="@5xl:min-h-0 @5xl:min-h-px @5xl:min-h-1 @5xl:min-h-2 @5xl:min-h-4 @5xl:min-h-8 @5xl:min-h-12 @5xl:min-h-16 @5xl:min-h-24 @5xl:min-h-32 @5xl:min-h-48 @5xl:min-h-64 @5xl:min-h-80 @5xl:min-h-96 @5xl:min-h-1/2 @5xl:min-h-1/3 @5xl:min-h-2/3 @5xl:min-h-1/4 @5xl:min-h-3/4 @5xl:min-h-1/5 @5xl:min-h-2/5 @5xl:min-h-3/5 @5xl:min-h-4/5 @5xl:min-h-full @5xl:min-h-screen"></div>
+
     <div class="flex flex-row flex-col"></div>
     <div class="@md:flex @md:flex-row @md:flex-col"></div>
     <div class="@lg:flex @lg:flex-row @lg:flex-col"></div>
@@ -82,6 +92,19 @@
         text-indigo-300 text-indigo-400 text-indigo-500 text-indigo-600 text-indigo-700
     "></div>
     
+    {{-- DaisyUI Theme Text Color Utilities --}}
+    <div class="
+        text-base-100 text-base-200 text-base-300 text-base-content
+        text-primary text-primary-content
+        text-secondary text-secondary-content
+        text-accent text-accent-content
+        text-neutral text-neutral-content
+        text-info text-info-content
+        text-success text-success-content
+        text-warning text-warning-content
+        text-error text-error-content
+    "></div>
+    
     {{-- Background color utilities --}}
     <div class="
         bg-gray-50 bg-gray-100 bg-gray-200 bg-gray-300 bg-gray-400 
@@ -93,6 +116,19 @@
         bg-pink-300 bg-pink-400 bg-pink-500 bg-pink-600 bg-pink-700
         bg-purple-300 bg-purple-400 bg-purple-500 bg-purple-600 bg-purple-700
         bg-indigo-300 bg-indigo-400 bg-indigo-500 bg-indigo-600 bg-indigo-700
+    "></div>
+    
+    {{-- DaisyUI Theme Background Color Utilities --}}
+    <div class="
+        bg-base-100 bg-base-200 bg-base-300 bg-base-content
+        bg-primary bg-primary-content
+        bg-secondary bg-secondary-content
+        bg-accent bg-accent-content
+        bg-neutral bg-neutral-content
+        bg-info bg-info-content
+        bg-success bg-success-content
+        bg-warning bg-warning-content
+        bg-error bg-error-content
     "></div>
 
     <div class="items-start items-center items-end items-baseline items-stretch"></div>
