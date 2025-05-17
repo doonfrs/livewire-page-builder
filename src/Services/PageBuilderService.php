@@ -96,9 +96,9 @@ class PageBuilderService
         $hiddenMobile = $properties['hiddenMobile'] ?? false;
         $hiddenTablet = $properties['hiddenTablet'] ?? false;
         $hiddenDesktop = $properties['hiddenDesktop'] ?? false;
-        $mobileWidth = $properties['mobileWidth'] ?? 'w-full';
-        $tabletWidth = $properties['tabletWidth'] ?? 'w-full';
-        $desktopWidth = $properties['desktopWidth'] ?? 'w-full';
+        $mobileWidth = $properties['mobileWidth'] ?? 'w-auto';
+        $tabletWidth = $properties['tabletWidth'] ?? 'w-auto';
+        $desktopWidth = $properties['desktopWidth'] ?? 'w-auto';
 
         // Padding properties
         $paddingTop = $properties['paddingTop'] ?? 0;
