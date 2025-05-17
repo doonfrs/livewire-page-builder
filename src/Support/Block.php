@@ -6,6 +6,7 @@ use Illuminate\Support\Str;
 use Livewire\Component;
 use Trinavo\LivewirePageBuilder\Http\Livewire\BuilderPageBlock;
 use Trinavo\LivewirePageBuilder\Http\Livewire\RowBlock;
+use Trinavo\LivewirePageBuilder\Services\PageBuilderService;
 use Trinavo\LivewirePageBuilder\Support\Properties\CheckboxProperty;
 use Trinavo\LivewirePageBuilder\Support\Properties\ColorProperty;
 use Trinavo\LivewirePageBuilder\Support\Properties\ImageProperty;
@@ -19,6 +20,18 @@ abstract class Block extends Component
     public $tabletWidth = 'w-auto';
 
     public $desktopWidth = 'w-auto';
+
+    public $mobileHeight = null;
+
+    public $tabletHeight = null;
+
+    public $desktopHeight = null;
+
+    public $mobileMinHeight = null;
+
+    public $tabletMinHeight = null;
+
+    public $desktopMinHeight = null;
 
     public $hiddenMobile = false;
 
@@ -136,12 +149,26 @@ abstract class Block extends Component
         }
 
         return [
-            (new SelectProperty('mobile_width', 'Mobile', $widths, defaultValue: $defaultValue))
+            (new SelectProperty('mobileWidth', 'Mobile', $widths, defaultValue: $defaultValue))
                 ->setGroup('width', 'Width', 3, 'heroicon-o-device-phone-mobile'),
-            (new SelectProperty('tablet_width', 'Tablet', $widths, defaultValue: $defaultValue))
+            (new SelectProperty('tabletWidth', 'Tablet', $widths, defaultValue: $defaultValue))
                 ->setGroup('width', 'Width', 3, 'heroicon-o-device-tablet'),
-            (new SelectProperty('desktop_width', 'Desktop', $widths, defaultValue: $defaultValue))
+            (new SelectProperty('desktopWidth', 'Desktop', $widths, defaultValue: $defaultValue))
                 ->setGroup('width', 'Width', 3, 'heroicon-o-device-desktop'),
+
+            (new TextProperty('mobileHeight', 'Mobile', numeric: true, defaultValue: null, min: 0))
+                ->setGroup('height', 'Height', 3, 'heroicon-o-device-phone-mobile'),
+            (new TextProperty('tabletHeight', 'Tablet', numeric: true, defaultValue: null, min: 0))
+                ->setGroup('height', 'Height', 3, 'heroicon-o-device-tablet'),
+            (new TextProperty('desktopHeight', 'Desktop', numeric: true, defaultValue: null, min: 0))
+                ->setGroup('height', 'Height', 3, 'heroicon-o-device-desktop'),
+
+            (new TextProperty('mobileMinHeight', 'Mobile', numeric: true, defaultValue: null, min: 0))
+                ->setGroup('min_height', 'Min Height', 3, 'heroicon-o-device-phone-mobile'),
+            (new TextProperty('tabletMinHeight', 'Tablet', numeric: true, defaultValue: null, min: 0))
+                ->setGroup('min_height', 'Min Height', 3, 'heroicon-o-device-tablet'),
+            (new TextProperty('desktopMinHeight', 'Desktop', numeric: true, defaultValue: null, min: 0))
+                ->setGroup('min_height', 'Min Height', 3, 'heroicon-o-device-desktop'),
         ];
     }
 
@@ -151,11 +178,11 @@ abstract class Block extends Component
     protected function getVisibilityProperties(): array
     {
         return [
-            (new CheckboxProperty('hidden_mobile', 'Mobile', defaultValue: false))
+            (new CheckboxProperty('hiddenMobile', 'Mobile', defaultValue: false))
                 ->setGroup('hide', 'Hide', 3, 'heroicon-o-eye'),
-            (new CheckboxProperty('hidden_tablet', 'Tablet', defaultValue: false))
+            (new CheckboxProperty('hiddenTablet', 'Tablet', defaultValue: false))
                 ->setGroup('hide', 'Hide', 3, 'heroicon-o-eye'),
-            (new CheckboxProperty('hidden_desktop', 'Desktop', defaultValue: false))
+            (new CheckboxProperty('hiddenDesktop', 'Desktop', defaultValue: false))
                 ->setGroup('hide', 'Hide', 3, 'heroicon-o-eye'),
         ];
     }
@@ -167,23 +194,23 @@ abstract class Block extends Component
     {
         return [
             // Padding properties
-            (new TextProperty('padding_top', 'Top', numeric: true, defaultValue: 0, min: 0))
+            (new TextProperty('paddingTop', 'Top', numeric: true, defaultValue: 0, min: 0))
                 ->setGroup('padding', 'Padding', 4, 'heroicon-o-square-2-stack'),
-            (new TextProperty('padding_right', 'Right', numeric: true, defaultValue: 0, min: 0))
+            (new TextProperty('paddingRight', 'Right', numeric: true, defaultValue: 0, min: 0))
                 ->setGroup('padding', 'Padding', 4, 'heroicon-o-square-2-stack'),
-            (new TextProperty('padding_bottom', 'Bottom', numeric: true, defaultValue: 0, min: 0))
+            (new TextProperty('paddingBottom', 'Bottom', numeric: true, defaultValue: 0, min: 0))
                 ->setGroup('padding', 'Padding', 4, 'heroicon-o-square-2-stack'),
-            (new TextProperty('padding_left', 'Left', numeric: true, defaultValue: 0, min: 0))
+            (new TextProperty('paddingLeft', 'Left', numeric: true, defaultValue: 0, min: 0))
                 ->setGroup('padding', 'Padding', 4, 'heroicon-o-square-2-stack'),
 
             // Margin properties
-            (new TextProperty('margin_top', 'Top', numeric: true, defaultValue: 0, min: 0))
+            (new TextProperty('marginTop', 'Top', numeric: true, defaultValue: 0, min: 0))
                 ->setGroup('margin', 'Margin', 4, 'heroicon-o-arrows-pointing-out'),
-            (new TextProperty('margin_right', 'Right', numeric: true, defaultValue: 0, min: 0))
+            (new TextProperty('marginRight', 'Right', numeric: true, defaultValue: 0, min: 0))
                 ->setGroup('margin', 'Margin', 4, 'heroicon-o-arrows-pointing-out'),
-            (new TextProperty('margin_bottom', 'Bottom', numeric: true, defaultValue: 0, min: 0))
+            (new TextProperty('marginBottom', 'Bottom', numeric: true, defaultValue: 0, min: 0))
                 ->setGroup('margin', 'Margin', 4, 'heroicon-o-arrows-pointing-out'),
-            (new TextProperty('margin_left', 'Left', numeric: true, defaultValue: 0, min: 0))
+            (new TextProperty('marginLeft', 'Left', numeric: true, defaultValue: 0, min: 0))
                 ->setGroup('margin', 'Margin', 4, 'heroicon-o-arrows-pointing-out'),
         ];
     }
@@ -194,9 +221,9 @@ abstract class Block extends Component
     protected function getStyleProperties(): array
     {
         return [
-            (new ColorProperty('text_color', 'Text Color', defaultValue: null))
+            (new ColorProperty('textColor', 'Text Color', defaultValue: null))
                 ->setGroup('color', 'Color', 2, 'heroicon-o-swatch'),
-            (new ColorProperty('background_color', 'Background Color', defaultValue: null))
+            (new ColorProperty('backgroundColor', 'Background Color', defaultValue: null))
                 ->setGroup('color', 'Color', 2, 'heroicon-o-swatch'),
         ];
     }
@@ -207,9 +234,9 @@ abstract class Block extends Component
     protected function getBackgroundImageProperties(): array
     {
         return [
-            (new ImageProperty('background_image', 'Image', defaultValue: null))
+            (new ImageProperty('backgroundImage', 'Image', defaultValue: null))
                 ->setGroup('background_image', 'Background Image', 1, 'heroicon-o-photo'),
-            (new SelectProperty('background_position', 'Position', [
+            (new SelectProperty('backgroundPosition', 'Position', [
                 'center' => 'Center',
                 'top' => 'Top',
                 'right' => 'Right',
@@ -220,21 +247,21 @@ abstract class Block extends Component
                 'bottom-left' => 'Bottom Left',
                 'bottom-right' => 'Bottom Right',
             ], defaultValue: 'center'))
-                ->setGroup('background_image-options', 'Background Image Options', 2, 'heroicon-o-photo'),
-            (new SelectProperty('background_size', 'Size', [
+                ->setGroup('backgroundImageOptions', 'Background Image Options', 2, 'heroicon-o-photo'),
+            (new SelectProperty('backgroundSize', 'Size', [
                 'cover' => 'Cover',
                 'contain' => 'Contain',
                 'auto' => 'Auto',
                 '100%' => '100%',
             ], defaultValue: 'cover'))
-                ->setGroup('background_image-options', 'Background Image Options', 2, 'heroicon-o-photo'),
-            (new SelectProperty('background_repeat', 'Repeat', [
+                ->setGroup('backgroundImageOptions', 'Background Image Options', 2, 'heroicon-o-photo'),
+            (new SelectProperty('backgroundRepeat', 'Repeat', [
                 'no-repeat' => 'No Repeat',
                 'repeat' => 'Repeat',
                 'repeat-x' => 'Repeat X',
                 'repeat-y' => 'Repeat Y',
             ], defaultValue: 'no-repeat'))
-                ->setGroup('background_image-options', 'Background Image Options', 2, 'heroicon-o-photo'),
+                ->setGroup('backgroundImageOptions', 'Background Image Options', 2, 'heroicon-o-photo'),
         ];
     }
 
@@ -244,9 +271,9 @@ abstract class Block extends Component
     protected function getLayoutProperties(): array
     {
         return [
-            (new CheckboxProperty('use_container', 'Container', defaultValue: false))
+            (new CheckboxProperty('useContainer', 'Container', defaultValue: false))
                 ->setGroup('layout', 'Layout', 2, 'heroicon-o-rectangle-group'),
-            (new CheckboxProperty('self_centered', 'Self-centered (mx-auto)', defaultValue: false))
+            (new CheckboxProperty('selfCentered', 'Self-centered (mx-auto)', defaultValue: false))
                 ->setGroup('layout', 'Layout', 2, 'heroicon-o-rectangle-group'),
         ];
     }
@@ -355,5 +382,19 @@ abstract class Block extends Component
             $this->getSharedProperties(),
             $this->getPageBuilderProperties()
         );
+    }
+
+    public function getPageBuilderHeightClasses(): string
+    {
+        $properties = [
+            'mobileHeight' => $this->mobileHeight,
+            'tabletHeight' => $this->tabletHeight,
+            'desktopHeight' => $this->desktopHeight,
+            'mobileMinHeight' => $this->mobileMinHeight,
+            'tabletMinHeight' => $this->tabletMinHeight,
+            'desktopMinHeight' => $this->desktopMinHeight,
+        ];
+
+        return app(PageBuilderService::class)->getHeightCssClassesFromProperties($properties);
     }
 }

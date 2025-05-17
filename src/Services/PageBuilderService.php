@@ -72,7 +72,7 @@ class PageBuilderService
     {
         $alias = Str::kebab(str_replace('\\', '-', $blockClass));
         $alias = str_replace('--', '-', $alias);
-        $alias = 'page-builder-' . $alias;
+        $alias = 'page-builder-'.$alias;
 
         return $alias;
     }
@@ -93,46 +93,47 @@ class PageBuilderService
 
     public function getCssClassesFromProperties(array $properties, bool $isRowBlock = false): ?string
     {
-        $hiddenMobile = $properties['hidden_mobile'] ?? false;
-        $hiddenTablet = $properties['hidden_tablet'] ?? false;
-        $hiddenDesktop = $properties['hidden_desktop'] ?? false;
-        $mobileWidth = $properties['mobile_width'] ?? 'w-full';
-        $tabletWidth = $properties['tablet_width'] ?? 'w-full';
-        $desktopWidth = $properties['desktop_width'] ?? 'w-full';
+        $hiddenMobile = $properties['hiddenMobile'] ?? false;
+        $hiddenTablet = $properties['hiddenTablet'] ?? false;
+        $hiddenDesktop = $properties['hiddenDesktop'] ?? false;
+        $mobileWidth = $properties['mobileWidth'] ?? 'w-full';
+        $tabletWidth = $properties['tabletWidth'] ?? 'w-full';
+        $desktopWidth = $properties['desktopWidth'] ?? 'w-full';
+
         // Padding properties
-        $paddingTop = $properties['padding_top'] ?? 0;
-        $paddingRight = $properties['padding_right'] ?? 0;
-        $paddingBottom = $properties['padding_bottom'] ?? 0;
-        $paddingLeft = $properties['padding_left'] ?? 0;
+        $paddingTop = $properties['paddingTop'] ?? 0;
+        $paddingRight = $properties['paddingRight'] ?? 0;
+        $paddingBottom = $properties['paddingBottom'] ?? 0;
+        $paddingLeft = $properties['paddingLeft'] ?? 0;
 
         // Margin properties
-        $marginTop = $properties['margin_top'] ?? 0;
-        $marginRight = $properties['margin_right'] ?? 0;
-        $marginBottom = $properties['margin_bottom'] ?? 0;
-        $marginLeft = $properties['margin_left'] ?? 0;
+        $marginTop = $properties['marginTop'] ?? 0;
+        $marginRight = $properties['marginRight'] ?? 0;
+        $marginBottom = $properties['marginBottom'] ?? 0;
+        $marginLeft = $properties['marginLeft'] ?? 0;
 
         // Layout properties
-        $useContainer = $properties['use_container'] ?? false;
-        $selfCentered = $properties['self_centered'] ?? false;
-        $textColor = $properties['text_color'] ?? null;
-        $backgroundColor = $properties['background_color'] ?? null;
+        $useContainer = $properties['useContainer'] ?? false;
+        $selfCentered = $properties['selfCentered'] ?? false;
+        $textColor = $properties['textColor'] ?? null;
+        $backgroundColor = $properties['backgroundColor'] ?? null;
 
         $classes = [];
 
         if ($hiddenMobile && $hiddenTablet && $hiddenDesktop) {
-            $classes[] = "hidden";
+            $classes[] = 'hidden';
         } elseif ($hiddenMobile && $hiddenTablet) {
-            $classes[] = "hidden @3xl:block";
+            $classes[] = 'hidden @3xl:block';
         } elseif ($hiddenMobile && $hiddenDesktop) {
-            $classes[] = "hidden @xl:block @5xl:hidden";
+            $classes[] = 'hidden @xl:block @5xl:hidden';
         } elseif ($hiddenTablet && $hiddenDesktop) {
-            $classes[] = "block @xl:hidden";
+            $classes[] = 'block @xl:hidden';
         } elseif ($hiddenMobile) {
-            $classes[] = "hidden @xl:block";
+            $classes[] = 'hidden @xl:block';
         } elseif ($hiddenTablet) {
-            $classes[] = "block @xl:hidden @5xl:block";
+            $classes[] = 'block @xl:hidden @5xl:block';
         } elseif ($hiddenDesktop) {
-            $classes[] = "block @5xl:hidden";
+            $classes[] = 'block @5xl:hidden';
         } else {
             if ($useContainer) {
                 $classes[] = 'block';
@@ -181,11 +182,11 @@ class PageBuilderService
 
         // Only add tablet/desktop widths if they're different from mobile
         if ($tabletWidth !== $mobileWidth) {
-            $classes[] = '@3xl:' . $tabletWidth;
+            $classes[] = '@3xl:'.$tabletWidth;
         }
 
         if ($desktopWidth !== $tabletWidth) {
-            $classes[] = '@5xl:' . $desktopWidth;
+            $classes[] = '@5xl:'.$desktopWidth;
         }
 
         if ($textColor) {
@@ -206,17 +207,22 @@ class PageBuilderService
 
         $classString = implode(' ', array_unique($classes));
 
+        $heightClasses = $this->getHeightCssClassesFromProperties($properties);
+        if (trim($heightClasses) !== '') {
+            $classString .= ' '.$heightClasses;
+        }
+
         return $classString;
     }
 
     public function getInlineStylesFromProperties(array $properties): ?string
     {
-        $textColor = $properties['text_color'] ?? null;
-        $backgroundColor = $properties['background_color'] ?? null;
-        $backgroundImage = $properties['background_image'] ?? null;
-        $backgroundPosition = $properties['background_position'] ?? 'center';
-        $backgroundSize = $properties['background_size'] ?? 'cover';
-        $backgroundRepeat = $properties['background_repeat'] ?? 'no-repeat';
+        $textColor = $properties['textColor'] ?? null;
+        $backgroundColor = $properties['backgroundColor'] ?? null;
+        $backgroundImage = $properties['backgroundImage'] ?? null;
+        $backgroundPosition = $properties['backgroundPosition'] ?? 'center';
+        $backgroundSize = $properties['backgroundSize'] ?? 'cover';
+        $backgroundRepeat = $properties['backgroundRepeat'] ?? 'no-repeat';
 
         $styles = [];
         // Add text color classes or inline styles for hex colors
@@ -242,5 +248,43 @@ class PageBuilderService
         }
 
         return implode(';', $styles);
+    }
+
+    public function getHeightCssClassesFromProperties(array $properties): string
+    {
+        $mobileHeight = $properties['mobileHeight'] ?? null;
+        $tabletHeight = $properties['tabletHeight'] ?? null;
+        $desktopHeight = $properties['desktopHeight'] ?? null;
+        $mobileMinHeight = $properties['mobileMinHeight'] ?? null;
+        $tabletMinHeight = $properties['tabletMinHeight'] ?? null;
+        $desktopMinHeight = $properties['desktopMinHeight'] ?? null;
+
+        $classes = [];
+        if ($mobileHeight) {
+            $classes[] = 'h-['.$mobileHeight.'px]';
+        }
+
+        // Only add tablet/desktop heights if they're different from mobile
+        if ($tabletHeight && $tabletHeight !== $mobileHeight) {
+            $classes[] = '@3xl:h-['.$tabletHeight.'px]';
+        }
+
+        if ($desktopHeight && $desktopHeight !== $tabletHeight) {
+            $classes[] = '@5xl:h-['.$desktopHeight.'px]';
+        }
+
+        if ($mobileMinHeight) {
+            $classes[] = 'min-h-['.$mobileMinHeight.'px]';
+        }
+
+        if ($tabletMinHeight && $mobileMinHeight && $tabletMinHeight !== $mobileMinHeight) {
+            $classes[] = '@3xl:min-h-['.$tabletMinHeight.'px]';
+        }
+
+        if ($desktopMinHeight && $tabletMinHeight && $desktopMinHeight !== $tabletMinHeight) {
+            $classes[] = '@5xl:min-h-['.$desktopMinHeight.'px]';
+        }
+
+        return implode(' ', $classes);
     }
 }
