@@ -17,6 +17,12 @@ class BuilderPageBlock extends Block
 
     public ?BuilderPage $page;
 
+    public $mobileWidth = 'w-full';
+
+    public $tabletWidth = 'w-full';
+
+    public $desktopWidth = 'w-full';
+
     public function mount()
     {
 
