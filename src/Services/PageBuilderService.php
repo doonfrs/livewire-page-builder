@@ -247,7 +247,12 @@ class PageBuilderService
             $styles[] = "background-repeat: $backgroundRepeat";
         }
 
-        return implode(';', $styles);
+        $styleString = implode(';', $styles);
+        if (trim($styleString) !== '') {
+            $styleString .= ';';
+        }
+
+        return $styleString;
     }
 
     public function getHeightCssClassesFromProperties(array $properties): string
