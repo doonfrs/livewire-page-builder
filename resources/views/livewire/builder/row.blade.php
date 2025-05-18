@@ -1,12 +1,11 @@
 <div id="row-{{ $rowId }}" x-data="{
     selected: false
 }"
-
-    class="{{ $cssClasses }}" style="{{ $inlineStyles }} font-size:initial">
-    <div class="block-row border relative transition-all duration-300 ease-in-out group"
-        :class="selected ? 'border-pink-500' : 'border-gray-300'"
-        x-on:row-selected.window="selected = $event.detail.rowId == '{{ $rowId }}'"
-        x-on:block-selected.window="selected = false">
+    class="block-row border relative transition-all duration-300 ease-in-out group {{ $cssClasses }}"
+    style="{{ $inlineStyles }} font-size:initial" :class="selected ? 'border-pink-500' : 'border-gray-300'"
+    x-on:row-selected.window="selected = $event.detail.rowId == '{{ $rowId }}'"
+    x-on:block-selected.window="selected = false">
+    <div class="block-row-inner">
         <!-- Elementor-style Row Controls -->
         <div
             class="absolute top-[-35px] left-1/2 -translate-x-1/2 bg-pink-500 shadow-lg px-1 py-1 rounded-lg flex items-center space-x-1 z-50 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none group-hover:pointer-events-auto">
@@ -104,17 +103,17 @@
 
         <div class="row-blocks pt-4 pb-4 {{ $rowCssClasses }}">
             @foreach ($blocks as $blockId => $block)
-            @livewire(
-            'builder-block',
-            [
-            'blockAlias' => $block['alias'],
-            'blockId' => $blockId,
-            'rowId' => $rowId,
-            'properties' => $block['properties'] ?? [],
-            'editMode' => true,
-            ],
-            key($blockId)
-            )
+                @livewire(
+                    'builder-block',
+                    [
+                        'blockAlias' => $block['alias'],
+                        'blockId' => $blockId,
+                        'rowId' => $rowId,
+                        'properties' => $block['properties'] ?? [],
+                        'editMode' => true,
+                    ],
+                    key($blockId)
+                )
             @endforeach
         </div>
     </div>
