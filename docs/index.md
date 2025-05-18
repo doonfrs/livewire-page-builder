@@ -9,6 +9,7 @@ Welcome to the documentation for the Livewire Page Builder package.
 - [Custom Block Development](custom-block-development.md)
 - [Performance Optimization](performance-optimization.md)
 - [Multilingual Support](multilingual-support.md)
+- [Variables](variables.md)
 
 ---
 

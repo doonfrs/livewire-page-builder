@@ -31,4 +31,20 @@ return [
         //  'home',
         // 'header' => ['is_block' => true],
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Page Builder Variables
+    |--------------------------------------------------------------------------
+    |
+    | You can define dynamic variables that can be used in your page builder.
+    | Variables can be string values or callables that return dynamic values.
+    | These variables will be available in text blocks and templates.
+    |
+    */
+    'variables' => [
+        // Simple string variables
+        // 'company_name' => 'Acme Inc',
+        // 'support_email' => 'support@example.com',
+    ],
 ];
