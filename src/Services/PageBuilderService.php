@@ -93,35 +93,51 @@ class PageBuilderService
 
     public function getRowCssClassesFromProperties($properties): string
     {
-        $rowCssClasses = [];
+        $classes = [];
         $flex = $properties['flex'] ?? null;
         if ($flex) {
-            $rowCssClasses[] = "flex flex-{$flex}";
+            $classes[] = "flex flex-{$flex}";
         }
 
         $contentWidthMobile = $properties['contentWidthMobile'] ?? 'w-full';
         $contentWidthTablet = $properties['contentWidthTablet'] ?? 'w-full';
         $contentWidthDesktop = $properties['contentWidthDesktop'] ?? 'w-full';
 
+        $mobileGap = $properties['mobileGap'] ?? null;
+        $tabletGap = $properties['tabletGap'] ?? null;
+        $desktopGap = $properties['desktopGap'] ?? null;
+
         if ($contentWidthMobile) {
-            $rowCssClasses[] = $contentWidthMobile;
+            $classes[] = $contentWidthMobile;
         }
 
         // Only add tablet/desktop widths if they're different from mobile
         if ($contentWidthTablet !== $contentWidthMobile) {
-            $rowCssClasses[] = '@3xl:'.$contentWidthTablet;
+            $classes[] = '@3xl:'.$contentWidthTablet;
         }
 
         if ($contentWidthDesktop !== $contentWidthTablet) {
-            $rowCssClasses[] = '@5xl:'.$contentWidthDesktop;
+            $classes[] = '@5xl:'.$contentWidthDesktop;
         }
 
         $contentCentered = $properties['contentCentered'] ?? false;
         if ($contentCentered) {
-            $rowCssClasses[] = 'mx-auto';
+            $classes[] = 'mx-auto';
         }
 
-        return implode(' ', $rowCssClasses);
+        if ($mobileGap) {
+            $classes[] = "gap-$mobileGap";
+        }
+
+        if ($tabletGap) {
+            $classes[] = "@3xl:gap-$tabletGap";
+        }
+
+        if ($desktopGap) {
+            $classes[] = "@5xl:gap-$desktopGap";
+        }
+
+        return implode(' ', $classes);
     }
 
     public function getCssClassesFromProperties(array $properties, bool $isRowBlock = false): ?string

@@ -31,14 +31,9 @@
     <div class="flex flex-row flex-col"></div>
     <div class="@md:flex @md:flex-row @md:flex-col"></div>
     <div class="@lg:flex @lg:flex-row @lg:flex-col"></div>
-    <div class="gap-0 gap-1 gap-2 gap-3 gap-4 gap-5 gap-6 gap-8 gap-10 gap-12 gap-16 gap-20 gap-24 gap-32 gap-40 gap-48 gap-56 gap-64"></div>
-    <div class="@md:gap-0 @md:gap-1 @md:gap-2 @md:gap-3 @md:gap-4 @md:gap-5 @md:gap-6 @md:gap-8 @md:gap-10 @md:gap-12 @md:gap-16 @md:gap-20 @md:gap-24 @md:gap-32 @md:gap-40 @md:gap-48 @md:gap-56 @md:gap-64"></div>
-    <div class="@lg:gap-0 @lg:gap-1 @lg:gap-2 @lg:gap-3 @lg:gap-4 @lg:gap-5 @lg:gap-6 @lg:gap-8 @lg:gap-10 @lg:gap-12 @lg:gap-16 @lg:gap-20 @lg:gap-24 @lg:gap-32 @lg:gap-40 @lg:gap-48 @lg:gap-56 @lg:gap-64"></div>
-    <div class="@xl:gap-0 @xl:gap-1 @xl:gap-2 @xl:gap-3 @xl:gap-4 @xl:gap-5 @xl:gap-6 @xl:gap-8 @xl:gap-10 @xl:gap-12 @xl:gap-16 @xl:gap-20 @xl:gap-24 @xl:gap-32 @xl:gap-40 @xl:gap-48 @xl:gap-56 @xl:gap-64"></div>
-    <div class="@2xl:gap-0 @2xl:gap-1 @2xl:gap-2 @2xl:gap-3 @2xl:gap-4 @2xl:gap-5 @2xl:gap-6 @2xl:gap-8 @2xl:gap-10 @2xl:gap-12 @2xl:gap-16 @2xl:gap-20 @2xl:gap-24 @2xl:gap-32 @2xl:gap-40 @2xl:gap-48 @2xl:gap-56 @2xl:gap-64"></div>
-    <div class="@3xl:gap-0 @3xl:gap-1 @3xl:gap-2 @3xl:gap-3 @3xl:gap-4 @3xl:gap-5 @3xl:gap-6 @3xl:gap-8 @3xl:gap-10 @3xl:gap-12 @3xl:gap-16 @3xl:gap-20 @3xl:gap-24 @3xl:gap-32 @3xl:gap-40 @3xl:gap-48 @3xl:gap-56 @3xl:gap-64"></div>
-    <div class="@4xl:gap-0 @4xl:gap-1 @4xl:gap-2 @4xl:gap-3 @4xl:gap-4 @4xl:gap-5 @4xl:gap-6 @4xl:gap-8 @4xl:gap-10 @4xl:gap-12 @4xl:gap-16 @4xl:gap-20 @4xl:gap-24 @4xl:gap-32 @4xl:gap-40 @4xl:gap-48 @4xl:gap-56 @4xl:gap-64"></div>
-    <div class="@5xl:gap-0 @5xl:gap-1 @5xl:gap-2 @5xl:gap-3 @5xl:gap-4 @5xl:gap-5 @5xl:gap-6 @5xl:gap-8 @5xl:gap-10 @5xl:gap-12 @5xl:gap-16 @5xl:gap-20 @5xl:gap-24 @5xl:gap-32 @5xl:gap-40 @5xl:gap-48 @5xl:gap-56 @5xl:gap-64"></div>
+    <div class="gap-0 gap-1 gap-2 gap-3 gap-4 gap-5 gap-6 gap-7 gap-8 gap-9 gap-10 gap-11 gap-12 gap-13 gap-14 gap-15 gap-16 gap-17 gap-18 gap-19 gap-20 gap-21 gap-22 gap-23 gap-24 gap-25 gap-26 gap-27 gap-28 gap-29 gap-30 gap-31 gap-32 gap-33 gap-34 gap-35 gap-36 gap-37 gap-38 gap-39 gap-40"></div>
+    <div class="@xl3:gap-0 @xl3:gap-1 @xl3:gap-2 @xl3:gap-3 @xl3:gap-4 @xl3:gap-5 @xl3:gap-6 @xl3:gap-7 @xl3:gap-8 @xl3:gap-9 @xl3:gap-10 @xl3:gap-11 @xl3:gap-12 @xl3:gap-13 @xl3:gap-14 @xl3:gap-15 @xl3:gap-16 @xl3:gap-17 @xl3:gap-18 @xl3:gap-19 @xl3:gap-20 @xl3:gap-21 @xl3:gap-22 @xl3:gap-23 @xl3:gap-24 @xl3:gap-25 @xl3:gap-26 @xl3:gap-27 @xl3:gap-28 @xl3:gap-29 @xl3:gap-30 @xl3:gap-31 @xl3:gap-32 @xl3:gap-33 @xl3:gap-34 @xl3:gap-35 @xl3:gap-36 @xl3:gap-37 @xl3:gap-38 @xl3:gap-39 @xl3:gap-40"></div>
+    <div class="@5xl:gap-0 @5xl:gap-1 @5xl:gap-2 @5xl:gap-3 @5xl:gap-4 @5xl:gap-5 @5xl:gap-6 @5xl:gap-7 @5xl:gap-8 @5xl:gap-9 @5xl:gap-10 @5xl:gap-11 @5xl:gap-12 @5xl:gap-13 @5xl:gap-14 @5xl:gap-15 @5xl:gap-16 @5xl:gap-17 @5xl:gap-18 @5xl:gap-19 @5xl:gap-20 @5xl:gap-21 @5xl:gap-22 @5xl:gap-23 @5xl:gap-24 @5xl:gap-25 @5xl:gap-26 @5xl:gap-27 @5xl:gap-28 @5xl:gap-29 @5xl:gap-30 @5xl:gap-31 @5xl:gap-32 @5xl:gap-33 @5xl:gap-34 @5xl:gap-35 @5xl:gap-36 @5xl:gap-37 @5xl:gap-38 @5xl:gap-39 @5xl:gap-40"></div>
 
     
     {{-- Responsive visibility --}}
