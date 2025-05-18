@@ -3,6 +3,7 @@
 namespace Trinavo\LivewirePageBuilder\Http\Livewire\BlockProperties;
 
 use Livewire\Component;
+use Trinavo\LivewirePageBuilder\Config\Variables;
 use Trinavo\LivewirePageBuilder\Services\LocalizationService;
 
 class RichTextProperty extends Component
@@ -19,9 +20,15 @@ class RichTextProperty extends Component
 
     // Multilingual support properties
     public $multilingual = true;
+
     public $localizedValues = [];
+
     public $currentLocale = null;
+
     public $contentLocales = [];
+
+    // Make variables public so it's accessible directly in the template
+    public $variables = [];
 
     /**
      * Get the localization service instance
@@ -43,12 +50,12 @@ class RichTextProperty extends Component
         $this->currentLocale = app()->getLocale();
 
         // Fallback to first content locale if app locale isn't in content locales
-        if (!array_key_exists($this->currentLocale, $this->contentLocales)) {
+        if (! array_key_exists($this->currentLocale, $this->contentLocales)) {
             $this->currentLocale = array_key_first($this->contentLocales);
         }
 
         // Initialize localized values if they don't exist
-        if (empty($this->localizedValues) && !empty($this->currentValue)) {
+        if (empty($this->localizedValues) && ! empty($this->currentValue)) {
             if (is_array($this->currentValue) && isset($this->currentValue['values'])) {
                 // Already in multilingual format
                 $this->localizedValues = $this->currentValue['values'];
@@ -65,6 +72,28 @@ class RichTextProperty extends Component
         if ($this->multilingual) {
             $this->currentValue = $this->localizedValues[$this->currentLocale] ?? '';
         }
+
+        // Load the variables when the component is mounted
+        $this->loadVariables();
+    }
+
+    /**
+     * Load all available variables to display in the variables modal
+     */
+    protected function loadVariables()
+    {
+        $variablesArray = Variables::all();
+        $formattedVariables = [];
+
+        foreach ($variablesArray as $name => $value) {
+            // Format the variable for display
+            $formattedVariables[] = [
+                'name' => $name,
+                'value' => is_string($value) || is_numeric($value) ? $value : '[Dynamic Value]',
+            ];
+        }
+
+        $this->variables = $formattedVariables;
     }
 
     public function switchLocale($locale)
@@ -72,7 +101,7 @@ class RichTextProperty extends Component
         // Store the original locale before switching
         $oldLocale = $this->currentLocale;
 
-        // First, save current content to the CURRENT locale  
+        // First, save current content to the CURRENT locale
         if ($this->multilingual && $oldLocale) {
             $this->localizedValues[$oldLocale] = $this->currentValue;
         }
@@ -121,6 +150,9 @@ class RichTextProperty extends Component
     {
         // Always refresh content locales before rendering in case they've changed
         $this->contentLocales = $this->getLocalizationService()->getContentLocales();
+
+        // Refresh variables in case any have been added or changed
+        $this->loadVariables();
 
         return view('page-builder::livewire.builder.block-properties.rich-text');
     }

@@ -25,14 +25,18 @@
             "Trinavo\\LivewirePageBuilder\\": "src/"
         },
         "files": [
-            "src/Support/helpers.php"
+            "src/Support/helpers.php",
+            "src/helpers.php"
         ]
     },
     "extra": {
         "laravel": {
             "providers": [
                 "Trinavo\\LivewirePageBuilder\\Providers\\PageBuilderServiceProvider"
-            ]
+            ],
+            "aliases": {
+                "PageBuilderVariables": "Trinavo\\LivewirePageBuilder\\Facades\\PageBuilderVariables"
+            }
         }
     },
     "minimum-stability": "dev",
