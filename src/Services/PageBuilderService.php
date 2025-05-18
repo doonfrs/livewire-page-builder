@@ -307,7 +307,6 @@ class PageBuilderService
             $classes[] = 'h-['.$mobileHeight.'px]';
         }
 
-        // Only add tablet/desktop heights if they're different from mobile
         if ($tabletHeight && $tabletHeight !== $mobileHeight) {
             $classes[] = '@3xl:h-['.$tabletHeight.'px]';
         }
@@ -320,11 +319,11 @@ class PageBuilderService
             $classes[] = 'min-h-['.$mobileMinHeight.'px]';
         }
 
-        if ($tabletMinHeight && $mobileMinHeight && $tabletMinHeight !== $mobileMinHeight) {
+        if ($tabletMinHeight && $tabletMinHeight !== $mobileMinHeight) {
             $classes[] = '@3xl:min-h-['.$tabletMinHeight.'px]';
         }
 
-        if ($desktopMinHeight && $tabletMinHeight && $desktopMinHeight !== $tabletMinHeight) {
+        if ($desktopMinHeight && $desktopMinHeight !== $tabletMinHeight) {
             $classes[] = '@5xl:min-h-['.$desktopMinHeight.'px]';
         }
 
