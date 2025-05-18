@@ -7,6 +7,7 @@ use Trinavo\LivewirePageBuilder\Services\PageBuilderService;
 use Trinavo\LivewirePageBuilder\Support\Block;
 use Trinavo\LivewirePageBuilder\Support\Properties\CheckboxProperty;
 use Trinavo\LivewirePageBuilder\Support\Properties\SelectProperty;
+use Trinavo\LivewirePageBuilder\Support\Properties\TextProperty;
 
 class RowBlock extends Block
 {
@@ -35,6 +36,12 @@ class RowBlock extends Block
     public $contentWidthTablet = 'w-full';
 
     public $contentWidthMobile = 'w-full';
+
+    public $mobileGap = null;
+
+    public $tabletGap = null;
+
+    public $desktopGap = null;
 
     public $contentCentered = true;
 
@@ -260,6 +267,25 @@ class RowBlock extends Block
                 defaultValue: $this->contentWidthDesktop,
                 options: $this->getPageBuilderWidthList(),
             ))->setGroup('contentWidth', 'Content Width', 3, 'heroicon-o-rectangle-group'),
+
+            (new TextProperty(
+                name: 'mobileGap',
+                label: 'Mobile',
+                defaultValue: $this->mobileGap,
+                numeric: true,
+            ))->setGroup('gap', 'Gap', 3, 'heroicon-o-rectangle-group'),
+            (new TextProperty(
+                name: 'tabletGap',
+                label: 'Tablet',
+                defaultValue: $this->tabletGap,
+                numeric: true,
+            ))->setGroup('gap', 'Gap', 3, 'heroicon-o-rectangle-group'),
+            (new TextProperty(
+                name: 'desktopGap',
+                label: 'Desktop',
+                defaultValue: $this->desktopGap,
+                numeric: true,
+            ))->setGroup('gap', 'Gap', 3, 'heroicon-o-rectangle-group'),
         ];
     }
 
