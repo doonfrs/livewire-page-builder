@@ -72,17 +72,6 @@ abstract class Block extends Component
 
     public bool $editMode = false;
 
-    public ?bool $flexMobile = false;
-
-    public ?bool $flexTablet = false;
-
-    public ?bool $flexDesktop = false;
-
-    public ?int $gapMobile = null;
-
-    public ?int $gapTablet = null;
-
-    public ?int $gapDesktop = null;
 
     /**
      * Get the icon for the block in the page builder UI.
