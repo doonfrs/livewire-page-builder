@@ -7,7 +7,6 @@ use Trinavo\LivewirePageBuilder\Services\PageBuilderService;
 use Trinavo\LivewirePageBuilder\Support\Block;
 use Trinavo\LivewirePageBuilder\Support\Properties\CheckboxProperty;
 use Trinavo\LivewirePageBuilder\Support\Properties\SelectProperty;
-use Trinavo\LivewirePageBuilder\Support\Properties\TextProperty;
 
 class RowBlock extends Block
 {
@@ -231,6 +230,20 @@ class RowBlock extends Block
 
     public function getPageBuilderProperties(): array
     {
+        $gapOptions = [
+            '0' => '0',
+            '1' => '1',
+            '2' => '2',
+            '3' => '3',
+            '4' => '4',
+            '5' => '5',
+            '6' => '6',
+            '7' => '7',
+            '8' => '8',
+            '9' => '9',
+            '10' => '10',
+        ];
+
         return [
             new SelectProperty(
                 name: 'flex',
@@ -268,23 +281,23 @@ class RowBlock extends Block
                 options: $this->getPageBuilderWidthList(),
             ))->setGroup('contentWidth', 'Content Width', 3, 'heroicon-o-rectangle-group'),
 
-            (new TextProperty(
+            (new SelectProperty(
                 name: 'mobileGap',
                 label: 'Mobile',
                 defaultValue: $this->mobileGap,
-                numeric: true,
+                options: $gapOptions,
             ))->setGroup('gap', 'Gap', 3, 'heroicon-o-rectangle-group'),
-            (new TextProperty(
+            (new SelectProperty(
                 name: 'tabletGap',
                 label: 'Tablet',
                 defaultValue: $this->tabletGap,
-                numeric: true,
+                options: $gapOptions,
             ))->setGroup('gap', 'Gap', 3, 'heroicon-o-rectangle-group'),
-            (new TextProperty(
+            (new SelectProperty(
                 name: 'desktopGap',
                 label: 'Desktop',
                 defaultValue: $this->desktopGap,
-                numeric: true,
+                options: $gapOptions,
             ))->setGroup('gap', 'Gap', 3, 'heroicon-o-rectangle-group'),
         ];
     }
