@@ -315,4 +315,31 @@ abstract class Block extends Component
             'w-full' => 'full',
         ];
     }
+
+    /**
+     * Convert the block to a JSON serializable array.
+     * This can be used for copying/pasting blocks.
+     */
+    public function toJson(): string
+    {
+        $properties = $this->getPropertyValues();
+
+        return json_encode([
+            'type' => class_basename(static::class),
+            'class' => get_class($this),
+            'properties' => $properties,
+        ]);
+    }
+
+    /**
+     * Get copy data for the block.
+     */
+    public function getCopyData(): array
+    {
+        return [
+            'type' => class_basename(static::class),
+            'class' => get_class($this),
+            'properties' => $this->getPropertyValues(),
+        ];
+    }
 }

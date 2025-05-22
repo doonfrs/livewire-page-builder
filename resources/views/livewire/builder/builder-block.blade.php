@@ -24,9 +24,9 @@
         <div class="cursor-pointer" wire:click="blockSelected()">
             <div class="builder-block relative">
                 @if (!$classExists)
-                    <div class="text-red-500">{{ __('Unknown block') }}: {{ $blockAlias }}</div>
+                <div class="text-red-500">{{ __('Unknown block') }}: {{ $blockAlias }}</div>
                 @else
-                    @livewire($blockAlias, $properties, key($blockId . '-' . md5(json_encode($properties))))
+                @livewire($blockAlias, $properties, key($blockId . '-' . md5(json_encode($properties))))
                 @endif
                 <div class="absolute inset-0 z-50" style="pointer-events: all;"></div>
             </div>
@@ -41,6 +41,11 @@
                 class="flex items-center w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100">
                 <x-heroicon-o-cursor-arrow-rays class="w-4 h-4 mr-2 text-gray-500" />
                 <span>{{ __('Select') }}</span>
+            </button>
+            <button wire:click="copyBlock(); showContextMenu = false;"
+                class="flex items-center w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100">
+                <x-heroicon-o-clipboard-document class="w-4 h-4 mr-2 text-gray-500" />
+                <span>{{ __('Copy') }}</span>
             </button>
             <button
                 @click="
