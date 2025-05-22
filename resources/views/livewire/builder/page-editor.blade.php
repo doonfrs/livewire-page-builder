@@ -20,6 +20,31 @@
             if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }, 100);
     "
+    x-on:copy-to-clipboard.window="
+        async (event) => {
+            try {
+                await navigator.clipboard.writeText(event.detail.data);
+                // You can add a notification here if needed
+            } catch (err) {
+                console.error('Failed to copy: ', err);
+                // Fallback method for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = event.detail.data;
+                textArea.style.position = 'fixed';
+                textArea.style.left = '-999999px';
+                textArea.style.top = '-999999px';
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                try {
+                    document.execCommand('copy');
+                } catch (err) {
+                    console.error('Fallback copy method failed:', err);
+                }
+                document.body.removeChild(textArea);
+            }
+        }
+    "
     x-init="() => {
         // Wait for DOM content to be fully loaded
         document.addEventListener('DOMContentLoaded', () => {
@@ -77,6 +102,9 @@
             </path>
         </svg>
     </div>
+
+    <!-- Notifications -->
+    @include('page-builder::livewire.builder.partials.notification')
 
     <!-- Header Toolbar -->
     <div
@@ -150,14 +178,14 @@
 
     <!-- Modal for Adding Block -->
     @if ($showBlockModal)
-        @include('page-builder::livewire.builder.partials.blocks-modal', ['allBlocks' => $formattedBlocks])
+    @include('page-builder::livewire.builder.partials.blocks-modal', ['allBlocks' => $formattedBlocks])
     @endif
 
     <!-- Modal for Page Blocks -->
     @if ($showPageBlocksModal)
-        @include('page-builder::livewire.builder.partials.page-blocks-modal', [
-            'allPageBlocks' => $allPageBlocks,
-        ])
+    @include('page-builder::livewire.builder.partials.page-blocks-modal', [
+    'allPageBlocks' => $allPageBlocks,
+    ])
     @endif
 
     <!-- Pages Modal -->
@@ -182,8 +210,8 @@
                 }"
                 style="font-size:0">
                 @foreach ($rows as $rowId => $row)
-                    <livewire:row-block :edit-mode="true" :blocks="$row['blocks']" :rowId="$rowId" :properties="$row['properties']"
-                        :key="$rowId" />
+                <livewire:row-block :edit-mode="true" :blocks="$row['blocks']" :rowId="$rowId" :properties="$row['properties']"
+                    :key="$rowId" />
                 @endforeach
             </div>
         </main>

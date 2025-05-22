@@ -207,7 +207,7 @@ class RowBlock extends Block
             $newOrder[$currentIndex - 1] = $newOrder[$currentIndex];
             $newOrder[$currentIndex] = $temp;
 
-            $this->blocks = collect($newOrder)->mapWithKeys(fn ($id) => [$id => $this->blocks[$id]])->toArray();
+            $this->blocks = collect($newOrder)->mapWithKeys(fn($id) => [$id => $this->blocks[$id]])->toArray();
         }
     }
 
@@ -224,7 +224,7 @@ class RowBlock extends Block
             $newOrder[$currentIndex + 1] = $newOrder[$currentIndex];
             $newOrder[$currentIndex] = $temp;
 
-            $this->blocks = collect($newOrder)->mapWithKeys(fn ($id) => [$id => $this->blocks[$id]])->toArray();
+            $this->blocks = collect($newOrder)->mapWithKeys(fn($id) => [$id => $this->blocks[$id]])->toArray();
         }
     }
 
@@ -308,9 +308,32 @@ class RowBlock extends Block
         if ($rowId != $this->rowId) {
             return;
         }
-        $this->dispatch('row-selected',
+        $this->dispatch(
+            'row-selected',
             rowId: $this->rowId,
             properties: $this->properties,
+        );
+    }
+
+    public function copyRow()
+    {
+        $data = [
+            'type' => 'RowBlock',
+            'rowId' => $this->rowId,
+            'properties' => $this->properties,
+            'blocks' => $this->blocks,
+        ];
+
+        $jsonData = json_encode($data);
+
+        // Dispatch an event to copy to clipboard via JavaScript
+        $this->dispatch('copy-to-clipboard', data: $jsonData);
+
+        // Success notification
+        $this->dispatch(
+            'notify',
+            message: 'Row copied to clipboard',
+            type: 'success'
         );
     }
 }

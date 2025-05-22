@@ -23,5 +23,10 @@
     "Content": "المحتوى",
     "Rich Text": "نص منسق",
     "Multilingual": "متعدد اللغات",
-    "Search pages...": "ابحث عن صفحة..."
+    "Search pages...": "ابحث عن صفحة...",
+    "Copy": "نسخ",
+    "Copy Row": "نسخ الصف",
+    "Copy Block": "نسخ الكتلة",
+    "Block copied to clipboard": "تم نسخ الكتلة إلى الحافظة",
+    "Row copied to clipboard": "تم نسخ الصف إلى الحافظة"
 }

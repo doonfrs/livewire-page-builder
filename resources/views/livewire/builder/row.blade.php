@@ -55,6 +55,14 @@
                     <span>{{ __('Select') }}</span>
                 </button>
 
+                <!-- Copy Row Button -->
+                <button wire:click="copyRow()" @click="open = false"
+                    class="flex items-center w-full px-3 py-2 text-left text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
+                    title="{{ __('Copy Row') }}">
+                    <x-heroicon-o-clipboard-document class="w-4 h-4 mr-2" />
+                    <span>{{ __('Copy') }}</span>
+                </button>
+
                 <!-- Row Move Up Button -->
                 <button wire:click="moveRowUp()" @click="open = false"
                     class="flex items-center w-full px-3 py-2 text-left text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
@@ -103,17 +111,17 @@
 
         <div class="row-blocks pt-4 pb-4 {{ $rowCssClasses }}">
             @foreach ($blocks as $blockId => $block)
-                @livewire(
-                    'builder-block',
-                    [
-                        'blockAlias' => $block['alias'],
-                        'blockId' => $blockId,
-                        'rowId' => $rowId,
-                        'properties' => $block['properties'] ?? [],
-                        'editMode' => true,
-                    ],
-                    key($blockId)
-                )
+            @livewire(
+            'builder-block',
+            [
+            'blockAlias' => $block['alias'],
+            'blockId' => $blockId,
+            'rowId' => $rowId,
+            'properties' => $block['properties'] ?? [],
+            'editMode' => true,
+            ],
+            key($blockId)
+            )
             @endforeach
         </div>
     </div>

@@ -31,7 +31,6 @@ class BuilderBlock extends Component
             $this->cssClasses = $this->makeClasses();
             $this->inlineStyles = $this->makeInlineStyles();
         }
-
     }
 
     public function render()
@@ -45,7 +44,6 @@ class BuilderBlock extends Component
             'editMode' => $this->editMode,
             'classExists' => class_exists($blockClass),
         ]);
-
     }
 
     #[On('select-block')]
@@ -54,7 +52,8 @@ class BuilderBlock extends Component
         if ($blockId != $this->blockId) {
             return;
         }
-        $this->dispatch('block-selected',
+        $this->dispatch(
+            'block-selected',
             blockId: $this->blockId,
             properties: $this->properties,
             blockClass: md5($this->getBlockClass()),
@@ -86,7 +85,6 @@ class BuilderBlock extends Component
 
         $this->cssClasses = $this->makeClasses();
         $this->inlineStyles = $this->makeInlineStyles();
-
     }
 
     public function makeClasses(): string
@@ -101,5 +99,32 @@ class BuilderBlock extends Component
         $styleString = app(PageBuilderService::class)->getInlineStylesFromProperties($this->properties);
 
         return $styleString;
+    }
+
+    /**
+     * Copy block data to clipboard.
+     */
+    public function copyBlock()
+    {
+        $blockClass = $this->getBlockClass();
+
+        $data = [
+            'type' => 'Block',
+            'blockId' => $this->blockId,
+            'blockAlias' => $this->blockAlias,
+            'properties' => $this->properties,
+        ];
+
+        $jsonData = json_encode($data);
+
+        // Dispatch an event to copy to clipboard via JavaScript
+        $this->dispatch('copy-to-clipboard', data: $jsonData);
+
+        // Success notification
+        $this->dispatch(
+            'notify',
+            message: 'Block copied to clipboard',
+            type: 'success'
+        );
     }
 }
