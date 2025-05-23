@@ -58,5 +58,6 @@
     "Invalid clipboard data format": "تنسيق بيانات الحافظة غير صالح",
     "Failed to read clipboard contents:": "فشل قراءة محتويات الحافظة:",
     "Error accessing clipboard API:": "خطأ في الوصول إلى واجهة برمجة تطبيقات الحافظة:",
-    "Failed to parse clipboard data:": "فشل تحليل بيانات الحافظة:"
+    "Failed to parse clipboard data:": "فشل تحليل بيانات الحافظة:",
+    "Target row not found": "لم يتم العثور على الصف المستهدف"
 }
