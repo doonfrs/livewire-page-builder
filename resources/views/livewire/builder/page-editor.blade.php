@@ -41,29 +41,24 @@
             this.pasteDataType = null;
         }
     }
-}"
-    x-on:row-added.window="setTimeout(() => { 
+}" x-on:row-added.window="setTimeout(() => { 
             const el = document.getElementById('row-' + $event.detail.rowId); 
             if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' }); 
             $dispatch('row-selected', { rowId: $event.detail.rowId, properties: $event.detail.properties });
-    }, 200);"
-    x-on:block-added.window="setTimeout(() => { 
+    }, 200);" x-on:block-added.window="setTimeout(() => { 
             const el = document.getElementById('block-' + $event.detail.blockId); 
             if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' }); 
-    }, 200);"
-    x-on:select-block.window="
+    }, 200);" x-on:select-block.window="
         setTimeout(() => {
             const el = document.getElementById('block-' + $event.detail.blockId);
             if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }, 100);
-    "
-    x-on:select-row.window="
+    " x-on:select-row.window="
         setTimeout(() => {
             const el = document.getElementById('row-' + $event.detail.rowId);
             if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }, 100);
-    "
-    x-on:copy-to-clipboard.window="
+    " x-on:copy-to-clipboard.window="
         async (event) => {
             try {
                 await navigator.clipboard.writeText(event.detail.data);
@@ -87,8 +82,7 @@
                 document.body.removeChild(textArea);
             }
         }
-    "
-    x-init="() => {
+    " x-init="() => {
         // Don't check clipboard on load - only check on user interaction
         
         // Wait for DOM content to be fully loaded
@@ -175,8 +169,7 @@
             </button>
             <!-- Preview Button -->
             <a :href="'/page-builder/page/view/' + @js($pageKey ?? '') + (@js($pageTheme ?? '') ? '/' +
-                @js($pageTheme ?? '') : '')"
-                target="_blank"
+                @js($pageTheme ?? '') : '')" target="_blank"
                 class="flex items-center gap-1 px-4 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-2 focus:ring-blue-200 transition-all duration-150 text-sm font-medium"
                 title="{{ __('Preview Page') }}">
                 <x-heroicon-o-eye class="w-5 h-5" />
@@ -247,16 +240,14 @@
 
         <!-- Main Section (Scrollable) -->
         <main class="flex-1 pt-10 pb-50 pr-0 bg-gray-50 dark:bg-gray-900 overflow-auto min-h-0 w-[80%]">
-            <div class="mx-auto @container"
-                :class="{
+            <div class="mx-auto @container" :class="{
                     'w-[375px]': deviceMode === 'mobile',
                     'w-[768px]': deviceMode === 'tablet',
                     'w-full': deviceMode === 'desktop',
-                }"
-                style="font-size:0">
+                }" style="font-size:0">
                 @foreach ($rows as $rowId => $row)
-                <livewire:row-block :edit-mode="true" :blocks="$row['blocks']" :rowId="$rowId" :properties="$row['properties']"
-                    :key="$rowId" />
+                <livewire:row-block :edit-mode="true" :blocks="$row['blocks']" :rowId="$rowId"
+                    :properties="$row['properties']" :key="$rowId" />
                 @endforeach
             </div>
         </main>

@@ -43,7 +43,8 @@
                 x-transition:leave-end="opacity-0 transform translate-y-2" @click.outside="open = false"
                 class="absolute top-[45px] left-1/2 -translate-x-1/2 bg-white shadow-xl rounded-lg border border-gray-200 py-2 w-[250px] dark:bg-gray-800 dark:border-gray-700">
 
-                <div class="px-3 py-1 text-xs font-semibold text-gray-500 uppercase tracking-wider dark:text-gray-400 border-b border-gray-100 dark:border-gray-700 mb-1">
+                <div
+                    class="px-3 py-1 text-xs font-semibold text-gray-500 uppercase tracking-wider dark:text-gray-400 border-b border-gray-100 dark:border-gray-700 mb-1">
                     {{ __('Row Actions') }}
                 </div>
 
@@ -64,13 +65,14 @@
                 </button>
 
                 <!-- Paste Row (combined with before/after options) -->
-                <div class="flex items-center w-full px-3 py-2 text-gray-700 dark:text-gray-300 border-b border-gray-50 dark:border-gray-700">
+                <div
+                    class="flex items-center w-full px-3 py-2 text-gray-700 dark:text-gray-300 border-b border-gray-50 dark:border-gray-700">
                     <div class="flex items-center flex-1">
                         <x-heroicon-o-clipboard-document-check class="w-4 h-4 ms-0 me-3" />
                         <span>{{ __('Paste') }}</span>
                     </div>
                     <div class="flex space-x-2 rtl:space-x-reverse">
-                        <button 
+                        <button
                             @click="
                                 navigator.clipboard.readText().then(text => {
                                     if (text) {
@@ -83,14 +85,14 @@
                                                     position: 'before'
                                                 });
                                             } else {
-                                                console.error('{{ __("Invalid clipboard data format") }}');
+                                                console.error('{{ __('Invalid clipboard data format') }}');
                                             }
                                         } catch (e) {
-                                            console.error('{{ __("Failed to parse clipboard data:") }}', e);
+                                            console.error('{{ __('Failed to parse clipboard data:') }}', e);
                                         }
                                     }
                                 }).catch(err => {
-                                    console.error('{{ __("Failed to read clipboard contents:") }}', err);
+                                    console.error('{{ __('Failed to read clipboard contents:') }}', err);
                                 });
                                 open = false;
                             "
@@ -99,7 +101,7 @@
                             <x-heroicon-o-arrow-up class="w-3 h-3 inline-block" />
                             {{ __('Before') }}
                         </button>
-                        <button 
+                        <button
                             @click="
                                 navigator.clipboard.readText().then(text => {
                                     if (text) {
@@ -112,14 +114,14 @@
                                                     position: 'after'
                                                 });
                                             } else {
-                                                console.error('{{ __("Invalid clipboard data format") }}');
+                                                console.error('{{ __('Invalid clipboard data format') }}');
                                             }
                                         } catch (e) {
-                                            console.error('{{ __("Failed to parse clipboard data:") }}', e);
+                                            console.error('{{ __('Failed to parse clipboard data:') }}', e);
                                         }
                                     }
                                 }).catch(err => {
-                                    console.error('{{ __("Failed to read clipboard contents:") }}', err);
+                                    console.error('{{ __('Failed to read clipboard contents:') }}', err);
                                 });
                                 open = false;
                             "
@@ -132,7 +134,8 @@
                 </div>
 
                 <!-- Move Row (combined Up/Down) -->
-                <div class="flex items-center w-full px-3 py-2 text-gray-700 dark:text-gray-300 border-b border-gray-50 dark:border-gray-700">
+                <div
+                    class="flex items-center w-full px-3 py-2 text-gray-700 dark:text-gray-300 border-b border-gray-50 dark:border-gray-700">
                     <div class="flex items-center flex-1">
                         <x-heroicon-o-arrows-up-down class="w-4 h-4 ms-0 me-3" />
                         <span>{{ __('Move') }}</span>
@@ -154,19 +157,22 @@
                 </div>
 
                 <!-- Add Row (combined Before/After) -->
-                <div class="flex items-center w-full px-3 py-2 text-green-700 dark:text-green-400 border-b border-gray-50 dark:border-gray-700">
+                <div
+                    class="flex items-center w-full px-3 py-2 text-green-700 dark:text-green-400 border-b border-gray-50 dark:border-gray-700">
                     <div class="flex items-center flex-1">
                         <x-heroicon-o-plus class="w-4 h-4 ms-0 me-3 text-green-500" />
                         <span>{{ __('Add Row') }}</span>
                     </div>
                     <div class="flex space-x-2 rtl:space-x-reverse">
-                        <button wire:click="$dispatch('addRow', {beforeRowId: '{{ $rowId }}'})" @click="open = false"
+                        <button wire:click="$dispatch('addRow', {beforeRowId: '{{ $rowId }}'})"
+                            @click="open = false"
                             class="px-2 py-1 text-xs rounded hover:bg-green-50 dark:hover:bg-green-900/20 border border-green-100 dark:border-green-800/50"
                             title="{{ __('Add Row Before') }}">
                             <x-heroicon-o-arrow-up class="w-3 h-3 inline-block" />
                             {{ __('Before') }}
                         </button>
-                        <button wire:click="$dispatch('addRow', {afterRowId: '{{ $rowId }}'})" @click="open = false"
+                        <button wire:click="$dispatch('addRow', {afterRowId: '{{ $rowId }}'})"
+                            @click="open = false"
                             class="px-2 py-1 text-xs rounded hover:bg-green-50 dark:hover:bg-green-900/20 border border-green-100 dark:border-green-800/50"
                             title="{{ __('Add Row After') }}">
                             <x-heroicon-o-arrow-down class="w-3 h-3 inline-block" />
@@ -192,17 +198,17 @@
 
         <div class="row-blocks pt-4 pb-4 {{ $rowCssClasses }}">
             @foreach ($blocks as $blockId => $block)
-            @livewire(
-            'builder-block',
-            [
-            'blockAlias' => $block['alias'],
-            'blockId' => $blockId,
-            'rowId' => $rowId,
-            'properties' => $block['properties'] ?? [],
-            'editMode' => true,
-            ],
-            key($blockId)
-            )
+                @livewire(
+                    'builder-block',
+                    [
+                        'blockAlias' => $block['alias'],
+                        'blockId' => $blockId,
+                        'rowId' => $rowId,
+                        'properties' => $block['properties'] ?? [],
+                        'editMode' => true,
+                    ],
+                    key($blockId)
+                )
             @endforeach
         </div>
     </div>
