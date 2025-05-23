@@ -68,7 +68,7 @@ class BlockProperties extends Component
         // Add default properties as "general" group if any exist
         if (! empty($defaultProperties)) {
             $this->propertyGroups['general'] = [
-                'label' => 'Block Settings',
+                'label' => __('Block Settings'),
                 'columns' => 1,
                 'icon' => 'heroicon-o-cog-6-tooth',
                 'properties' => $defaultProperties,
