@@ -368,9 +368,15 @@ class PageEditor extends Component
                 // Create new row ID
                 $rowId = uniqid();
 
+                $blocks = [];
+
+                foreach ($data['blocks'] as $blockId => $block) {
+                    $blocks[uniqid()] = $block;
+                }
+
                 // Create the row with data from clipboard
                 $row = [
-                    'blocks' => $data['blocks'] ?? [],
+                    'blocks' => $blocks,
                     'properties' => $data['properties'] ?? [],
                 ];
 
