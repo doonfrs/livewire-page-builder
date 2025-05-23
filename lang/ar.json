@@ -28,5 +28,9 @@
     "Copy Row": "نسخ الصف",
     "Copy Block": "نسخ الكتلة",
     "Block copied to clipboard": "تم نسخ الكتلة إلى الحافظة",
-    "Row copied to clipboard": "تم نسخ الصف إلى الحافظة"
+    "Row copied to clipboard": "تم نسخ الصف إلى الحافظة",
+    "Row pasted successfully": "تم لصق الصف بنجاح",
+    "Block pasted successfully": "تم لصق الكتلة بنجاح",
+    "Paste Before": "لصق قبل",
+    "Paste After": "لصق بعد"
 }
