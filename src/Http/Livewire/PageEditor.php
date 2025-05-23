@@ -322,7 +322,132 @@ class PageEditor extends Component
                 break;
             }
         }
-        $this->skipRender();
+    }
+
+    /**
+     * Handle pasting clipboard data
+     */
+    #[On('paste-from-clipboard')]
+    public function pasteFromClipboard($clipboardData, $targetRowId = null, $targetBlockId = null, $position = 'after')
+    {
+        try {
+            $data = json_decode($clipboardData, true);
+
+            if (! $data || ! isset($data['type'])) {
+                return;
+            }
+
+            // Handle Row paste
+            if ($data['type'] === 'RowBlock') {
+                $rowId = uniqid();
+                $row = [
+                    'blocks' => $data['blocks'] ?? [],
+                    'properties' => $data['properties'] ?? [],
+                ];
+
+                if ($targetRowId) {
+                    // Add row next to the target row
+                    $targetIndex = array_search($targetRowId, array_keys($this->rows));
+                    if ($position === 'after') {
+                        $targetIndex++;
+                    }
+
+                    $this->rows = array_merge(
+                        array_slice($this->rows, 0, $targetIndex),
+                        [$rowId => $row],
+                        array_slice($this->rows, $targetIndex)
+                    );
+                } else {
+                    // If no target row, add to the end
+                    $this->rows[$rowId] = $row;
+                }
+
+                // Dispatch event to notify about the new row
+                $this->dispatch(
+                    'row-added',
+                    rowId: $rowId,
+                    properties: $row['properties']
+                );
+
+                $this->dispatch(
+                    'notify',
+                    message: 'Row pasted successfully',
+                    type: 'success'
+                );
+            }
+            // Handle Block paste
+            elseif ($data['type'] === 'Block') {
+                $blockId = uniqid();
+                $block = [
+                    'alias' => $data['blockAlias'],
+                    'properties' => $data['properties'] ?? [],
+                ];
+
+                // Find the row of the target block
+                $parentRowId = null;
+                foreach ($this->rows as $rowId => $row) {
+                    if (isset($row['blocks'][$targetBlockId])) {
+                        $parentRowId = $rowId;
+                        break;
+                    }
+                }
+
+                if (! $parentRowId && $targetRowId) {
+                    $parentRowId = $targetRowId;
+                }
+
+                if ($parentRowId) {
+                    if ($targetBlockId) {
+                        // Insert block relative to target block
+                        $blockIds = array_keys($this->rows[$parentRowId]['blocks']);
+                        $targetIndex = array_search($targetBlockId, $blockIds);
+
+                        if ($position === 'after') {
+                            $targetIndex++;
+                        }
+
+                        $newBlocks = [];
+                        foreach ($blockIds as $index => $id) {
+                            if ($index === $targetIndex) {
+                                $newBlocks[$blockId] = $block; // Add new block at position
+                            }
+                            $newBlocks[$id] = $this->rows[$parentRowId]['blocks'][$id]; // Add existing block
+                        }
+
+                        // If target was last, we need to add the new block at the end
+                        if ($position === 'after' && $targetIndex >= count($blockIds)) {
+                            $newBlocks[$blockId] = $block;
+                        }
+
+                        $this->rows[$parentRowId]['blocks'] = $newBlocks;
+                    } else {
+                        // If no target block, add to the end of row
+                        $this->rows[$parentRowId]['blocks'][$blockId] = $block;
+                    }
+
+                    // Dispatch to row-block component
+                    $this->dispatch(
+                        'block-added',
+                        rowId: $parentRowId,
+                        blockId: $blockId,
+                        blockAlias: $data['blockAlias'],
+                        properties: $block['properties']
+                    );
+
+                    $this->dispatch(
+                        'notify',
+                        message: 'Block pasted successfully',
+                        type: 'success'
+                    );
+                }
+            }
+        } catch (\Exception $e) {
+            $this->dispatch(
+                'notify',
+                message: 'Failed to paste: '.$e->getMessage(),
+                type: 'error'
+            );
+        }
     }
 
     public function render()

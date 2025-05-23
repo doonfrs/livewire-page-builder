@@ -47,6 +47,62 @@
                 <x-heroicon-o-clipboard-document class="w-4 h-4 mr-2 text-gray-500" />
                 <span>{{ __('Copy') }}</span>
             </button>
+            <button 
+                @click="
+                    navigator.clipboard.readText().then(text => {
+                        if (text) {
+                            try {
+                                const data = JSON.parse(text);
+                                if (data && data.type) {
+                                    $dispatch('paste-from-clipboard', {
+                                        clipboardData: text,
+                                        targetBlockId: '{{ $blockId }}',
+                                        position: 'after'
+                                    });
+                                } else {
+                                    console.error('Invalid clipboard data format');
+                                }
+                            } catch (e) {
+                                console.error('Failed to parse clipboard data:', e);
+                            }
+                        }
+                    }).catch(err => {
+                        console.error('Failed to read clipboard contents: ', err);
+                    });
+                    showContextMenu = false;
+                "
+                class="flex items-center w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100">
+                <x-heroicon-o-clipboard-document-check class="w-4 h-4 mr-2 text-gray-500" />
+                <span>{{ __('Paste After') }}</span>
+            </button>
+            <button 
+                @click="
+                    navigator.clipboard.readText().then(text => {
+                        if (text) {
+                            try {
+                                const data = JSON.parse(text);
+                                if (data && data.type) {
+                                    $dispatch('paste-from-clipboard', {
+                                        clipboardData: text,
+                                        targetBlockId: '{{ $blockId }}',
+                                        position: 'before'
+                                    });
+                                } else {
+                                    console.error('Invalid clipboard data format');
+                                }
+                            } catch (e) {
+                                console.error('Failed to parse clipboard data:', e);
+                            }
+                        }
+                    }).catch(err => {
+                        console.error('Failed to read clipboard contents: ', err);
+                    });
+                    showContextMenu = false;
+                "
+                class="flex items-center w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100">
+                <x-heroicon-o-clipboard-document-check class="w-4 h-4 mr-2 text-gray-500" />
+                <span>{{ __('Paste Before') }}</span>
+            </button>
             <button
                 @click="
             showContextMenu = false;
