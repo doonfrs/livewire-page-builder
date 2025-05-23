@@ -328,7 +328,11 @@ class PageEditor extends Component
      * Handle pasting clipboard data
      */
     #[On('paste-from-clipboard')]
-    public function pasteFromClipboard($clipboardData, $targetRowId = null, $targetBlockId = null, $position = 'after')
+    public function pasteFromClipboard(
+        $clipboardData,
+        $targetRowId = null,
+        $targetBlockId = null,
+        $position = 'after')
     {
         try {
             $data = json_decode($clipboardData, true);
@@ -339,26 +343,54 @@ class PageEditor extends Component
 
             // Handle Row paste
             if ($data['type'] === 'RowBlock') {
+                // If pasting through a block, find its parent row
+                if (! $targetRowId && $targetBlockId) {
+                    foreach ($this->rows as $rowId => $row) {
+                        if (isset($row['blocks'][$targetBlockId])) {
+                            $targetRowId = $rowId;
+                            break;
+                        }
+                    }
+                }
+
+                // Call addRow directly using the same pattern as the method
+                $afterRowId = null;
+                $beforeRowId = null;
+
+                if ($targetRowId) {
+                    if ($position === 'after') {
+                        $afterRowId = $targetRowId;
+                    } else { // position === 'before'
+                        $beforeRowId = $targetRowId;
+                    }
+                }
+
+                // Create new row ID
                 $rowId = uniqid();
+
+                // Create the row with data from clipboard
                 $row = [
                     'blocks' => $data['blocks'] ?? [],
                     'properties' => $data['properties'] ?? [],
                 ];
 
-                if ($targetRowId) {
-                    // Add row next to the target row
-                    $targetIndex = array_search($targetRowId, array_keys($this->rows));
-                    if ($position === 'after') {
-                        $targetIndex++;
-                    }
-
+                // Use exact same logic as addRow method
+                if ($afterRowId) {
+                    $afterRowIndex = array_search($afterRowId, array_keys($this->rows)) + 1;
                     $this->rows = array_merge(
-                        array_slice($this->rows, 0, $targetIndex),
+                        array_slice($this->rows, 0, $afterRowIndex),
                         [$rowId => $row],
-                        array_slice($this->rows, $targetIndex)
+                        array_slice($this->rows, $afterRowIndex)
+                    );
+                } elseif ($beforeRowId) {
+                    $beforeRowIndex = array_search($beforeRowId, array_keys($this->rows));
+                    $this->rows = array_merge(
+                        array_slice($this->rows, 0, $beforeRowIndex),
+                        [$rowId => $row],
+                        array_slice($this->rows, $beforeRowIndex)
                     );
                 } else {
-                    // If no target row, add to the end
+                    // If no target position, add to the end
                     $this->rows[$rowId] = $row;
                 }
 
@@ -398,41 +430,42 @@ class PageEditor extends Component
 
                 if ($parentRowId) {
                     if ($targetBlockId) {
-                        // Insert block relative to target block
-                        $blockIds = array_keys($this->rows[$parentRowId]['blocks']);
-                        $targetIndex = array_search($targetBlockId, $blockIds);
+                        // Create positioning parameters based on position value
+                        $beforeBlockId = null;
+                        $afterBlockId = null;
 
-                        if ($position === 'after') {
-                            $targetIndex++;
+                        if ($position === 'before') {
+                            $beforeBlockId = $targetBlockId;
+                        } else { // position === 'after'
+                            $afterBlockId = $targetBlockId;
                         }
 
-                        $newBlocks = [];
-                        foreach ($blockIds as $index => $id) {
-                            if ($index === $targetIndex) {
-                                $newBlocks[$blockId] = $block; // Add new block at position
-                            }
-                            $newBlocks[$id] = $this->rows[$parentRowId]['blocks'][$id]; // Add existing block
-                        }
+                        // Add the block to the end initially
+                        $this->rows[$parentRowId]['blocks'][$blockId] = $block;
 
-                        // If target was last, we need to add the new block at the end
-                        if ($position === 'after' && $targetIndex >= count($blockIds)) {
-                            $newBlocks[$blockId] = $block;
-                        }
-
-                        $this->rows[$parentRowId]['blocks'] = $newBlocks;
+                        // Dispatch to row-block component with position parameters
+                        $this->dispatch(
+                            'block-added',
+                            rowId: $parentRowId,
+                            blockId: $blockId,
+                            blockAlias: $data['blockAlias'],
+                            properties: $block['properties'],
+                            beforeBlockId: $beforeBlockId,
+                            afterBlockId: $afterBlockId
+                        );
                     } else {
                         // If no target block, add to the end of row
                         $this->rows[$parentRowId]['blocks'][$blockId] = $block;
-                    }
 
-                    // Dispatch to row-block component
-                    $this->dispatch(
-                        'block-added',
-                        rowId: $parentRowId,
-                        blockId: $blockId,
-                        blockAlias: $data['blockAlias'],
-                        properties: $block['properties']
-                    );
+                        // Dispatch to row-block component
+                        $this->dispatch(
+                            'block-added',
+                            rowId: $parentRowId,
+                            blockId: $blockId,
+                            blockAlias: $data['blockAlias'],
+                            properties: $block['properties']
+                        );
+                    }
 
                     $this->dispatch(
                         'notify',
