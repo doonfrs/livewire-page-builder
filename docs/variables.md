@@ -37,7 +37,7 @@ PageBuilderVariables::registerMany([
 
 You can use variables in any text content by using the `{variable_name}` syntax. For example:
 
-```
+```plaintext
 Welcome to {company_name}! 
 
 We currently have {user_count} registered users.

@@ -1,6 +1,16 @@
 {
-    "css.validate": false,
-    "html.validate.styles": false,
-    "less.validate": false,
-    "scss.validate": false
+    "emmet.triggerExpansionOnTab": true,
+    "blade.format.enable": true,
+    "[blade]": {
+        "editor.autoClosingBrackets": "always",
+        "editor.defaultFormatter": "shufo.vscode-blade-formatter"
+    },
+    "editor.formatOnSave": true,
+    "files.associations": {
+        "*.blade.php": "blade"
+    },
+    "[php]": {
+        "editor.defaultFormatter": "open-southeners.laravel-pint"
+    },
+    "laravel-pint.enable": true,
 }
