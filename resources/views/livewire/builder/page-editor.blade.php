@@ -1,4 +1,47 @@
-<div class="h-screen flex flex-col bg-gray-100 dark:bg-gray-900" x-data="{ showPagesModal: false, deviceMode: 'desktop', loading: true }"
+<div class="h-screen flex flex-col bg-gray-100 dark:bg-gray-900" x-data="{ 
+    showPagesModal: false, 
+    deviceMode: 'desktop', 
+    loading: true,
+    canPaste: false,
+    pasteDataType: null,
+    checkClipboard: async function() {
+        try {
+            const text = await navigator.clipboard.readText();
+            if (!text) {
+                this.canPaste = false;
+                this.pasteDataType = null;
+                return;
+            }
+            
+            try {
+                // First try to parse as JSON
+                const data = JSON.parse(text);
+                
+                // Check if it's our expected format with type property
+                if (data && typeof data === 'object') {
+                    if (data.type === 'Block' || data.type === 'RowBlock') {
+                        this.canPaste = true;
+                        this.pasteDataType = data.type;
+                        console.log('Valid clipboard data found:', data.type);
+                        return;
+                    }
+                }
+                
+                this.canPaste = false;
+                this.pasteDataType = null;
+            } catch (e) {
+                // Not valid JSON, that's fine
+                this.canPaste = false;
+                this.pasteDataType = null;
+            }
+        } catch (e) {
+            // Clipboard access denied or other error
+            console.error('Clipboard access error:', e);
+            this.canPaste = false;
+            this.pasteDataType = null;
+        }
+    }
+}"
     x-on:row-added.window="setTimeout(() => { 
             const el = document.getElementById('row-' + $event.detail.rowId); 
             if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' }); 
@@ -24,7 +67,7 @@
         async (event) => {
             try {
                 await navigator.clipboard.writeText(event.detail.data);
-                // You can add a notification here if needed
+                // Success notification handled by component
             } catch (err) {
                 console.error('Failed to copy: ', err);
                 // Fallback method for older browsers
@@ -46,6 +89,8 @@
         }
     "
     x-init="() => {
+        // Don't check clipboard on load - only check on user interaction
+        
         // Wait for DOM content to be fully loaded
         document.addEventListener('DOMContentLoaded', () => {
             // Wait for all components and images to be loaded

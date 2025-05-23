@@ -63,6 +63,68 @@
                     <span>{{ __('Copy') }}</span>
                 </button>
 
+                <!-- Paste Row After Button -->
+                <button 
+                    @click="
+                        navigator.clipboard.readText().then(text => {
+                            if (text) {
+                                try {
+                                    const data = JSON.parse(text);
+                                    if (data && data.type) {
+                                        $dispatch('paste-from-clipboard', {
+                                            clipboardData: text,
+                                            targetRowId: '{{ $rowId }}',
+                                            position: 'after'
+                                        });
+                                    } else {
+                                        console.error('Invalid clipboard data format');
+                                    }
+                                } catch (e) {
+                                    console.error('Failed to parse clipboard data:', e);
+                                }
+                            }
+                        }).catch(err => {
+                            console.error('Failed to read clipboard contents: ', err);
+                        });
+                        open = false;
+                    "
+                    class="flex items-center w-full px-3 py-2 text-left text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
+                    title="{{ __('Paste After Row') }}">
+                    <x-heroicon-o-clipboard-document-check class="w-4 h-4 mr-2" />
+                    <span>{{ __('Paste After') }}</span>
+                </button>
+
+                <!-- Paste Row Before Button -->
+                <button 
+                    @click="
+                        navigator.clipboard.readText().then(text => {
+                            if (text) {
+                                try {
+                                    const data = JSON.parse(text);
+                                    if (data && data.type) {
+                                        $dispatch('paste-from-clipboard', {
+                                            clipboardData: text,
+                                            targetRowId: '{{ $rowId }}',
+                                            position: 'before'
+                                        });
+                                    } else {
+                                        console.error('Invalid clipboard data format');
+                                    }
+                                } catch (e) {
+                                    console.error('Failed to parse clipboard data:', e);
+                                }
+                            }
+                        }).catch(err => {
+                            console.error('Failed to read clipboard contents: ', err);
+                        });
+                        open = false;
+                    "
+                    class="flex items-center w-full px-3 py-2 text-left text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
+                    title="{{ __('Paste Before Row') }}">
+                    <x-heroicon-o-clipboard-document-check class="w-4 h-4 mr-2" />
+                    <span>{{ __('Paste Before') }}</span>
+                </button>
+
                 <!-- Row Move Up Button -->
                 <button wire:click="moveRowUp()" @click="open = false"
                     class="flex items-center w-full px-3 py-2 text-left text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
