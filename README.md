@@ -9,6 +9,7 @@
 ## ✨ Features
 
 - **Visual Drag-and-Drop Editor**: Build pages visually with rows and blocks, reorder content, and see changes instantly.
+- **Copy & Paste**: Easily copy and paste rows and blocks within the same page or across different pages, with intelligent ID regeneration to prevent conflicts.
 - **Custom Blocks**: Easily register your own Livewire components as blocks, with full support for custom properties and icons.
 - **Reusable Sections**: Use any page as a block (e.g., header, footer) for maximum reusability and maintainability.
 - **Device Preview Modes**: Instantly preview your page in mobile, tablet, and desktop modes using real container queries.
@@ -168,6 +169,23 @@ If you prefer more control over the installation process:
 - Access the page builder at `/page-builder` (or your configured route).
 - Use the visual editor to add, move, and configure blocks and rows.
 - Preview your page in mobile, tablet, and desktop modes.
+
+### Copy & Paste Functionality
+
+- **Copying Elements**:
+  - Right-click on any row or block to open the context menu
+  - Select "Copy" to save the element to your clipboard
+  - The copied element retains all its properties and nested blocks
+
+- **Pasting Elements**:
+  - Right-click on any row or block to open the context menu
+  - Select "Paste Before" or "Paste After" to position your pasted content
+  - When pasting rows, all contained blocks are automatically included with new unique IDs
+  - When pasting blocks, any nested content is preserved with new unique IDs
+
+- **Cross-Page Support**:
+  - Copy elements from one page and paste them into another page
+  - Perfect for reusing complex layouts across your site
 
 ---
 
