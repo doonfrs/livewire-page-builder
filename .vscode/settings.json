@@ -1,5 +1,7 @@
 {
     "emmet.triggerExpansionOnTab": true,
+    "php.suggest.basic": false,
+    "php.validate.enable": false,
     "blade.format.enable": true,
     "[blade]": {
         "editor.autoClosingBrackets": "always",
@@ -13,4 +15,6 @@
         "editor.defaultFormatter": "open-southeners.laravel-pint"
     },
     "laravel-pint.enable": true,
+    "intelephense.environment.phpVersion": "8.2.0",
+    "intelephense.files.maxSize": 10000000,
 }
