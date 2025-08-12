@@ -4,16 +4,15 @@ namespace Trinavo\LivewirePageBuilder\Services;
 
 use Trinavo\LivewirePageBuilder\Models\BuilderPage;
 use Trinavo\LivewirePageBuilder\Models\Theme;
+use Trinavo\LivewirePageBuilder\Support\ThemeResolver;
 
 class PageBuilderRender
 {
+    use ThemeResolver;
+
     public function renderPage($pageKey, $themeId = null)
     {
-        // If no themeId provided, try to get from session or default
-        if (!$themeId) {
-            $themeId = session('selected_theme_id') ?? session('default_theme_id');
-        }
-
+        $themeId = $this->resolveThemeId($themeId);
         $page = $this->parsePage($pageKey, $themeId);
         $theme = $themeId ? Theme::find($themeId) : null;
 
@@ -27,18 +26,19 @@ class PageBuilderRender
 
     public function parsePage($pageKey, $themeId = null)
     {
+        $themeId = $this->resolveThemeId($themeId);
         $query = BuilderPage::where('key', $pageKey);
-        
+
         if ($themeId) {
             $query->where('theme_id', $themeId);
         } else {
             // If no theme specified, get the first page with any theme or null theme
             $query->orderBy('theme_id');
         }
-        
+
         $page = $query->first();
         $rows = [];
-        
+
         if ($page) {
             $rows = json_decode($page->components, true);
 
@@ -70,17 +70,17 @@ class PageBuilderRender
         if ($block['alias'] == 'builder-page-block') {
             // For page blocks, we need to consider the theme context
             $blockPageName = $block['properties']['blockPageName'] ?? null;
-            $themeId = $block['properties']['themeId'] ?? session('selected_theme_id') ?? session('default_theme_id');
-            
+            $themeId = $block['properties']['themeId'] ?? $this->resolveThemeId();
+
             if ($blockPageName) {
                 $query = BuilderPage::where('key', $blockPageName);
-                
+
                 if ($themeId) {
                     $query->where('theme_id', $themeId);
                 }
-                
+
                 $page = $query->first();
-                
+
                 if ($page) {
                     $block['rows'] = json_decode($page->components, true);
                     if ($block['rows']) {

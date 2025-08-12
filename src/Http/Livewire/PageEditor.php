@@ -7,9 +7,12 @@ use Livewire\Component;
 use Trinavo\LivewirePageBuilder\Models\BuilderPage;
 use Trinavo\LivewirePageBuilder\Models\Theme;
 use Trinavo\LivewirePageBuilder\Services\PageBuilderService;
+use Trinavo\LivewirePageBuilder\Support\ThemeResolver;
 
 class PageEditor extends Component
 {
+    use ThemeResolver;
+
     public $rows = [];
 
     public $availableBlocks = [];
@@ -46,20 +49,17 @@ class PageEditor extends Component
         $this->availableThemes = Theme::orderBy('name')->get()->toArray();
 
         $this->pageKey = request()->route('pageKey');
-        $this->themeId = request()->route('themeId') ?? session('selected_theme_id');
+        // Only depend on route param; no session fallback here
+        $this->themeId = request()->route('themeId');
 
-        // If no theme is selected, try to get default theme
-        if (!$this->themeId) {
-            $this->themeId = session('default_theme_id');
-        }
-
-        // If still no theme, show theme selector
-        if (!$this->themeId && count($this->availableThemes) > 0) {
+        // If still no theme (and themes exist), show theme selector
+        if (! $this->themeId && count($this->availableThemes) > 0) {
             $this->showThemeSelector = true;
+
             return;
         }
 
-        // Load current theme
+        // Load current theme when provided
         if ($this->themeId) {
             $this->currentTheme = Theme::find($this->themeId);
         }
@@ -83,24 +83,15 @@ class PageEditor extends Component
     public function selectThemeForPage($themeId)
     {
         $theme = Theme::find($themeId);
-        if (!$theme) return;
+        if (! $theme) {
+            return;
+        }
 
-        $this->themeId = $themeId;
-        $this->currentTheme = $theme;
-        
-        // Store selected theme in session
-        session(['selected_theme_id' => $themeId]);
-
-        // Create or find the page with new theme
-        $this->page = BuilderPage::firstOrCreate([
-            'key' => $this->pageKey,
-            'theme_id' => $this->themeId,
+        // Redirect to builder with theme in URL; no session persistence
+        return redirect()->route('page-builder.editor', [
+            'pageKey' => $this->pageKey,
+            'themeId' => $themeId,
         ]);
-
-        $this->rows = $this->page->components ? json_decode($this->page->components, true) : [];
-        $this->showThemeSelector = false;
-
-        $this->dispatch('notify', message: "Theme '{$theme->name}' selected", type: 'success');
     }
 
     public function openThemeSelector()
@@ -115,31 +106,25 @@ class PageEditor extends Component
 
     public function switchTheme($themeId)
     {
-        if ($this->themeId == $themeId) return;
+        if ($this->themeId == $themeId) {
+            return;
+        }
 
         $theme = Theme::find($themeId);
-        if (!$theme) return;
+        if (! $theme) {
+            return;
+        }
 
         // Save current page before switching
         if (isset($this->page)) {
             $this->savePage();
         }
 
-        $this->themeId = $themeId;
-        $this->currentTheme = $theme;
-        
-        // Store selected theme in session
-        session(['selected_theme_id' => $themeId]);
-
-        // Load page for new theme
-        $this->page = BuilderPage::firstOrCreate([
-            'key' => $this->pageKey,
-            'theme_id' => $this->themeId,
+        // Redirect to updated URL containing new theme ID
+        return redirect()->route('page-builder.editor', [
+            'pageKey' => $this->pageKey,
+            'themeId' => $themeId,
         ]);
-
-        $this->rows = $this->page->components ? json_decode($this->page->components, true) : [];
-
-        $this->dispatch('notify', message: "Switched to theme '{$theme->name}'", type: 'success');
     }
 
     #[On('addRow')]

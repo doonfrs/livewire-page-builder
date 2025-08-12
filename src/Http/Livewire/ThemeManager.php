@@ -3,24 +3,34 @@
 namespace Trinavo\LivewirePageBuilder\Http\Livewire;
 
 use Livewire\Component;
+use Trinavo\LivewirePageBuilder\Models\Setting;
 use Trinavo\LivewirePageBuilder\Models\Theme;
 
 class ThemeManager extends Component
 {
     public $themes = [];
+
     public $showCreateModal = false;
+
     public $showEditModal = false;
+
     public $showDeleteModal = false;
+
     public $showDefaultModal = false;
+
     public $editingTheme = null;
+
     public $selectedTheme = null;
+
     public $themeToDelete = null;
+
     public $themeToSetDefault = null;
-    
+
     // Form fields
     public $name = '';
+
     public $description = '';
-    
+
     // Theme selection
     public $defaultThemeId = null;
 
@@ -37,16 +47,13 @@ class ThemeManager extends Component
 
     public function loadDefaultTheme()
     {
-        // For now, we'll use session/cache to store default theme
-        // In a real app, you might want to store this in settings table
-        $this->defaultThemeId = session('default_theme_id');
+        $this->defaultThemeId = Setting::getDefaultThemeId();
     }
 
     public function selectTheme($themeId)
     {
         $this->selectedTheme = Theme::find($themeId);
         if ($this->selectedTheme) {
-            session(['selected_theme_id' => $themeId]);
             $this->dispatch('theme-selected', themeId: $themeId, themeName: $this->selectedTheme->name);
             $this->dispatch('notify', message: "Theme '{$this->selectedTheme->name}' selected", type: 'success');
         }
@@ -60,13 +67,15 @@ class ThemeManager extends Component
 
     public function setDefaultTheme()
     {
-        if (!$this->themeToSetDefault) return;
+        if (! $this->themeToSetDefault) {
+            return;
+        }
 
-        session(['default_theme_id' => $this->themeToSetDefault->id]);
+        Setting::setDefaultThemeId($this->themeToSetDefault->id);
         $this->defaultThemeId = $this->themeToSetDefault->id;
-        
+
         $this->dispatch('notify', message: "'{$this->themeToSetDefault->name}' set as default theme", type: 'success');
-        
+
         $this->closeDefaultModal();
     }
 
@@ -125,10 +134,12 @@ class ThemeManager extends Component
 
     public function updateTheme()
     {
-        if (!$this->editingTheme) return;
+        if (! $this->editingTheme) {
+            return;
+        }
 
         $this->validate([
-            'name' => 'required|string|max:255|unique:builder_themes,name,' . $this->editingTheme->id,
+            'name' => 'required|string|max:255|unique:builder_themes,name,'.$this->editingTheme->id,
             'description' => 'nullable|string|max:1000',
         ]);
 
@@ -150,43 +161,36 @@ class ThemeManager extends Component
 
     public function deleteTheme()
     {
-        if (!$this->themeToDelete) return;
+        if (! $this->themeToDelete) {
+            return;
+        }
 
         // Check if theme has pages
         $pageCount = $this->themeToDelete->pages()->count();
         if ($pageCount > 0) {
-            $this->dispatch('notify', 
-                message: "Cannot delete theme '{$this->themeToDelete->name}' as it has {$pageCount} page(s) associated with it", 
+            $this->dispatch('notify',
+                message: "Cannot delete theme '{$this->themeToDelete->name}' as it has {$pageCount} page(s) associated with it",
                 type: 'error'
             );
             $this->closeDeleteModal();
+
             return;
         }
 
         $themeName = $this->themeToDelete->name;
         $themeId = $this->themeToDelete->id;
-        
+
         $this->themeToDelete->delete();
-        
-        // Clear default/selected if this was the one
+
+        // Clear default if this was the one
         if ($this->defaultThemeId == $themeId) {
-            session()->forget('default_theme_id');
+            Setting::setDefaultThemeId(null);
             $this->defaultThemeId = null;
-        }
-        if (session('selected_theme_id') == $themeId) {
-            session()->forget('selected_theme_id');
-            $this->selectedTheme = null;
         }
 
         $this->loadThemes();
         $this->dispatch('notify', message: "Theme '{$themeName}' deleted successfully", type: 'success');
         $this->closeDeleteModal();
-    }
-
-    public function closeDeleteModal()
-    {
-        $this->showDeleteModal = false;
-        $this->themeToDelete = null;
     }
 
     private function resetForm()
@@ -197,12 +201,8 @@ class ThemeManager extends Component
 
     public function render()
     {
-        // Get selected theme from session
-        $selectedThemeId = session('selected_theme_id');
-        $selectedTheme = $selectedThemeId ? Theme::find($selectedThemeId) : null;
-
         return view('page-builder::livewire.theme-manager', [
-            'selectedTheme' => $selectedTheme,
+            'selectedTheme' => $this->selectedTheme,
         ])->layout('page-builder::layouts.app');
     }
 }

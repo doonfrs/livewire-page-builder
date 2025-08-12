@@ -6,9 +6,12 @@ use Illuminate\Support\Str;
 use Trinavo\LivewirePageBuilder\Models\BuilderPage;
 use Trinavo\LivewirePageBuilder\Services\PageBuilderService;
 use Trinavo\LivewirePageBuilder\Support\Block;
+use Trinavo\LivewirePageBuilder\Support\ThemeResolver;
 
 class BuilderPageBlock extends Block
 {
+    use ThemeResolver;
+
     public ?string $blockPageName = null;
 
     public ?array $rows;
@@ -25,13 +28,19 @@ class BuilderPageBlock extends Block
 
     public function mount()
     {
+        $themeId = $this->resolveThemeId();
 
-        $this->page = BuilderPage::where('key', $this->blockPageName)->first();
+        $query = BuilderPage::where('key', $this->blockPageName);
+        if ($themeId) {
+            $query->where('theme_id', $themeId);
+        }
+
+        $this->page = $query->first();
         if (! $this->page) {
             return 'Page not found';
         }
-        $this->rows = json_decode($this->page->components, true);
 
+        $this->rows = json_decode($this->page->components, true);
     }
 
     public function render()
