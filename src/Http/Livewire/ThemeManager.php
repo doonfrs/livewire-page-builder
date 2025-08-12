@@ -193,6 +193,12 @@ class ThemeManager extends Component
         $this->closeDeleteModal();
     }
 
+    public function closeDeleteModal()
+    {
+        $this->showDeleteModal = false;
+        $this->themeToDelete = null;
+    }
+
     private function resetForm()
     {
         $this->name = '';

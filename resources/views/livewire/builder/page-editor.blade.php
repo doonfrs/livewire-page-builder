@@ -171,12 +171,14 @@
                         x-transition:leave="transition ease-in duration-75"
                         x-transition:leave-start="transform opacity-100 scale-100"
                         x-transition:leave-end="transform opacity-0 scale-95"
-                        class="absolute left-0 z-50 mt-2 w-64 origin-top-left rounded-md bg-white dark:bg-gray-800 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none divide-y divide-gray-100 dark:divide-gray-700">
+                        class="absolute z-50 mt-2 w-64 rounded-md bg-white dark:bg-gray-800 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none divide-y divide-gray-100 dark:divide-gray-700"
+                        :class="document.documentElement.dir === 'rtl' ? 'right-0 origin-top-right' :
+                            'left-0 origin-top-left'">
 
                         <div class="py-2">
                             <div
                                 class="px-4 py-2 text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">
-                                Switch Theme
+                                {{ __('Switch Theme') }}
                             </div>
                             @foreach ($availableThemes as $theme)
                                 <button wire:click="switchTheme({{ $theme['id'] }})" @click="open = false"
@@ -201,7 +203,7 @@
                             <a href="{{ route('page-builder.themes') }}"
                                 class="flex items-center w-full px-4 py-2 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
                                 <x-heroicon-o-cog-6-tooth class="w-4 h-4 mr-2" />
-                                Manage Themes
+                                {{ __('Manage Themes') }}
                             </a>
                         </div>
                     </div>
@@ -210,7 +212,7 @@
                 <button wire:click="openThemeSelector"
                     class="flex items-center gap-2 px-4 py-2 border border-yellow-300 dark:border-yellow-700 bg-yellow-50 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400 rounded-md hover:bg-yellow-100 dark:hover:bg-yellow-900/50 focus:ring-2 focus:ring-yellow-200 transition-all duration-150 text-sm font-medium">
                     <x-heroicon-o-exclamation-triangle class="w-5 h-5" />
-                    <span class="hidden sm:inline">Select Theme</span>
+                    <span class="hidden sm:inline">{{ __('Select Theme') }}</span>
                 </button>
             @endif
 
@@ -300,11 +302,11 @@
         <div class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog"
             aria-modal="true">
             <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-                <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
+                <div class="fixed inset-0 bg-gray-500/75 transition-opacity" aria-hidden="true"></div>
                 <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
 
-                <div
-                    class="inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full">
+                <div class="inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full"
+                    :class="document.documentElement.dir === 'rtl' ? 'text-right' : 'text-left'">
                     <div class="bg-white dark:bg-gray-800 px-6 pt-6 pb-4">
                         <div class="flex items-center justify-between mb-6">
                             <div>
@@ -312,7 +314,7 @@
                                     Select a Theme
                                 </h3>
                                 <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                                    Choose a theme to start building your page
+                                    {{ __('Choose a theme to start building your page') }}
                                 </p>
                             </div>
                             <button wire:click="closeThemeSelector"
@@ -344,21 +346,21 @@
                                     <button
                                         class="w-full mt-3 inline-flex items-center justify-center px-3 py-2 bg-pink-600 hover:bg-pink-700 text-white text-sm font-medium rounded-md transition-all duration-150">
                                         <x-heroicon-o-paint-brush class="w-4 h-4 mr-2" />
-                                        Design Pages
+                                        {{ __('Design Pages') }}
                                     </button>
                                 </div>
                             @empty
                                 <div class="col-span-full text-center py-8">
                                     <x-heroicon-o-paint-brush
                                         class="w-12 h-12 text-gray-400 dark:text-gray-500 mx-auto" />
-                                    <h4 class="mt-2 text-lg font-medium text-gray-900 dark:text-white">No themes
-                                        available</h4>
-                                    <p class="text-gray-600 dark:text-gray-400">Create a theme first to start building
-                                        pages.</p>
+                                    <h4 class="mt-2 text-lg font-medium text-gray-900 dark:text-white">
+                                        {{ __('No themes available') }}</h4>
+                                    <p class="text-gray-600 dark:text-gray-400">
+                                        {{ __('Create a theme first to start building pages.') }}</p>
                                     <a href="{{ route('page-builder.themes') }}"
                                         class="mt-4 inline-flex items-center px-4 py-2 bg-pink-600 hover:bg-pink-700 text-white text-sm font-medium rounded-lg transition-all duration-150">
                                         <x-heroicon-o-plus class="w-4 h-4 mr-2" />
-                                        Create Theme
+                                        {{ __('Create Theme') }}
                                     </a>
                                 </div>
                             @endforelse
@@ -374,7 +376,7 @@
                             </a>
                             <button wire:click="closeThemeSelector"
                                 class="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700">
-                                Cancel
+                                {{ __('Cancel') }}
                             </button>
                         </div>
                     </div>
