@@ -97,5 +97,9 @@
     "blocks": "كتل",
     "Preview": "معاينة",
     "Theme Manager": "مدير المظاهر",
-    "Currently Working With:": "تعمل حالياً مع:"
+    "Currently Working With:": "تعمل حالياً مع:",
+    "Import Theme": "استيراد مظهر",
+    "Export": "تصدير",
+    "Select a theme JSON file to import. The theme will be created with all its pages.": "حدد ملف JSON للمظهر لاستيراده. سيتم إنشاء المظهر مع جميع صفحاته.",
+    "Theme File": "ملف المظهر"
 }

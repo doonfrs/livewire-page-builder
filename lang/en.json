@@ -97,5 +97,9 @@
     "blocks": "blocks",
     "Preview": "Preview",
     "Theme Manager": "Theme Manager",
-    "Currently Working With:": "Currently Working With:"
+    "Currently Working With:": "Currently Working With:",
+    "Import Theme": "Import Theme",
+    "Export": "Export",
+    "Select a theme JSON file to import. The theme will be created with all its pages.": "Select a theme JSON file to import. The theme will be created with all its pages.",
+    "Theme File": "Theme File"
 }
