@@ -9,6 +9,11 @@
 
         <div class="flex items-center gap-3">
             <livewire:language-switcher />
+            <button wire:click="openImportModal"
+                class="inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-sm font-medium rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 focus:ring-2 focus:ring-pink-200 transition">
+                <x-heroicon-o-arrow-up-tray class="w-5 h-5 mr-1" />
+                {{ __('Import Theme') }}
+            </button>
             <button wire:click="openCreateModal"
                 class="inline-flex items-center px-3 py-2 bg-pink-600 hover:bg-pink-700 text-white text-sm font-medium rounded-md focus:ring-2 focus:ring-pink-200 transition">
                 <x-heroicon-o-plus class="w-5 h-5 mr-1" />
@@ -118,18 +123,27 @@
                                     </a>
 
                                     <!-- Secondary Actions -->
-                                    <div class="grid grid-cols-3 gap-2">
+                                    <div class="grid grid-cols-2 gap-2 mb-2">
                                         <button wire:click="openEditModal({{ $theme['id'] }})"
                                             class="inline-flex items-center justify-center px-3 py-1.5 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 text-sm font-medium rounded-lg transition-all duration-150">
                                             <x-heroicon-o-pencil class="w-4 h-4 mr-1" />
                                             {{ __('Edit') }}
                                         </button>
+                                        <button wire:click="exportTheme({{ $theme['id'] }})"
+                                            class="inline-flex items-center justify-center px-3 py-1.5 bg-blue-100 dark:bg-blue-900/30 hover:bg-blue-200 dark:hover:bg-blue-900/50 text-blue-700 dark:text-blue-400 text-sm font-medium rounded-lg transition-all duration-150">
+                                            <x-heroicon-o-arrow-down-tray class="w-4 h-4 mr-1" />
+                                            {{ __('Export') }}
+                                        </button>
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-2">
                                         @if ($defaultThemeId != $theme['id'])
                                             <button wire:click="confirmSetDefaultTheme({{ $theme['id'] }})"
                                                 class="inline-flex items-center justify-center px-3 py-1.5 bg-yellow-100 dark:bg-yellow-900/30 hover:bg-yellow-200 dark:hover:bg-yellow-900/50 text-yellow-700 dark:text-yellow-400 text-sm font-medium rounded-lg transition-all duration-150">
                                                 <x-heroicon-o-star class="w-4 h-4 mr-1" />
                                                 {{ __('Default') }}
                                             </button>
+                                        @else
+                                            <div></div>
                                         @endif
                                         <button wire:click="confirmDeleteTheme({{ $theme['id'] }})"
                                             class="inline-flex items-center justify-center px-3 py-1.5 bg-red-100 dark:bg-red-900/30 hover:bg-red-200 dark:hover:bg-red-900/50 text-red-700 dark:text-red-400 text-sm font-medium rounded-lg transition-all duration-150">
@@ -442,6 +456,75 @@
                         {{ __('Cancel') }}
                     </button>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Import Theme Modal -->
+    <div x-data="{ show: @entangle('showImportModal') }" x-show="show" x-cloak class="fixed inset-0 z-50 overflow-y-auto"
+        aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div x-show="show" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0"
+                x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200"
+                x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
+                class="fixed inset-0 bg-gray-500/75 transition-opacity" aria-hidden="true"></div>
+
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+
+            <div x-show="show" x-transition:enter="ease-out duration-300"
+                x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+                x-transition:leave="ease-in duration-200"
+                x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
+                x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                class="inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
+                :class="document.documentElement.dir === 'rtl' ? 'text-right' : 'text-left'">
+                <form wire:submit="importTheme">
+                    <div class="bg-white dark:bg-gray-800 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                        <div class="sm:flex sm:items-start"
+                            :class="document.documentElement.dir === 'rtl' ? 'sm:flex-row-reverse' : ''">
+                            <div
+                                class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 dark:bg-blue-900/30 sm:mx-0 sm:h-10 sm:w-10">
+                                <x-heroicon-o-arrow-up-tray class="h-6 w-6 text-blue-600 dark:text-blue-400" />
+                            </div>
+                            <div class="mt-3 text-center w-full"
+                                :class="document.documentElement.dir === 'rtl' ? 'sm:mt-0 sm:mr-4 sm:text-right' :
+                                    'sm:mt-0 sm:ml-4 sm:text-left'">
+                                <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white"
+                                    id="modal-title">
+                                    {{ __('Import Theme') }}
+                                </h3>
+                                <div class="mt-4">
+                                    <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">
+                                        {{ __('Select a theme JSON file to import. The theme will be created with all its pages.') }}
+                                    </p>
+                                    <div>
+                                        <label for="importFile"
+                                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{{ __('Theme File') }}</label>
+                                        <input type="file" wire:model="importFile" id="importFile" accept=".json"
+                                            class="block w-full text-sm text-gray-500 dark:text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-pink-50 file:text-pink-700 hover:file:bg-pink-100 dark:file:bg-pink-900/30 dark:file:text-pink-400 dark:hover:file:bg-pink-900/50">
+                                        @error('importFile')
+                                            <span class="text-red-500 text-xs mt-1">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-gray-50 dark:bg-gray-700 px-4 py-3 sm:px-6 sm:flex"
+                        :class="document.documentElement.dir === 'rtl' ? 'sm:flex-row' : 'sm:flex-row-reverse'">
+                        <button type="submit"
+                            class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:w-auto sm:text-sm"
+                            :class="document.documentElement.dir === 'rtl' ? 'sm:mr-3' : 'sm:ml-3'">
+                            {{ __('Import Theme') }}
+                        </button>
+                        <button type="button" wire:click="closeImportModal"
+                            class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 dark:border-gray-600 shadow-sm px-4 py-2 bg-white dark:bg-gray-800 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:w-auto sm:text-sm"
+                            :class="document.documentElement.dir === 'rtl' ? 'sm:mr-3' : 'sm:ml-3'">
+                            {{ __('Cancel') }}
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

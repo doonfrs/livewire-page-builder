@@ -3,11 +3,14 @@
 namespace Trinavo\LivewirePageBuilder\Http\Livewire;
 
 use Livewire\Component;
+use Livewire\WithFileUploads;
 use Trinavo\LivewirePageBuilder\Models\Setting;
 use Trinavo\LivewirePageBuilder\Models\Theme;
 
 class ThemeManager extends Component
 {
+    use WithFileUploads;
+
     public $themes = [];
 
     public $showCreateModal = false;
@@ -17,6 +20,8 @@ class ThemeManager extends Component
     public $showDeleteModal = false;
 
     public $showDefaultModal = false;
+
+    public $showImportModal = false;
 
     public $editingTheme = null;
 
@@ -33,6 +38,9 @@ class ThemeManager extends Component
 
     // Theme selection
     public $defaultThemeId = null;
+
+    // Import
+    public $importFile = null;
 
     public function mount()
     {
@@ -197,6 +205,116 @@ class ThemeManager extends Component
     {
         $this->showDeleteModal = false;
         $this->themeToDelete = null;
+    }
+
+    public function exportTheme($themeId)
+    {
+        $theme = Theme::with('pages')->find($themeId);
+
+        if (! $theme) {
+            $this->dispatch('notify', message: 'Theme not found', type: 'error');
+
+            return;
+        }
+
+        $exportData = [
+            'name' => $theme->name,
+            'description' => $theme->description,
+            'pages' => $theme->pages->map(function ($page) {
+                return [
+                    'key' => $page->key,
+                    'name' => $page->name,
+                    'is_active' => $page->is_active,
+                    'content' => $page->content,
+                    'created_at' => $page->created_at,
+                ];
+            })->toArray(),
+            'exported_at' => now()->toISOString(),
+            'version' => '1.0',
+        ];
+
+        $fileName = 'theme-'.\Str::slug($theme->name).'-'.now()->format('Y-m-d-H-i-s').'.json';
+
+        return response()->streamDownload(function () use ($exportData) {
+            echo json_encode($exportData, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+        }, $fileName, [
+            'Content-Type' => 'application/json',
+        ]);
+    }
+
+    public function openImportModal()
+    {
+        $this->showImportModal = true;
+        $this->importFile = null;
+    }
+
+    public function closeImportModal()
+    {
+        $this->showImportModal = false;
+        $this->importFile = null;
+    }
+
+    public function importTheme()
+    {
+        $this->validate([
+            'importFile' => 'required|file|mimes:json|max:10240', // 10MB max
+        ]);
+
+        try {
+            $content = file_get_contents($this->importFile->getRealPath());
+            $data = json_decode($content, true);
+
+            if (! $data) {
+                throw new \Exception('Invalid JSON format');
+            }
+
+            // Validate required fields
+            if (! isset($data['name']) || ! isset($data['pages'])) {
+                throw new \Exception('Invalid theme file format');
+            }
+
+            // Check if theme name already exists
+            $existingTheme = Theme::where('name', $data['name'])->first();
+            if ($existingTheme) {
+                // Generate unique name
+                $originalName = $data['name'];
+                $counter = 1;
+                do {
+                    $data['name'] = $originalName.' ('.$counter.')';
+                    $counter++;
+                } while (Theme::where('name', $data['name'])->exists());
+            }
+
+            // Create theme
+            $theme = Theme::create([
+                'name' => $data['name'],
+                'description' => $data['description'] ?? '',
+            ]);
+
+            // Import pages
+            foreach ($data['pages'] as $pageData) {
+                $theme->pages()->create([
+                    'key' => $pageData['key'],
+                    'name' => $pageData['name'],
+                    'is_active' => $pageData['is_active'] ?? true,
+                    'content' => $pageData['content'] ?? [],
+                ]);
+            }
+
+            $this->loadThemes();
+            $this->closeImportModal();
+
+            $this->dispatch('notify',
+                message: "Theme '{$theme->name}' imported successfully with ".count($data['pages']).' pages',
+                type: 'success'
+            );
+
+        } catch (\Exception $e) {
+            $this->dispatch('notify',
+                message: 'Import failed: '.$e->getMessage(),
+                type: 'error'
+            );
+        }
     }
 
     private function resetForm()
