@@ -5,6 +5,7 @@ namespace Trinavo\LivewirePageBuilder\Http\Livewire;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use Trinavo\LivewirePageBuilder\Models\BuilderPage;
+use Trinavo\LivewirePageBuilder\Models\Theme;
 use Trinavo\LivewirePageBuilder\Services\PageBuilderService;
 
 class PageEditor extends Component
@@ -27,7 +28,13 @@ class PageEditor extends Component
 
     public ?string $pageKey = null;
 
-    public ?string $pageTheme = null;
+    public ?int $themeId = null;
+
+    public ?Theme $currentTheme = null;
+
+    public $availableThemes = [];
+
+    public bool $showThemeSelector = false;
 
     public $selfCentered = false;
 
@@ -36,13 +43,31 @@ class PageEditor extends Component
     public function mount()
     {
         $this->availableBlocks = app(PageBuilderService::class)->getAvailableBlocks();
+        $this->availableThemes = Theme::orderBy('name')->get()->toArray();
 
         $this->pageKey = request()->route('pageKey');
-        $this->pageTheme = request()->route('pageTheme');
+        $this->themeId = request()->route('themeId') ?? session('selected_theme_id');
 
+        // If no theme is selected, try to get default theme
+        if (!$this->themeId) {
+            $this->themeId = session('default_theme_id');
+        }
+
+        // If still no theme, show theme selector
+        if (!$this->themeId && count($this->availableThemes) > 0) {
+            $this->showThemeSelector = true;
+            return;
+        }
+
+        // Load current theme
+        if ($this->themeId) {
+            $this->currentTheme = Theme::find($this->themeId);
+        }
+
+        // Create or find the page
         $this->page = BuilderPage::firstOrCreate([
             'key' => $this->pageKey,
-            'theme' => $this->pageTheme,
+            'theme_id' => $this->themeId,
         ]);
 
         $this->rows = $this->page->components ? json_decode($this->page->components, true) : [];
@@ -53,6 +78,68 @@ class PageEditor extends Component
     {
         $this->page->components = json_encode($this->rows);
         $this->page->saveOrFail();
+    }
+
+    public function selectThemeForPage($themeId)
+    {
+        $theme = Theme::find($themeId);
+        if (!$theme) return;
+
+        $this->themeId = $themeId;
+        $this->currentTheme = $theme;
+        
+        // Store selected theme in session
+        session(['selected_theme_id' => $themeId]);
+
+        // Create or find the page with new theme
+        $this->page = BuilderPage::firstOrCreate([
+            'key' => $this->pageKey,
+            'theme_id' => $this->themeId,
+        ]);
+
+        $this->rows = $this->page->components ? json_decode($this->page->components, true) : [];
+        $this->showThemeSelector = false;
+
+        $this->dispatch('notify', message: "Theme '{$theme->name}' selected", type: 'success');
+    }
+
+    public function openThemeSelector()
+    {
+        $this->showThemeSelector = true;
+    }
+
+    public function closeThemeSelector()
+    {
+        $this->showThemeSelector = false;
+    }
+
+    public function switchTheme($themeId)
+    {
+        if ($this->themeId == $themeId) return;
+
+        $theme = Theme::find($themeId);
+        if (!$theme) return;
+
+        // Save current page before switching
+        if (isset($this->page)) {
+            $this->savePage();
+        }
+
+        $this->themeId = $themeId;
+        $this->currentTheme = $theme;
+        
+        // Store selected theme in session
+        session(['selected_theme_id' => $themeId]);
+
+        // Load page for new theme
+        $this->page = BuilderPage::firstOrCreate([
+            'key' => $this->pageKey,
+            'theme_id' => $this->themeId,
+        ]);
+
+        $this->rows = $this->page->components ? json_decode($this->page->components, true) : [];
+
+        $this->dispatch('notify', message: "Switched to theme '{$theme->name}'", type: 'success');
     }
 
     #[On('addRow')]

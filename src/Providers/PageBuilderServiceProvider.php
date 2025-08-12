@@ -16,6 +16,7 @@ use Trinavo\LivewirePageBuilder\Http\Livewire\BuilderBlock;
 use Trinavo\LivewirePageBuilder\Http\Livewire\BuilderPageBlock;
 use Trinavo\LivewirePageBuilder\Http\Livewire\PageEditor;
 use Trinavo\LivewirePageBuilder\Http\Livewire\RowBlock;
+use Trinavo\LivewirePageBuilder\Http\Livewire\ThemeManager;
 use Trinavo\LivewirePageBuilder\Services\LocalizationService;
 use Trinavo\LivewirePageBuilder\Services\PageBuilderService;
 
@@ -139,6 +140,7 @@ class PageBuilderServiceProvider extends ServiceProvider
     protected function registerLivewireComponents(): void
     {
         Livewire::component('page-editor', PageEditor::class);
+        Livewire::component('theme-manager', ThemeManager::class);
         Livewire::component('builder-block', BuilderBlock::class);
         Livewire::component('block-properties', BlockProperties::class);
         Livewire::component('row-block', RowBlock::class);
