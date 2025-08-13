@@ -101,5 +101,9 @@
     "Import Theme": "استيراد مظهر",
     "Export": "تصدير",
     "Select a theme JSON file to import. The theme will be created with all its pages.": "حدد ملف JSON للمظهر لاستيراده. سيتم إنشاء المظهر مع جميع صفحاته.",
-    "Theme File": "ملف المظهر"
+    "Theme File": "ملف المظهر",
+    "Clone": "استنساخ",
+    "Clone Theme": "استنساخ المظهر",
+    "Create a copy of this theme with all its pages. Enter a name for the cloned theme.": "إنشاء نسخة من هذا المظهر مع جميع صفحاته. أدخل اسماً للمظهر المستنسخ.",
+    "Clone Theme Name": "اسم المظهر المستنسخ"
 }

@@ -24,6 +24,8 @@ class ThemeManager extends Component
 
     public $showImportModal = false;
 
+    public $showCloneModal = false;
+
     public $editingTheme = null;
 
     public $selectedTheme = null;
@@ -32,10 +34,15 @@ class ThemeManager extends Component
 
     public $themeToSetDefault = null;
 
+    public $themeToClone = null;
+
     // Form fields
     public $name = '';
 
     public $description = '';
+
+    // Clone fields
+    public $cloneName = '';
 
     // Theme selection
     public $defaultThemeId = null;
@@ -267,6 +274,75 @@ class ThemeManager extends Component
     {
         $this->showImportModal = false;
         $this->importFile = null;
+    }
+
+    public function openCloneModal($themeId)
+    {
+        $this->themeToClone = Theme::find($themeId);
+        if (! $this->themeToClone) {
+            $this->dispatch('notify', message: 'Theme not found', type: 'error');
+
+            return;
+        }
+
+        // Pre-fill clone name with "Copy of {original name}"
+        $this->cloneName = 'Copy of '.$this->themeToClone->name;
+        $this->showCloneModal = true;
+    }
+
+    public function closeCloneModal()
+    {
+        $this->showCloneModal = false;
+        $this->themeToClone = null;
+        $this->cloneName = '';
+    }
+
+    public function cloneTheme()
+    {
+        if (! $this->themeToClone) {
+            $this->dispatch('notify', message: 'No theme selected for cloning', type: 'error');
+
+            return;
+        }
+
+        $this->validate([
+            'cloneName' => 'required|string|max:255|unique:builder_themes,name',
+        ]);
+
+        try {
+            // Create the cloned theme
+            $clonedTheme = Theme::create([
+                'name' => $this->cloneName,
+                'description' => $this->themeToClone->description,
+            ]);
+
+            // Clone all pages associated with the original theme
+            $originalPages = $this->themeToClone->pages;
+            $clonedPagesCount = 0;
+
+            foreach ($originalPages as $page) {
+                $clonedTheme->pages()->create([
+                    'key' => $page->key,
+                    'name' => $page->name,
+                    'is_active' => $page->is_active,
+                    'content' => $page->content,
+                ]);
+                $clonedPagesCount++;
+            }
+
+            $this->loadThemes();
+            $this->closeCloneModal();
+
+            $message = "Theme '{$clonedTheme->name}' created successfully as a copy of '{$this->themeToClone->name}'";
+            if ($clonedPagesCount > 0) {
+                $message .= " with {$clonedPagesCount} page(s)";
+            }
+
+            $this->dispatch('notify', message: $message, type: 'success');
+
+        } catch (\Exception $e) {
+            $this->dispatch('notify', message: 'Clone failed: '.$e->getMessage(), type: 'error');
+        }
     }
 
     public function importTheme()
