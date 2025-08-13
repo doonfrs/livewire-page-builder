@@ -97,6 +97,8 @@
     "blocks": "blocks",
     "Preview": "Preview",
     "Theme Manager": "Theme Manager",
+    "Theme Manager - :app": "Theme Manager - :app",
+    "Page Builder - :app": "Page Builder - :app",
     "Currently Working With:": "Currently Working With:",
     "Import Theme": "Import Theme",
     "Export": "Export",
