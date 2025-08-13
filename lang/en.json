@@ -101,5 +101,9 @@
     "Import Theme": "Import Theme",
     "Export": "Export",
     "Select a theme JSON file to import. The theme will be created with all its pages.": "Select a theme JSON file to import. The theme will be created with all its pages.",
-    "Theme File": "Theme File"
+    "Theme File": "Theme File",
+    "Clone": "Clone",
+    "Clone Theme": "Clone Theme",
+    "Create a copy of this theme with all its pages. Enter a name for the cloned theme.": "Create a copy of this theme with all its pages. Enter a name for the cloned theme.",
+    "Clone Theme Name": "Clone Theme Name"
 }
