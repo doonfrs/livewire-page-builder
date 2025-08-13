@@ -57,11 +57,24 @@ class RowBlock extends Block
     }
 
     #[On('updateBlockProperty')]
-    public function updateBlockProperty($rowId, $blockId, $propertyName, $value)
+    public function updateBlockProperty($rowId = null, $blockId = null, $propertyName = null, $value = null)
     {
+        if (is_array($rowId)) {
+            $payload = $rowId;
+            $rowId = $payload['rowId'] ?? null;
+            $blockId = $payload['blockId'] ?? null;
+            $propertyName = $payload['propertyName'] ?? null;
+            $value = $payload['value'] ?? null;
+        }
+
         if ($blockId || $rowId != $this->rowId) {
             return;
         }
+
+        if ($propertyName === null) {
+            return;
+        }
+
         $this->properties[$propertyName] = $value;
 
         $this->cssClasses = $this->makeClasses();
@@ -207,7 +220,7 @@ class RowBlock extends Block
             $newOrder[$currentIndex - 1] = $newOrder[$currentIndex];
             $newOrder[$currentIndex] = $temp;
 
-            $this->blocks = collect($newOrder)->mapWithKeys(fn($id) => [$id => $this->blocks[$id]])->toArray();
+            $this->blocks = collect($newOrder)->mapWithKeys(fn ($id) => [$id => $this->blocks[$id]])->toArray();
         }
     }
 
@@ -224,7 +237,7 @@ class RowBlock extends Block
             $newOrder[$currentIndex + 1] = $newOrder[$currentIndex];
             $newOrder[$currentIndex] = $temp;
 
-            $this->blocks = collect($newOrder)->mapWithKeys(fn($id) => [$id => $this->blocks[$id]])->toArray();
+            $this->blocks = collect($newOrder)->mapWithKeys(fn ($id) => [$id => $this->blocks[$id]])->toArray();
         }
     }
 

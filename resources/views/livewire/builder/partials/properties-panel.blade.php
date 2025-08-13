@@ -59,8 +59,8 @@
                                     <div class="flex items-center">
                                         <input type="checkbox"
                                             class="form-checkbox h-5 w-5 text-blue-600 rounded transition duration-150 ease-in-out border-gray-300 focus:ring-2 focus:ring-blue-200 dark:border-gray-600 dark:bg-gray-800 dark:ring-offset-gray-800"
-                                            :checked="!!selected.props[property.name]"
-                                            @change.debounce.200ms="selected.props[property.name] = $event.target.checked; Livewire.dispatch('updateBlockProperty', { rowId: selected.type === 'row' ? selected.id : null, blockId: selected.type === 'block' ? selected.id : null, propertyName: property.name, value: $event.target.checked })" />
+                                            x-model="selected.props[property.name]"
+                                            @change.debounce.200ms="Livewire.dispatch('updateBlockProperty', { rowId: selected.type === 'row' ? selected.id : null, blockId: selected.type === 'block' ? selected.id : null, propertyName: property.name, value: selected.props[property.name] })" />
                                         <label
                                             class="ml-2 ms-2 text-sm font-medium text-gray-700 cursor-pointer dark:text-gray-300"
                                             x-text="property.label"></label>
@@ -74,8 +74,8 @@
                                                 x-text="property.label"></span></label>
                                         <select
                                             class="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-200 focus:border-blue-400 transition-all duration-200 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300"
-                                            :value="selected.props[property.name] ?? property.defaultValue ?? ''"
-                                            @change.debounce.200ms="selected.props[property.name] = $event.target.value; Livewire.dispatch('updateBlockProperty', { rowId: selected.type === 'row' ? selected.id : null, blockId: selected.type === 'block' ? selected.id : null, propertyName: property.name, value: $event.target.value })">
+                                            x-model="selected.props[property.name]"
+                                            @change.debounce.200ms="Livewire.dispatch('updateBlockProperty', { rowId: selected.type === 'row' ? selected.id : null, blockId: selected.type === 'block' ? selected.id : null, propertyName: property.name, value: selected.props[property.name] })">
                                             <option value="" x-show="!property.defaultValue">—</option>
                                             <template
                                                 x-for="[val, label] in Object.entries(Array.isArray(property.options) ? (property.options[0] || {}) : (property.options || {}))"
@@ -83,6 +83,43 @@
                                                 <option :value="val" x-text="label"></option>
                                             </template>
                                         </select>
+                                    </div>
+                                </template>
+
+                                <template x-if="property.type === 'color'">
+                                    <div>
+                                        <label
+                                            class="block text-sm font-medium text-gray-700 mb-1 dark:text-gray-300"><span
+                                                x-text="property.label"></span></label>
+                                        <input type="color"
+                                            class="w-10 h-10 p-0 border border-gray-300 rounded dark:bg-gray-800 dark:border-gray-700"
+                                            x-model.lazy="selected.props[property.name]"
+                                            @input.debounce.200ms="Livewire.dispatch('updateBlockProperty', { rowId: selected.type === 'row' ? selected.id : null, blockId: selected.type === 'block' ? selected.id : null, propertyName: property.name, value: selected.props[property.name] })" />
+                                    </div>
+                                </template>
+
+                                <template x-if="property.type === 'image'">
+                                    <div>
+                                        <label
+                                            class="block text-sm font-medium text-gray-700 mb-1 dark:text-gray-300"><span
+                                                x-text="property.label"></span></label>
+                                        <input type="text"
+                                            class="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-200 focus:border-blue-400 transition-all duration-200 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300"
+                                            x-model.debounce.300ms="selected.props[property.name]"
+                                            placeholder="https://example.com/image.jpg"
+                                            @input.debounce.300ms="Livewire.dispatch('updateBlockProperty', { rowId: selected.type === 'row' ? selected.id : null, blockId: selected.type === 'block' ? selected.id : null, propertyName: property.name, value: selected.props[property.name] })" />
+                                    </div>
+                                </template>
+
+                                <template x-if="property.type === 'richtext'">
+                                    <div>
+                                        <label
+                                            class="block text-sm font-medium text-gray-700 mb-1 dark:text-gray-300"><span
+                                                x-text="property.label"></span></label>
+                                        <textarea rows="6"
+                                            class="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-200 focus:border-blue-400 transition-all duration-200 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300"
+                                            x-model.debounce.400ms="selected.props[property.name]"
+                                            @input.debounce.400ms="Livewire.dispatch('updateBlockProperty', { rowId: selected.type === 'row' ? selected.id : null, blockId: selected.type === 'block' ? selected.id : null, propertyName: property.name, value: selected.props[property.name] })"></textarea>
                                     </div>
                                 </template>
 
@@ -95,8 +132,8 @@
                                         <input :type="property.numeric ? 'number' : 'text'" :min="property.min ?? null"
                                             :max="property.max ?? null"
                                             class="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-200 focus:border-blue-400 transition-all duration-200 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300"
-                                            :value="selected.props[property.name] ?? property.defaultValue ?? ''"
-                                            @input.debounce.300ms="selected.props[property.name] = $event.target.value; Livewire.dispatch('updateBlockProperty', { rowId: selected.type === 'row' ? selected.id : null, blockId: selected.type === 'block' ? selected.id : null, propertyName: property.name, value: $event.target.value })" />
+                                            x-model.debounce.300ms="selected.props[property.name]"
+                                            @input.debounce.300ms="Livewire.dispatch('updateBlockProperty', { rowId: selected.type === 'row' ? selected.id : null, blockId: selected.type === 'block' ? selected.id : null, propertyName: property.name, value: selected.props[property.name] })" />
                                     </div>
                                 </template>
                             </div>

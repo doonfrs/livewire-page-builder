@@ -77,11 +77,23 @@ class BuilderBlock extends Component
     }
 
     #[On('updateBlockProperty')]
-    public function updateBlockProperty($rowId, $blockId, $propertyName, $value)
+    public function updateBlockProperty($rowId = null, $blockId = null, $propertyName = null, $value = null)
     {
+        if (is_array($rowId)) {
+            $payload = $rowId;
+            $rowId = $payload['rowId'] ?? null;
+            $blockId = $payload['blockId'] ?? null;
+            $propertyName = $payload['propertyName'] ?? null;
+            $value = $payload['value'] ?? null;
+        }
+
         if ($rowId || $blockId != $this->blockId) {
             return;
         }
+        if ($propertyName === null) {
+            return;
+        }
+
         $this->properties[$propertyName] = $value;
 
         $this->cssClasses = $this->makeClasses();
