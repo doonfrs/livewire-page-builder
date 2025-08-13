@@ -2,7 +2,6 @@
 
 namespace Trinavo\LivewirePageBuilder\Http\Livewire;
 
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 use Livewire\Attributes\On;
 use Livewire\Component;
@@ -30,7 +29,12 @@ class BlockProperties extends Component
         $propertyGroups = [];
 
         if ($this->blockClass) {
-            $blockProperties = $this->getCachedBlockProperties($this->blockClass);
+            $blockProperties = array_map(
+                function (BlockProperty $property) {
+                    return $property->toArray();
+                },
+                app($this->blockClass)->getAllProperties()
+            );
             $propertyGroups = $this->makePropertyGroups($blockProperties);
         }
 
@@ -144,31 +148,18 @@ class BlockProperties extends Component
 
     public function resolveBlockClass($md5Class)
     {
-        $map = Cache::rememberForever('page-builder:block-md5-map', function () {
-            $mapping = [];
-            foreach (app(PageBuilderService::class)->getConfigBlocks() as $blockClass) {
-                $mapping[md5($blockClass)] = $blockClass;
+        foreach (app(PageBuilderService::class)->getConfigBlocks() as $blockClass) {
+            if (md5($blockClass) === $md5Class) {
+                return $blockClass;
             }
-            $mapping[md5(BuilderPageBlock::class)] = BuilderPageBlock::class;
-            $mapping[md5(RowBlock::class)] = RowBlock::class;
+        }
+        if (md5(BuilderPageBlock::class) === $md5Class) {
+            return BuilderPageBlock::class;
+        }
+        if (md5(RowBlock::class) === $md5Class) {
+            return RowBlock::class;
+        }
 
-            return $mapping;
-        });
-
-        return $map[$md5Class] ?? null;
-    }
-
-    protected function getCachedBlockProperties(string $blockClass): array
-    {
-        $cacheKey = 'page-builder:block-properties:'.md5($blockClass);
-
-        return Cache::rememberForever($cacheKey, function () use ($blockClass) {
-            return array_map(
-                function (BlockProperty $property) {
-                    return $property->toArray();
-                },
-                app($blockClass)->getAllProperties()
-            );
-        });
+        return null;
     }
 }

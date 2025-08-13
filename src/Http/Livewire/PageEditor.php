@@ -7,10 +7,8 @@ use Livewire\Component;
 use Trinavo\LivewirePageBuilder\Models\BuilderPage;
 use Trinavo\LivewirePageBuilder\Models\Theme;
 use Trinavo\LivewirePageBuilder\Services\PageBuilderService;
-use Trinavo\LivewirePageBuilder\Support\ThemeResolver;
 use Trinavo\LivewirePageBuilder\Support\Properties\BlockProperty;
-use Trinavo\LivewirePageBuilder\Http\Livewire\RowBlock;
-use Trinavo\LivewirePageBuilder\Http\Livewire\BuilderPageBlock;
+use Trinavo\LivewirePageBuilder\Support\ThemeResolver;
 
 class PageEditor extends Component
 {
@@ -291,8 +289,18 @@ class PageEditor extends Component
     }
 
     #[On('updateBlockProperty')]
-    public function updateBlockProperty($rowId, $blockId, $propertyName, $value)
+    public function updateBlockProperty($payload = null, $blockId = null, $propertyName = null, $value = null)
     {
+        $rowId = null;
+        if (is_array($payload)) {
+            $rowId = $payload['rowId'] ?? null;
+            $blockId = $payload['blockId'] ?? null;
+            $propertyName = $payload['propertyName'] ?? null;
+            $value = $payload['value'] ?? null;
+        } else {
+            $rowId = $payload;
+        }
+
         if ($rowId) {
             $this->rows[$rowId]['properties'][$propertyName] = $value;
         } else {
