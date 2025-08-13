@@ -2,14 +2,17 @@
     class="{{ $cssClasses }} border transition-all duration-300 ease-in-out" style="{{ $inlineStyles }}"
     :class="selected ? 'border-blue-500' : 'border-gray-300'"
     x-on:block-selected.window="selected = $event.detail.blockId == '{{ $blockId }}'"
-    x-on:row-selected.window="selected = false" @contextmenu.prevent="
-        Livewire.dispatch('show-block-context-menu', {
+    x-on:row-selected.window="selected = false"
+    x-on:select-block.window="if ($event.detail.blockId === '{{ $blockId }}') $dispatch('block-selected', { blockId: '{{ $blockId }}', properties: @js($properties), blockClass: '{{ $blockClassMd5 ?? '' }}' })"
+    @contextmenu.prevent="
+        $dispatch('show-block-context-menu', {
             blockId: '{{ $blockId }}',
             x: $event.clientX,
             y: $event.clientY
         });
-        $wire.blockSelected();
-    " x-on:show-block-context-menu.window="
+        $dispatch('block-selected', { blockId: '{{ $blockId }}', properties: @js($properties), blockClass: '{{ $blockClassMd5 ?? '' }}' });
+    "
+    x-on:show-block-context-menu.window="
         if ($event.detail.blockId === '{{ $blockId }}') {
             showContextMenu = true;
             x = $event.detail.x;
@@ -17,14 +20,16 @@
         } else {
             showContextMenu = false;
         }
-    " @click.outside="showContextMenu = false">
+    "
+    @click.outside="showContextMenu = false">
     <div class="relative">
-        <div class="cursor-pointer" wire:click="blockSelected()">
+        <div class="cursor-pointer"
+            @click="$dispatch('block-selected', { blockId: '{{ $blockId }}', properties: @js($properties), blockClass: '{{ $blockClassMd5 ?? '' }}' });">
             <div class="builder-block relative">
                 @if (!$classExists)
-                <div class="text-red-500">{{ __('Unknown block') }}: {{ $blockAlias }}</div>
+                    <div class="text-red-500">{{ __('Unknown block') }}: {{ $blockAlias }}</div>
                 @else
-                @livewire($blockAlias, $properties, key($blockId . '-' . md5(json_encode($properties))))
+                    @livewire($blockAlias, $properties, key($blockId . '-' . md5(json_encode($properties))))
                 @endif
                 <div class="absolute inset-0 z-50" style="pointer-events: all;"></div>
             </div>
@@ -41,7 +46,8 @@
                 {{ __('Block Actions') }}
             </div>
 
-            <button wire:click="blockSelected(); showContextMenu = false;"
+            <button
+                @click="$dispatch('block-selected', { blockId: '{{ $blockId }}', properties: @js($properties), blockClass: '{{ $blockClassMd5 ?? '' }}' }); showContextMenu = false;"
                 class="flex items-center w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 border-b border-gray-50">
                 <x-heroicon-o-cursor-arrow-rays class="w-4 h-4 ms-0 me-3 text-gray-500" />
                 <span>{{ __('Select') }}</span>
@@ -59,7 +65,8 @@
                     <span>{{ __('Paste') }}</span>
                 </div>
                 <div class="flex space-x-2 rtl:space-x-reverse">
-                    <button @click="
+                    <button
+                        @click="
                             navigator.clipboard.readText().then(text => {
                                 if (text) {
                                     try {
@@ -81,12 +88,14 @@
                                 console.error('{{ __('Failed to read clipboard contents:') }}', err);
                             });
                             showContextMenu = false;
-                        " class="px-2 py-1 text-xs rounded hover:bg-gray-200 border border-gray-100"
+                        "
+                        class="px-2 py-1 text-xs rounded hover:bg-gray-200 border border-gray-100"
                         title="{{ __('Paste Before Block') }}">
                         <x-heroicon-o-arrow-up class="w-3 h-3 inline-block" />
                         {{ __('Before') }}
                     </button>
-                    <button @click="
+                    <button
+                        @click="
                             navigator.clipboard.readText().then(text => {
                                 if (text) {
                                     try {
@@ -108,7 +117,8 @@
                                 console.error('{{ __('Failed to read clipboard contents:') }}', err);
                             });
                             showContextMenu = false;
-                        " class="px-2 py-1 text-xs rounded hover:bg-gray-200 border border-gray-100"
+                        "
+                        class="px-2 py-1 text-xs rounded hover:bg-gray-200 border border-gray-100"
                         title="{{ __('Paste After Block') }}">
                         <x-heroicon-o-arrow-down class="w-3 h-3 inline-block" />
                         {{ __('After') }}
@@ -116,7 +126,8 @@
                 </div>
             </div>
 
-            <button @click="
+            <button
+                @click="
                 showContextMenu = false;
                 confirm('{{ __('Are you sure you want to delete this block?') }}') 
                 && $dispatch('deleteBlock', { blockId: '{{ $blockId }}'}); 

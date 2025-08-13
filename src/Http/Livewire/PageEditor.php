@@ -8,6 +8,9 @@ use Trinavo\LivewirePageBuilder\Models\BuilderPage;
 use Trinavo\LivewirePageBuilder\Models\Theme;
 use Trinavo\LivewirePageBuilder\Services\PageBuilderService;
 use Trinavo\LivewirePageBuilder\Support\ThemeResolver;
+use Trinavo\LivewirePageBuilder\Support\Properties\BlockProperty;
+use Trinavo\LivewirePageBuilder\Http\Livewire\RowBlock;
+use Trinavo\LivewirePageBuilder\Http\Livewire\BuilderPageBlock;
 
 class PageEditor extends Component
 {
@@ -594,6 +597,7 @@ class PageEditor extends Component
             'formattedBlocks' => $formattedBlocks,
             'allPageBlocks' => $allPageBlocks,
             'groupedPageBlocks' => $groupedPageBlocks,
+            'propertyDefinitionsByHash' => $this->getPropertyDefinitionsByHash(),
         ])->layout('page-builder::layouts.app');
     }
 
@@ -656,5 +660,31 @@ class PageEditor extends Component
         }
 
         return $grouped;
+    }
+
+    protected function getPropertyDefinitionsByHash(): array
+    {
+        $definitions = [];
+
+        // Include RowBlock
+        $definitions[md5(RowBlock::class)] = array_map(function (BlockProperty $property) {
+            return $property->toArray();
+        }, app(RowBlock::class)->getAllProperties());
+
+        // Include normal blocks
+        foreach (app(PageBuilderService::class)->getConfigBlocks() as $blockClass) {
+            $definitions[md5($blockClass)] = array_map(function (BlockProperty $property) {
+                return $property->toArray();
+            }, app($blockClass)->getAllProperties());
+        }
+
+        // Include BuilderPageBlock if available
+        if (class_exists(BuilderPageBlock::class)) {
+            $definitions[md5(BuilderPageBlock::class)] = array_map(function (BlockProperty $property) {
+                return $property->toArray();
+            }, app(BuilderPageBlock::class)->getAllProperties());
+        }
+
+        return $definitions;
     }
 }

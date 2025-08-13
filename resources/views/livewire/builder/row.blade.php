@@ -10,7 +10,8 @@
         <div
             class="absolute top-[-35px] left-1/2 -translate-x-1/2 bg-pink-500 shadow-lg px-1 py-1 rounded-lg flex items-center space-x-1 z-50 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none group-hover:pointer-events-auto">
             <!-- Select Button -->
-            <button wire:click="rowSelected()"
+            <button
+                @click="$dispatch('row-selected', { rowId: '{{ $rowId }}', properties: @js($properties) })"
                 class="w-7 h-7 flex items-center justify-center text-white hover:bg-pink-600 rounded transition-colors duration-150"
                 title="Select Row">
                 <x-heroicon-o-cursor-arrow-rays class="w-5 h-5" />
@@ -49,7 +50,8 @@
                 </div>
 
                 <!-- Row Select Button -->
-                <button wire:click="rowSelected()" @click="open = false"
+                <button
+                    @click="$dispatch('row-selected', { rowId: '{{ $rowId }}', properties: @js($properties) }); open = false"
                     class="flex items-center w-full px-3 py-2 text-left text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700 border-b border-gray-50 dark:border-gray-700"
                     title="{{ __('Select Row') }}">
                     <x-heroicon-o-cursor-arrow-rays class="w-4 h-4 ms-0 me-3 rtl:rotate-180" />
