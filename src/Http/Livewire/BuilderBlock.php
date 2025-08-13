@@ -43,6 +43,7 @@ class BuilderBlock extends Component
             'blockId' => $this->blockId,
             'editMode' => $this->editMode,
             'classExists' => class_exists($blockClass),
+            'blockClassMd5' => md5($blockClass),
         ]);
     }
 

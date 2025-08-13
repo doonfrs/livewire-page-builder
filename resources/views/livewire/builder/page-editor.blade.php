@@ -386,12 +386,17 @@
     @endif
 
     <!-- Main Content and Properties Panel -->
-    <div class="flex flex-1 min-h-0">
+    <div class="flex flex-1 min-h-0" x-data="{
+        propDefs: @js($propertyDefinitionsByHash ?? []),
+        selected: { type: null, id: null, classHash: null, label: null, props: {} },
+    }"
+        x-on:block-selected.window="selected = { type: 'block', id: $event.detail.blockId, classHash: $event.detail.blockClass, label: null, props: $event.detail.properties || {} }"
+        x-on:row-selected.window="selected = { type: 'row', id: $event.detail.rowId, classHash: '{{ md5(Trinavo\LivewirePageBuilder\Http\Livewire\RowBlock::class) }}', label: null, props: $event.detail.properties || {} }">
 
         <!-- Properties Panel (Fixed/Sticky) -->
         <aside
             class="hidden lg:block w-[20%] h-[calc(100vh-56px)] bg-white dark:bg-gray-800 border-l border-gray-200 dark:border-gray-700 shadow-lg overflow-y-auto">
-            @livewire('block-properties')
+            @include('page-builder::livewire.builder.partials.properties-panel')
         </aside>
 
         <!-- Main Section (Scrollable) -->

@@ -58,8 +58,8 @@
                                 <div class="bg-gray-100 dark:bg-gray-800 p-3 flex items-center justify-between cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                                     @click="toggleRow(rowId)">
                                     <div class="flex items-center gap-2">
-                                        <button wire:click="$dispatch('select-row', { rowId: rowId })"
-                                            @click="$wire.closePageBlocksModal()"
+                                        <button
+                                            @click="$dispatch('select-row', { rowId: rowId }); $wire.closePageBlocksModal()"
                                             class="flex-shrink-0 w-8 h-8 flex items-center justify-center text-pink-500 bg-white dark:bg-gray-900 rounded-md shadow-sm hover:text-pink-600 hover:scale-105 transition-all">
                                             <x-heroicon-o-rectangle-group class="w-5 h-5" />
                                         </button>
@@ -83,8 +83,8 @@
                                     <ul class="space-y-2">
                                         <template x-for="block in row.blocks" :key="block.id">
                                             <li>
-                                                <button wire:click="$dispatch('select-block', { blockId: block.id })"
-                                                    @click="$wire.closePageBlocksModal()"
+                                                <button
+                                                    @click="$dispatch('select-block', { blockId: block.id }); $wire.closePageBlocksModal()"
                                                     class="w-full group flex items-center gap-3 p-2 border border-gray-100 dark:border-gray-800 rounded-md hover:bg-pink-50 dark:hover:bg-pink-900/20 hover:border-pink-200 dark:hover:border-pink-700 transition-all duration-200 text-start focus:outline-none focus:ring-2 focus:ring-pink-200">
                                                     <div
                                                         class="flex-shrink-0 w-6 h-6 flex items-center justify-center text-pink-500 group-hover:text-pink-600 transition-colors">
@@ -116,8 +116,8 @@
 
                     <template x-for="block in filteredBlocks()" :key="block.id">
                         <li>
-                            <button wire:click="$dispatch('select-block', { blockId: block.id })"
-                                @click="$wire.closePageBlocksModal()"
+                            <button
+                                @click="$dispatch('select-block', { blockId: block.id }); $wire.closePageBlocksModal()"
                                 class="w-full group flex items-center gap-3 p-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm hover:bg-pink-50 dark:hover:bg-pink-900/20 hover:border-pink-200 dark:hover:border-pink-700 transition-all duration-200 text-start focus:outline-none focus:ring-2 focus:ring-pink-200">
                                 <div
                                     class="flex-shrink-0 w-8 h-8 flex items-center justify-center text-pink-500 group-hover:text-pink-600 transition-colors">
