@@ -1,10 +1,17 @@
+@section('title', __('Theme Manager - :app', ['app' => config('app.name')]))
+
 <div class="min-h-screen bg-gray-100 dark:bg-gray-900 flex flex-col">
     <!-- Header Navbar -->
     <div
         class="flex items-center justify-between bg-gray-200 dark:bg-gray-800 shadow-md p-3 text-gray-900 dark:text-gray-100">
         <div class="flex items-center gap-4">
+            <a href="{{ url('/') }}" class="p-1 rounded hover:bg-gray-300/50 dark:hover:bg-gray-700/50"
+                title="{{ __('Home') }}">
+                <x-heroicon-o-home class="w-6 h-6" />
+            </a>
             <x-heroicon-o-paint-brush class="w-6 h-6 text-pink-600" />
-            <span class="text-lg sm:text-xl font-semibold">{{ __('Theme Manager') }}</span>
+            <span
+                class="text-lg sm:text-xl font-semibold">{{ __('Theme Manager - :app', ['app' => config('app.name')]) }}</span>
         </div>
 
         <div class="flex items-center gap-3">
