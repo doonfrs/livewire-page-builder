@@ -2,6 +2,7 @@
 
 namespace Trinavo\LivewirePageBuilder\Http\Livewire;
 
+use Illuminate\Support\Str;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Trinavo\LivewirePageBuilder\Models\Setting;
@@ -164,41 +165,55 @@ class ThemeManager extends Component
     public function confirmDeleteTheme($themeId)
     {
         $this->themeToDelete = Theme::find($themeId);
+        if (! $this->themeToDelete) {
+            $this->dispatch('notify', message: 'Theme not found', type: 'error');
+
+            return;
+        }
         $this->showDeleteModal = true;
     }
 
     public function deleteTheme()
     {
         if (! $this->themeToDelete) {
+            $this->dispatch('notify', message: 'No theme selected for deletion', type: 'error');
+
             return;
         }
 
-        // Check if theme has pages
-        $pageCount = $this->themeToDelete->pages()->count();
-        if ($pageCount > 0) {
-            $this->dispatch('notify',
-                message: "Cannot delete theme '{$this->themeToDelete->name}' as it has {$pageCount} page(s) associated with it",
-                type: 'error'
-            );
+        try {
+            $themeName = $this->themeToDelete->name;
+            $themeId = $this->themeToDelete->id;
+
+            // Check if theme has pages and inform user they will be orphaned
+            $pageCount = $this->themeToDelete->pages()->count();
+
+            // Delete the theme (foreign key constraint will set theme_id to null in pages)
+            $this->themeToDelete->delete();
+
+            // Clear default if this was the one
+            if ($this->defaultThemeId == $themeId) {
+                Setting::setDefaultThemeId(null);
+                $this->defaultThemeId = null;
+            }
+
+            $this->loadThemes();
+
+            if ($pageCount > 0) {
+                $this->dispatch('notify',
+                    message: "Theme '{$themeName}' deleted successfully. {$pageCount} page(s) are now unassigned to any theme.",
+                    type: 'success'
+                );
+            } else {
+                $this->dispatch('notify', message: "Theme '{$themeName}' deleted successfully", type: 'success');
+            }
+
             $this->closeDeleteModal();
 
-            return;
+        } catch (\Exception $e) {
+            $this->dispatch('notify', message: 'Error deleting theme: '.$e->getMessage(), type: 'error');
+            $this->closeDeleteModal();
         }
-
-        $themeName = $this->themeToDelete->name;
-        $themeId = $this->themeToDelete->id;
-
-        $this->themeToDelete->delete();
-
-        // Clear default if this was the one
-        if ($this->defaultThemeId == $themeId) {
-            Setting::setDefaultThemeId(null);
-            $this->defaultThemeId = null;
-        }
-
-        $this->loadThemes();
-        $this->dispatch('notify', message: "Theme '{$themeName}' deleted successfully", type: 'success');
-        $this->closeDeleteModal();
     }
 
     public function closeDeleteModal()
@@ -233,7 +248,7 @@ class ThemeManager extends Component
             'version' => '1.0',
         ];
 
-        $fileName = 'theme-'.\Str::slug($theme->name).'-'.now()->format('Y-m-d-H-i-s').'.json';
+        $fileName = 'theme-'.Str::slug($theme->name).'-'.now()->format('Y-m-d-H-i-s').'.json';
 
         return response()->streamDownload(function () use ($exportData) {
             echo json_encode($exportData, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
