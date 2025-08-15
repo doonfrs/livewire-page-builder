@@ -296,7 +296,10 @@
     @endif
 
     <!-- Pages Modal -->
-    @include('page-builder::livewire.builder.partials.pages-modal')
+    @include('page-builder::livewire.builder.partials.pages-modal', [
+        'pagesWithStatus' => $this->getPagesWithStatus(),
+        'themeId' => $themeId,
+    ])
 
     <!-- Theme Selector Modal -->
     @if ($showThemeSelector)

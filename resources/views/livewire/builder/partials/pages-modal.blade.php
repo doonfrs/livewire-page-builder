@@ -11,6 +11,7 @@
             <x-heroicon-o-document-text class="w-6 h-6 text-blue-500" />
             {{ __('Pages') }}
         </h2>
+
         <!-- Search filter -->
         <div class="relative mb-4">
             <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
@@ -23,30 +24,37 @@
         <!-- Scrollable page list -->
         <div class="overflow-y-auto max-h-[50vh] pr-1">
             <ul>
-                @foreach (config('page-builder.pages', []) as $key => $page)
-                    @php
-                        $isAssoc = is_string($key) && is_array($page);
-                        if ($isAssoc) {
-                            $pageName = $key;
-                            $pageLabel = null;
-                            if (isset($page['label'])) {
-                                $pageLabel = $page['label'];
-                            } else {
-                                $pageLabel = Str::headline($key);
-                            }
-                        } else {
-                            $pageName = $page;
-                            $pageLabel = Str::headline($page);
-                        }
-                        $pageLabel = __($pageLabel);
-                    @endphp
+                @foreach ($pagesWithStatus as $page)
                     <li class="mb-2"
-                        x-show="!pageFilter || '{{ strtolower($pageLabel) }}'.includes(pageFilter.toLowerCase())">
-                        <a href="{{ $themeId ? route('page-builder.editor', ['pageKey' => $pageName, 'themeId' => $themeId]) : route('page-builder.editor', ['pageKey' => $pageName]) }}"
-                            class="block px-4 py-2 rounded hover:bg-blue-100 dark:hover:bg-blue-900 transition text-gray-800 dark:text-gray-100">
-                            <div class="flex items-center border-b border-gray-200 dark:border-gray-700 pb-2">
-                                <x-heroicon-o-document-text class="w-4 h-4 mr-2 me-2" />
-                                {{ $pageLabel }}
+                        x-show="!pageFilter || '{{ strtolower($page['label']) }}'.includes(pageFilter.toLowerCase())">
+                        <a href="{{ $themeId ? route('page-builder.editor', ['pageKey' => $page['key'], 'themeId' => $themeId]) : route('page-builder.editor', ['pageKey' => $page['key']]) }}"
+                            class="block px-4 py-3 rounded-lg transition-all duration-200 {{ $page['isCurrentPage'] ? 'bg-blue-50 dark:bg-blue-900/20 border-l-4 border-l-blue-500 shadow-sm' : 'hover:bg-gray-50 dark:hover:bg-gray-700' }} text-gray-800 dark:text-gray-100">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center flex-1">
+                                    <x-heroicon-o-document-text class="w-4 h-4 mr-3 text-gray-500 dark:text-gray-400" />
+                                    <span
+                                        class="font-medium text-gray-900 dark:text-gray-100">{{ $page['label'] }}</span>
+
+                                    <!-- Current page indicator -->
+                                    @if ($page['isCurrentPage'])
+                                        <span
+                                            class="ml-3 inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200">
+                                            {{ __('Current') }}
+                                        </span>
+                                    @endif
+                                </div>
+
+                                <!-- Status indicators -->
+                                <div class="flex items-center gap-2">
+                                    <!-- Empty page flag with tooltip -->
+                                    @if (!$page['hasComponents'])
+                                        <span
+                                            class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-200 border border-yellow-200 dark:border-yellow-700 cursor-help"
+                                            title="{{ __('This page has no content yet. Click to start building.') }}">
+                                            <x-heroicon-o-exclamation-triangle class="w-3 h-3" />
+                                        </span>
+                                    @endif
+                                </div>
                             </div>
                         </a>
                     </li>

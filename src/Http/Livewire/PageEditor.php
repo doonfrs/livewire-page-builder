@@ -2,13 +2,13 @@
 
 namespace Trinavo\LivewirePageBuilder\Http\Livewire;
 
+use Illuminate\Support\Str;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use Trinavo\LivewirePageBuilder\Models\BuilderPage;
 use Trinavo\LivewirePageBuilder\Models\Theme;
 use Trinavo\LivewirePageBuilder\Services\PageBuilderService;
 use Trinavo\LivewirePageBuilder\Support\ThemeResolver;
-use Illuminate\Support\Str;
 
 class PageEditor extends Component
 {
@@ -633,7 +633,7 @@ class PageEditor extends Component
     public function getCurrentPageLabel(): string
     {
         $pages = config('page-builder.pages', []);
-        
+
         foreach ($pages as $pageKey => $pageInfo) {
             if (is_int($pageKey)) {
                 continue;
@@ -646,6 +646,61 @@ class PageEditor extends Component
         }
 
         return __(Str::headline($this->pageKey));
+    }
+
+    /**
+     * Get pages with their component status
+     */
+    public function getPagesWithStatus(): array
+    {
+        $pages = config('page-builder.pages', []);
+        $pagesWithStatus = [];
+
+        foreach ($pages as $pageKey => $pageInfo) {
+            if (is_int($pageKey)) {
+                continue;
+            }
+
+            $pageName = $pageKey;
+            $pageLabel = null;
+
+            if (is_array($pageInfo)) {
+                if (isset($pageInfo['label'])) {
+                    $pageLabel = $pageInfo['label'];
+                } else {
+                    $pageLabel = Str::headline($pageKey);
+                }
+            } else {
+                $pageName = $pageInfo;
+                $pageLabel = Str::headline($pageInfo);
+            }
+
+            // Check if this page has components
+            $hasComponents = false;
+            if ($this->themeId) {
+                $page = BuilderPage::where('key', $pageName)
+                    ->where('theme_id', $this->themeId)
+                    ->first();
+            } else {
+                $page = BuilderPage::where('key', $pageName)
+                    ->whereNull('theme_id')
+                    ->first();
+            }
+
+            if ($page && $page->components) {
+                $components = json_decode($page->components, true);
+                $hasComponents = ! empty($components);
+            }
+
+            $pagesWithStatus[] = [
+                'key' => $pageName,
+                'label' => __($pageLabel),
+                'hasComponents' => $hasComponents,
+                'isCurrentPage' => $pageName === $this->pageKey,
+            ];
+        }
+
+        return $pagesWithStatus;
     }
 
     public function getGroupedPageBlocks()
