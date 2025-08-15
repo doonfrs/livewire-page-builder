@@ -703,6 +703,68 @@ class PageEditor extends Component
         return $pagesWithStatus;
     }
 
+    /**
+     * Copy components from another page
+     */
+    public function copyComponentsFromPage(string $sourcePageKey): void
+    {
+        // Don't allow copying from the current page
+        if ($sourcePageKey === $this->pageKey) {
+            return;
+        }
+
+        // Find the source page
+        $sourcePage = null;
+        if ($this->themeId) {
+            $sourcePage = BuilderPage::where('key', $sourcePageKey)
+                ->where('theme_id', $this->themeId)
+                ->first();
+        } else {
+            $sourcePage = BuilderPage::where('key', $sourcePageKey)
+                ->whereNull('theme_id')
+                ->first();
+        }
+
+        if (! $sourcePage || ! $sourcePage->components) {
+            return;
+        }
+
+        // Copy the components
+        $this->rows = json_decode($sourcePage->components, true);
+
+        // Save the current page with copied components
+        $this->savePage();
+
+        // Show success message
+        $this->dispatch('notify', [
+            'type' => 'success',
+            'message' => __('Components copied successfully from :page', ['page' => $this->getPageLabel($sourcePageKey)]),
+        ]);
+    }
+
+    /**
+     * Get page label for a specific page key
+     */
+    private function getPageLabel(string $pageKey): string
+    {
+        $pages = config('page-builder.pages', []);
+
+        foreach ($pages as $key => $pageInfo) {
+            if (is_int($key)) {
+                continue;
+            }
+            if ($key === $pageKey) {
+                if (is_array($pageInfo) && isset($pageInfo['label'])) {
+                    return __($pageInfo['label']);
+                }
+
+                return __(Str::headline($pageKey));
+            }
+        }
+
+        return __(Str::headline($pageKey));
+    }
+
     public function getGroupedPageBlocks()
     {
         $grouped = [];

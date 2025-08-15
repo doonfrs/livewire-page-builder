@@ -113,5 +113,12 @@
     "Clone": "استنساخ",
     "Clone Theme": "استنساخ المظهر",
     "Create a copy of this theme with all its pages. Enter a name for the cloned theme.": "إنشاء نسخة من هذا المظهر مع جميع صفحاته. أدخل اسماً للمظهر المستنسخ.",
-    "Clone Theme Name": "اسم المظهر المستنسخ"
+    "Clone Theme Name": "اسم المظهر المستنسخ",
+    "Copy From Page": "نسخ من صفحة",
+    "Copy From": "نسخ من",
+    "Copy components from another page": "نسخ مكونات من صفحة أخرى",
+    "Cannot copy from current page": "لا يمكن نسخ من الصفحة الحالية",
+    "Click to copy components from this page": "انقر لنسخ مكونات من هذه الصفحة",
+    "This page has no content to copy": "لا يوجد محتوى لهذه الصفحة لنسخه",
+    "Components copied successfully from :page": "تم نسخ مكونات بنجاح من :page"
 }

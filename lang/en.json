@@ -114,5 +114,12 @@
     "Clone": "Clone",
     "Clone Theme": "Clone Theme",
     "Create a copy of this theme with all its pages. Enter a name for the cloned theme.": "Create a copy of this theme with all its pages. Enter a name for the cloned theme.",
-    "Clone Theme Name": "Clone Theme Name"
+    "Clone Theme Name": "Clone Theme Name",
+    "Copy From Page": "Copy From Page",
+    "Copy From": "Copy From",
+    "Copy components from another page": "Copy components from another page",
+    "Cannot copy from current page": "Cannot copy from current page",
+    "Click to copy components from this page": "Click to copy components from this page",
+    "This page has no content to copy": "This page has no content to copy",
+    "Components copied successfully from :page": "Components copied successfully from :page"
 }
