@@ -8,6 +8,7 @@ use Trinavo\LivewirePageBuilder\Models\BuilderPage;
 use Trinavo\LivewirePageBuilder\Models\Theme;
 use Trinavo\LivewirePageBuilder\Services\PageBuilderService;
 use Trinavo\LivewirePageBuilder\Support\ThemeResolver;
+use Illuminate\Support\Str;
 
 class PageEditor extends Component
 {
@@ -600,29 +601,51 @@ class PageEditor extends Component
     public function getAllPageBlocks()
     {
         $blocks = [];
-
         foreach ($this->rows as $rowId => $row) {
-            foreach ($row['blocks'] as $blockId => $block) {
-                $blockClass = app(PageBuilderService::class)->getClassNameFromAlias($block['alias']);
-                if (! $blockClass) {
-                    continue;
+            if (isset($row['blocks'])) {
+                foreach ($row['blocks'] as $blockId => $block) {
+                    $blockClass = app(PageBuilderService::class)->getClassNameFromAlias($block['alias']);
+                    if (! $blockClass) {
+                        continue;
+                    }
+
+                    $blockInstance = app($blockClass);
+                    $label = $blockInstance->getPageBuilderLabel();
+                    $icon = $blockInstance->getPageBuilderIcon() ?? 'heroicon-o-cube';
+
+                    $blocks[] = [
+                        'id' => $blockId,
+                        'rowId' => $rowId,
+                        'alias' => $block['alias'],
+                        'label' => $label,
+                        'icon' => $icon,
+                    ];
                 }
-
-                $blockInstance = app($blockClass);
-                $label = $blockInstance->getPageBuilderLabel();
-                $icon = $blockInstance->getPageBuilderIcon() ?? 'heroicon-o-cube';
-
-                $blocks[] = [
-                    'id' => $blockId,
-                    'rowId' => $rowId,
-                    'alias' => $block['alias'],
-                    'label' => $label,
-                    'icon' => $icon,
-                ];
             }
         }
 
         return $blocks;
+    }
+
+    /**
+     * Get the current page label for display
+     */
+    public function getCurrentPageLabel(): string
+    {
+        $pages = config('page-builder.pages', []);
+        
+        foreach ($pages as $pageKey => $pageInfo) {
+            if (is_int($pageKey)) {
+                continue;
+            }
+            if ($pageKey === $this->pageKey) {
+                if (isset($pageInfo['label'])) {
+                    return __($pageInfo['label']);
+                }
+            }
+        }
+
+        return __(Str::headline($this->pageKey));
     }
 
     public function getGroupedPageBlocks()
