@@ -120,5 +120,12 @@
     "Cannot copy from current page": "لا يمكن نسخ من الصفحة الحالية",
     "Click to copy components from this page": "انقر لنسخ مكونات من هذه الصفحة",
     "This page has no content to copy": "لا يوجد محتوى لهذه الصفحة لنسخه",
-    "Components copied successfully from :page": "تم نسخ مكونات بنجاح من :page"
+    "Components copied successfully from :page": "تم نسخ مكونات بنجاح من :page",
+    "Click to copy components from this page (will replace current content)": "انقر لنسخ مكونات من هذه الصفحة (سيتم استبدال المحتوى الحالي)",
+    "Will replace current content": "سيتم استبدال المحتوى الحالي",
+    "Confirm Copy": "تأكيد النسخ",
+    "Are you sure you want to copy components from": "هل أنت متأكد أنك تريد نسخ مكونات من",
+    "This will replace all current page content.": "سيتم استبدال جميع المحتوى الحالي للصفحة.",
+    "Yes, Replace Content": "نعم, استبدال المحتوى",
+    "?": "؟"
 }

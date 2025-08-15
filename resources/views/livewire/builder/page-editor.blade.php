@@ -1,6 +1,9 @@
 <div class="h-screen flex flex-col bg-gray-100 dark:bg-gray-900" x-data="{
     showPagesModal: false,
     showCopyFromModal: false,
+    showCopyConfirmationModal: false,
+    copySourcePageKey: null,
+    copySourcePageLabel: null,
     deviceMode: 'desktop',
     loading: true,
     canPaste: false,
@@ -316,6 +319,49 @@
         'themeId' => $themeId,
         'modalMode' => 'copy',
     ])
+
+    <!-- Copy Confirmation Modal -->
+    <div x-show="showCopyConfirmationModal" class="fixed inset-0 z-53 flex items-center justify-center bg-black/40"
+        style="display: none;" @click.outside="showCopyConfirmationModal = false">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-md p-6 relative">
+            <div class="text-center">
+                <!-- Warning Icon -->
+                <div
+                    class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-yellow-100 dark:bg-yellow-900/30 mb-4">
+                    <x-heroicon-o-exclamation-triangle class="h-6 w-6 text-yellow-600 dark:text-yellow-400" />
+                </div>
+
+                <!-- Title -->
+                <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">
+                    {{ __('Confirm Copy') }}
+                </h3>
+
+                <!-- Message -->
+                <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">
+                    {{ __('Are you sure you want to copy components from') }} <span
+                        class="font-semibold text-gray-900 dark:text-gray-100"
+                        x-text="copySourcePageLabel"></span>{{ __('?') }}
+                    {{ __('This will replace all current page content.') }}
+                </p>
+
+                <!-- Action Buttons -->
+                <div class="flex gap-3 justify-center">
+                    <button @click="showCopyConfirmationModal = false"
+                        class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-600 focus:ring-2 focus:ring-gray-200 dark:focus:ring-gray-500 transition-all duration-150">
+                        {{ __('Cancel') }}
+                    </button>
+                    <button
+                        @click="
+                        showCopyConfirmationModal = false;
+                        $wire.copyComponentsFromPage(copySourcePageKey);
+                    "
+                        class="px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:ring-2 focus:ring-red-200 rounded-md transition-all duration-150">
+                        {{ __('Yes, Replace Content') }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Theme Selector Modal -->
     @if ($showThemeSelector)
