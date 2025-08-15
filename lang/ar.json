@@ -127,5 +127,8 @@
     "Are you sure you want to copy components from": "هل أنت متأكد أنك تريد نسخ مكونات من",
     "This will replace all current page content.": "سيتم استبدال جميع المحتوى الحالي للصفحة.",
     "Yes, Replace Content": "نعم, استبدال المحتوى",
-    "?": "؟"
+    "?": "؟",
+    "Theme": "مظهر",
+    "Blocks": "كتل",
+    "Block": "كتلة"
 }

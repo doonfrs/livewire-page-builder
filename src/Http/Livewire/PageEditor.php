@@ -628,6 +628,27 @@ class PageEditor extends Component
     }
 
     /**
+     * Check if current page is a block
+     */
+    public function isCurrentPageBlock(): bool
+    {
+        $pages = config('page-builder.pages', []);
+
+        foreach ($pages as $pageKey => $pageInfo) {
+            if (is_int($pageKey)) {
+                continue;
+            }
+            if ($pageKey === $this->pageKey) {
+                if (is_array($pageInfo) && isset($pageInfo['is_block'])) {
+                    return $pageInfo['is_block'];
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Get the current page label for display
      */
     public function getCurrentPageLabel(): string
@@ -692,11 +713,18 @@ class PageEditor extends Component
                 $hasComponents = ! empty($components);
             }
 
+            // Check if this page is marked as a block
+            $isBlock = false;
+            if (is_array($pageInfo) && isset($pageInfo['is_block'])) {
+                $isBlock = $pageInfo['is_block'];
+            }
+
             $pagesWithStatus[] = [
                 'key' => $pageName,
                 'label' => __($pageLabel),
                 'hasComponents' => $hasComponents,
                 'isCurrentPage' => $pageName === $this->pageKey,
+                'isBlock' => $isBlock,
             ];
         }
 

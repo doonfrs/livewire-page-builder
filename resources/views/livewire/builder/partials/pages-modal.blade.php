@@ -69,6 +69,16 @@
 
                                     <!-- Status indicators -->
                                     <div class="flex items-center gap-2">
+                                        <!-- Block page indicator -->
+                                        @if ($page['isBlock'])
+                                            <span
+                                                class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-200 border border-purple-200 dark:border-purple-700 cursor-help"
+                                                title="{{ __('This is a reusable page block') }}">
+                                                <x-heroicon-o-cube class="w-3 h-3" />
+                                                {{ __('Block') }}
+                                            </span>
+                                        @endif
+
                                         <!-- Empty page flag with tooltip -->
                                         @if (!$page['hasComponents'])
                                             <span
@@ -102,6 +112,16 @@
 
                                     <!-- Status indicators -->
                                     <div class="flex items-center gap-2">
+                                        <!-- Block page indicator -->
+                                        @if ($page['isBlock'])
+                                            <span
+                                                class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-200 border border-purple-200 dark:border-purple-700 cursor-help"
+                                                title="{{ __('This is a reusable page block') }}">
+                                                <x-heroicon-o-cube class="w-3 h-3" />
+                                                {{ __('Block') }}
+                                            </span>
+                                        @endif
+
                                         <!-- Empty page flag with tooltip -->
                                         @if (!$page['hasComponents'])
                                             <span
