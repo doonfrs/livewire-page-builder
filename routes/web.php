@@ -11,6 +11,11 @@ $middleware = array_merge(
 );
 
 Route::middleware($middleware)->prefix('page-builder')->group(function () {
+    // Redirect root page-builder route to themes
+    Route::get('/', function () {
+        return redirect()->route('page-builder.themes');
+    })->name('page-builder.index');
+    
     // Theme Management Routes
     Route::get('/themes', ThemeManager::class)->name('page-builder.themes');
     
