@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class BuilderPage extends Model
 {
-    protected $fillable = ['key', 'components', 'theme_id'];
+    protected $fillable = ['key', 'components', 'theme_id', 'is_block'];
 
     protected $casts = [
         'components' => 'array',
