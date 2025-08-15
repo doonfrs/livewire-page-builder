@@ -158,6 +158,7 @@
     <!-- Header Toolbar -->
     <div
         class="flex items-center justify-between bg-gray-200 dark:bg-gray-800 shadow-md p-3 text-gray-900 dark:text-gray-100 z-30">
+
         <div class="flex gap-2">
             <!-- Theme Selector -->
             @if ($currentTheme)
@@ -238,6 +239,14 @@
                 title="{{ __('Open Pages') }}">
                 <x-heroicon-o-document-text class="w-5 h-5" />
                 <span class="hidden sm:inline">{{ $this->getCurrentPageLabel() }}</span>
+                @if ($this->isCurrentPageBlock())
+                    <span
+                        class="ml-2 inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-200 border border-purple-200 dark:border-purple-700"
+                        title="{{ __('This is a reusable page block') }}">
+                        <x-heroicon-o-cube class="w-3 h-3 mr-1" />
+                        {{ __('Block') }}
+                    </span>
+                @endif
             </button>
 
             <!-- Copy From Button -->
