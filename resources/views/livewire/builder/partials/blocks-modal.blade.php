@@ -1,20 +1,19 @@
 <!-- Modal for Adding Block -->
-<div class="fixed inset-0 z-52 flex items-center justify-center bg-black/40"
-    x-data="{ 
-        blockFilter: '',
-        allBlocks: @js($allBlocks),
-        filteredBlocks: function() {
-            if (!this.blockFilter.trim()) {
-                return this.allBlocks;
-            }
-            
-            const searchTerm = this.blockFilter.toLowerCase();
-            return this.allBlocks.filter(block => {
-                return block.label.toLowerCase().includes(searchTerm) || 
-                       (block.alias && block.alias.toLowerCase().includes(searchTerm));
-            });
+<div class="fixed inset-0 z-52 flex items-center justify-center bg-black/40" x-data="{
+    blockFilter: '',
+    allBlocks: @js($allBlocks),
+    filteredBlocks: function() {
+        if (!this.blockFilter.trim()) {
+            return this.allBlocks;
         }
-    }">
+
+        const searchTerm = this.blockFilter.toLowerCase();
+        return this.allBlocks.filter(block => {
+            return block.label.toLowerCase().includes(searchTerm) ||
+                (block.alias && block.alias.toLowerCase().includes(searchTerm));
+        });
+    }
+}">
     <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-2xl p-8 relative"
         @click.outside="$wire.closeBlockModal()">
         <button wire:click="closeBlockModal"
@@ -40,20 +39,28 @@
         <div class="grid grid-cols-2 sm:grid-cols-3 gap-6 h-[40vh] overflow-auto">
             <!-- Fallback rendering for debugging -->
             @foreach ($allBlocks as $block)
-            <button wire:click="addBlockToModalRow('{{ $block['alias'] }}', {{ isset($block['blockPageName']) ? '\''.$block['blockPageName'].'\'' : 'null' }})"
-                class="group h-30 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-sm hover:shadow-lg transition-all duration-200 p-5 flex flex-col items-center text-center focus:outline-none focus:ring-2 focus:ring-pink-200">
-                <div class="w-10 h-10 mb-3 text-pink-500 group-hover:text-pink-600 transition-colors">
-                    <x-heroicon-o-cube class="w-10 h-10" />
-                </div>
-                <div class="font-semibold text-gray-800 dark:text-gray-100 mb-1 text-base">{{ $block['label'] }}</div>
-            </button>
+                <button
+                    wire:click="addBlockToModalRow('{{ $block['alias'] }}', {{ isset($block['blockPageName']) ? '\'' . $block['blockPageName'] . '\'' : 'null' }})"
+                    class="group h-30 border rounded-xl shadow-sm transition-all duration-200 p-5 flex flex-col items-center text-center focus:outline-none focus:ring-2 focus:ring-pink-200 relative {{ isset($block['blockPageName']) ? 'bg-blue-50 dark:bg-blue-900/20 border-blue-300 dark:border-blue-600 hover:shadow-lg hover:bg-blue-100 dark:hover:bg-blue-900/30' : 'bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 hover:shadow-lg hover:bg-gray-100 dark:hover:bg-gray-700' }}"
+                    title="{{ isset($block['blockPageName']) ? __('This is a page component that can be reused across themes') : __('Standard content block') }}">
+                    <div
+                        class="w-10 h-10 mb-3 transition-colors {{ isset($block['blockPageName']) ? 'text-blue-500 group-hover:text-blue-600' : 'text-pink-500 group-hover:text-pink-600' }}">
+                        @if (isset($block['blockPageName']))
+                            <x-heroicon-o-document-text class="w-10 h-10" />
+                        @else
+                            <x-heroicon-o-cube class="w-10 h-10" />
+                        @endif
+                    </div>
+                    <div class="font-semibold text-gray-800 dark:text-gray-100 mb-1 text-base">{{ $block['label'] }}
+                    </div>
+                </button>
             @endforeach
 
             <!-- Empty state when no blocks -->
             @if (count($allBlocks) === 0)
-            <div class="col-span-full text-gray-400 text-center py-8">
-                {{ __('No blocks available') }}
-            </div>
+                <div class="col-span-full text-gray-400 text-center py-8">
+                    {{ __('No blocks available') }}
+                </div>
             @endif
         </div>
     </div>
