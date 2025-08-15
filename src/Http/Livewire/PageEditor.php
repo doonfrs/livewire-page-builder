@@ -743,6 +743,38 @@ class PageEditor extends Component
     }
 
     /**
+     * Check if current page has content
+     */
+    public function currentPageHasContent(): bool
+    {
+        return ! empty($this->rows);
+    }
+
+    /**
+     * Get confirmation message for copying
+     */
+    public function getCopyConfirmationMessage(string $sourcePageKey): string
+    {
+        $sourcePageLabel = $this->getPageLabel($sourcePageKey);
+
+        return __('Are you sure you want to copy components from ":page"? This will replace all current page content.', ['page' => $sourcePageLabel]);
+    }
+
+    /**
+     * Prepare copy confirmation data
+     */
+    public function prepareCopyConfirmation(string $sourcePageKey): array
+    {
+        $sourcePageLabel = $this->getPageLabel($sourcePageKey);
+
+        return [
+            'sourcePageKey' => $sourcePageKey,
+            'sourcePageLabel' => $sourcePageLabel,
+            'confirmationMessage' => __('Are you sure you want to copy components from ":page"? This will replace all current page content.', ['page' => $sourcePageLabel]),
+        ];
+    }
+
+    /**
      * Get page label for a specific page key
      */
     private function getPageLabel(string $pageKey): string

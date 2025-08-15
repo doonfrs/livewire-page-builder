@@ -35,11 +35,22 @@
                         x-show="!pageFilter || '{{ strtolower($page['label']) }}'.includes(pageFilter.toLowerCase())">
                         @if (isset($modalMode) && $modalMode === 'copy')
                             <!-- Copy mode: button to copy components -->
-                            <button wire:click="copyComponentsFromPage('{{ $page['key'] }}')"
+                            <button
                                 @click="{{ isset($modalMode) && $modalMode === 'copy' ? 'showCopyFromModal = false' : 'showPagesModal = false' }}"
                                 class="w-full text-left px-4 py-3 rounded-lg transition-all duration-200 {{ $page['isCurrentPage'] ? 'bg-blue-50 dark:bg-blue-900/20 border-l-4 border-l-blue-500 shadow-sm' : 'hover:bg-gray-50 dark:hover:bg-gray-700' }} text-gray-800 dark:text-gray-100"
                                 {{ $page['isCurrentPage'] ? 'disabled' : '' }}
-                                title="{{ $page['isCurrentPage'] ? __('Cannot copy from current page') : __('Click to copy components from this page') }}">
+                                title="{{ $page['isCurrentPage'] ? __('Cannot copy from current page') : ($this->currentPageHasContent() ? __('Click to copy components from this page (will replace current content)') : __('Click to copy components from this page')) }}"
+                                x-data="{
+                                    confirmCopy() {
+                                        @if ($this->currentPageHasContent()) // Show custom confirmation modal
+                                            copySourcePageKey = '{{ $page['key'] }}';
+                                            copySourcePageLabel = '{{ $page['label'] }}';
+                                            showCopyConfirmationModal = true;
+                                        @else
+                                            // Copy immediately for empty pages
+                                            $wire.copyComponentsFromPage('{{ $page['key'] }}'); @endif
+                                    }
+                                }" x-on:click="confirmCopy()">
                                 <div class="flex items-center justify-between">
                                     <div class="flex items-center flex-1">
                                         <x-heroicon-o-document-duplicate
@@ -64,13 +75,6 @@
                                                 class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-200 border border-yellow-200 dark:border-yellow-700 cursor-help"
                                                 title="{{ __('This page has no content to copy') }}">
                                                 <x-heroicon-o-exclamation-triangle class="w-3 h-3" />
-                                            </span>
-                                        @else
-                                            <!-- Copy indicator -->
-                                            <span
-                                                class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200 border border-green-200 dark:border-green-700">
-                                                <x-heroicon-o-document-duplicate class="w-3 h-3 mr-1" />
-                                                {{ __('Copy') }}
                                             </span>
                                         @endif
                                     </div>

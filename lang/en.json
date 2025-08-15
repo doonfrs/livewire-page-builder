@@ -121,5 +121,12 @@
     "Cannot copy from current page": "Cannot copy from current page",
     "Click to copy components from this page": "Click to copy components from this page",
     "This page has no content to copy": "This page has no content to copy",
-    "Components copied successfully from :page": "Components copied successfully from :page"
+    "Components copied successfully from :page": "Components copied successfully from :page",
+    "Click to copy components from this page (will replace current content)": "Click to copy components from this page (will replace current content)",
+    "Are you sure you want to copy components from \":page\"? This will replace all current page content.": "Are you sure you want to copy components from \":page\"? This will replace all current page content.",
+    "Will replace current content": "Will replace current content",
+    "Confirm Copy": "Confirm Copy",
+    "This will replace all current page content.": "This will replace all current page content.",
+    "Yes, Replace Content": "Yes, Replace Content",
+    "?": "?"
 }
