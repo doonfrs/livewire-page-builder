@@ -1,5 +1,6 @@
 <div class="h-screen flex flex-col bg-gray-100 dark:bg-gray-900" x-data="{
     showPagesModal: false,
+    showCopyFromModal: false,
     deviceMode: 'desktop',
     loading: true,
     canPaste: false,
@@ -235,6 +236,14 @@
                 <x-heroicon-o-document-text class="w-5 h-5" />
                 <span class="hidden sm:inline">{{ $this->getCurrentPageLabel() }}</span>
             </button>
+
+            <!-- Copy From Button -->
+            <button x-on:click="showCopyFromModal = true"
+                class="flex items-center gap-1 px-4 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-2 focus:ring-green-200 transition-all duration-150 text-sm font-medium"
+                title="{{ __('Copy components from another page') }}">
+                <x-heroicon-o-document-duplicate class="w-5 h-5" />
+                <span class="hidden sm:inline">{{ __('Copy From') }}</span>
+            </button>
             <!-- Preview Button -->
             <a :href="'/page-builder/page/view/' + @js($pageKey ?? '') + (@js($themeId ?? '') ? '/' +
                 @js($themeId ?? '') : '')"
@@ -299,6 +308,13 @@
     @include('page-builder::livewire.builder.partials.pages-modal', [
         'pagesWithStatus' => $this->getPagesWithStatus(),
         'themeId' => $themeId,
+    ])
+
+    <!-- Copy From Modal -->
+    @include('page-builder::livewire.builder.partials.pages-modal', [
+        'pagesWithStatus' => $this->getPagesWithStatus(),
+        'themeId' => $themeId,
+        'modalMode' => 'copy',
     ])
 
     <!-- Theme Selector Modal -->
