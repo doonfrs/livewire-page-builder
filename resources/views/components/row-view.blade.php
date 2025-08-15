@@ -4,7 +4,7 @@
             <div class="{{ $block['cssClasses'] }}" style="{{ $block['inlineStyles'] }}">
                 @if ($block['alias'] == 'builder-page-block')
                     <div style="font-size:0">
-                        @foreach ($block['rows'] as $rowId => $row)
+                        @foreach ($block['rows'] ?? [] as $rowId => $row)
                             <x-page-builder::row-view :row="$row" />
                         @endforeach
                     </div>
