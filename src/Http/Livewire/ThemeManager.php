@@ -52,6 +52,8 @@ class ThemeManager extends Component
     // Import
     public $importFile = null;
 
+    public $isFileUploading = false;
+
     public function mount()
     {
         $this->loadThemes();
@@ -316,12 +318,20 @@ class ThemeManager extends Component
     {
         $this->showImportModal = true;
         $this->importFile = null;
+        $this->isFileUploading = false;
     }
 
     public function closeImportModal()
     {
         $this->showImportModal = false;
         $this->importFile = null;
+        $this->isFileUploading = false;
+    }
+
+    public function updatedImportFile()
+    {
+        // Simple check - if file is selected, enable the button
+        $this->isFileUploading = ! empty($this->importFile);
     }
 
     public function openCloneModal($themeId)
@@ -506,6 +516,8 @@ class ThemeManager extends Component
                 message: __('Import failed: :message', ['message' => $e->getMessage()]),
                 type: 'error'
             );
+        } finally {
+            $this->isFileUploading = false;
         }
     }
 

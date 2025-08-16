@@ -207,7 +207,7 @@
                         <div class="py-2">
                             <a href="{{ route('page-builder.themes') }}"
                                 class="flex items-center w-full px-4 py-2 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
-                                <x-heroicon-o-cog-6-tooth class="w-4 h-4 mr-2" />
+                                <x-heroicon-o-cog-6-tooth class="w-4 h-4 mr-2 ml-2" />
                                 {{ __('Manage Themes') }}
                             </a>
                         </div>
