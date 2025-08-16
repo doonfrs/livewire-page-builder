@@ -13,9 +13,14 @@ trait ThemeResolver
      */
     protected function resolveThemeId($themeId = null)
     {
+
         // If a specific theme ID is provided, use it
         if ($themeId) {
             return $themeId;
+        }
+
+        if (request()->route('themeId')) {
+            return request()->route('themeId');
         }
 
         // Fall back to database default theme

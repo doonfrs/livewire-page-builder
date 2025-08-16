@@ -246,27 +246,9 @@ class ThemeManager extends Component
             'name' => $theme->name,
             'description' => $theme->description,
             'pages' => $theme->pages->map(function ($page) {
-                // Ensure components is an array
-                $components = $page->components ?? [];
-                if (! is_array($components)) {
-                    Log::warning('Invalid components format for page during export', [
-                        'page_key' => $page->key,
-                        'components_type' => gettype($components),
-                        'components_value' => $components,
-                    ]);
-                    $components = [];
-                }
-
-                // Log the components data for debugging
-                Log::info('Exporting page', [
-                    'page_key' => $page->key,
-                    'has_components' => ! empty($components),
-                    'components_count' => count($components),
-                ]);
-
                 return [
                     'key' => $page->key,
-                    'components' => $components,
+                    'components' => $page->components ?? [],
                     'is_block' => $page->is_block ?? false,
                     'created_at' => $page->created_at,
                     'updated_at' => $page->updated_at,
@@ -443,16 +425,6 @@ class ThemeManager extends Component
             foreach ($data['pages'] as $pageData) {
                 // Handle backward compatibility: check for both 'components' and 'content' fields
                 $components = $pageData['components'] ?? $pageData['content'] ?? [];
-
-                // Ensure components is an array
-                if (! is_array($components)) {
-                    Log::warning('Invalid components format for page', [
-                        'page_key' => $pageData['key'],
-                        'components_type' => gettype($components),
-                        'components_value' => $components,
-                    ]);
-                    $components = [];
-                }
 
                 // Count pages with components
                 if (! empty($components)) {

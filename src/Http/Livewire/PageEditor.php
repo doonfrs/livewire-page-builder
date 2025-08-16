@@ -71,13 +71,13 @@ class PageEditor extends Component
             'theme_id' => $this->themeId,
         ]);
 
-        $this->rows = $this->page->components ? json_decode($this->page->components, true) : [];
+        $this->rows = $this->page->components ? $this->page->components : [];
     }
 
     #[On('save-page')]
     public function savePage()
     {
-        $this->page->components = json_encode($this->rows);
+        $this->page->components = $this->rows;
         $this->page->saveOrFail();
     }
 
@@ -709,7 +709,7 @@ class PageEditor extends Component
             }
 
             if ($page && $page->components) {
-                $components = json_decode($page->components, true);
+                $components = $page->components;
                 $hasComponents = ! empty($components);
             }
 
@@ -758,7 +758,7 @@ class PageEditor extends Component
         }
 
         // Copy the components
-        $this->rows = json_decode($sourcePage->components, true);
+        $this->rows = $sourcePage->components;
 
         // Save the current page with copied components
         $this->savePage();
