@@ -10,7 +10,8 @@ class BuilderPage extends Model
     protected $fillable = ['key', 'components', 'theme_id', 'is_block'];
 
     protected $casts = [
-        'components' => 'array',
+        'components' => 'json',
+        'is_block' => 'boolean',
     ];
 
     public function theme(): BelongsTo

@@ -28,19 +28,13 @@ class PageBuilderRender
     {
         $themeId = $this->resolveThemeId($themeId);
         $query = BuilderPage::where('key', $pageKey);
-
-        if ($themeId) {
-            $query->where('theme_id', $themeId);
-        } else {
-            // If no theme specified, get the first page with any theme or null theme
-            $query->orderBy('theme_id');
-        }
+        $query->where('theme_id', $themeId);
 
         $page = $query->first();
         $rows = [];
 
         if ($page) {
-            $rows = json_decode($page->components, true);
+            $rows = $page->components;
 
             if ($rows) {
                 $rows = array_map([$this, 'prepareRow'], $rows);
@@ -74,15 +68,12 @@ class PageBuilderRender
 
             if ($blockPageName) {
                 $query = BuilderPage::where('key', $blockPageName);
-
-                if ($themeId) {
-                    $query->where('theme_id', $themeId);
-                }
+                $query->where('theme_id', $themeId);
 
                 $page = $query->first();
 
                 if ($page) {
-                    $block['rows'] = json_decode($page->components, true);
+                    $block['rows'] = $page->components;
                     if ($block['rows']) {
                         $block['rows'] = array_map([$this, 'prepareRow'], $block['rows']);
                     }

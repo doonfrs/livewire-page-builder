@@ -31,16 +31,14 @@ class BuilderPageBlock extends Block
         $themeId = $this->resolveThemeId();
 
         $query = BuilderPage::where('key', $this->blockPageName);
-        if ($themeId) {
-            $query->where('theme_id', $themeId);
-        }
+        $query->where('theme_id', $themeId);
 
         $this->page = $query->first();
         if (! $this->page) {
             return 'Page not found';
         }
 
-        $this->rows = json_decode($this->page->components, true);
+        $this->rows = $this->page->components;
     }
 
     public function render()
