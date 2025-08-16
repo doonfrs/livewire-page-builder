@@ -18,7 +18,7 @@
             <livewire:language-switcher />
             <button wire:click="openImportModal"
                 class="inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-sm font-medium rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 focus:ring-2 focus:ring-pink-200 transition">
-                <x-heroicon-o-arrow-up-tray class="w-5 h-5 mr-1" />
+                <x-heroicon-o-arrow-up-tray class="w-5 h-5 mr-1 ml-1" />
                 {{ __('Import Theme') }}
             </button>
             <button wire:click="openCreateModal"
@@ -65,7 +65,7 @@
                                     @if ($defaultThemeId == $selectedTheme->id)
                                         <span
                                             class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400">
-                                            <x-heroicon-o-star class="w-3 h-3 mr-1" />
+                                            <x-heroicon-o-star class="w-3 h-3 mr-1 ml-1" />
                                             {{ __('Default') }}
                                         </span>
                                     @endif
@@ -100,7 +100,7 @@
                                         @if ($defaultThemeId == $theme['id'])
                                             <span
                                                 class="ml-2 inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400">
-                                                <x-heroicon-o-star class="w-3 h-3 mr-1" />
+                                                <x-heroicon-o-star class="w-3 h-3 mr-1 ml-1" />
                                                 {{ __('Default') }}
                                             </span>
                                         @endif
@@ -133,17 +133,17 @@
                                     <div class="grid grid-cols-3 gap-2 mb-2">
                                         <button wire:click="openEditModal({{ $theme['id'] }})"
                                             class="inline-flex items-center justify-center px-3 py-1.5 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 text-sm font-medium rounded-lg transition-all duration-150">
-                                            <x-heroicon-o-pencil class="w-4 h-4 mr-1" />
+                                            <x-heroicon-o-pencil class="w-4 h-4 mr-1 ml-1" />
                                             {{ __('Edit') }}
                                         </button>
                                         <button wire:click="openCloneModal({{ $theme['id'] }})"
                                             class="inline-flex items-center justify-center px-3 py-1.5 bg-green-100 dark:bg-green-900/30 hover:bg-green-200 dark:hover:bg-green-900/50 text-green-700 dark:text-green-400 text-sm font-medium rounded-lg transition-all duration-150">
-                                            <x-heroicon-o-document-duplicate class="w-4 h-4 mr-1" />
+                                            <x-heroicon-o-document-duplicate class="w-4 h-4 mr-1 ml-1" />
                                             {{ __('Clone') }}
                                         </button>
                                         <button wire:click="exportTheme({{ $theme['id'] }})"
                                             class="inline-flex items-center justify-center px-3 py-1.5 bg-blue-100 dark:bg-blue-900/30 hover:bg-blue-200 dark:hover:bg-blue-900/50 text-blue-700 dark:text-blue-400 text-sm font-medium rounded-lg transition-all duration-150">
-                                            <x-heroicon-o-arrow-down-tray class="w-4 h-4 mr-1" />
+                                            <x-heroicon-o-arrow-down-tray class="w-4 h-4 mr-1 ml-1" />
                                             {{ __('Export') }}
                                         </button>
                                     </div>
@@ -151,7 +151,7 @@
                                         @if ($defaultThemeId != $theme['id'])
                                             <button wire:click="confirmSetDefaultTheme({{ $theme['id'] }})"
                                                 class="inline-flex items-center justify-center px-3 py-1.5 bg-yellow-100 dark:bg-yellow-900/30 hover:bg-yellow-200 dark:hover:bg-yellow-900/50 text-yellow-700 dark:text-yellow-400 text-sm font-medium rounded-lg transition-all duration-150">
-                                                <x-heroicon-o-star class="w-4 h-4 mr-1" />
+                                                <x-heroicon-o-star class="w-4 h-4 mr-1 ml-1" />
                                                 {{ __('Default') }}
                                             </button>
                                         @else
@@ -159,7 +159,7 @@
                                         @endif
                                         <button wire:click="confirmDeleteTheme({{ $theme['id'] }})"
                                             class="inline-flex items-center justify-center px-3 py-1.5 bg-red-100 dark:bg-red-900/30 hover:bg-red-200 dark:hover:bg-red-900/50 text-red-700 dark:text-red-400 text-sm font-medium rounded-lg transition-all duration-150">
-                                            <x-heroicon-o-trash class="w-4 h-4 mr-1" />
+                                            <x-heroicon-o-trash class="w-4 h-4 mr-1 ml-1" />
                                             {{ __('Delete') }}
                                         </button>
                                     </div>
@@ -258,12 +258,11 @@
                     <div class="bg-gray-50 dark:bg-gray-700 px-4 py-3 sm:px-6 sm:flex"
                         :class="document.documentElement.dir === 'rtl' ? 'sm:flex-row' : 'sm:flex-row-reverse'">
                         <button type="submit"
-                            class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-pink-600 text-base font-medium text-white hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500 sm:w-auto sm:text-sm"
-                            :class="document.documentElement.dir === 'rtl' ? 'sm:mr-3' : 'sm:ml-3'">
+                            class="inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-pink-600 text-sm font-medium text-white hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-pink-200 transition-all duration-150">
                             {{ __('Create Theme') }}
                         </button>
                         <button type="button" wire:click="closeCreateModal"
-                            class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 dark:border-gray-600 shadow-sm px-4 py-2 bg-white dark:bg-gray-800 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500 sm:mt-0 sm:w-auto sm:text-sm"
+                            class="mt-3 inline-flex justify-center rounded-md border border-gray-300 dark:border-gray-600 shadow-sm px-4 py-2 bg-white dark:bg-gray-800 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500 sm:mt-0 sm:ml-3"
                             :class="document.documentElement.dir === 'rtl' ? 'sm:mr-3' : 'sm:ml-3'">
                             {{ __('Cancel') }}
                         </button>
@@ -335,12 +334,11 @@
                     <div class="bg-gray-50 dark:bg-gray-700 px-4 py-3 sm:px-6 sm:flex"
                         :class="document.documentElement.dir === 'rtl' ? 'sm:flex-row' : 'sm:flex-row-reverse'">
                         <button type="submit"
-                            class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-pink-600 text-base font-medium text-white hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500 sm:w-auto sm:text-sm"
-                            :class="document.documentElement.dir === 'rtl' ? 'sm:mr-3' : 'sm:ml-3'">
+                            class="inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-pink-600 text-sm font-medium text-white hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500">
                             {{ __('Update Theme') }}
                         </button>
                         <button type="button" wire:click="closeEditModal"
-                            class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 dark:border-gray-600 shadow-sm px-4 py-2 bg-white dark:bg-gray-800 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500 sm:mt-0 sm:w-auto sm:text-sm"
+                            class="mt-3 inline-flex justify-center rounded-md border border-gray-300 dark:border-gray-600 shadow-sm px-4 py-2 bg-white dark:bg-gray-800 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500 sm:mt-0 sm:ml-3"
                             :class="document.documentElement.dir === 'rtl' ? 'sm:mr-3' : 'sm:ml-3'">
                             {{ __('Cancel') }}
                         </button>
@@ -416,12 +414,11 @@
                 <div class="bg-gray-50 dark:bg-gray-700 px-4 py-3 sm:px-6 sm:flex"
                     :class="document.documentElement.dir === 'rtl' ? 'sm:flex-row' : 'sm:flex-row-reverse'">
                     <button wire:click="deleteTheme"
-                        class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:w-auto sm:text-sm"
-                        :class="document.documentElement.dir === 'rtl' ? 'sm:mr-3' : 'sm:ml-3'">
+                        class="inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-sm font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
                         {{ __('Delete Theme') }}
                     </button>
                     <button wire:click="closeDeleteModal"
-                        class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 dark:border-gray-600 shadow-sm px-4 py-2 bg-white dark:bg-gray-800 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500 sm:mt-0 sm:w-auto sm:text-sm"
+                        class="mt-3 inline-flex justify-center rounded-md border border-gray-300 dark:border-gray-600 shadow-sm px-4 py-2 bg-white dark:bg-gray-800 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500 sm:mt-0 sm:ml-3"
                         :class="document.documentElement.dir === 'rtl' ? 'sm:mr-3' : 'sm:ml-3'">
                         {{ __('Cancel') }}
                     </button>
@@ -477,12 +474,11 @@
                 <div class="bg-gray-50 dark:bg-gray-700 px-4 py-3 sm:px-6 sm:flex"
                     :class="document.documentElement.dir === 'rtl' ? 'sm:flex-row' : 'sm:flex-row-reverse'">
                     <button wire:click="setDefaultTheme"
-                        class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-yellow-600 text-base font-medium text-white hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500 sm:w-auto sm:text-sm"
-                        :class="document.documentElement.dir === 'rtl' ? 'sm:mr-3' : 'sm:ml-3'">
+                        class="inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-yellow-600 text-sm font-medium text-white hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500">
                         {{ __('Set as Default') }}
                     </button>
                     <button wire:click="closeDefaultModal"
-                        class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 dark:border-gray-600 shadow-sm px-4 py-2 bg-white dark:bg-gray-800 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500 sm:mt-0 sm:w-auto sm:text-sm"
+                        class="mt-3 inline-flex justify-center rounded-md border border-gray-300 dark:border-gray-600 shadow-sm px-4 py-2 bg-white dark:bg-gray-800 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500 sm:mt-0 sm:ml-3"
                         :class="document.documentElement.dir === 'rtl' ? 'sm:mr-3' : 'sm:ml-3'">
                         {{ __('Cancel') }}
                     </button>
@@ -544,13 +540,21 @@
                     </div>
                     <div class="bg-gray-50 dark:bg-gray-700 px-4 py-3 sm:px-6 sm:flex"
                         :class="document.documentElement.dir === 'rtl' ? 'sm:flex-row' : 'sm:flex-row-reverse'">
-                        <button type="submit"
-                            class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:w-auto sm:text-sm"
+                        <button type="submit" wire:loading.attr="disabled"
+                            wire:loading.class="opacity-50 cursor-not-allowed" :disabled="!$wire.importFile"
+                            class="inline-flex items-center justify-center rounded-md border border-transparent shadow-sm px-8 py-2 bg-blue-600 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-blue-600"
                             :class="document.documentElement.dir === 'rtl' ? 'sm:mr-3' : 'sm:ml-3'">
-                            {{ __('Import Theme') }}
+                            <div wire:loading.remove wire:target="importTheme" class="flex items-center">
+                                <x-heroicon-o-arrow-up-tray class="w-4 h-4 ml-2 mr-2 flex-shrink-0" />
+                                <span>{{ __('Import Theme') }}</span>
+                            </div>
+                            <div wire:loading wire:target="importTheme" class="flex items-center">
+                                <x-heroicon-o-arrow-path class="w-4 h-4 mr-2 animate-spin flex-shrink-0" />
+                                <span>{{ __('Importing...') }}</span>
+                            </div>
                         </button>
                         <button type="button" wire:click="closeImportModal"
-                            class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 dark:border-gray-600 shadow-sm px-4 py-2 bg-white dark:bg-gray-800 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:w-auto sm:text-sm"
+                            class="mt-3 inline-flex justify-center rounded-md border border-gray-300 dark:border-gray-600 shadow-sm px-4 py-2 bg-white dark:bg-gray-800 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:ml-3"
                             :class="document.documentElement.dir === 'rtl' ? 'sm:mr-3' : 'sm:ml-3'">
                             {{ __('Cancel') }}
                         </button>
@@ -615,12 +619,11 @@
                     <div class="bg-gray-50 dark:bg-gray-700 px-4 py-3 sm:px-6 sm:flex"
                         :class="document.documentElement.dir === 'rtl' ? 'sm:flex-row' : 'sm:flex-row-reverse'">
                         <button type="submit"
-                            class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:w-auto sm:text-sm"
-                            :class="document.documentElement.dir === 'rtl' ? 'sm:mr-3' : 'sm:ml-3'">
+                            class="inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-sm font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
                             {{ __('Clone Theme') }}
                         </button>
                         <button type="button" wire:click="closeCloneModal"
-                            class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 dark:border-gray-600 shadow-sm px-4 py-2 bg-white dark:bg-gray-800 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:mt-0 sm:w-auto sm:text-sm"
+                            class="mt-3 inline-flex justify-center rounded-md border border-gray-300 dark:border-gray-600 shadow-sm px-4 py-2 bg-white dark:bg-gray-800 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:mt-0 sm:ml-3"
                             :class="document.documentElement.dir === 'rtl' ? 'sm:mr-3' : 'sm:ml-3'">
                             {{ __('Cancel') }}
                         </button>
