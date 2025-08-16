@@ -384,12 +384,31 @@
                             </h3>
                             <div class="mt-2">
                                 <p class="text-sm text-gray-500 dark:text-gray-400">
-                                    {{ __('Are you sure') }} {{ __('you want to delete the theme') }}
                                     @if ($themeToDelete)
-                                        <strong>"{{ $themeToDelete->name }}"</strong>
+                                        {{ __("Are you sure you want to delete the theme ':name'? This action cannot be undone.", ['name' => $themeToDelete->name]) }}
+                                    @else
+                                        {{ __('Are you sure you want to delete the theme? This action cannot be undone.') }}
                                     @endif
-                                    ? {{ __('This action cannot be undone') }}.
                                 </p>
+                                @if ($themeToDelete && $themeToDelete->pages()->count() > 0)
+                                    <div
+                                        class="mt-3 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md">
+                                        <div class="flex">
+                                            <div class="flex-shrink-0">
+                                                <x-heroicon-o-exclamation-triangle
+                                                    class="h-5 w-5 text-red-400 dark:text-red-300" />
+                                            </div>
+                                            <div class="ml-3">
+                                                <p class="text-sm text-red-700 dark:text-red-300">
+                                                    <strong>{{ __('Warning') }}:</strong> {{ __('This theme has') }}
+                                                    {{ $themeToDelete->pages()->count() }}
+                                                    {{ __('associated page(s)') }}.
+                                                    {{ __('All pages will be permanently deleted along with the theme') }}.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -445,11 +464,11 @@
                             </h3>
                             <div class="mt-2">
                                 <p class="text-sm text-gray-500 dark:text-gray-400">
-                                    {{ __('Are you sure') }} {{ __('you want to set') }}
                                     @if ($themeToSetDefault)
-                                        <strong>"{{ $themeToSetDefault->name }}"</strong>
+                                        {{ __("Are you sure you want to set ':name' as the default theme? This will be used automatically when no theme is selected.", ['name' => $themeToSetDefault->name]) }}
+                                    @else
+                                        {{ __('Are you sure you want to set this theme as the default theme? This will be used automatically when no theme is selected.') }}
                                     @endif
-                                    {{ __('as the default theme? This will be used automatically when no theme is selected.') }}
                                 </p>
                             </div>
                         </div>

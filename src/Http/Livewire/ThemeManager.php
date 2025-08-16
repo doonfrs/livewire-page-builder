@@ -2,6 +2,7 @@
 
 namespace Trinavo\LivewirePageBuilder\Http\Livewire;
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Livewire\Component;
@@ -177,17 +178,30 @@ class ThemeManager extends Component
     {
         $this->themeToDelete = Theme::find($themeId);
         if (! $this->themeToDelete) {
-            $this->dispatch('notify', message: 'Theme not found', type: 'error');
+            $this->dispatch('notify', message: __('Theme not found'), type: 'error');
 
             return;
         }
+
+        // Check if theme has pages and show appropriate warning
+        $pageCount = $this->themeToDelete->pages()->count();
+        if ($pageCount > 0) {
+            // For themes with many pages, show a more prominent warning
+            if ($pageCount > 10) {
+                $this->dispatch('notify',
+                    message: __('Warning: This theme has :count pages that will be permanently deleted!', ['count' => $pageCount]),
+                    type: 'warning'
+                );
+            }
+        }
+
         $this->showDeleteModal = true;
     }
 
     public function deleteTheme()
     {
         if (! $this->themeToDelete) {
-            $this->dispatch('notify', message: 'No theme selected for deletion', type: 'error');
+            $this->dispatch('notify', message: __('No theme selected for deletion'), type: 'error');
 
             return;
         }
@@ -196,11 +210,19 @@ class ThemeManager extends Component
             $themeName = $this->themeToDelete->name;
             $themeId = $this->themeToDelete->id;
 
-            // Check if theme has pages and inform user they will be orphaned
+            // Get the count of pages that will be deleted
             $pageCount = $this->themeToDelete->pages()->count();
 
-            // Delete the theme (foreign key constraint will set theme_id to null in pages)
-            $this->themeToDelete->delete();
+            // Use a transaction to ensure data consistency
+            DB::transaction(function () use ($pageCount) {
+                // Delete all associated pages first
+                if ($pageCount > 0) {
+                    $this->themeToDelete->pages()->delete();
+                }
+
+                // Delete the theme
+                $this->themeToDelete->delete();
+            });
 
             // Clear default if this was the one
             if ($this->defaultThemeId == $themeId) {
@@ -212,17 +234,24 @@ class ThemeManager extends Component
 
             if ($pageCount > 0) {
                 $this->dispatch('notify',
-                    message: "Theme '{$themeName}' deleted successfully. {$pageCount} page(s) are now unassigned to any theme.",
+                    message: __("Theme ':name' and :count associated page(s) deleted successfully.", ['name' => $themeName, 'count' => $pageCount]),
                     type: 'success'
                 );
             } else {
-                $this->dispatch('notify', message: "Theme '{$themeName}' deleted successfully", type: 'success');
+                $this->dispatch('notify', message: __("Theme ':name' deleted successfully", ['name' => $themeName]), type: 'success');
             }
 
             $this->closeDeleteModal();
 
         } catch (\Exception $e) {
-            $this->dispatch('notify', message: 'Error deleting theme: '.$e->getMessage(), type: 'error');
+            Log::error('Failed to delete theme', [
+                'theme_id' => $this->themeToDelete?->id,
+                'theme_name' => $this->themeToDelete?->name,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            $this->dispatch('notify', message: __('Error deleting theme: :message', ['message' => $e->getMessage()]), type: 'error');
             $this->closeDeleteModal();
         }
     }
@@ -240,7 +269,7 @@ class ThemeManager extends Component
         }])->find($themeId);
 
         if (! $theme) {
-            $this->dispatch('notify', message: 'Theme not found', type: 'error');
+            $this->dispatch('notify', message: __('Theme not found'), type: 'error');
 
             return;
         }
@@ -299,7 +328,7 @@ class ThemeManager extends Component
     {
         $this->themeToClone = Theme::find($themeId);
         if (! $this->themeToClone) {
-            $this->dispatch('notify', message: 'Theme not found', type: 'error');
+            $this->dispatch('notify', message: __('Theme not found'), type: 'error');
 
             return;
         }
@@ -319,7 +348,7 @@ class ThemeManager extends Component
     public function cloneTheme()
     {
         if (! $this->themeToClone) {
-            $this->dispatch('notify', message: 'No theme selected for cloning', type: 'error');
+            $this->dispatch('notify', message: __('No theme selected for cloning'), type: 'error');
 
             return;
         }
@@ -362,15 +391,18 @@ class ThemeManager extends Component
             $this->loadThemes();
             $this->closeCloneModal();
 
-            $message = "Theme '{$clonedTheme->name}' created successfully as a copy of '{$this->themeToClone->name}'";
+            $message = __("Theme ':name' created successfully as a copy of ':originalName'", [
+                'name' => $clonedTheme->name,
+                'originalName' => $this->themeToClone->name,
+            ]);
             if ($clonedPagesCount > 0) {
-                $message .= " with {$clonedPagesCount} page(s)";
+                $message .= ' '.__('with :count page(s)', ['count' => $clonedPagesCount]);
             }
 
             $this->dispatch('notify', message: $message, type: 'success');
 
         } catch (\Exception $e) {
-            $this->dispatch('notify', message: 'Clone failed: '.$e->getMessage(), type: 'error');
+            $this->dispatch('notify', message: __('Clone failed: :message', ['message' => $e->getMessage()]), type: 'error');
         }
     }
 
@@ -385,22 +417,22 @@ class ThemeManager extends Component
             $data = json_decode($content, true);
 
             if (! $data) {
-                throw new \Exception('Invalid JSON format');
+                throw new \Exception(__('Invalid JSON format'));
             }
 
             // Validate required fields
             if (! isset($data['name']) || ! isset($data['pages'])) {
-                throw new \Exception('Invalid theme file format');
+                throw new \Exception(__('Invalid theme file format'));
             }
 
             // Validate pages structure
             if (! is_array($data['pages'])) {
-                throw new \Exception('Invalid pages format in theme file');
+                throw new \Exception(__('Invalid pages format in theme file'));
             }
 
             foreach ($data['pages'] as $index => $pageData) {
                 if (! isset($pageData['key'])) {
-                    throw new \Exception("Invalid page data at index {$index}: missing key");
+                    throw new \Exception(__('Invalid page data at index :index: missing key', ['index' => $index]));
                 }
             }
 
@@ -461,13 +493,17 @@ class ThemeManager extends Component
             $this->closeImportModal();
 
             $this->dispatch('notify',
-                message: "Theme '{$theme->name}' imported successfully with {$importedPagesCount} pages (including {$pagesWithComponents} with components)",
+                message: __("Theme ':name' imported successfully with :count pages (including :componentsCount with components)", [
+                    'name' => $theme->name,
+                    'count' => $importedPagesCount,
+                    'componentsCount' => $pagesWithComponents,
+                ]),
                 type: 'success'
             );
 
         } catch (\Exception $e) {
             $this->dispatch('notify',
-                message: 'Import failed: '.$e->getMessage(),
+                message: __('Import failed: :message', ['message' => $e->getMessage()]),
                 type: 'error'
             );
         }
