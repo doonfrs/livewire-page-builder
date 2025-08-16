@@ -160,6 +160,9 @@ class ThemeManager extends Component
             'description' => 'nullable|string|max:1000',
         ]);
 
+        // Store the theme name before updating, so we can use it in the success message
+        $themeName = $this->editingTheme->name;
+
         $this->editingTheme->update([
             'name' => $this->name,
             'description' => $this->description,
@@ -167,7 +170,7 @@ class ThemeManager extends Component
 
         $this->loadThemes();
         $this->closeEditModal();
-        $this->dispatch('notify', message: "Theme '{$this->editingTheme->name}' updated successfully", type: 'success');
+        $this->dispatch('notify', message: "Theme '{$themeName}' updated successfully", type: 'success');
     }
 
     public function confirmDeleteTheme($themeId)
