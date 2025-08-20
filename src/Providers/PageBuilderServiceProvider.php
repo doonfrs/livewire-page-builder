@@ -19,6 +19,7 @@ use Trinavo\LivewirePageBuilder\Http\Livewire\RowBlock;
 use Trinavo\LivewirePageBuilder\Http\Livewire\ThemeManager;
 use Trinavo\LivewirePageBuilder\Services\LocalizationService;
 use Trinavo\LivewirePageBuilder\Services\PageBuilderService;
+use Trinavo\LivewirePageBuilder\Services\ThemeService;
 
 class PageBuilderServiceProvider extends ServiceProvider
 {
@@ -104,6 +105,14 @@ class PageBuilderServiceProvider extends ServiceProvider
         $this->app->singleton(Variables::class, function ($app) {
             return new Variables;
         });
+
+        // Register the ThemeService
+        $this->app->singleton(ThemeService::class, function ($app) {
+            return new ThemeService;
+        });
+
+        // Register the ThemeService facade
+        $this->app->alias(ThemeService::class, 'livewire-page-builder.theme-service');
 
         // Register middleware for handling language switching
         $this->app->singleton(\Trinavo\LivewirePageBuilder\Http\Middleware\LocalizationMiddleware::class);

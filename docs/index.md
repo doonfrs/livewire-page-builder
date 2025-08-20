@@ -10,6 +10,7 @@ Welcome to the documentation for the Livewire Page Builder package.
 - [Performance Optimization](performance-optimization.md)
 - [Multilingual Support](multilingual-support.md)
 - [Variables](variables.md)
+- [Theme Service Usage](theme-service-usage.md)
 
 ---
 
