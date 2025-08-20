@@ -9,6 +9,7 @@ use Livewire\Component;
 use Livewire\WithFileUploads;
 use Trinavo\LivewirePageBuilder\Models\Setting;
 use Trinavo\LivewirePageBuilder\Models\Theme;
+use Trinavo\LivewirePageBuilder\Services\ThemeService;
 
 class ThemeManager extends Component
 {
@@ -58,6 +59,14 @@ class ThemeManager extends Component
     {
         $this->loadThemes();
         $this->loadDefaultTheme();
+    }
+
+    /**
+     * Get the ThemeService instance from the container
+     */
+    private function getThemeService(): ThemeService
+    {
+        return app(ThemeService::class);
     }
 
     public function loadThemes()
@@ -266,45 +275,15 @@ class ThemeManager extends Component
 
     public function exportTheme($themeId)
     {
-        $theme = Theme::with(['pages' => function ($query) {
-            $query->select('id', 'key', 'components', 'theme_id', 'is_block', 'created_at', 'updated_at');
-        }])->find($themeId);
+        $exportData = $this->getThemeService()->exportTheme($themeId);
 
-        if (! $theme) {
+        if (! $exportData) {
             $this->dispatch('notify', message: __('Theme not found'), type: 'error');
 
             return;
         }
 
-        $exportData = [
-            'name' => $theme->name,
-            'description' => $theme->description,
-            'pages' => $theme->pages->map(function ($page) {
-                return [
-                    'key' => $page->key,
-                    'components' => $page->components ?? [],
-                    'is_block' => $page->is_block ?? false,
-                    'created_at' => $page->created_at,
-                    'updated_at' => $page->updated_at,
-                ];
-            })->toArray(),
-            'exported_at' => now()->toISOString(),
-            'version' => '1.0',
-        ];
-
-        // Log export summary
-        $totalPages = count($exportData['pages']);
-        $pagesWithComponents = count(array_filter($exportData['pages'], function ($page) {
-            return ! empty($page['components']);
-        }));
-
-        Log::info('Theme export completed', [
-            'theme_name' => $theme->name,
-            'total_pages' => $totalPages,
-            'pages_with_components' => $pagesWithComponents,
-            'pages_without_components' => $totalPages - $pagesWithComponents,
-        ]);
-
+        $theme = Theme::find($themeId);
         $fileName = 'theme-'.Str::slug($theme->name).'-'.now()->format('Y-m-d-H-i-s').'.json';
 
         return response()->streamDownload(function () use ($exportData) {
@@ -368,34 +347,10 @@ class ThemeManager extends Component
         ]);
 
         try {
-            // Create the cloned theme
-            $clonedTheme = Theme::create([
-                'name' => $this->cloneName,
-                'description' => $this->themeToClone->description,
-            ]);
+            $clonedTheme = $this->getThemeService()->cloneTheme($this->themeToClone, $this->cloneName);
 
-            // Clone all pages associated with the original theme
-            $originalPages = $this->themeToClone->pages;
-            $clonedPagesCount = 0;
-
-            foreach ($originalPages as $page) {
-                // Ensure components is an array
-                $components = $page->components ?? [];
-                if (! is_array($components)) {
-                    Log::warning('Invalid components format for page during cloning', [
-                        'page_key' => $page->key,
-                        'components_type' => gettype($components),
-                        'components_value' => $components,
-                    ]);
-                    $components = [];
-                }
-
-                $clonedTheme->pages()->create([
-                    'key' => $page->key,
-                    'components' => $components,
-                    'is_block' => $page->is_block ?? false,
-                ]);
-                $clonedPagesCount++;
+            if (! $clonedTheme) {
+                throw new \Exception(__('Cloning failed'));
             }
 
             $this->loadThemes();
@@ -405,9 +360,6 @@ class ThemeManager extends Component
                 'name' => $clonedTheme->name,
                 'originalName' => $this->themeToClone->name,
             ]);
-            if ($clonedPagesCount > 0) {
-                $message .= ' '.__('with :count page(s)', ['count' => $clonedPagesCount]);
-            }
 
             $this->dispatch('notify', message: $message, type: 'success');
 
@@ -430,84 +382,17 @@ class ThemeManager extends Component
                 throw new \Exception(__('Invalid JSON format'));
             }
 
-            // Validate required fields
-            if (! isset($data['name']) || ! isset($data['pages'])) {
-                throw new \Exception(__('Invalid theme file format'));
+            $importedTheme = $this->getThemeService()->importTheme($data);
+
+            if (! $importedTheme) {
+                throw new \Exception(__('Import failed'));
             }
-
-            // Validate pages structure
-            if (! is_array($data['pages'])) {
-                throw new \Exception(__('Invalid pages format in theme file'));
-            }
-
-            foreach ($data['pages'] as $index => $pageData) {
-                if (! isset($pageData['key'])) {
-                    throw new \Exception(__('Invalid page data at index :index: missing key', ['index' => $index]));
-                }
-            }
-
-            // Check if theme name already exists
-            $existingTheme = Theme::where('name', $data['name'])->first();
-            if ($existingTheme) {
-                // Generate unique name
-                $originalName = $data['name'];
-                $counter = 1;
-                do {
-                    $data['name'] = $originalName.' ('.$counter.')';
-                    $counter++;
-                } while (Theme::where('name', $data['name'])->exists());
-            }
-
-            // Create theme
-            $theme = Theme::create([
-                'name' => $data['name'],
-                'description' => $data['description'] ?? '',
-            ]);
-
-            // Import pages
-            $importedPagesCount = 0;
-            $pagesWithComponents = 0;
-            foreach ($data['pages'] as $pageData) {
-                // Handle backward compatibility: check for both 'components' and 'content' fields
-                $components = $pageData['components'] ?? $pageData['content'] ?? [];
-
-                // Count pages with components
-                if (! empty($components)) {
-                    $pagesWithComponents++;
-                }
-
-                // Log the components data for debugging
-                Log::info('Importing page', [
-                    'page_key' => $pageData['key'],
-                    'has_components' => ! empty($components),
-                    'components_count' => count($components),
-                ]);
-
-                $theme->pages()->create([
-                    'key' => $pageData['key'],
-                    'components' => $components,
-                    'is_block' => $pageData['is_block'] ?? false,
-                ]);
-                $importedPagesCount++;
-            }
-
-            // Log summary
-            Log::info('Theme import completed', [
-                'theme_name' => $theme->name,
-                'total_pages' => $importedPagesCount,
-                'pages_with_components' => $pagesWithComponents,
-                'pages_without_components' => $importedPagesCount - $pagesWithComponents,
-            ]);
 
             $this->loadThemes();
             $this->closeImportModal();
 
             $this->dispatch('notify',
-                message: __("Theme ':name' imported successfully with :count pages (including :componentsCount with components)", [
-                    'name' => $theme->name,
-                    'count' => $importedPagesCount,
-                    'componentsCount' => $pagesWithComponents,
-                ]),
+                message: __("Theme ':name' imported successfully", ['name' => $importedTheme->name]),
                 type: 'success'
             );
 
