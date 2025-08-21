@@ -169,5 +169,15 @@
     "The selected file contains invalid page data. Please ensure it is a properly formatted theme file.": "The selected file contains invalid page data. Please ensure it is a properly formatted theme file.",
     "The selected file contains invalid page data. Some pages are missing required information.": "The selected file contains invalid page data. Some pages are missing required information.",
     "This encrypted file could not be imported. Please check your encryption configuration.": "This encrypted file could not be imported. Please check your encryption configuration.",
-    "The theme file could not be imported due to data format issues.": "The theme file could not be imported due to data format issues."
+    "The theme file could not be imported due to data format issues.": "The theme file could not be imported due to data format issues.",
+    "Theme ':name' imported successfully": "Theme ':name' imported successfully",
+    "Theme ':name' exported successfully": "Theme ':name' exported successfully",
+    "Theme exported successfully": "Theme exported successfully",
+    "Export completed": "Export completed",
+    "Theme ':name' has been exported": "Theme ':name' has been exported",
+    "Copy of": "Copy of",
+    "Clone failed": "Clone failed",
+    "Theme deleted successfully": "Theme deleted successfully",
+    "Theme created successfully": "Theme created successfully",
+    "Theme updated successfully": "Theme updated successfully"
 }

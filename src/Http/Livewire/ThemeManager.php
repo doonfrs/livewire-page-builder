@@ -259,21 +259,31 @@ class ThemeManager extends Component
     public function exportTheme($themeId)
     {
         $themeService = $this->getThemeService();
+        $theme = Theme::find($themeId);
+
+        if (!$theme) {
+            $this->dispatch('notify', message: __('Theme not found'), type: 'error');
+            return;
+        }
 
         // Check if encryption is enabled and use appropriate export method
         if ($themeService->isEncryptionEnabled()) {
             // Export with encryption (transparent to user)
             $encryptedData = $themeService->exportThemeAsEncryptedJson($themeId);
 
-            if (! $encryptedData) {
+            if (!$encryptedData) {
                 $this->dispatch('notify', message: __('Theme not found'), type: 'error');
-
                 return;
             }
 
-            $theme = Theme::find($themeId);
             $extension = $themeService->getEncryptionService()->getFileExtension();
             $fileName = 'theme-'.Str::slug($theme->name).'-'.now()->format('Y-m-d-H-i-s').$extension;
+
+            // Show success notification
+            $this->dispatch('notify', 
+                message: __('Theme \':name\' exported successfully', ['name' => $theme->name]), 
+                type: 'success'
+            );
 
             return response()->streamDownload(function () use ($encryptedData) {
                 echo $encryptedData;
@@ -284,14 +294,18 @@ class ThemeManager extends Component
             // Export without encryption (original behavior)
             $exportData = $themeService->exportTheme($themeId);
 
-            if (! $exportData) {
+            if (!$exportData) {
                 $this->dispatch('notify', message: __('Theme not found'), type: 'error');
-
                 return;
             }
 
-            $theme = Theme::find($themeId);
             $fileName = 'theme-'.Str::slug($theme->name).'-'.now()->format('Y-m-d-H-i-s').'.json';
+
+            // Show success notification
+            $this->dispatch('notify', 
+                message: __('Theme \':name\' exported successfully', ['name' => $theme->name]), 
+                type: 'success'
+            );
 
             return response()->streamDownload(function () use ($exportData) {
                 echo json_encode($exportData, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
@@ -331,7 +345,7 @@ class ThemeManager extends Component
         }
 
         // Pre-fill clone name with "Copy of {original name}"
-        $this->cloneName = 'Copy of '.$this->themeToClone->name;
+        $this->cloneName = __('Copy of').' '.$this->themeToClone->name;
         $this->showCloneModal = true;
     }
 
