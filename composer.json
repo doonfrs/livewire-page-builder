@@ -35,7 +35,8 @@
                 "Trinavo\\LivewirePageBuilder\\Providers\\PageBuilderServiceProvider"
             ],
             "aliases": {
-                "PageBuilderVariables": "Trinavo\\LivewirePageBuilder\\Facades\\PageBuilderVariables"
+                "PageBuilderVariables": "Trinavo\\LivewirePageBuilder\\Facades\\PageBuilderVariables",
+                "ThemeEncryptionService": "Trinavo\\LivewirePageBuilder\\Facades\\ThemeEncryptionService"
             }
         }
     },

@@ -24,6 +24,24 @@ return [
         'default_content_locale' => 'en',
     ],
 
+    // Theme Encryption Configuration
+    'encryption' => [
+        // Enable/disable theme encryption
+        'enabled' => env('PAGE_BUILDER_ENCRYPTION_ENABLED', false),
+
+        // Default encryption key (should be set in .env for production)
+        'key' => env('PAGE_BUILDER_ENCRYPTION_KEY', ''),
+
+        // Encryption algorithm (AES-256-CBC, AES-256-GCM, etc.)
+        'algorithm' => env('PAGE_BUILDER_ENCRYPTION_ALGORITHM', 'AES-256-CBC'),
+
+        // File extension for encrypted themes
+        'file_extension' => env('PAGE_BUILDER_ENCRYPTION_FILE_EXTENSION', '.tet'),
+
+        // Whether to require password for encrypted themes
+        'require_password' => env('PAGE_BUILDER_ENCRYPTION_REQUIRE_PASSWORD', true),
+    ],
+
     'blocks' => [
         // MainMenu::class,
     ],

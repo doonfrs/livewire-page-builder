@@ -19,6 +19,7 @@ use Trinavo\LivewirePageBuilder\Http\Livewire\RowBlock;
 use Trinavo\LivewirePageBuilder\Http\Livewire\ThemeManager;
 use Trinavo\LivewirePageBuilder\Services\LocalizationService;
 use Trinavo\LivewirePageBuilder\Services\PageBuilderService;
+use Trinavo\LivewirePageBuilder\Services\ThemeEncryptionService;
 use Trinavo\LivewirePageBuilder\Services\ThemeService;
 
 class PageBuilderServiceProvider extends ServiceProvider
@@ -106,13 +107,21 @@ class PageBuilderServiceProvider extends ServiceProvider
             return new Variables;
         });
 
-        // Register the ThemeService
+        // Register the ThemeEncryptionService
+        $this->app->singleton(ThemeEncryptionService::class, function ($app) {
+            return new ThemeEncryptionService;
+        });
+
+        // Register the ThemeService with encryption service dependency
         $this->app->singleton(ThemeService::class, function ($app) {
-            return new ThemeService;
+            return new ThemeService($app->make(ThemeEncryptionService::class));
         });
 
         // Register the ThemeService facade
         $this->app->alias(ThemeService::class, 'livewire-page-builder.theme-service');
+
+        // Register the ThemeEncryptionService facade
+        $this->app->alias(ThemeEncryptionService::class, 'livewire-page-builder.theme-encryption-service');
 
         // Register middleware for handling language switching
         $this->app->singleton(\Trinavo\LivewirePageBuilder\Http\Middleware\LocalizationMiddleware::class);

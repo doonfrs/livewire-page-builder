@@ -157,7 +157,7 @@
                                         @else
                                             <div></div>
                                         @endif
-                                        <button wire:click="confirmDeleteTheme({{ $theme['id'] }})"
+                                        <button wire:click="openDeleteModal({{ $theme['id'] }})"
                                             class="inline-flex items-center justify-center px-3 py-1.5 bg-red-100 dark:bg-red-900/30 hover:bg-red-200 dark:hover:bg-red-900/50 text-red-700 dark:text-red-400 text-sm font-medium rounded-lg transition-all duration-150">
                                             <x-heroicon-o-trash class="w-4 h-4 mr-1 ml-1" />
                                             {{ __('Delete') }}
@@ -523,13 +523,13 @@
                                 </h3>
                                 <div class="mt-4">
                                     <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">
-                                        {{ __('Select a theme JSON file to import. The theme will be created with all its pages.') }}
+                                        {{ __('Select a theme file to import.') }}
                                     </p>
                                     <div>
                                         <label for="importFile"
                                             class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{{ __('Theme File') }}</label>
-                                        <input type="file" wire:model="importFile" id="importFile" accept=".json"
-                                            class="block w-full text-sm text-gray-500 dark:text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-pink-50 file:text-pink-700 hover:file:bg-pink-100 dark:file:bg-pink-900/30 dark:file:text-pink-400 dark:hover:file:bg-pink-900/50">
+                                        <input type="file" wire:model="importFile" id="importFile"
+                                            class="block w-full text-sm text-gray-500 dark:text-gray-400 file:mr-4 file:py-2 file:px-4 file:border-0 file:text-sm file:font-medium file:bg-pink-50 file:text-pink-700 hover:file:bg-pink-100 dark:file:bg-pink-900/30 dark:file:text-pink-400 dark:hover:file:bg-pink-900/50">
                                         @error('importFile')
                                             <span class="text-red-500 text-xs mt-1">{{ $message }}</span>
                                         @enderror
