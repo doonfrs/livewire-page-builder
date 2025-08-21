@@ -197,6 +197,24 @@ echo "- Regular JSON: {\"name\":\"Theme\",\"pages\":[...]}\n";
 echo "- Encrypted: {\"encrypted\":true,\"version\":\"1.0\",\"data\":\"...\"}\n";
 echo "\nNote: File input no longer restricts file types - users can select any file.\n";
 echo "Content validation happens after file selection.\n";
+echo "Security: Encrypted files no longer reveal the encryption algorithm used.\n";
+echo "The system directly uses the configured encryption method for all operations.\n";
+
+// Example 12: Import behavior regardless of encryption setting
+echo "\n=== Example 12: Import Behavior Regardless of Encryption Setting ===\n";
+
+echo "Important: Encryption setting only affects EXPORTS, not IMPORTS!\n";
+echo "\nExport behavior:\n";
+echo "- Encryption enabled: New themes are encrypted when exported\n";
+echo "- Encryption disabled: New themes are exported as plain JSON\n";
+echo "\nImport behavior (always works):\n";
+echo "- Encrypted files: Can always be imported and decrypted\n";
+echo "- Plain JSON files: Can always be imported normally\n";
+echo "- Key requirement: Decryption still needs the correct encryption key\n";
+echo "\nThis allows you to:\n";
+echo "- Disable encryption for new exports (e.g., during development)\n";
+echo "- Still import encrypted files created when encryption was enabled\n";
+echo "- Maintain compatibility with existing encrypted themes\n";
 
 echo "\n=== Examples Completed ===\n";
 echo "The encryption works automatically in the background!\n";

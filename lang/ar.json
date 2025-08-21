@@ -157,5 +157,16 @@
     "Are you sure you want to set ':name' as the default theme? This will be used automatically when no theme is selected.": "هل أنت متأكد من أنك تريد تعيين المظهر ':name' كالمظهر الافتراضي؟ سيتم استخدامه تلقائياً عندما لا يتم تحديد مظهر.",
     "Are you sure you want to delete the theme? This action cannot be undone.": "هل أنت متأكد من أنك تريد حذف المظهر؟ لا يمكن التراجع عن هذا الإجراء.",
     "Are you sure you want to set this theme as the default theme? This will be used automatically when no theme is selected.": "هل أنت متأكد من أنك تريد تعيين هذا المظهر كالمظهر الافتراضي؟ سيتم استخدامه تلقائياً عندما لا يتم تحديد مظهر.",
-    "Select a theme file to import.": "اختر ملف مظهر لاستيراده."
+    "Select a theme file to import.": "اختر ملف مظهر لاستيراده.",
+    "This file is encrypted but no encryption key is configured. Please contact your administrator to set up the encryption key.": "هذا الملف مشفر ولكن لم يتم تكوين مفتاح التشفير. يرجى الاتصال بالمسؤول لإعداد مفتاح التشفير.",
+    "This file is encrypted but cannot be decrypted. The encryption key may be incorrect or the file may be corrupted.": "هذا الملف مشفر ولكن لا يمكن فك تشفيره. قد يكون مفتاح التشفير غير صحيح أو قد يكون الملف تالفاً.",
+    "This file appears to be encrypted but has an invalid format. It may be corrupted or created with a different version.": "يبدو أن هذا الملف مشفر ولكن له تنسيق غير صالح. قد يكون تالفاً أو تم إنشاؤه بإصدار مختلف.",
+    "The selected file does not contain valid JSON data. Please select a valid theme file.": "الملف المحدد لا يحتوي على بيانات JSON صالحة. يرجى تحديد ملف مظهر صالح.",
+    "This file could not be found. Please ensure the file exists and try again.": "تعذر العثور على هذا الملف. يرجى التأكد من وجود الملف والمحاولة مرة أخرى.",
+    "Unable to read the selected file. Please ensure the file is not corrupted and try again.": "تعذر قراءة الملف المحدد. يرجى التأكد من أن الملف غير تالف والمحاولة مرة أخرى.",
+    "The selected file does not appear to be a valid theme file. It is missing required fields (name or pages).": "الملف المحدد لا يبدو أنه ملف مظهر صالح. ينقصه الحقول المطلوبة (الاسم أو الصفحات).",
+    "The selected file contains invalid page data. Please ensure it is a properly formatted theme file.": "الملف المحدد يحتوي على بيانات صفحة غير صالحة. يرجى التأكد من أنه ملف مظهر منسق بشكل صحيح.",
+    "The selected file contains invalid page data. Some pages are missing required information.": "الملف المحدد يحتوي على بيانات صفحة غير صالحة. بعض الصفحات تنقصها المعلومات المطلوبة.",
+    "This encrypted file could not be imported. Please check your encryption configuration.": "تعذر استيراد هذا الملف المشفر. يرجى التحقق من إعدادات التشفير الخاصة بك.",
+    "The theme file could not be imported due to data format issues.": "تعذر استيراد ملف المظهر بسبب مشاكل في تنسيق البيانات."
 }
