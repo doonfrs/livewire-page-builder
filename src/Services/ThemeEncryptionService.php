@@ -118,11 +118,21 @@ class ThemeEncryptionService
     }
 
     /**
-     * Get current encryption key
+     * Check if encryption is properly configured
      */
-    public function getEncryptionKey(): string
+    public function isEncryptionConfigured(): bool
     {
-        return static::$cache['key'];
+        return static::$cache['enabled'] &&
+               ! empty(static::$cache['key']) &&
+               ! empty(static::$cache['algorithm']);
+    }
+
+    /**
+     * Get the current encryption key
+     */
+    public function getEncryptionKey(): ?string
+    {
+        return static::$cache['key'] ?: null;
     }
 
     /**
@@ -168,11 +178,10 @@ class ThemeEncryptionService
                 throw new \Exception('No encryption key provided');
             }
 
-            // Create encrypted theme structure
+            // Create encrypted theme structure (without revealing algorithm details)
             $encryptedTheme = [
                 'encrypted' => true,
                 'version' => '1.0',
-                'algorithm' => static::$cache['algorithm'],
                 'encrypted_at' => now()->toISOString(),
                 'data' => $this->encryptData($themeData, $encryptionKey),
             ];
@@ -180,10 +189,7 @@ class ThemeEncryptionService
             return json_encode($encryptedTheme, JSON_UNESCAPED_UNICODE);
 
         } catch (\Exception $e) {
-            Log::error('Theme encryption failed', [
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
-            ]);
+            report($e);
 
             return null;
         }
@@ -194,41 +200,32 @@ class ThemeEncryptionService
      */
     public function decryptThemeData(string $encryptedData, ?string $password = null): ?array
     {
-        if (! $this->isEncryptionEnabled()) {
-            Log::warning('Theme decryption attempted but not enabled');
-
-            return null;
-        }
-
         try {
             // Parse encrypted theme structure
             $encryptedTheme = json_decode($encryptedData, true);
 
             if (! $encryptedTheme || ! isset($encryptedTheme['encrypted']) || ! $encryptedTheme['encrypted']) {
-                throw new \Exception('Invalid encrypted theme format');
+                throw new \Exception('Invalid encrypted theme format. The file does not appear to be a properly encrypted theme.');
             }
 
             // Use provided password or fallback to configured key
             $encryptionKey = $password ?: static::$cache['key'];
 
             if (empty($encryptionKey)) {
-                throw new \Exception('No encryption key provided');
+                throw new \Exception('No encryption key provided. Please configure the encryption key in your settings or provide a password.');
             }
 
-            // Decrypt the theme data
+            // Decrypt using the configured algorithm
             $decryptedData = $this->decryptData($encryptedTheme['data'], $encryptionKey);
 
             if (! $decryptedData) {
-                throw new \Exception('Failed to decrypt theme data');
+                throw new \Exception('Failed to decrypt theme data. The encryption key may be incorrect or the file may be corrupted.');
             }
 
             return $decryptedData;
 
         } catch (\Exception $e) {
-            Log::error('Theme decryption failed', [
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
-            ]);
+            report($e);
 
             return null;
         }
@@ -239,13 +236,9 @@ class ThemeEncryptionService
      */
     public function isEncrypted(string $data): bool
     {
-        try {
-            $parsed = json_decode($data, true);
+        $parsed = json_decode($data, true);
 
-            return $parsed && isset($parsed['encrypted']) && $parsed['encrypted'] === true;
-        } catch (\Exception $e) {
-            return false;
-        }
+        return $parsed && isset($parsed['encrypted']) && $parsed['encrypted'] === true;
     }
 
     /**
@@ -281,7 +274,7 @@ class ThemeEncryptionService
             return json_decode($decrypted, true);
 
         } catch (\Exception $e) {
-            Log::error('Data decryption failed', ['error' => $e->getMessage()]);
+            report($e);
 
             return null;
         }
@@ -361,12 +354,10 @@ class ThemeEncryptionService
      */
     public function validateEncryptionKey(string $key): bool
     {
-        try {
-            $decoded = base64_decode($key, true);
 
-            return $decoded !== false && strlen($decoded) === 32;
-        } catch (\Exception $e) {
-            return false;
-        }
+        $decoded = base64_decode($key, true);
+
+        return $decoded !== false && strlen($decoded) === 32;
+
     }
 }

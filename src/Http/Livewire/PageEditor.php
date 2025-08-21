@@ -554,6 +554,7 @@ class PageEditor extends Component
                 }
             }
         } catch (\Exception $e) {
+            report($e);
             $this->dispatch(
                 'notify',
                 message: 'Failed to paste: '.$e->getMessage(),

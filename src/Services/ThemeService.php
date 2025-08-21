@@ -229,94 +229,85 @@ class ThemeService
      */
     public function importTheme(array $data, bool $overwriteExisting = false): ?Theme
     {
-        try {
-            // Validate required fields
-            if (! isset($data['name']) || ! isset($data['pages'])) {
-                throw new \Exception('Invalid theme file format: missing required fields');
-            }
-
-            // Validate pages structure
-            if (! is_array($data['pages'])) {
-                throw new \Exception('Invalid pages format in theme file');
-            }
-
-            foreach ($data['pages'] as $index => $pageData) {
-                if (! isset($pageData['key'])) {
-                    throw new \Exception("Invalid page data at index {$index}: missing key");
-                }
-            }
-
-            // Check if theme name already exists
-            $existingTheme = Theme::where('name', $data['name'])->first();
-
-            if ($existingTheme) {
-                if ($overwriteExisting) {
-                    // Delete existing theme and all its pages
-                    $existingTheme->pages()->delete();
-                    $existingTheme->delete();
-                } else {
-                    // Generate unique name
-                    $originalName = $data['name'];
-                    $counter = 1;
-                    do {
-                        $data['name'] = $originalName.' ('.$counter.')';
-                        $counter++;
-                    } while (Theme::where('name', $data['name'])->exists());
-                }
-            }
-
-            // Create theme
-            $theme = Theme::create([
-                'name' => $data['name'],
-                'description' => $data['description'] ?? '',
-            ]);
-
-            // Import pages
-            $importedPagesCount = 0;
-            $pagesWithComponents = 0;
-
-            foreach ($data['pages'] as $pageData) {
-                // Handle backward compatibility: check for both 'components' and 'content' fields
-                $components = $pageData['components'] ?? $pageData['content'] ?? [];
-
-                // Count pages with components
-                if (! empty($components)) {
-                    $pagesWithComponents++;
-                }
-
-                // Log the components data for debugging
-                Log::info('Importing page', [
-                    'page_key' => $pageData['key'],
-                    'has_components' => ! empty($components),
-                    'components_count' => count($components),
-                ]);
-
-                $theme->pages()->create([
-                    'key' => $pageData['key'],
-                    'components' => $components,
-                    'is_block' => $pageData['is_block'] ?? false,
-                ]);
-                $importedPagesCount++;
-            }
-
-            // Log summary
-            Log::info('Theme import completed', [
-                'theme_name' => $theme->name,
-                'total_pages' => $importedPagesCount,
-                'pages_with_components' => $pagesWithComponents,
-                'pages_without_components' => $importedPagesCount - $pagesWithComponents,
-            ]);
-
-            return $theme;
-
-        } catch (\Exception $e) {
-            Log::error('Theme import failed', [
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
-            ]);
-
-            return null;
+        // Validate required fields
+        if (! isset($data['name']) || ! isset($data['pages'])) {
+            throw new \Exception('Invalid theme file format: missing required fields');
         }
+
+        // Validate pages structure
+        if (! is_array($data['pages'])) {
+            throw new \Exception('Invalid pages format in theme file');
+        }
+
+        foreach ($data['pages'] as $index => $pageData) {
+            if (! isset($pageData['key'])) {
+                throw new \Exception("Invalid page data at index {$index}: missing key");
+            }
+        }
+
+        // Check if theme name already exists
+        $existingTheme = Theme::where('name', $data['name'])->first();
+
+        if ($existingTheme) {
+            if ($overwriteExisting) {
+                // Delete existing theme and all its pages
+                $existingTheme->pages()->delete();
+                $existingTheme->delete();
+            } else {
+                // Generate unique name
+                $originalName = $data['name'];
+                $counter = 1;
+                do {
+                    $data['name'] = $originalName.' ('.$counter.')';
+                    $counter++;
+                } while (Theme::where('name', $data['name'])->exists());
+            }
+        }
+
+        // Create theme
+        $theme = Theme::create([
+            'name' => $data['name'],
+            'description' => $data['description'] ?? '',
+        ]);
+
+        // Import pages
+        $importedPagesCount = 0;
+        $pagesWithComponents = 0;
+
+        foreach ($data['pages'] as $pageData) {
+            // Handle backward compatibility: check for both 'components' and 'content' fields
+            $components = $pageData['components'] ?? $pageData['content'] ?? [];
+
+            // Count pages with components
+            if (! empty($components)) {
+                $pagesWithComponents++;
+            }
+
+            // Log the components data for debugging
+            Log::info('Importing page', [
+                'page_key' => $pageData['key'],
+                'has_components' => ! empty($components),
+                'components_count' => count($components),
+            ]);
+
+            $theme->pages()->create([
+                'key' => $pageData['key'],
+                'components' => $components,
+                'is_block' => $pageData['is_block'] ?? false,
+            ]);
+            $importedPagesCount++;
+        }
+
+        // Log summary
+        Log::info('Theme import completed', [
+            'theme_name' => $theme->name,
+            'total_pages' => $importedPagesCount,
+            'pages_with_components' => $pagesWithComponents,
+            'pages_without_components' => $importedPagesCount - $pagesWithComponents,
+        ]);
+
+        return $theme;
+
     }
 
     /**
@@ -329,31 +320,20 @@ class ThemeService
      */
     public function importEncryptedTheme(string $encryptedData, bool $overwriteExisting = false, ?string $password = null): ?Theme
     {
-        if (! $this->encryptionService->isEncryptionEnabled()) {
-            Log::warning('Theme decryption import attempted but encryption is not enabled');
+        // Decrypt the theme data (encryption setting doesn't affect ability to decrypt)
+        $themeData = $this->encryptionService->decryptThemeData($encryptedData, $password);
 
-            return null;
-        }
-
-        try {
-            // Decrypt the theme data
-            $themeData = $this->encryptionService->decryptThemeData($encryptedData, $password);
-
-            if (! $themeData) {
-                throw new \Exception('Failed to decrypt theme data');
+        if (! $themeData) {
+            // Check if the issue is with the encryption key
+            if (empty($password) && empty($this->encryptionService->getEncryptionKey())) {
+                throw new \Exception('No encryption key provided. Please configure the encryption key in your settings or provide a password.');
             }
 
-            // Import the decrypted theme
-            return $this->importTheme($themeData, $overwriteExisting);
-
-        } catch (\Exception $e) {
-            Log::error('Encrypted theme import failed', [
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
-            ]);
-
-            return null;
+            throw new \Exception('Failed to decrypt theme data. The encryption key may be incorrect or the file may be corrupted.');
         }
+
+        // Import the decrypted theme
+        return $this->importTheme($themeData, $overwriteExisting);
     }
 
     /**
@@ -365,37 +345,38 @@ class ThemeService
      */
     public function importThemeFromFile(string $filePath, bool $overwriteExisting = false): ?Theme
     {
-        try {
-            if (! file_exists($filePath)) {
-                throw new \Exception("File not found: {$filePath}");
-            }
+        if (! file_exists($filePath)) {
+            throw new \Exception("File not found: {$filePath}");
+        }
 
-            $content = file_get_contents($filePath);
-            if ($content === false) {
-                throw new \Exception("Failed to read file: {$filePath}");
-            }
+        $content = file_get_contents($filePath);
+        if ($content === false) {
+            throw new \Exception("Failed to read file: {$filePath}");
+        }
 
-            // Check if the file is encrypted
-            if ($this->encryptionService->isEncrypted($content)) {
-                Log::info('Detected encrypted theme file, attempting decryption');
+        // Check if the file is encrypted
+        if ($this->encryptionService->isEncrypted($content)) {
+            Log::info('Detected encrypted theme file, attempting decryption');
 
+            try {
                 return $this->importEncryptedTheme($content, $overwriteExisting);
+            } catch (\Exception $e) {
+                // Re-throw with more context
+                throw new \Exception('Failed to import encrypted theme: '.$e->getMessage());
             }
+        }
 
-            $data = json_decode($content, true);
-            if (! $data) {
-                throw new \Exception('Invalid JSON format');
-            }
+        $data = json_decode($content, true);
+        if (! $data) {
+            $jsonError = json_last_error_msg();
+            throw new \Exception("Invalid JSON format: {$jsonError}");
+        }
 
+        try {
             return $this->importTheme($data, $overwriteExisting);
-
         } catch (\Exception $e) {
-            Log::error('Theme import from file failed', [
-                'file_path' => $filePath,
-                'error' => $e->getMessage(),
-            ]);
-
-            return null;
+            // Re-throw with more context
+            throw new \Exception('Failed to import theme data: '.$e->getMessage());
         }
     }
 
@@ -409,32 +390,17 @@ class ThemeService
      */
     public function importThemeFromEncryptedFile(string $filePath, bool $overwriteExisting = false, ?string $password = null): ?Theme
     {
-        if (! $this->encryptionService->isEncryptionEnabled()) {
-            Log::warning('Theme decryption import attempted but encryption is not enabled');
-
-            return null;
+        if (! file_exists($filePath)) {
+            throw new \Exception("File not found: {$filePath}");
         }
 
-        try {
-            if (! file_exists($filePath)) {
-                throw new \Exception("File not found: {$filePath}");
-            }
-
-            $content = file_get_contents($filePath);
-            if ($content === false) {
-                throw new \Exception("Failed to read file: {$filePath}");
-            }
-
-            return $this->importEncryptedTheme($content, $overwriteExisting, $password);
-
-        } catch (\Exception $e) {
-            Log::error('Encrypted theme import from file failed', [
-                'file_path' => $filePath,
-                'error' => $e->getMessage(),
-            ]);
-
-            return null;
+        $content = file_get_contents($filePath);
+        if ($content === false) {
+            throw new \Exception("Failed to read file: {$filePath}");
         }
+
+        return $this->importEncryptedTheme($content, $overwriteExisting, $password);
+
     }
 
     /**
@@ -446,52 +412,42 @@ class ThemeService
      */
     public function cloneTheme(int|Theme $theme, string $newName): ?Theme
     {
-        try {
-            $themeModel = $theme instanceof Theme ? $theme : Theme::find($theme);
+        $themeModel = $theme instanceof Theme ? $theme : Theme::find($theme);
 
-            if (! $themeModel) {
-                throw new \Exception('Theme not found');
-            }
-
-            // Check if new name already exists
-            if (Theme::where('name', $newName)->exists()) {
-                throw new \Exception("Theme with name '{$newName}' already exists");
-            }
-
-            // Create new theme
-            $clonedTheme = Theme::create([
-                'name' => $newName,
-                'description' => $themeModel->description,
-            ]);
-
-            // Clone all pages
-            $clonedPagesCount = 0;
-            foreach ($themeModel->pages as $page) {
-                $clonedTheme->pages()->create([
-                    'key' => $page->key,
-                    'components' => $page->components,
-                    'is_block' => $page->is_block,
-                ]);
-                $clonedPagesCount++;
-            }
-
-            Log::info('Theme cloned successfully', [
-                'original_theme' => $themeModel->name,
-                'cloned_theme' => $newName,
-                'pages_cloned' => $clonedPagesCount,
-            ]);
-
-            return $clonedTheme;
-
-        } catch (\Exception $e) {
-            Log::error('Theme cloning failed', [
-                'theme_id' => $theme instanceof Theme ? $theme->id : $theme,
-                'new_name' => $newName,
-                'error' => $e->getMessage(),
-            ]);
-
-            return null;
+        if (! $themeModel) {
+            throw new \Exception('Theme not found');
         }
+
+        // Check if new name already exists
+        if (Theme::where('name', $newName)->exists()) {
+            throw new \Exception("Theme with name '{$newName}' already exists");
+        }
+
+        // Create new theme
+        $clonedTheme = Theme::create([
+            'name' => $newName,
+            'description' => $themeModel->description,
+        ]);
+
+        // Clone all pages
+        $clonedPagesCount = 0;
+        foreach ($themeModel->pages as $page) {
+            $clonedTheme->pages()->create([
+                'key' => $page->key,
+                'components' => $page->components,
+                'is_block' => $page->is_block,
+            ]);
+            $clonedPagesCount++;
+        }
+
+        Log::info('Theme cloned successfully', [
+            'original_theme' => $themeModel->name,
+            'cloned_theme' => $newName,
+            'pages_cloned' => $clonedPagesCount,
+        ]);
+
+        return $clonedTheme;
+
     }
 
     /**

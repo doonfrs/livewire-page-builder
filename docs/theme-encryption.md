@@ -28,6 +28,12 @@ The Livewire Page Builder package now supports encrypted theme exports and impor
 - **Detection**: Import automatically detects encrypted vs. regular files
 - **Control**: Full programmatic control over encryption behavior
 
+### Important Notes
+
+- **Encryption setting only affects exports**: When disabled, new themes are exported as plain JSON
+- **Encrypted files can always be imported**: Even when encryption is disabled, encrypted files can still be imported and decrypted
+- **Key requirement**: Decryption still requires the correct encryption key (from config or provided password)
+
 ## Configuration
 
 ### Environment Variables
@@ -258,17 +264,18 @@ $theme = ThemeService::importThemeFromEncryptedFile($filePath);
 
 ## Encrypted File Format
 
-Encrypted theme files have a special JSON structure:
+Encrypted theme files have a secure JSON structure that doesn't reveal encryption details:
 
 ```json
 {
     "encrypted": true,
     "version": "1.0",
-    "algorithm": "AES-256-CBC",
     "encrypted_at": "2024-01-15T10:30:00.000000Z",
     "data": "base64_encoded_encrypted_data_here"
 }
 ```
+
+**Security Note**: The encryption algorithm is not included in the encrypted file to prevent information disclosure. The system uses the configured algorithm from the configuration for decryption.
 
 ## Security Considerations
 
@@ -289,6 +296,14 @@ Encrypted theme files have a special JSON structure:
 
 - **AES-256-CBC**: Good for compatibility, requires proper IV handling
 - **AES-256-GCM**: Better security with authenticated encryption
+
+### Information Disclosure Prevention
+
+- **No algorithm details**: Encrypted files don't reveal which encryption algorithm was used
+- **No system information**: Files don't contain details about the encryption system
+- **Minimal metadata**: Only essential information (encrypted flag, version, timestamp) is stored
+- **Configuration-based**: System uses configured encryption method, not stored algorithm
+- **Clean implementation**: No backward compatibility complexity
 
 ## Error Handling
 
@@ -466,3 +481,23 @@ If you're upgrading from a previous version:
 6. **Regular security audits** of encryption implementation
 7. **Keep encryption transparent** to end users
 8. **Use environment-specific keys** for different deployments
+
+## Export vs Import Behavior
+
+### Export Behavior (Controlled by Encryption Setting)
+- **Encryption enabled**: Themes are automatically encrypted when exported
+- **Encryption disabled**: Themes are exported as plain JSON files
+- **File extension**: Automatically changes based on encryption status
+
+### Import Behavior (Always Works)
+- **Encrypted files**: Can always be imported and decrypted (regardless of encryption setting)
+- **Plain JSON files**: Can always be imported normally
+- **Key requirement**: Decryption requires the correct encryption key
+- **Automatic detection**: System automatically detects file type and handles accordingly
+
+### Why This Design?
+This design allows you to:
+- **Disable encryption** for new exports (e.g., during development)
+- **Still import** encrypted files that were created when encryption was enabled
+- **Maintain compatibility** with existing encrypted themes
+- **Control encryption** for new themes without losing access to old ones

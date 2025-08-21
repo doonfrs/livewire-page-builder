@@ -2,7 +2,6 @@
 
 namespace Trinavo\LivewirePageBuilder\Http\Livewire;
 
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -131,13 +130,9 @@ class ThemeManager extends Component
             $this->dispatch('notify', message: __('Theme created successfully'), type: 'success');
 
         } catch (\Exception $e) {
-            Log::error('Failed to create theme', [
-                'name' => $this->name,
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
-            ]);
+            report($e);
 
-            $this->dispatch('notify', message: __('Error creating theme: :message', ['message' => $e->getMessage()]), type: 'error');
+            $this->dispatch('notify', message: __('Error creating theme'), type: 'error');
         }
     }
 
@@ -164,14 +159,8 @@ class ThemeManager extends Component
             $this->dispatch('notify', message: __('Theme updated successfully'), type: 'success');
 
         } catch (\Exception $e) {
-            Log::error('Failed to update theme', [
-                'theme_id' => $this->editingTheme->id,
-                'name' => $this->name,
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
-            ]);
-
-            $this->dispatch('notify', message: __('Error updating theme: :message', ['message' => $e->getMessage()]), type: 'error');
+            report($e);
+            $this->dispatch('notify', message: __('Error updating theme'), type: 'error');
         }
     }
 
@@ -216,13 +205,8 @@ class ThemeManager extends Component
             $this->closeDefaultModal();
 
         } catch (\Exception $e) {
-            Log::error('Failed to set default theme', [
-                'theme_id' => $this->themeToSetDefault->id,
-                'theme_name' => $this->themeToSetDefault->name,
-                'error' => $e->getMessage(),
-            ]);
-
-            $this->dispatch('notify', message: __('Error setting default theme: :message', ['message' => $e->getMessage()]), type: 'error');
+            report($e);
+            $this->dispatch('notify', message: __('Error setting default theme'), type: 'error');
         }
     }
 
@@ -260,14 +244,8 @@ class ThemeManager extends Component
             $this->closeDeleteModal();
 
         } catch (\Exception $e) {
-            Log::error('Failed to delete theme', [
-                'theme_id' => $this->themeToDelete?->id,
-                'theme_name' => $this->themeToDelete?->name,
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
-            ]);
-
-            $this->dispatch('notify', message: __('Error deleting theme: :message', ['message' => $e->getMessage()]), type: 'error');
+            report($e);
+            $this->dispatch('notify', message: __('Error deleting theme'), type: 'error');
             $this->closeDeleteModal();
         }
     }
@@ -326,8 +304,8 @@ class ThemeManager extends Component
     public function openImportModal()
     {
         $this->showImportModal = true;
-        $this->importFile = null;
-        $this->isFileUploading = false;
+        $this->resetForm();
+        $this->resetValidation();
     }
 
     public function closeImportModal()
@@ -394,7 +372,8 @@ class ThemeManager extends Component
             $this->dispatch('notify', message: $message, type: 'success');
 
         } catch (\Exception $e) {
-            $this->dispatch('notify', message: __('Clone failed: :message', ['message' => $e->getMessage()]), type: 'error');
+            report($e);
+            $this->dispatch('notify', message: __('Clone failed'), type: 'error');
         }
     }
 
@@ -410,6 +389,29 @@ class ThemeManager extends Component
             $importedTheme = $this->getThemeService()->importThemeFromFile($this->importFile->getRealPath());
 
             if (! $importedTheme) {
+                // Check if the file content could be read
+                $content = file_get_contents($this->importFile->getRealPath());
+
+                if ($content === false) {
+                    throw new \Exception(__('Unable to read the selected file. Please ensure the file is not corrupted and try again.'));
+                }
+
+                // Check if it's an encrypted file
+                if ($this->getThemeService()->getEncryptionService()->isEncrypted($content)) {
+                    throw new \Exception(__('This file appears to be encrypted but cannot be decrypted. Please ensure you have the correct encryption key configured.'));
+                }
+
+                // Check if it's valid JSON
+                $decoded = json_decode($content, true);
+                if (json_last_error() !== JSON_ERROR_NONE) {
+                    throw new \Exception(__('The selected file does not contain valid JSON data. Please select a valid theme file.'));
+                }
+
+                // Check if it has the required structure
+                if (! isset($decoded['name']) || ! isset($decoded['pages'])) {
+                    throw new \Exception(__('The selected file does not appear to be a valid theme file. It is missing required fields (name or pages).'));
+                }
+
                 throw new \Exception(__('Import failed - the file does not appear to be a valid theme file'));
             }
 
@@ -422,8 +424,56 @@ class ThemeManager extends Component
             );
 
         } catch (\Exception $e) {
+            report($e);
+
+            // Provide user-friendly error messages
+            $errorMessage = $e->getMessage();
+
+            // Check for specific encryption-related errors (handle both prefixed and direct messages)
+            if (str_contains($errorMessage, 'No encryption key provided')) {
+                $errorMessage = __('This file is encrypted but no encryption key is configured. Please contact your administrator to set up the encryption key.');
+            } elseif (str_contains($errorMessage, 'Failed to decrypt')) {
+                $errorMessage = __('This file is encrypted but cannot be decrypted. The encryption key may be incorrect or the file may be corrupted.');
+            } elseif (str_contains($errorMessage, 'Invalid encrypted theme format')) {
+                $errorMessage = __('This file appears to be encrypted but has an invalid format. It may be corrupted or created with a different version.');
+            } elseif (str_contains($errorMessage, 'Invalid JSON format')) {
+                $errorMessage = __('The selected file does not contain valid JSON data. Please select a valid theme file.');
+            } elseif (str_contains($errorMessage, 'File not found')) {
+                $errorMessage = __('This file could not be found. Please ensure the file exists and try again.');
+            } elseif (str_contains($errorMessage, 'Failed to read file')) {
+                $errorMessage = __('Unable to read the selected file. Please ensure the file is not corrupted and try again.');
+            } elseif (str_contains($errorMessage, 'missing required fields')) {
+                $errorMessage = __('The selected file does not appear to be a valid theme file. It is missing required fields (name or pages).');
+            } elseif (str_contains($errorMessage, 'Invalid pages format')) {
+                $errorMessage = __('The selected file contains invalid page data. Please ensure it is a properly formatted theme file.');
+            } elseif (str_contains($errorMessage, 'missing key')) {
+                $errorMessage = __('The selected file contains invalid page data. Some pages are missing required information.');
+            } elseif (str_contains($errorMessage, 'Failed to import encrypted theme')) {
+                // Handle the prefixed error message
+                if (str_contains($errorMessage, 'No encryption key provided')) {
+                    $errorMessage = __('This file is encrypted but no encryption key is configured. Please contact your administrator to set up the encryption key.');
+                } elseif (str_contains($errorMessage, 'Failed to decrypt')) {
+                    $errorMessage = __('This file is encrypted but cannot be decrypted. The encryption key may be incorrect or the file may be corrupted.');
+                } elseif (str_contains($errorMessage, 'Invalid encrypted theme format')) {
+                    $errorMessage = __('This file appears to be encrypted but has an invalid format. It may be corrupted or created with a different version.');
+                } else {
+                    $errorMessage = __('This encrypted file could not be imported. Please check your encryption configuration.');
+                }
+            } elseif (str_contains($errorMessage, 'Failed to import theme data')) {
+                // Handle the prefixed error message for regular theme data
+                if (str_contains($errorMessage, 'Invalid theme file format')) {
+                    $errorMessage = __('The selected file does not appear to be a valid theme file. It is missing required fields (name or pages).');
+                } elseif (str_contains($errorMessage, 'Invalid pages format')) {
+                    $errorMessage = __('The selected file contains invalid page data. Please ensure it is a properly formatted theme file.');
+                } elseif (str_contains($errorMessage, 'missing key')) {
+                    $errorMessage = __('The selected file contains invalid page data. Some pages are missing required information.');
+                } else {
+                    $errorMessage = __('The theme file could not be imported due to data format issues.');
+                }
+            }
+
             $this->dispatch('notify',
-                message: __('Import failed: :message', ['message' => $e->getMessage()]),
+                message: $errorMessage,
                 type: 'error'
             );
         } finally {

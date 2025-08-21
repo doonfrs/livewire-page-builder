@@ -158,5 +158,16 @@
     "Are you sure you want to set ':name' as the default theme? This will be used automatically when no theme is selected.": "Are you sure you want to set ':name' as the default theme? This will be used automatically when no theme is selected.",
     "Are you sure you want to delete the theme? This action cannot be undone.": "Are you sure you want to delete the theme? This action cannot be undone.",
     "Are you sure you want to set this theme as the default theme? This will be used automatically when no theme is selected.": "Are you sure you want to set this theme as the default theme? This will be used automatically when no theme is selected.",
-    "Select a theme file to import.": "Select a theme file to import."
+    "Select a theme file to import.": "Select a theme file to import.",
+    "This file is encrypted but no encryption key is configured. Please contact your administrator to set up the encryption key.": "This file is encrypted but no encryption key is configured. Please contact your administrator to set up the encryption key.",
+    "This file is encrypted but cannot be decrypted. The encryption key may be incorrect or the file may be corrupted.": "This file is encrypted but cannot be decrypted. The encryption key may be incorrect or the file may be corrupted.",
+    "This file appears to be encrypted but has an invalid format. It may be corrupted or created with a different version.": "This file appears to be encrypted but has an invalid format. It may be corrupted or created with a different version.",
+    "The selected file does not contain valid JSON data. Please select a valid theme file.": "The selected file does not contain valid JSON data. Please select a valid theme file.",
+    "This file could not be found. Please ensure the file exists and try again.": "This file could not be found. Please ensure the file exists and try again.",
+    "Unable to read the selected file. Please ensure the file is not corrupted and try again.": "Unable to read the selected file. Please ensure the file is not corrupted and try again.",
+    "The selected file does not appear to be a valid theme file. It is missing required fields (name or pages).": "The selected file does not appear to be a valid theme file. It is missing required fields (name or pages).",
+    "The selected file contains invalid page data. Please ensure it is a properly formatted theme file.": "The selected file contains invalid page data. Please ensure it is a properly formatted theme file.",
+    "The selected file contains invalid page data. Some pages are missing required information.": "The selected file contains invalid page data. Some pages are missing required information.",
+    "This encrypted file could not be imported. Please check your encryption configuration.": "This encrypted file could not be imported. Please check your encryption configuration.",
+    "The theme file could not be imported due to data format issues.": "The theme file could not be imported due to data format issues."
 }
