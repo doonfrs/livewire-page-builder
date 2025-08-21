@@ -168,5 +168,15 @@
     "The selected file contains invalid page data. Please ensure it is a properly formatted theme file.": "الملف المحدد يحتوي على بيانات صفحة غير صالحة. يرجى التأكد من أنه ملف مظهر منسق بشكل صحيح.",
     "The selected file contains invalid page data. Some pages are missing required information.": "الملف المحدد يحتوي على بيانات صفحة غير صالحة. بعض الصفحات تنقصها المعلومات المطلوبة.",
     "This encrypted file could not be imported. Please check your encryption configuration.": "تعذر استيراد هذا الملف المشفر. يرجى التحقق من إعدادات التشفير الخاصة بك.",
-    "The theme file could not be imported due to data format issues.": "تعذر استيراد ملف المظهر بسبب مشاكل في تنسيق البيانات."
+    "The theme file could not be imported due to data format issues.": "تعذر استيراد ملف المظهر بسبب مشاكل في تنسيق البيانات.",
+    "Theme ':name' imported successfully": "تم استيراد المظهر ':name' بنجاح",
+    "Theme ':name' exported successfully": "تم تصدير المظهر ':name' بنجاح",
+    "Theme exported successfully": "تم تصدير المظهر بنجاح",
+    "Export completed": "اكتمل التصدير",
+    "Theme ':name' has been exported": "تم تصدير المظهر ':name'",
+    "Copy of": "نسخة من",
+    "Clone failed": "فشل النسخ",
+    "Theme deleted successfully": "تم حذف المظهر بنجاح",
+    "Theme created successfully": "تم إنشاء المظهر بنجاح",
+    "Theme updated successfully": "تم تحديث المظهر بنجاح"
 }

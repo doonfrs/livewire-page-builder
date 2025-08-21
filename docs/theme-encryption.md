@@ -485,18 +485,22 @@ If you're upgrading from a previous version:
 ## Export vs Import Behavior
 
 ### Export Behavior (Controlled by Encryption Setting)
+
 - **Encryption enabled**: Themes are automatically encrypted when exported
 - **Encryption disabled**: Themes are exported as plain JSON files
 - **File extension**: Automatically changes based on encryption status
 
 ### Import Behavior (Always Works)
+
 - **Encrypted files**: Can always be imported and decrypted (regardless of encryption setting)
 - **Plain JSON files**: Can always be imported normally
 - **Key requirement**: Decryption requires the correct encryption key
 - **Automatic detection**: System automatically detects file type and handles accordingly
 
 ### Why This Design?
+
 This design allows you to:
+
 - **Disable encryption** for new exports (e.g., during development)
 - **Still import** encrypted files that were created when encryption was enabled
 - **Maintain compatibility** with existing encrypted themes
