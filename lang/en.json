@@ -157,5 +157,6 @@
     "Are you sure you want to delete the theme ':name'? This action cannot be undone.": "Are you sure you want to delete the theme ':name'? This action cannot be undone.",
     "Are you sure you want to set ':name' as the default theme? This will be used automatically when no theme is selected.": "Are you sure you want to set ':name' as the default theme? This will be used automatically when no theme is selected.",
     "Are you sure you want to delete the theme? This action cannot be undone.": "Are you sure you want to delete the theme? This action cannot be undone.",
-    "Are you sure you want to set this theme as the default theme? This will be used automatically when no theme is selected.": "Are you sure you want to set this theme as the default theme? This will be used automatically when no theme is selected."
+    "Are you sure you want to set this theme as the default theme? This will be used automatically when no theme is selected.": "Are you sure you want to set this theme as the default theme? This will be used automatically when no theme is selected.",
+    "Select a theme file to import.": "Select a theme file to import."
 }

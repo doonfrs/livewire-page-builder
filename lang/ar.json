@@ -156,5 +156,6 @@
     "Are you sure you want to delete the theme ':name'? This action cannot be undone.": "هل أنت متأكد من أنك تريد حذف المظهر ':name'؟ لا يمكن التراجع عن هذا الإجراء.",
     "Are you sure you want to set ':name' as the default theme? This will be used automatically when no theme is selected.": "هل أنت متأكد من أنك تريد تعيين المظهر ':name' كالمظهر الافتراضي؟ سيتم استخدامه تلقائياً عندما لا يتم تحديد مظهر.",
     "Are you sure you want to delete the theme? This action cannot be undone.": "هل أنت متأكد من أنك تريد حذف المظهر؟ لا يمكن التراجع عن هذا الإجراء.",
-    "Are you sure you want to set this theme as the default theme? This will be used automatically when no theme is selected.": "هل أنت متأكد من أنك تريد تعيين هذا المظهر كالمظهر الافتراضي؟ سيتم استخدامه تلقائياً عندما لا يتم تحديد مظهر."
+    "Are you sure you want to set this theme as the default theme? This will be used automatically when no theme is selected.": "هل أنت متأكد من أنك تريد تعيين هذا المظهر كالمظهر الافتراضي؟ سيتم استخدامه تلقائياً عندما لا يتم تحديد مظهر.",
+    "Select a theme file to import.": "اختر ملف مظهر لاستيراده."
 }

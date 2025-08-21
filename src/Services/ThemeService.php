@@ -8,6 +8,16 @@ use Trinavo\LivewirePageBuilder\Models\Theme;
 
 class ThemeService
 {
+    protected ThemeEncryptionService $encryptionService;
+
+    /**
+     * Create a new theme service instance
+     */
+    public function __construct(ThemeEncryptionService $encryptionService)
+    {
+        $this->encryptionService = $encryptionService;
+    }
+
     /**
      * Export a theme to JSON format
      *
@@ -83,6 +93,36 @@ class ThemeService
             mkdir($directory, 0755, true);
         }
 
+        // If encryption is enabled, use encrypted extension and encrypt the content
+        if ($this->encryptionService->isEncryptionEnabled()) {
+            $extension = $this->encryptionService->getFileExtension();
+            $fileName = 'theme-'.Str::slug($themeModel->name).'-'.now()->format('Y-m-d-H-i-s').$extension;
+            $filePath = $directory.'/'.$fileName;
+
+            // Encrypt the theme data
+            $encryptedContent = $this->encryptionService->encryptThemeData($exportData);
+
+            if (! $encryptedContent) {
+                Log::error('Failed to encrypt theme data for export');
+
+                return null;
+            }
+
+            if (file_put_contents($filePath, $encryptedContent) === false) {
+                Log::error('Failed to write encrypted theme export file', ['file_path' => $filePath]);
+
+                return null;
+            }
+
+            Log::info('Encrypted theme exported to file', [
+                'file_path' => $filePath,
+                'algorithm' => $this->encryptionService->getEncryptionAlgorithm(),
+            ]);
+
+            return $filePath;
+        }
+
+        // Fall back to regular JSON export if encryption is disabled
         $fileName = 'theme-'.Str::slug($themeModel->name).'-'.now()->format('Y-m-d-H-i-s').'.json';
         $filePath = $directory.'/'.$fileName;
 
@@ -97,6 +137,87 @@ class ThemeService
         Log::info('Theme exported to file', ['file_path' => $filePath]);
 
         return $filePath;
+    }
+
+    /**
+     * Export a theme to encrypted file and return the file path
+     *
+     * @param  int|Theme  $theme  Theme ID or Theme model instance
+     * @param  string|null  $directory  Directory to save the file (defaults to storage/app/themes)
+     * @param  string|null  $password  Custom password for encryption (optional)
+     * @return string|null File path or null if export failed
+     */
+    public function exportThemeToEncryptedFile(int|Theme $theme, ?string $directory = null, ?string $password = null): ?string
+    {
+        if (! $this->encryptionService->isEncryptionEnabled()) {
+            Log::warning('Theme encryption export attempted but encryption is not enabled');
+
+            return null;
+        }
+
+        $exportData = $this->exportTheme($theme);
+
+        if (! $exportData) {
+            return null;
+        }
+
+        $themeModel = $theme instanceof Theme ? $theme : Theme::find($theme);
+        $directory = $directory ?: storage_path('app/themes');
+
+        // Create directory if it doesn't exist
+        if (! is_dir($directory)) {
+            mkdir($directory, 0755, true);
+        }
+
+        $extension = $this->encryptionService->getFileExtension();
+        $fileName = 'theme-'.Str::slug($themeModel->name).'-'.now()->format('Y-m-d-H-i-s').$extension;
+        $filePath = $directory.'/'.$fileName;
+
+        // Encrypt the theme data
+        $encryptedContent = $this->encryptionService->encryptThemeData($exportData, $password);
+
+        if (! $encryptedContent) {
+            Log::error('Failed to encrypt theme data for export');
+
+            return null;
+        }
+
+        if (file_put_contents($filePath, $encryptedContent) === false) {
+            Log::error('Failed to write encrypted theme export file', ['file_path' => $filePath]);
+
+            return null;
+        }
+
+        Log::info('Encrypted theme exported to file', [
+            'file_path' => $filePath,
+            'algorithm' => $this->encryptionService->getEncryptionAlgorithm(),
+        ]);
+
+        return $filePath;
+    }
+
+    /**
+     * Export a theme as encrypted JSON string
+     *
+     * @param  int|Theme  $theme  Theme ID or Theme model instance
+     * @param  string|null  $password  Custom password for encryption (optional)
+     * @return string|null Encrypted JSON string or null if export failed
+     */
+    public function exportThemeAsEncryptedJson(int|Theme $theme, ?string $password = null): ?string
+    {
+        if (! $this->encryptionService->isEncryptionEnabled()) {
+            Log::warning('Theme encryption export attempted but encryption is not enabled');
+
+            return null;
+        }
+
+        $exportData = $this->exportTheme($theme);
+
+        if (! $exportData) {
+            return null;
+        }
+
+        return $this->encryptionService->encryptThemeData($exportData, $password);
     }
 
     /**
@@ -199,6 +320,43 @@ class ThemeService
     }
 
     /**
+     * Import a theme from encrypted data
+     *
+     * @param  string  $encryptedData  Encrypted theme data
+     * @param  bool  $overwriteExisting  Whether to overwrite existing theme with same name
+     * @param  string|null  $password  Custom password for decryption (optional)
+     * @return Theme|null Imported theme or null if import failed
+     */
+    public function importEncryptedTheme(string $encryptedData, bool $overwriteExisting = false, ?string $password = null): ?Theme
+    {
+        if (! $this->encryptionService->isEncryptionEnabled()) {
+            Log::warning('Theme decryption import attempted but encryption is not enabled');
+
+            return null;
+        }
+
+        try {
+            // Decrypt the theme data
+            $themeData = $this->encryptionService->decryptThemeData($encryptedData, $password);
+
+            if (! $themeData) {
+                throw new \Exception('Failed to decrypt theme data');
+            }
+
+            // Import the decrypted theme
+            return $this->importTheme($themeData, $overwriteExisting);
+
+        } catch (\Exception $e) {
+            Log::error('Encrypted theme import failed', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            return null;
+        }
+    }
+
+    /**
      * Import a theme from JSON file
      *
      * @param  string  $filePath  Path to the JSON file
@@ -217,6 +375,13 @@ class ThemeService
                 throw new \Exception("Failed to read file: {$filePath}");
             }
 
+            // Check if the file is encrypted
+            if ($this->encryptionService->isEncrypted($content)) {
+                Log::info('Detected encrypted theme file, attempting decryption');
+
+                return $this->importEncryptedTheme($content, $overwriteExisting);
+            }
+
             $data = json_decode($content, true);
             if (! $data) {
                 throw new \Exception('Invalid JSON format');
@@ -226,6 +391,44 @@ class ThemeService
 
         } catch (\Exception $e) {
             Log::error('Theme import from file failed', [
+                'file_path' => $filePath,
+                'error' => $e->getMessage(),
+            ]);
+
+            return null;
+        }
+    }
+
+    /**
+     * Import a theme from encrypted file
+     *
+     * @param  string  $filePath  Path to the encrypted file
+     * @param  bool  $overwriteExisting  Whether to overwrite existing theme with same name
+     * @param  string|null  $password  Custom password for decryption (optional)
+     * @return Theme|null Imported theme or null if import failed
+     */
+    public function importThemeFromEncryptedFile(string $filePath, bool $overwriteExisting = false, ?string $password = null): ?Theme
+    {
+        if (! $this->encryptionService->isEncryptionEnabled()) {
+            Log::warning('Theme decryption import attempted but encryption is not enabled');
+
+            return null;
+        }
+
+        try {
+            if (! file_exists($filePath)) {
+                throw new \Exception("File not found: {$filePath}");
+            }
+
+            $content = file_get_contents($filePath);
+            if ($content === false) {
+                throw new \Exception("Failed to read file: {$filePath}");
+            }
+
+            return $this->importEncryptedTheme($content, $overwriteExisting, $password);
+
+        } catch (\Exception $e) {
+            Log::error('Encrypted theme import from file failed', [
                 'file_path' => $filePath,
                 'error' => $e->getMessage(),
             ]);
@@ -292,14 +495,26 @@ class ThemeService
     }
 
     /**
-     * Get export data as JSON string
+     * Export a theme to JSON format with automatic encryption if enabled
      *
      * @param  int|Theme  $theme  Theme ID or Theme model instance
-     * @param  int  $jsonFlags  JSON encoding flags
      * @return string|null JSON string or null if export failed
      */
     public function exportThemeAsJson(int|Theme $theme, int $jsonFlags = JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE): ?string
     {
+        // If encryption is enabled, automatically encrypt the export
+        if ($this->encryptionService->isEncryptionEnabled()) {
+            $exportData = $this->exportTheme($theme);
+
+            if (! $exportData) {
+                return null;
+            }
+
+            // Automatically encrypt using the default key (transparent to user)
+            return $this->encryptionService->encryptThemeData($exportData);
+        }
+
+        // Fall back to regular JSON export if encryption is disabled
         $exportData = $this->exportTheme($theme);
 
         if (! $exportData) {
@@ -307,5 +522,21 @@ class ThemeService
         }
 
         return json_encode($exportData, $jsonFlags);
+    }
+
+    /**
+     * Check if theme encryption is enabled
+     */
+    public function isEncryptionEnabled(): bool
+    {
+        return $this->encryptionService->isEncryptionEnabled();
+    }
+
+    /**
+     * Get the encryption service instance
+     */
+    public function getEncryptionService(): ThemeEncryptionService
+    {
+        return $this->encryptionService;
     }
 }
