@@ -2,11 +2,9 @@
 
 use Trinavo\LivewirePageBuilder\Services\LocalizationService;
 
-if (!function_exists('pb_localization_service')) {
+if (! function_exists('pb_localization_service')) {
     /**
      * Get the localization service instance
-     * 
-     * @return \Trinavo\LivewirePageBuilder\Services\LocalizationService
      */
     function pb_localization_service(): LocalizationService
     {
@@ -14,12 +12,12 @@ if (!function_exists('pb_localization_service')) {
     }
 }
 
-if (!function_exists('pb_localize_content')) {
+if (! function_exists('pb_localize_content')) {
     /**
      * Get localized value from a multilingual content structure
-     * 
-     * @param mixed $content The content which may be a multilingual structure
-     * @param string|null $locale The locale to get content for, defaults to current app locale
+     *
+     * @param  mixed  $content  The content which may be a multilingual structure
+     * @param  string|null  $locale  The locale to get content for, defaults to current app locale
      * @return mixed The localized content or original content if not multilingual
      */
     function pb_localize_content($content, ?string $locale = null)
@@ -28,11 +26,9 @@ if (!function_exists('pb_localize_content')) {
     }
 }
 
-if (!function_exists('pb_content_locales')) {
+if (! function_exists('pb_content_locales')) {
     /**
      * Get the available content locales
-     * 
-     * @return array
      */
     function pb_content_locales(): array
     {
@@ -40,11 +36,9 @@ if (!function_exists('pb_content_locales')) {
     }
 }
 
-if (!function_exists('pb_default_content_locale')) {
+if (! function_exists('pb_default_content_locale')) {
     /**
      * Get the default content locale
-     * 
-     * @return string
      */
     function pb_default_content_locale(): string
     {
@@ -52,12 +46,12 @@ if (!function_exists('pb_default_content_locale')) {
     }
 }
 
-if (!function_exists('pb_create_multilingual_content')) {
+if (! function_exists('pb_create_multilingual_content')) {
     /**
      * Create a multilingual content structure
-     * 
-     * @param array $values Associative array of locale => value pairs
-     * @param string|null $defaultLocale The default locale
+     *
+     * @param  array  $values  Associative array of locale => value pairs
+     * @param  string|null  $defaultLocale  The default locale
      * @return array The multilingual content structure
      */
     function pb_create_multilingual_content(array $values, ?string $defaultLocale = null): array

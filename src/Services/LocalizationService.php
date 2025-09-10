@@ -4,7 +4,6 @@ namespace Trinavo\LivewirePageBuilder\Services;
 
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Arr;
 
 class LocalizationService
 {
@@ -60,6 +59,7 @@ class LocalizationService
     public function setUiLocales(array $locales): self
     {
         static::$cache['ui_locales'] = $locales;
+
         return $this;
     }
 
@@ -69,6 +69,7 @@ class LocalizationService
     public function setContentLocales(array $locales): self
     {
         static::$cache['content_locales'] = $locales;
+
         return $this;
     }
 
@@ -78,6 +79,7 @@ class LocalizationService
     public function setDefaultContentLocale(string $locale): self
     {
         static::$cache['default_content_locale'] = $locale;
+
         return $this;
     }
 
@@ -87,6 +89,7 @@ class LocalizationService
     public function addUiLocale(string $code, string $name): self
     {
         static::$cache['ui_locales'][$code] = $name;
+
         return $this;
     }
 
@@ -96,6 +99,7 @@ class LocalizationService
     public function addContentLocale(string $code, string $name): self
     {
         static::$cache['content_locales'][$code] = $name;
+
         return $this;
     }
 
@@ -105,6 +109,7 @@ class LocalizationService
     public function removeUiLocale(string $code): self
     {
         unset(static::$cache['ui_locales'][$code]);
+
         return $this;
     }
 
@@ -114,6 +119,7 @@ class LocalizationService
     public function removeContentLocale(string $code): self
     {
         unset(static::$cache['content_locales'][$code]);
+
         return $this;
     }
 
@@ -165,15 +171,15 @@ class LocalizationService
 
     /**
      * Get localized value from a multilingual content structure
-     * 
-     * @param mixed $content The content which may be a multilingual structure
-     * @param string|null $locale The locale to get content for, defaults to current app locale
+     *
+     * @param  mixed  $content  The content which may be a multilingual structure
+     * @param  string|null  $locale  The locale to get content for, defaults to current app locale
      * @return mixed The localized content or original content if not multilingual
      */
     public function getLocalizedValue($content, ?string $locale = null)
     {
         // If not an array or not multilingual, return as is
-        if (!is_array($content) || !isset($content['multilingual']) || $content['multilingual'] !== true) {
+        if (! is_array($content) || ! isset($content['multilingual']) || $content['multilingual'] !== true) {
             return $content;
         }
 
@@ -188,15 +194,15 @@ class LocalizationService
             return $content['values'][$defaultLocale];
         } else {
             // Fallback to first available locale
-            return !empty($content['values']) ? reset($content['values']) : '';
+            return ! empty($content['values']) ? reset($content['values']) : '';
         }
     }
 
     /**
      * Create a multilingual content structure
-     * 
-     * @param array $values Associative array of locale => value pairs
-     * @param string|null $defaultLocale The default locale, defaults to service default
+     *
+     * @param  array  $values  Associative array of locale => value pairs
+     * @param  string|null  $defaultLocale  The default locale, defaults to service default
      * @return array The multilingual content structure
      */
     public function createMultilingualContent(array $values, ?string $defaultLocale = null): array
@@ -204,19 +210,18 @@ class LocalizationService
         return [
             'multilingual' => true,
             'values' => $values,
-            'default_locale' => $defaultLocale ?? $this->getDefaultContentLocale()
+            'default_locale' => $defaultLocale ?? $this->getDefaultContentLocale(),
         ];
     }
 
     /**
      * Set the UI locale and load translations
-     * 
-     * @param string $locale The locale code to set
-     * @return self
+     *
+     * @param  string  $locale  The locale code to set
      */
     public function setUiLocale(string $locale): self
     {
-        if (!array_key_exists($locale, static::$cache['ui_locales'])) {
+        if (! array_key_exists($locale, static::$cache['ui_locales'])) {
             // If locale doesn't exist in UI locales, don't change it
             return $this;
         }
@@ -232,10 +237,9 @@ class LocalizationService
 
     /**
      * Register JSON translations for a specific locale
-     * 
-     * @param string $path The path to load translations from
-     * @param string $locale The locale to load
-     * @return void
+     *
+     * @param  string  $path  The path to load translations from
+     * @param  string  $locale  The locale to load
      */
     public function registerJsonTranslationsForLocale(string $path, string $locale): void
     {

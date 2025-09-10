@@ -261,8 +261,9 @@ class ThemeManager extends Component
         $themeService = $this->getThemeService();
         $theme = Theme::find($themeId);
 
-        if (!$theme) {
+        if (! $theme) {
             $this->dispatch('notify', message: __('Theme not found'), type: 'error');
+
             return;
         }
 
@@ -271,8 +272,9 @@ class ThemeManager extends Component
             // Export with encryption (transparent to user)
             $encryptedData = $themeService->exportThemeAsEncryptedJson($themeId);
 
-            if (!$encryptedData) {
+            if (! $encryptedData) {
                 $this->dispatch('notify', message: __('Theme not found'), type: 'error');
+
                 return;
             }
 
@@ -280,8 +282,8 @@ class ThemeManager extends Component
             $fileName = 'theme-'.Str::slug($theme->name).'-'.now()->format('Y-m-d-H-i-s').$extension;
 
             // Show success notification
-            $this->dispatch('notify', 
-                message: __('Theme \':name\' exported successfully', ['name' => $theme->name]), 
+            $this->dispatch('notify',
+                message: __('Theme \':name\' exported successfully', ['name' => $theme->name]),
                 type: 'success'
             );
 
@@ -294,16 +296,17 @@ class ThemeManager extends Component
             // Export without encryption (original behavior)
             $exportData = $themeService->exportTheme($themeId);
 
-            if (!$exportData) {
+            if (! $exportData) {
                 $this->dispatch('notify', message: __('Theme not found'), type: 'error');
+
                 return;
             }
 
             $fileName = 'theme-'.Str::slug($theme->name).'-'.now()->format('Y-m-d-H-i-s').'.json';
 
             // Show success notification
-            $this->dispatch('notify', 
-                message: __('Theme \':name\' exported successfully', ['name' => $theme->name]), 
+            $this->dispatch('notify',
+                message: __('Theme \':name\' exported successfully', ['name' => $theme->name]),
                 type: 'success'
             );
 

@@ -45,7 +45,7 @@ class LanguageSwitcher extends Component
     public function switchLocale(string $locale)
     {
         // Validate locale is available
-        if (!array_key_exists($locale, $this->availableLocales)) {
+        if (! array_key_exists($locale, $this->availableLocales)) {
             return;
         }
 

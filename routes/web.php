@@ -15,23 +15,23 @@ Route::middleware($middleware)->prefix('page-builder')->group(function () {
     Route::get('/', function () {
         return redirect()->route('page-builder.themes');
     })->name('page-builder.index');
-    
+
     // Theme Management Routes
     Route::get('/themes', ThemeManager::class)->name('page-builder.themes');
-    
+
     // Page Builder Routes - Updated to use theme IDs
     Route::get(
         '/editor/{pageKey}/{themeId?}',
         PageEditor::class
     )->name('page-builder.editor');
-    
+
     Route::get(
         '/page/view/{pageKey}/{themeId?}',
         function ($pageKey, $themeId = null) {
             return app(PageBuilderRender::class)->renderPage($pageKey, $themeId);
         }
     )->name('page-builder.page.view');
-    
+
     // Backward compatibility routes (deprecated)
     Route::get(
         '/page/edit/{pageKey}/{pageTheme?}',
@@ -40,6 +40,7 @@ Route::middleware($middleware)->prefix('page-builder')->group(function () {
             if (is_numeric($pageTheme)) {
                 return redirect()->route('page-builder.editor', ['pageKey' => $pageKey, 'themeId' => $pageTheme]);
             }
+
             return redirect()->route('page-builder.themes');
         }
     )->name('page-builder.page.edit');
