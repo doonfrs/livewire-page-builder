@@ -72,7 +72,6 @@ abstract class Block extends Component
 
     public bool $editMode = false;
 
-
     /**
      * Get the icon for the block in the page builder UI.
      */

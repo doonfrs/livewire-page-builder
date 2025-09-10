@@ -69,6 +69,7 @@ class RichTextProperty extends BlockProperty
     public function multilingual(bool $value = true): self
     {
         $this->multilingual = $value;
+
         return $this;
     }
 

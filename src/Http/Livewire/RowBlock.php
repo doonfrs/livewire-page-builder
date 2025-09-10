@@ -207,7 +207,7 @@ class RowBlock extends Block
             $newOrder[$currentIndex - 1] = $newOrder[$currentIndex];
             $newOrder[$currentIndex] = $temp;
 
-            $this->blocks = collect($newOrder)->mapWithKeys(fn($id) => [$id => $this->blocks[$id]])->toArray();
+            $this->blocks = collect($newOrder)->mapWithKeys(fn ($id) => [$id => $this->blocks[$id]])->toArray();
         }
     }
 
@@ -224,7 +224,7 @@ class RowBlock extends Block
             $newOrder[$currentIndex + 1] = $newOrder[$currentIndex];
             $newOrder[$currentIndex] = $temp;
 
-            $this->blocks = collect($newOrder)->mapWithKeys(fn($id) => [$id => $this->blocks[$id]])->toArray();
+            $this->blocks = collect($newOrder)->mapWithKeys(fn ($id) => [$id => $this->blocks[$id]])->toArray();
         }
     }
 
