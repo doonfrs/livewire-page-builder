@@ -711,7 +711,7 @@ class PageEditor extends Component
 
             if ($page && $page->components) {
                 $components = $page->components;
-                $hasComponents = ! empty($components);
+                $hasComponents = (bool) $components;
             }
 
             // Check if this page is marked as a block
