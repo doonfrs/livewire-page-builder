@@ -30,7 +30,7 @@ class BuilderPageBlock extends Block
     {
         $themeId = $this->resolveThemeId();
 
-        $query = BuilderPage::where('key', $this->blockPageName);
+        $query = BuilderPage::query()->where('key', $this->blockPageName);
         $query->where('theme_id', $themeId);
 
         $this->page = $query->first();

@@ -41,6 +41,6 @@ class SelectProperty extends BlockProperty
      */
     public static function make(string $name, ?string $label = null, array $options = [], $defaultValue = null): static
     {
-        return new static($name, $label, $options, $defaultValue);
+        return new self($name, $label, $options, $defaultValue);
     }
 }

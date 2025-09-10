@@ -1,0 +1,22 @@
+parameters:
+  # Analysis strictness level (0 = loose, 9 = strict)
+  level: 1
+
+  # Paths to analyse
+  paths:
+      - src
+
+  # Directories to exclude
+  excludePaths:
+      - vendor
+      - database/migrations
+
+  # Universal object crates (for Eloquent models)
+  universalObjectCratesClasses:
+      - Illuminate\Database\Eloquent\Model
+      - Illuminate\Database\Eloquent\Builder
+
+  # Ignore specific error patterns for Laravel-specific code
+  ignoreErrors:
+      # Ignore Eloquent dynamic methods
+      - '#Call to an undefined static method [a-zA-Z0-9\\_]+::(find|findOrFail|where|create|update|delete|first|firstOrCreate|get|all|paginate|orderBy|with|has|whereHas|query)\(\)#'
