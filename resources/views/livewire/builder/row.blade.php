@@ -205,6 +205,7 @@
                         'blockId' => $blockId,
                         'rowId' => $rowId,
                         'properties' => $block['properties'] ?? [],
+                        'blocks' => $block['blocks'] ?? [], // Pass nested blocks for RowBlock
                         'editMode' => true,
                     ],
                     key($blockId)
