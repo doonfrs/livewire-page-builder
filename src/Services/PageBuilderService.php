@@ -7,6 +7,7 @@ use Livewire\Livewire;
 use Trinavo\LivewirePageBuilder\Blocks\RichText;
 use Trinavo\LivewirePageBuilder\Blocks\Section;
 use Trinavo\LivewirePageBuilder\Http\Livewire\BuilderPageBlock;
+use Trinavo\LivewirePageBuilder\Http\Livewire\RowBlock;
 
 class PageBuilderService
 {
@@ -51,6 +52,7 @@ class PageBuilderService
         $blocks = config('page-builder.blocks', []);
         $blocks[] = Section::class;
         $blocks[] = RichText::class;
+        $blocks[] = RowBlock::class;
 
         return $blocks;
     }

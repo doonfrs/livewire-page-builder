@@ -488,7 +488,7 @@
                     }"
                     style="font-size:0">
                     @foreach ($rows as $rowId => $row)
-                        <livewire:row-block :edit-mode="true" :blocks="$row['blocks']" :rowId="$rowId" :properties="$row['properties']"
+                        <livewire:row-block :edit-mode="true" :blocks="$row['blocks']" :rowId="$rowId" :properties="$row['properties'] ?? []"
                             :key="$rowId" />
                     @endforeach
                 </div>

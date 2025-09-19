@@ -2,6 +2,7 @@
 
 namespace Trinavo\LivewirePageBuilder\Http\Livewire;
 
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Livewire\Attributes\On;
 use Livewire\Component;
@@ -177,10 +178,21 @@ class PageEditor extends Component
             $properties['blockPageName'] = $blockPageName;
         }
         $blockId = uniqid();
-        $block = [
-            'alias' => $blockAlias,
-            'properties' => $properties,
-        ];
+
+        // Special handling for nested rows
+        if ($blockClass === \Trinavo\LivewirePageBuilder\Http\Livewire\RowBlock::class) {
+            $block = [
+                'alias' => $blockAlias,
+                'properties' => $properties,
+                'blocks' => [], // Nested rows start with empty blocks
+            ];
+        } else {
+            $block = [
+                'alias' => $blockAlias,
+                'properties' => $properties,
+            ];
+        }
+
         if ($this->beforeBlockId) {
             $blockIds = array_keys($this->rows[$rowId]['blocks']);
             $position = array_search($this->beforeBlockId, $blockIds);
@@ -283,20 +295,66 @@ class PageEditor extends Component
     public function addBlockToModalRow($blockAlias, $blockPageName = null)
     {
         if ($this->modalRowId) {
-            $this->addBlockToRow($this->modalRowId, $blockAlias, $blockPageName);
+            // Check if this is a top-level row
+            if (isset($this->rows[$this->modalRowId])) {
+                $this->addBlockToRow($this->modalRowId, $blockAlias, $blockPageName);
+            } else {
+                // This is a nested row, dispatch event for RowBlock components to handle
+                $this->dispatch('add-block-to-nested-row',
+                    rowId: $this->modalRowId,
+                    blockAlias: $blockAlias,
+                    blockPageName: $blockPageName
+                );
+            }
             $this->closeBlockModal();
         }
+    }
+
+    #[On('sync-nested-row-data')]
+    public function syncNestedRowData($nestedRowId, $blocks)
+    {
+        // Find the nested row in the structure and update its blocks
+        $this->updateNestedRowBlocks($this->rows, $nestedRowId, $blocks);
+    }
+
+    private function updateNestedRowBlocks(&$structure, $nestedRowId, $blocks)
+    {
+        foreach ($structure as $rowId => $row) {
+            if (isset($row['blocks'])) {
+                foreach ($row['blocks'] as $blockId => $block) {
+                    // Check if this block is the nested row we're looking for
+                    if ($blockId === $nestedRowId) {
+                        $structure[$rowId]['blocks'][$blockId]['blocks'] = $blocks;
+                        return true;
+                    }
+
+                    // If this block has nested blocks, recursively search
+                    if (isset($block['blocks'])) {
+                        $nestedBlocks = &$structure[$rowId]['blocks'][$blockId]['blocks'];
+                        if ($this->updateNestedRowBlocks($nestedBlocks, $nestedRowId, $blocks)) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     #[On('updateBlockProperty')]
     public function updateBlockProperty($rowId, $blockId, $propertyName, $value)
     {
-        if ($rowId) {
-            $this->rows[$rowId]['properties'][$propertyName] = $value;
+        if ($rowId && !$blockId) {
+            // Updating row properties - only handle top-level rows
+            if (isset($this->rows[$rowId])) {
+                $this->rows[$rowId]['properties'][$propertyName] = $value;
+            }
+            // Nested rows will handle their own properties via their RowBlock component
         } else {
-            foreach ($this->rows as $rowId => $row) {
+            // Updating block properties
+            foreach ($this->rows as $rId => $row) {
                 if (isset($row['blocks'][$blockId])) {
-                    $this->rows[$rowId]['blocks'][$blockId]['properties'][$propertyName] = $value;
+                    $this->rows[$rId]['blocks'][$blockId]['properties'][$propertyName] = $value;
                     break;
                 }
             }
@@ -604,28 +662,38 @@ class PageEditor extends Component
         $blocks = [];
         foreach ($this->rows as $rowId => $row) {
             if (isset($row['blocks'])) {
-                foreach ($row['blocks'] as $blockId => $block) {
-                    $blockClass = app(PageBuilderService::class)->getClassNameFromAlias($block['alias']);
-                    if (! $blockClass) {
-                        continue;
-                    }
-
-                    $blockInstance = app($blockClass);
-                    $label = $blockInstance->getPageBuilderLabel();
-                    $icon = $blockInstance->getPageBuilderIcon() ?? 'heroicon-o-cube';
-
-                    $blocks[] = [
-                        'id' => $blockId,
-                        'rowId' => $rowId,
-                        'alias' => $block['alias'],
-                        'label' => $label,
-                        'icon' => $icon,
-                    ];
-                }
+                $this->collectBlocksRecursively($row['blocks'], $rowId, $blocks);
             }
         }
 
         return $blocks;
+    }
+
+    private function collectBlocksRecursively($blocksList, $parentRowId, &$blocks)
+    {
+        foreach ($blocksList as $blockId => $block) {
+            $blockClass = app(PageBuilderService::class)->getClassNameFromAlias($block['alias']);
+            if (! $blockClass) {
+                continue;
+            }
+
+            $blockInstance = app($blockClass);
+            $label = $blockInstance->getPageBuilderLabel();
+            $icon = $blockInstance->getPageBuilderIcon() ?? 'heroicon-o-cube';
+
+            $blocks[] = [
+                'id' => $blockId,
+                'rowId' => $parentRowId,
+                'alias' => $block['alias'],
+                'label' => $label,
+                'icon' => $icon,
+            ];
+
+            // If this block is a RowBlock (nested row), recursively collect its blocks
+            if ($blockClass === \Trinavo\LivewirePageBuilder\Http\Livewire\RowBlock::class && isset($block['blocks'])) {
+                $this->collectBlocksRecursively($block['blocks'], $blockId, $blocks);
+            }
+        }
     }
 
     /**
@@ -831,25 +899,7 @@ class PageEditor extends Component
         $grouped = [];
 
         foreach ($this->rows as $rowId => $row) {
-            $blocks = [];
-
-            foreach ($row['blocks'] as $blockId => $block) {
-                $blockClass = app(PageBuilderService::class)->getClassNameFromAlias($block['alias']);
-                if (! $blockClass) {
-                    continue;
-                }
-
-                $blockInstance = app($blockClass);
-                $label = $blockInstance->getPageBuilderLabel();
-                $icon = $blockInstance->getPageBuilderIcon() ?? 'heroicon-o-cube';
-
-                $blocks[] = [
-                    'id' => $blockId,
-                    'alias' => $block['alias'],
-                    'label' => $label,
-                    'icon' => $icon,
-                ];
-            }
+            $blocks = $this->getBlocksWithNesting($row['blocks']);
 
             $grouped[$rowId] = [
                 'blocks' => $blocks,
@@ -857,5 +907,41 @@ class PageEditor extends Component
         }
 
         return $grouped;
+    }
+
+    private function getBlocksWithNesting($blocksList)
+    {
+        $blocks = [];
+
+        foreach ($blocksList as $blockId => $block) {
+            $blockClass = app(PageBuilderService::class)->getClassNameFromAlias($block['alias']);
+            if (! $blockClass) {
+                continue;
+            }
+
+            $blockInstance = app($blockClass);
+            $label = $blockInstance->getPageBuilderLabel();
+            $icon = $blockInstance->getPageBuilderIcon() ?? 'heroicon-o-cube';
+
+            $blockData = [
+                'id' => $blockId,
+                'alias' => $block['alias'],
+                'label' => $label,
+                'icon' => $icon,
+            ];
+
+            // If this block is a RowBlock (nested row), add its nested blocks
+            if ($blockClass === \Trinavo\LivewirePageBuilder\Http\Livewire\RowBlock::class && isset($block['blocks'])) {
+                Log::info('Found nested row with blocks:', [
+                    'blockId' => $blockId,
+                    'nestedBlocks' => $block['blocks']
+                ]);
+                $blockData['nestedBlocks'] = $this->getBlocksWithNesting($block['blocks']);
+            }
+
+            $blocks[] = $blockData;
+        }
+
+        return $blocks;
     }
 }

@@ -1,3 +1,6 @@
 /vendor
 /node_modules
 /public/*
+
+# Terminal Paste Image folder
+.cp-images/
