@@ -47,25 +47,91 @@ class RowBlock extends Block
     public function mount()
     {
         $this->properties = $this->properties ?? $this->getPropertyValues();
+        $this->blocks = $this->blocks ?? [];
         $this->cssClasses = $this->makeClasses();
         $this->inlineStyles = $this->makeInlineStyles();
     }
 
     public function openBlockModal()
     {
-        $this->dispatch('openBlockModal', $this->rowId)->to('page-editor');
+        $this->dispatch('openBlockModal', $this->rowId);
+    }
+
+    public function addBlockToThisRow($blockAlias, $blockPageName = null)
+    {
+        $blockClass = app(PageBuilderService::class)->getClassNameFromAlias($blockAlias);
+        if (!$blockClass) {
+            return;
+        }
+
+        $properties = app($blockClass)->getPropertyValues();
+        if ($blockPageName) {
+            $properties['blockPageName'] = $blockPageName;
+        }
+        $blockId = uniqid();
+
+        // Special handling for nested rows
+        if ($blockClass === \Trinavo\LivewirePageBuilder\Http\Livewire\RowBlock::class) {
+            $block = [
+                'alias' => $blockAlias,
+                'properties' => $properties,
+                'blocks' => [], // Nested rows start with empty blocks
+            ];
+        } else {
+            $block = [
+                'alias' => $blockAlias,
+                'properties' => $properties,
+            ];
+        }
+
+        $this->blocks[$blockId] = $block;
+
+        // Sync changes back to parent structure
+        $this->dispatch('sync-nested-row-data',
+            nestedRowId: $this->rowId,
+            blocks: $this->blocks
+        );
+
+        // Dispatch to notify that a block was added
+        $this->dispatch(
+            'block-added',
+            rowId: $this->rowId,
+            blockId: $blockId,
+            blockAlias: $blockAlias,
+            properties: $block['properties']
+        );
+    }
+
+    #[On('add-block-to-nested-row')]
+    public function addBlockToNestedRow($rowId, $blockAlias, $blockPageName = null)
+    {
+        if ($rowId === $this->rowId) {
+            $this->addBlockToThisRow($blockAlias, $blockPageName);
+        }
     }
 
     #[On('updateBlockProperty')]
     public function updateBlockProperty($rowId, $blockId, $propertyName, $value)
     {
-        if ($blockId || $rowId != $this->rowId) {
+        // Handle row property updates (when this RowBlock is being treated as a row)
+        if ($rowId == $this->rowId && !$blockId) {
+            $this->properties[$propertyName] = $value;
+            $this->cssClasses = $this->makeClasses();
+            $this->inlineStyles = $this->makeInlineStyles();
             return;
         }
-        $this->properties[$propertyName] = $value;
 
-        $this->cssClasses = $this->makeClasses();
-        $this->inlineStyles = $this->makeInlineStyles();
+        // Handle block property updates within this row
+        if ($blockId && isset($this->blocks[$blockId])) {
+            $this->blocks[$blockId]['properties'][$propertyName] = $value;
+
+            // Sync changes back to parent structure
+            $this->dispatch('sync-nested-row-data',
+                nestedRowId: $this->rowId,
+                blocks: $this->blocks
+            );
+            return;
+        }
     }
 
     public function render()
@@ -131,11 +197,21 @@ class RowBlock extends Block
             return;
         }
 
-        if ($beforeBlockId) {
+        // Special handling for nested rows
+        if ($blockAlias === 'trinavo-livewire-page-builder-http-livewire-row-block') {
+            $block = [
+                'alias' => $blockAlias,
+                'properties' => $properties,
+                'blocks' => [], // Nested rows start with empty blocks
+            ];
+        } else {
             $block = [
                 'alias' => $blockAlias,
                 'properties' => $properties,
             ];
+        }
+
+        if ($beforeBlockId) {
             $blockIds = array_keys($this->blocks);
             $position = array_search($beforeBlockId, $blockIds);
 
@@ -149,10 +225,6 @@ class RowBlock extends Block
             }
             $this->blocks = $newBlocks;
         } elseif ($afterBlockId) {
-            $block = [
-                'alias' => $blockAlias,
-                'properties' => $properties,
-            ];
             $blockIds = array_keys($this->blocks);
             $position = array_search($afterBlockId, $blockIds);
 
@@ -166,10 +238,7 @@ class RowBlock extends Block
             }
             $this->blocks = $newBlocks;
         } else {
-            $this->blocks[$blockId] = [
-                'alias' => $blockAlias,
-                'properties' => $properties,
-            ];
+            $this->blocks[$blockId] = $block;
         }
     }
 
@@ -178,6 +247,12 @@ class RowBlock extends Block
     {
         if (isset($this->blocks[$blockId])) {
             unset($this->blocks[$blockId]);
+
+            // Sync changes back to parent structure
+            $this->dispatch('sync-nested-row-data',
+                nestedRowId: $this->rowId,
+                blocks: $this->blocks
+            );
         }
     }
 
@@ -335,5 +410,15 @@ class RowBlock extends Block
             message: 'Row copied to clipboard',
             type: 'success'
         );
+    }
+
+    public function getPageBuilderLabel(): string
+    {
+        return 'Row';
+    }
+
+    public function getPageBuilderIcon(): string
+    {
+        return 'heroicon-o-rectangle-group';
     }
 }
