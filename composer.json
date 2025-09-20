@@ -12,9 +12,7 @@
     "require": {
         "php": "^8.2",
         "livewire/livewire": "^3.6",
-        "laravel/helpers": "^1.7",
-        "blade-ui-kit/blade-heroicons": "^2.6",
-        "blade-ui-kit/blade-icons": "^1.8"
+        "laravel/helpers": "^1.7"
     },
     "require-dev": {
         "laravel/framework": "^12.0",

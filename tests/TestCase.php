@@ -36,6 +36,13 @@ abstract class TestCase extends Orchestra
         ]);
 
         config()->set('app.key', 'base64:'.base64_encode(random_bytes(32)));
+
+        // No longer need icon mocking since we use inline SVG
+
+        // Configure page builder
+        config()->set('page-builder.pages', [
+            'test-page' => 'Test Page',
+        ]);
     }
 
     protected function setUpDatabase(): void
@@ -50,4 +57,5 @@ abstract class TestCase extends Orchestra
             'ThemeEncryptionService' => \Trinavo\LivewirePageBuilder\Facades\ThemeEncryptionService::class,
         ];
     }
+
 }

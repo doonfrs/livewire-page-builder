@@ -12,7 +12,7 @@ class RowBlock extends Block
 {
     public array $blocks = [];
 
-    public ?string $rowId;
+    public ?string $rowId = null;
 
     public ?array $properties;
 
