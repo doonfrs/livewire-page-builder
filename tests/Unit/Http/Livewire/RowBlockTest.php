@@ -13,7 +13,7 @@ class RowBlockTest extends TestCase
     {
         parent::setUp();
 
-        $this->rowBlock = new RowBlock();
+        $this->rowBlock = new RowBlock;
         $this->rowBlock->rowId = 'test-row-id';
         $this->rowBlock->blocks = [];
         $this->rowBlock->properties = [];
@@ -71,7 +71,7 @@ class RowBlockTest extends TestCase
         $propertyName = 'flex';
         $value = 'column';
 
-        if ($rowId == $this->rowBlock->rowId && !$blockId) {
+        if ($rowId == $this->rowBlock->rowId && ! $blockId) {
             $this->rowBlock->properties[$propertyName] = $value;
         }
 
@@ -213,13 +213,11 @@ class RowBlockTest extends TestCase
     {
         $this->rowBlock->properties = [
             'flex' => 'row',
-            'contentCentered' => true,
             'contentWidthDesktop' => 'w-full',
         ];
 
         // Test that properties are set correctly
         $this->assertEquals('row', $this->rowBlock->properties['flex']);
-        $this->assertTrue($this->rowBlock->properties['contentCentered']);
         $this->assertEquals('w-full', $this->rowBlock->properties['contentWidthDesktop']);
     }
 

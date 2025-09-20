@@ -6,7 +6,6 @@ use Illuminate\Support\Facades\Log;
 use Livewire\Attributes\On;
 use Trinavo\LivewirePageBuilder\Services\PageBuilderService;
 use Trinavo\LivewirePageBuilder\Support\Block;
-use Trinavo\LivewirePageBuilder\Support\Properties\CheckboxProperty;
 use Trinavo\LivewirePageBuilder\Support\Properties\SelectProperty;
 
 class RowBlock extends Block
@@ -43,7 +42,7 @@ class RowBlock extends Block
 
     public $desktopGap = null;
 
-    public $contentCentered = true;
+    public $contentAlign = 'content-center';
 
     public $isNested = false;
 
@@ -51,12 +50,12 @@ class RowBlock extends Block
     {
         Log::info('RowBlock::mount called', [
             'rowId' => $this->rowId,
-            'hasProperties' => !empty($this->properties),
+            'hasProperties' => ! empty($this->properties),
             'propertiesCount' => $this->properties ? count($this->properties) : 0,
-            'hasBlocks' => !empty($this->blocks),
+            'hasBlocks' => ! empty($this->blocks),
             'blocksCount' => count($this->blocks),
             'editMode' => $this->editMode ?? false,
-            'timestamp' => now()->toISOString()
+            'timestamp' => now()->toISOString(),
         ]);
 
         // Ensure properties are properly initialized with saved values or defaults
@@ -66,7 +65,7 @@ class RowBlock extends Block
             'rowId' => $this->rowId,
             'defaultPropertiesCount' => count($defaultProperties),
             'passedPropertiesCount' => $this->properties ? count($this->properties) : 0,
-            'passedProperties' => $this->properties ? json_encode($this->properties, JSON_PRETTY_PRINT) : 'null'
+            'passedProperties' => $this->properties ? json_encode($this->properties, JSON_PRETTY_PRINT) : 'null',
         ]);
 
         // If properties were passed from parent (e.g., BuilderBlock), merge them with defaults
@@ -78,14 +77,14 @@ class RowBlock extends Block
                 'rowId' => $this->rowId,
                 'beforeMerge' => json_encode($beforeMerge, JSON_PRETTY_PRINT),
                 'afterMerge' => json_encode($this->properties, JSON_PRETTY_PRINT),
-                'mergedPropertiesCount' => count($this->properties)
+                'mergedPropertiesCount' => count($this->properties),
             ]);
         } else {
             $this->properties = $defaultProperties;
 
             Log::info('RowBlock properties set to defaults', [
                 'rowId' => $this->rowId,
-                'defaultPropertiesCount' => count($this->properties)
+                'defaultPropertiesCount' => count($this->properties),
             ]);
         }
 
@@ -99,7 +98,7 @@ class RowBlock extends Block
             'finalBlocksCount' => count($this->blocks),
             'hasDesktopWidth' => isset($this->properties['desktopWidth']),
             'desktopWidth' => $this->properties['desktopWidth'] ?? 'not_set',
-            'cssClasses' => $this->cssClasses
+            'cssClasses' => $this->cssClasses,
         ]);
     }
 
@@ -400,11 +399,17 @@ class RowBlock extends Block
                     'col-reverse' => 'Column Reverse',
                 ],
             ),
-            (new CheckboxProperty(
-                name: 'contentCentered',
-                label: 'Content Centered',
-                defaultValue: $this->contentCentered,
-            )),
+            new SelectProperty(
+                name: 'contentAlign',
+                label: 'Content Alignment',
+                defaultValue: $this->contentAlign,
+                options: [
+                    'content-start' => 'Top',
+                    'content-center' => 'Center',
+                    'content-end' => 'Bottom',
+                    'content-stretch' => 'Stretch',
+                ],
+            ),
             (new SelectProperty(
                 name: 'contentWidthMobile',
                 label: 'Mobile',
@@ -497,7 +502,7 @@ class RowBlock extends Block
             'thisRowId' => $this->rowId,
             'eventParentRowId' => $parentRowId,
             'deletedRowId' => $deletedRowId,
-            'shouldUpdate' => $parentRowId === $this->rowId
+            'shouldUpdate' => $parentRowId === $this->rowId,
         ]);
 
         // Only update if this RowBlock is the parent of the deleted nested row
@@ -507,7 +512,7 @@ class RowBlock extends Block
             Log::info('RowBlock updated after nested row deletion', [
                 'parentRowId' => $parentRowId,
                 'deletedRowId' => $deletedRowId,
-                'remainingBlocksCount' => count($this->blocks)
+                'remainingBlocksCount' => count($this->blocks),
             ]);
 
             // Force Livewire to detect the state change and re-render
@@ -520,7 +525,7 @@ class RowBlock extends Block
         Log::info('RowBlock refreshBlocks called via JavaScript', [
             'rowId' => $this->rowId,
             'newBlocksCount' => count($updatedBlocks),
-            'updatedBlocks' => $updatedBlocks
+            'updatedBlocks' => $updatedBlocks,
         ]);
 
         $this->blocks = $updatedBlocks;

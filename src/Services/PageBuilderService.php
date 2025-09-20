@@ -101,6 +101,12 @@ class PageBuilderService
             $classes[] = "flex flex-{$flex}";
         }
 
+        // Add vertical alignment to the flex container
+        $contentAlign = $properties['contentAlign'] ?? 'content-center';
+        if ($flex) {  // Only add vertical alignment when flex is active
+            $classes[] = $contentAlign;
+        }
+
         $contentWidthMobile = $properties['contentWidthMobile'] ?? 'w-full';
         $contentWidthTablet = $properties['contentWidthTablet'] ?? 'w-full';
         $contentWidthDesktop = $properties['contentWidthDesktop'] ?? 'w-full';
@@ -120,11 +126,6 @@ class PageBuilderService
 
         if ($contentWidthDesktop !== $contentWidthTablet) {
             $classes[] = '@5xl:'.$contentWidthDesktop;
-        }
-
-        $contentCentered = $properties['contentCentered'] ?? false;
-        if ($contentCentered) {
-            $classes[] = 'mx-auto';
         }
 
         if ($mobileGap) {
@@ -233,8 +234,9 @@ class PageBuilderService
             }
         }
 
-        $classes[] = 'items-center';
-        $classes[] = 'content-center';
+        // Vertical alignment - allow customization instead of hardcoded centering
+        $contentAlign = $properties['contentAlign'] ?? 'content-center';
+        $classes[] = $contentAlign;
 
         $classString = implode(' ', array_unique($classes));
 
