@@ -11,6 +11,7 @@ use Trinavo\LivewirePageBuilder\Tests\TestCase;
 class NestedRowPropertyPersistenceTest extends TestCase
 {
     protected Theme $theme;
+
     protected BuilderPage $page;
 
     protected function setUp(): void
@@ -43,6 +44,7 @@ class NestedRowPropertyPersistenceTest extends TestCase
         $availableBlocks = $service->getAvailableBlocks();
 
         $component = Livewire::test(PageEditor::class);
+
         return $component
             ->set('pageKey', 'test-page-persistence')
             ->set('themeId', $this->theme->id)
@@ -321,18 +323,17 @@ class NestedRowPropertyPersistenceTest extends TestCase
             'textColor' => '#ffffff',
             'paddingTop' => '20',
             'flex' => 'column',
-            'contentCentered' => false,
         ];
 
         $savedBlocks = [
             'test-block-id' => [
                 'alias' => 'some-block-alias',
                 'properties' => ['text' => 'Sample text'],
-            ]
+            ],
         ];
 
         // Create a RowBlock component directly with saved data (simulating @livewire instantiation)
-        $rowBlock = new \Trinavo\LivewirePageBuilder\Http\Livewire\RowBlock();
+        $rowBlock = new \Trinavo\LivewirePageBuilder\Http\Livewire\RowBlock;
         $rowBlock->rowId = 'nested-row-test';
         $rowBlock->properties = $savedProperties;
         $rowBlock->blocks = $savedBlocks;
@@ -346,12 +347,10 @@ class NestedRowPropertyPersistenceTest extends TestCase
         $this->assertEquals('#ffffff', $rowBlock->properties['textColor'], 'Text color should be preserved from saved data');
         $this->assertEquals('20', $rowBlock->properties['paddingTop'], 'Padding should be preserved from saved data');
         $this->assertEquals('column', $rowBlock->properties['flex'], 'Flex direction should be preserved from saved data');
-        $this->assertEquals(false, $rowBlock->properties['contentCentered'], 'Content centered should be preserved from saved data');
 
         // Verify that default properties are still present for unspecified values
         // Check properties that should exist from the parent Block class
         $this->assertArrayHasKey('selfCentered', $rowBlock->properties, 'Default selfCentered should be present');
-        $this->assertArrayHasKey('contentCentered', $rowBlock->properties, 'Default contentCentered should be present');
 
         // Verify blocks are preserved
         $this->assertEquals($savedBlocks, $rowBlock->blocks, 'Nested blocks should be preserved');

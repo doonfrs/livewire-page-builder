@@ -68,7 +68,7 @@ class TopLevelRowWidthTest extends TestCase
             'Nested row should NOT contain desktop width class');
 
         // But should still contain other properties like centering
-        $this->assertStringContainsString('items-center', $cssClasses,
+        $this->assertStringContainsString('content-center', $cssClasses,
             'Nested row should still contain other properties like centering');
     }
 

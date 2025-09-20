@@ -8,10 +8,10 @@ use Trinavo\LivewirePageBuilder\Tests\TestCase;
 class DeleteNestedRowBugTest extends TestCase
 {
     /** @test */
-    public function deleteRow_does_not_handle_nested_rows(): void
+    public function delete_row_does_not_handle_nested_rows(): void
     {
         // Create a PageEditor instance manually
-        $pageEditor = new PageEditor();
+        $pageEditor = new PageEditor;
 
         // Set up the exact structure from the logs
         $pageEditor->rows = [
@@ -25,14 +25,14 @@ class DeleteNestedRowBugTest extends TestCase
                             'desktopWidth' => 'w-full',
                         ],
                         'blocks' => [],
-                    ]
+                    ],
                 ],
                 'properties' => [
                     'mobileWidth' => 'w-full',
                     'tabletWidth' => 'w-full',
                     'desktopWidth' => 'w-full',
-                ]
-            ]
+                ],
+            ],
         ];
 
         // Verify initial state
@@ -48,21 +48,21 @@ class DeleteNestedRowBugTest extends TestCase
     }
 
     /** @test */
-    public function deleteRow_works_for_top_level_rows(): void
+    public function delete_row_works_for_top_level_rows(): void
     {
         // Create a PageEditor instance manually
-        $pageEditor = new PageEditor();
+        $pageEditor = new PageEditor;
 
         // Set up structure with top-level rows
         $pageEditor->rows = [
             'top-level-1' => [
                 'blocks' => [],
-                'properties' => ['desktopWidth' => 'w-full']
+                'properties' => ['desktopWidth' => 'w-full'],
             ],
             'top-level-2' => [
                 'blocks' => [],
-                'properties' => ['desktopWidth' => 'w-1/2']
-            ]
+                'properties' => ['desktopWidth' => 'w-1/2'],
+            ],
         ];
 
         // Verify initial state
@@ -83,7 +83,7 @@ class DeleteNestedRowBugTest extends TestCase
     /** @test */
     public function demonstrate_the_bug_with_exact_log_structure(): void
     {
-        $pageEditor = new PageEditor();
+        $pageEditor = new PageEditor;
 
         // This is the exact structure from the user's logs
         $pageEditor->rows = [
@@ -100,13 +100,12 @@ class DeleteNestedRowBugTest extends TestCase
                             'backgroundRepeat' => 'no-repeat',
                             'selfCentered' => true,
                             'flex' => 'row',
-                            'contentCentered' => true,
                             'contentWidthMobile' => 'w-full',
                             'contentWidthTablet' => 'w-full',
                             'contentWidthDesktop' => 'w-full',
                         ],
                         'blocks' => [],
-                    ]
+                    ],
                 ],
                 'properties' => [
                     'mobileWidth' => 'w-full',
@@ -117,12 +116,11 @@ class DeleteNestedRowBugTest extends TestCase
                     'backgroundRepeat' => 'no-repeat',
                     'selfCentered' => true,
                     'flex' => 'row',
-                    'contentCentered' => true,
                     'contentWidthMobile' => 'w-full',
                     'contentWidthTablet' => 'w-full',
                     'contentWidthDesktop' => 'w-full',
-                ]
-            ]
+                ],
+            ],
         ];
 
         // The user tries to delete the nested row '68ced9ad26e9d'
