@@ -93,14 +93,28 @@ class BuilderBlock extends Component
     #[On('updateBlockProperty')]
     public function updateBlockProperty($rowId, $blockId, $propertyName, $value)
     {
-        if ($rowId || $blockId != $this->blockId) {
+        // Handle nested row property updates (when this BuilderBlock wraps a nested RowBlock)
+        if ($rowId && $rowId == $this->blockId && !$blockId) {
+            // This is a nested row property update for this BuilderBlock
+            $this->properties[$propertyName] = $value;
+
+            // Update CSS classes and styles
+            $this->cssClasses = $this->makeClasses();
+            $this->inlineStyles = $this->makeInlineStyles();
+
+            // Force re-render to reflect changes
+            $this->dispatch('$refresh');
             return;
         }
-        $this->properties[$propertyName] = $value;
 
-        // Update CSS classes and styles for all block types
-        $this->cssClasses = $this->makeClasses();
-        $this->inlineStyles = $this->makeInlineStyles();
+        // Handle regular block property updates
+        if (!$rowId && $blockId == $this->blockId) {
+            $this->properties[$propertyName] = $value;
+
+            // Update CSS classes and styles for all block types
+            $this->cssClasses = $this->makeClasses();
+            $this->inlineStyles = $this->makeInlineStyles();
+        }
     }
 
     public function makeClasses(): string

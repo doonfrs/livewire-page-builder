@@ -170,6 +170,9 @@ class RowBlock extends Block
             $this->cssClasses = $this->makeClasses();
             $this->inlineStyles = $this->makeInlineStyles();
 
+            // Force re-render to reflect property changes in the browser
+            $this->dispatch('$refresh');
+
             return;
         }
 
