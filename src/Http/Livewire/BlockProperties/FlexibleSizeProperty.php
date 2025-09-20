@@ -2,6 +2,7 @@
 
 namespace Trinavo\LivewirePageBuilder\Http\Livewire\BlockProperties;
 
+use Illuminate\Support\Facades\Log;
 use Livewire\Component;
 
 class FlexibleSizeProperty extends Component
@@ -129,7 +130,31 @@ class FlexibleSizeProperty extends Component
 
     protected function updateValue($newValue)
     {
+        Log::info('FlexibleSizeProperty::updateValue called', [
+            'property' => $this->property['name'] ?? 'unknown',
+            'oldValue' => $this->value,
+            'newValue' => $newValue,
+            'rowId' => $this->rowId,
+            'blockId' => $this->blockId,
+            'mode' => $this->mode,
+            'timestamp' => now()->toISOString()
+        ]);
+
         $this->value = $newValue;
+
+        Log::info('FlexibleSizeProperty dispatching updateBlockProperty event', [
+            'property' => $this->property['name'] ?? 'unknown',
+            'value' => $newValue,
+            'rowId' => $this->rowId,
+            'blockId' => $this->blockId,
+            'eventData' => [
+                'rowId' => $this->rowId,
+                'blockId' => $this->blockId,
+                'propertyName' => $this->property['name'],
+                'value' => $newValue
+            ]
+        ]);
+
         $this->dispatch('updateBlockProperty', $this->rowId, $this->blockId, $this->property['name'], $newValue);
     }
 
