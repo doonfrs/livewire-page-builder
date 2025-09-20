@@ -11,7 +11,7 @@ class NestedRowUIFixTest extends TestCase
     /** @test */
     public function page_editor_deletes_nested_row_correctly(): void
     {
-        $pageEditor = new PageEditor();
+        $pageEditor = new PageEditor;
         $pageEditor->rows = [
             'parent-row-id' => [
                 'blocks' => [
@@ -23,10 +23,10 @@ class NestedRowUIFixTest extends TestCase
                     'another-block' => [
                         'alias' => 'some-block',
                         'properties' => ['textColor' => '#000000'],
-                    ]
+                    ],
                 ],
-                'properties' => ['desktopWidth' => 'w-full']
-            ]
+                'properties' => ['desktopWidth' => 'w-full'],
+            ],
         ];
 
         // Delete nested row
@@ -41,7 +41,7 @@ class NestedRowUIFixTest extends TestCase
     /** @test */
     public function row_block_handles_nested_row_deleted_event(): void
     {
-        $rowBlock = new RowBlock();
+        $rowBlock = new RowBlock;
         $rowBlock->rowId = 'parent-row-id';
         $rowBlock->blocks = [
             'nested-row-1' => [
@@ -53,7 +53,7 @@ class NestedRowUIFixTest extends TestCase
                 'alias' => 'page-builder-trinavo-livewire-page-builder-http-livewire-row-block',
                 'properties' => ['desktopWidth' => 'w-1/2'],
                 'blocks' => [],
-            ]
+            ],
         ];
 
         // Verify initial state
@@ -66,7 +66,7 @@ class NestedRowUIFixTest extends TestCase
                 'alias' => 'page-builder-trinavo-livewire-page-builder-http-livewire-row-block',
                 'properties' => ['desktopWidth' => 'w-1/2'],
                 'blocks' => [],
-            ]
+            ],
         ];
 
         $rowBlock->handleNestedRowDeleted('parent-row-id', 'nested-row-1', $updatedBlocks);
@@ -80,14 +80,14 @@ class NestedRowUIFixTest extends TestCase
     /** @test */
     public function row_block_ignores_event_for_other_parents(): void
     {
-        $rowBlock = new RowBlock();
+        $rowBlock = new RowBlock;
         $rowBlock->rowId = 'my-row-id';
         $rowBlock->blocks = [
             'my-nested-row' => [
                 'alias' => 'page-builder-trinavo-livewire-page-builder-http-livewire-row-block',
                 'properties' => ['desktopWidth' => 'w-full'],
                 'blocks' => [],
-            ]
+            ],
         ];
 
         // Simulate event for a different parent row
@@ -105,7 +105,7 @@ class NestedRowUIFixTest extends TestCase
         // then manually triggers the RowBlock event handler to verify UI sync
 
         // Setup PageEditor
-        $pageEditor = new PageEditor();
+        $pageEditor = new PageEditor;
         $pageEditor->rows = [
             'parent-row' => [
                 'blocks' => [
@@ -118,14 +118,14 @@ class NestedRowUIFixTest extends TestCase
                         'alias' => 'page-builder-trinavo-livewire-page-builder-http-livewire-row-block',
                         'properties' => ['desktopWidth' => 'w-2/3'],
                         'blocks' => [],
-                    ]
+                    ],
                 ],
-                'properties' => ['desktopWidth' => 'w-full']
-            ]
+                'properties' => ['desktopWidth' => 'w-full'],
+            ],
         ];
 
         // Setup RowBlock (simulating the parent row component)
-        $parentRowBlock = new RowBlock();
+        $parentRowBlock = new RowBlock;
         $parentRowBlock->rowId = 'parent-row';
         $parentRowBlock->blocks = $pageEditor->rows['parent-row']['blocks'];
 

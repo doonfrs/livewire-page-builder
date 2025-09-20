@@ -57,5 +57,4 @@ abstract class TestCase extends Orchestra
             'ThemeEncryptionService' => \Trinavo\LivewirePageBuilder\Facades\ThemeEncryptionService::class,
         ];
     }
-
 }

@@ -76,10 +76,10 @@ class PageEditor extends Component
             'pageId' => $this->page->id,
             'pageKey' => $this->page->key,
             'themeId' => $this->page->theme_id,
-            'hasComponents' => !empty($this->page->components),
+            'hasComponents' => ! empty($this->page->components),
             'componentsCount' => $this->page->components ? count($this->page->components) : 0,
             'rawComponents' => $this->page->components ? json_encode($this->page->components, JSON_PRETTY_PRINT) : 'null',
-            'timestamp' => now()->toISOString()
+            'timestamp' => now()->toISOString(),
         ]);
 
         $this->rows = $this->page->components ? $this->page->components : [];
@@ -88,7 +88,7 @@ class PageEditor extends Component
             'pageId' => $this->page->id,
             'rowsCount' => count($this->rows),
             'rowIds' => array_keys($this->rows),
-            'detailedStructure' => $this->getDetailedComponentStructure()
+            'detailedStructure' => $this->getDetailedComponentStructure(),
         ]);
     }
 
@@ -100,16 +100,16 @@ class PageEditor extends Component
             'themeId' => $this->themeId,
             'pageExists' => isset($this->page) && $this->page,
             'rowsCount' => count($this->rows),
-            'timestamp' => now()->toISOString()
+            'timestamp' => now()->toISOString(),
         ]);
 
         // Ensure we have a page to save to
-        if (!isset($this->page) || !$this->page) {
+        if (! isset($this->page) || ! $this->page) {
             // If page doesn't exist but we have the required data, create it
             if ($this->pageKey && $this->themeId) {
                 Log::info('Creating new page', [
                     'pageKey' => $this->pageKey,
-                    'themeId' => $this->themeId
+                    'themeId' => $this->themeId,
                 ]);
 
                 $this->page = BuilderPage::firstOrCreate([
@@ -119,13 +119,14 @@ class PageEditor extends Component
 
                 Log::info('Page created/found', [
                     'pageId' => $this->page->id,
-                    'pageKey' => $this->page->key
+                    'pageKey' => $this->page->key,
                 ]);
             } else {
                 Log::warning('Cannot save page - missing pageKey or themeId', [
                     'pageKey' => $this->pageKey,
-                    'themeId' => $this->themeId
+                    'themeId' => $this->themeId,
                 ]);
+
                 // Cannot save without pageKey and themeId
                 return;
             }
@@ -136,7 +137,7 @@ class PageEditor extends Component
             'pageId' => $this->page->id,
             'pageKey' => $this->page->key,
             'componentStructure' => $this->getDetailedComponentStructure(),
-            'rawRowsData' => json_encode($this->rows, JSON_PRETTY_PRINT)
+            'rawRowsData' => json_encode($this->rows, JSON_PRETTY_PRINT),
         ]);
 
         $this->page->components = $this->rows;
@@ -145,7 +146,7 @@ class PageEditor extends Component
         Log::info('Page saved successfully', [
             'pageId' => $this->page->id,
             'pageKey' => $this->page->key,
-            'savedComponentsCount' => count($this->page->components)
+            'savedComponentsCount' => count($this->page->components),
         ]);
     }
 
@@ -155,7 +156,7 @@ class PageEditor extends Component
         foreach ($this->rows as $rowId => $row) {
             $structure[$rowId] = [
                 'properties' => $row['properties'] ?? [],
-                'blocks' => []
+                'blocks' => [],
             ];
 
             if (isset($row['blocks'])) {
@@ -164,11 +165,12 @@ class PageEditor extends Component
                         'alias' => $block['alias'] ?? 'unknown',
                         'properties' => $block['properties'] ?? [],
                         'hasNestedBlocks' => isset($block['blocks']) && is_array($block['blocks']),
-                        'nestedBlocksCount' => isset($block['blocks']) ? count($block['blocks']) : 0
+                        'nestedBlocksCount' => isset($block['blocks']) ? count($block['blocks']) : 0,
                     ];
                 }
             }
         }
+
         return $structure;
     }
 
@@ -415,6 +417,7 @@ class PageEditor extends Component
                     // Check if this block is the nested row we're looking for
                     if ($blockId === $nestedRowId) {
                         $structure[$rowId]['blocks'][$blockId]['blocks'] = $blocks;
+
                         return true;
                     }
 
@@ -428,6 +431,7 @@ class PageEditor extends Component
                 }
             }
         }
+
         return false;
     }
 
@@ -439,16 +443,16 @@ class PageEditor extends Component
             'blockId' => $blockId,
             'propertyName' => $propertyName,
             'value' => $value,
-            'timestamp' => now()->toISOString()
+            'timestamp' => now()->toISOString(),
         ]);
 
-        if ($rowId && !$blockId) {
+        if ($rowId && ! $blockId) {
             // Updating row properties - handle both top-level and nested rows
             Log::info('Updating row property', [
                 'rowId' => $rowId,
                 'propertyName' => $propertyName,
                 'value' => $value,
-                'isTopLevelRow' => isset($this->rows[$rowId])
+                'isTopLevelRow' => isset($this->rows[$rowId]),
             ]);
 
             if (isset($this->rows[$rowId])) {
@@ -457,7 +461,7 @@ class PageEditor extends Component
                 Log::info('Top-level row property updated successfully', [
                     'rowId' => $rowId,
                     'propertyName' => $propertyName,
-                    'value' => $value
+                    'value' => $value,
                 ]);
             } else {
                 // Check if it's a nested row
@@ -471,13 +475,13 @@ class PageEditor extends Component
                             'parentRowId' => $parentRowId,
                             'nestedRowId' => $rowId,
                             'propertyName' => $propertyName,
-                            'value' => $value
+                            'value' => $value,
                         ]);
                         break;
                     }
                 }
 
-                if (!$nestedRowFound) {
+                if (! $nestedRowFound) {
                     Log::warning('Row not found (neither top-level nor nested)', ['rowId' => $rowId]);
                 }
             }
@@ -487,7 +491,7 @@ class PageEditor extends Component
                 'rowId' => $rowId,
                 'blockId' => $blockId,
                 'propertyName' => $propertyName,
-                'value' => $value
+                'value' => $value,
             ]);
 
             if ($rowId && $blockId) {
@@ -496,7 +500,7 @@ class PageEditor extends Component
                     'rowId' => $rowId,
                     'blockId' => $blockId,
                     'rowExists' => isset($this->rows[$rowId]),
-                    'blockExists' => isset($this->rows[$rowId]['blocks'][$blockId])
+                    'blockExists' => isset($this->rows[$rowId]['blocks'][$blockId]),
                 ]);
 
                 if (isset($this->rows[$rowId]['blocks'][$blockId])) {
@@ -509,14 +513,14 @@ class PageEditor extends Component
                         'propertyName' => $propertyName,
                         'oldValue' => $oldValue,
                         'newValue' => $value,
-                        'blockAlias' => $this->rows[$rowId]['blocks'][$blockId]['alias'] ?? 'unknown'
+                        'blockAlias' => $this->rows[$rowId]['blocks'][$blockId]['alias'] ?? 'unknown',
                     ]);
                 } else {
                     Log::warning('Block not found in specified row', [
                         'rowId' => $rowId,
                         'blockId' => $blockId,
                         'availableRows' => array_keys($this->rows),
-                        'blocksInRow' => isset($this->rows[$rowId]) ? array_keys($this->rows[$rowId]['blocks'] ?? []) : []
+                        'blocksInRow' => isset($this->rows[$rowId]) ? array_keys($this->rows[$rowId]['blocks'] ?? []) : [],
                     ]);
                 }
             } else {
@@ -535,7 +539,7 @@ class PageEditor extends Component
                             'propertyName' => $propertyName,
                             'oldValue' => $oldValue,
                             'newValue' => $value,
-                            'blockAlias' => $this->rows[$rId]['blocks'][$blockId]['alias'] ?? 'unknown'
+                            'blockAlias' => $this->rows[$rId]['blocks'][$blockId]['alias'] ?? 'unknown',
                         ]);
 
                         $found = true;
@@ -543,11 +547,11 @@ class PageEditor extends Component
                     }
                 }
 
-                if (!$found) {
+                if (! $found) {
                     Log::warning('Block not found in any row', [
                         'blockId' => $blockId,
                         'availableRows' => array_keys($this->rows),
-                        'allBlockIds' => $this->getAllBlockIds()
+                        'allBlockIds' => $this->getAllBlockIds(),
                     ]);
                 }
             }
@@ -564,11 +568,12 @@ class PageEditor extends Component
                     $allBlockIds[] = [
                         'rowId' => $rowId,
                         'blockId' => $blockId,
-                        'alias' => $block['alias'] ?? 'unknown'
+                        'alias' => $block['alias'] ?? 'unknown',
                     ];
                 }
             }
         }
+
         return $allBlockIds;
     }
 
@@ -652,6 +657,7 @@ class PageEditor extends Component
         // First check if it's a top-level row
         if (isset($this->rows[$rowId])) {
             unset($this->rows[$rowId]);
+
             return;
         }
 
@@ -661,7 +667,7 @@ class PageEditor extends Component
                 unset($this->rows[$parentRowId]['blocks'][$rowId]);
                 Log::info('Nested row deleted successfully', [
                     'parentRowId' => $parentRowId,
-                    'deletedNestedRowId' => $rowId
+                    'deletedNestedRowId' => $rowId,
                 ]);
 
                 // Notify the parent RowBlock component to update its blocks
@@ -674,7 +680,7 @@ class PageEditor extends Component
                 Log::info('PageEditor nested row deletion completed - dispatched nested-row-deleted event', [
                     'parentRowId' => $parentRowId,
                     'deletedRowId' => $rowId,
-                    'remainingBlocksCount' => count($this->rows[$parentRowId]['blocks'])
+                    'remainingBlocksCount' => count($this->rows[$parentRowId]['blocks']),
                 ]);
 
                 return;
@@ -1174,7 +1180,7 @@ class PageEditor extends Component
             if ($blockClass === \Trinavo\LivewirePageBuilder\Http\Livewire\RowBlock::class && isset($block['blocks'])) {
                 Log::info('Found nested row with blocks:', [
                     'blockId' => $blockId,
-                    'nestedBlocks' => $block['blocks']
+                    'nestedBlocks' => $block['blocks'],
                 ]);
                 $blockData['nestedBlocks'] = $this->getBlocksWithNesting($block['blocks']);
             }

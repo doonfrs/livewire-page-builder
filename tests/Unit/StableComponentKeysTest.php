@@ -13,18 +13,18 @@ class StableComponentKeysTest extends TestCase
         // This test verifies that component keys in templates are stable
         // and don't change based on dynamic content like block counts
 
-        $pageEditor = new PageEditor();
+        $pageEditor = new PageEditor;
         $pageEditor->rows = [
             'row-1' => [
                 'blocks' => [],
-                'properties' => ['desktopWidth' => 'w-full']
+                'properties' => ['desktopWidth' => 'w-full'],
             ],
             'row-2' => [
                 'blocks' => [
-                    'nested-block-1' => ['alias' => 'some-block', 'properties' => []]
+                    'nested-block-1' => ['alias' => 'some-block', 'properties' => []],
                 ],
-                'properties' => ['desktopWidth' => 'w-1/2']
-            ]
+                'properties' => ['desktopWidth' => 'w-1/2'],
+            ],
         ];
 
         // The component key should be just the rowId, not dependent on block count
@@ -40,7 +40,7 @@ class StableComponentKeysTest extends TestCase
         // Add a block to row-1
         $pageEditor->rows['row-1']['blocks']['new-block'] = [
             'alias' => 'text-block',
-            'properties' => []
+            'properties' => [],
         ];
 
         // The row component key should remain 'row-1', not change to 'row-1-1'

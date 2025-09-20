@@ -10,12 +10,12 @@ class BuilderBlockStableKeysTest extends TestCase
     /** @test */
     public function builder_block_uses_stable_component_keys(): void
     {
-        $builderBlock = new BuilderBlock();
+        $builderBlock = new BuilderBlock;
         $builderBlock->blockId = 'test-block-123';
         $builderBlock->blockAlias = 'text-block';
         $builderBlock->properties = [
             'text' => 'Hello World',
-            'color' => '#000000'
+            'color' => '#000000',
         ];
 
         // The template should use: key($blockId)

@@ -24,7 +24,7 @@ class NestedRowUIIntegrationTest extends TestCase
                 'another-block-789' => [
                     'alias' => 'some-other-block',
                     'properties' => ['textColor' => '#000000'],
-                ]
+                ],
             ],
             'editMode' => true,
             'isNested' => false,
@@ -44,7 +44,7 @@ class NestedRowUIIntegrationTest extends TestCase
                 'another-block-789' => [
                     'alias' => 'some-other-block',
                     'properties' => ['textColor' => '#000000'],
-                ]
+                ],
             ]
         );
 
@@ -67,7 +67,7 @@ class NestedRowUIIntegrationTest extends TestCase
                     'alias' => 'page-builder-trinavo-livewire-page-builder-http-livewire-row-block',
                     'properties' => ['desktopWidth' => 'w-full'],
                     'blocks' => [],
-                ]
+                ],
             ],
             'editMode' => true,
             'isNested' => false,
@@ -105,7 +105,7 @@ class NestedRowUIIntegrationTest extends TestCase
                     'alias' => 'page-builder-trinavo-livewire-page-builder-http-livewire-row-block',
                     'properties' => ['desktopWidth' => 'w-1/2'],
                     'blocks' => [],
-                ]
+                ],
             ],
             'editMode' => true,
             'isNested' => false,
@@ -120,7 +120,7 @@ class NestedRowUIIntegrationTest extends TestCase
                     'alias' => 'page-builder-trinavo-livewire-page-builder-http-livewire-row-block',
                     'properties' => ['desktopWidth' => 'w-full'],
                     'blocks' => [],
-                ]
+                ],
             ],
             'editMode' => true,
             'isNested' => false,
@@ -135,7 +135,7 @@ class NestedRowUIIntegrationTest extends TestCase
                     'alias' => 'page-builder-trinavo-livewire-page-builder-http-livewire-row-block',
                     'properties' => ['desktopWidth' => 'w-1/2'],
                     'blocks' => [],
-                ]
+                ],
             ]
         );
 
@@ -163,7 +163,7 @@ class NestedRowUIIntegrationTest extends TestCase
                     'alias' => 'page-builder-trinavo-livewire-page-builder-http-livewire-row-block',
                     'properties' => ['desktopWidth' => 'w-1/2'],
                     'blocks' => [],
-                ]
+                ],
             ],
             'editMode' => true,
             'isNested' => false,

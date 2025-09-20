@@ -11,7 +11,7 @@ class JavaScriptRefreshTest extends TestCase
     /** @test */
     public function page_editor_generates_javascript_for_nested_row_deletion(): void
     {
-        $pageEditor = new PageEditor();
+        $pageEditor = new PageEditor;
         $pageEditor->rows = [
             'parent-row-id' => [
                 'blocks' => [
@@ -23,15 +23,15 @@ class JavaScriptRefreshTest extends TestCase
                     'remaining-block' => [
                         'alias' => 'some-block',
                         'properties' => ['textColor' => '#000000'],
-                    ]
+                    ],
                 ],
-                'properties' => ['desktopWidth' => 'w-full']
-            ]
+                'properties' => ['desktopWidth' => 'w-full'],
+            ],
         ];
 
         // Capture any JavaScript that gets executed
         $executedJs = null;
-        $pageEditor->js = function($script) use (&$executedJs) {
+        $pageEditor->js = function ($script) use (&$executedJs) {
             $executedJs = $script;
         };
 
@@ -50,7 +50,7 @@ class JavaScriptRefreshTest extends TestCase
     /** @test */
     public function row_block_refresh_blocks_method_works(): void
     {
-        $rowBlock = new RowBlock();
+        $rowBlock = new RowBlock;
         $rowBlock->rowId = 'test-row';
         $rowBlock->blocks = [
             'block-1' => ['alias' => 'some-block', 'properties' => []],
@@ -80,7 +80,7 @@ class JavaScriptRefreshTest extends TestCase
     /** @test */
     public function refresh_blocks_handles_empty_blocks_array(): void
     {
-        $rowBlock = new RowBlock();
+        $rowBlock = new RowBlock;
         $rowBlock->rowId = 'test-row';
         $rowBlock->blocks = [
             'only-block' => ['alias' => 'some-block', 'properties' => []],

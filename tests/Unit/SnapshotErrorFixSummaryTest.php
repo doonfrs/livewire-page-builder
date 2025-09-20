@@ -58,7 +58,7 @@ class SnapshotErrorFixSummaryTest extends TestCase
         $templates = [
             'page-editor.blade.php' => 'Uses :key="$rowId" for RowBlock components',
             'row.blade.php' => 'Uses wire:key="{{ $rowId }}" for row container',
-            'builder-block.blade.php' => 'Uses key($blockId) for nested components'
+            'builder-block.blade.php' => 'Uses key($blockId) for nested components',
         ];
 
         foreach ($templates as $template => $change) {

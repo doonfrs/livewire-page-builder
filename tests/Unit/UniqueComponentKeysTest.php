@@ -58,9 +58,9 @@ class UniqueComponentKeysTest extends TestCase
         $rowId = 'test-row-123';
 
         $keys = [
-            'page_editor' => 'page-editor-' . $rowId,
-            'builder_page_block' => 'builder-page-block-' . $rowId,
-            'page_block_view' => 'page-block-view-' . $rowId,
+            'page_editor' => 'page-editor-'.$rowId,
+            'builder_page_block' => 'builder-page-block-'.$rowId,
+            'page_block_view' => 'page-block-view-'.$rowId,
         ];
 
         // Verify all keys are unique
