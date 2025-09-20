@@ -32,3 +32,8 @@ decoration-clone box-decoration-clone
 - try to avoid writing @php inside livewire views please
 - Using Livewire 3, please make sure not to use deprecated method <https://livewire.laravel.com/docs/upgrading#emitup>
 - it is a laravel package the main folder is src/ not app/
+
+## Debugging
+
+- This is a package and we are using it inside the shop laravel project, to access the laravel.log you have to connect to the docker trinavo_shop
+- The laravel project is in /var/www/html
