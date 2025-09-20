@@ -434,7 +434,7 @@ class PageEditor extends Component
     #[On('updateBlockProperty')]
     public function updateBlockProperty($rowId, $blockId, $propertyName, $value)
     {
-        \Log::info('PageEditor::updateBlockProperty called', [
+        Log::info('PageEditor::updateBlockProperty called', [
             'rowId' => $rowId,
             'blockId' => $blockId,
             'propertyName' => $propertyName,
@@ -444,7 +444,7 @@ class PageEditor extends Component
 
         if ($rowId && !$blockId) {
             // Updating row properties - handle both top-level and nested rows
-            \Log::info('Updating row property', [
+            Log::info('Updating row property', [
                 'rowId' => $rowId,
                 'propertyName' => $propertyName,
                 'value' => $value,
@@ -454,7 +454,7 @@ class PageEditor extends Component
             if (isset($this->rows[$rowId])) {
                 // Top-level row
                 $this->rows[$rowId]['properties'][$propertyName] = $value;
-                \Log::info('Top-level row property updated successfully', [
+                Log::info('Top-level row property updated successfully', [
                     'rowId' => $rowId,
                     'propertyName' => $propertyName,
                     'value' => $value
@@ -467,7 +467,7 @@ class PageEditor extends Component
                         // Found the nested row
                         $this->rows[$parentRowId]['blocks'][$rowId]['properties'][$propertyName] = $value;
                         $nestedRowFound = true;
-                        \Log::info('Nested row property updated successfully', [
+                        Log::info('Nested row property updated successfully', [
                             'parentRowId' => $parentRowId,
                             'nestedRowId' => $rowId,
                             'propertyName' => $propertyName,
@@ -478,12 +478,12 @@ class PageEditor extends Component
                 }
 
                 if (!$nestedRowFound) {
-                    \Log::warning('Row not found (neither top-level nor nested)', ['rowId' => $rowId]);
+                    Log::warning('Row not found (neither top-level nor nested)', ['rowId' => $rowId]);
                 }
             }
         } else {
             // Updating block properties
-            \Log::info('Updating block property', [
+            Log::info('Updating block property', [
                 'rowId' => $rowId,
                 'blockId' => $blockId,
                 'propertyName' => $propertyName,
@@ -492,7 +492,7 @@ class PageEditor extends Component
 
             if ($rowId && $blockId) {
                 // If both rowId and blockId are provided, ensure the block is actually in that row
-                \Log::info('Checking specific row for block', [
+                Log::info('Checking specific row for block', [
                     'rowId' => $rowId,
                     'blockId' => $blockId,
                     'rowExists' => isset($this->rows[$rowId]),
@@ -503,7 +503,7 @@ class PageEditor extends Component
                     $oldValue = $this->rows[$rowId]['blocks'][$blockId]['properties'][$propertyName] ?? 'not_set';
                     $this->rows[$rowId]['blocks'][$blockId]['properties'][$propertyName] = $value;
 
-                    \Log::info('Block property updated successfully', [
+                    Log::info('Block property updated successfully', [
                         'rowId' => $rowId,
                         'blockId' => $blockId,
                         'propertyName' => $propertyName,
@@ -512,7 +512,7 @@ class PageEditor extends Component
                         'blockAlias' => $this->rows[$rowId]['blocks'][$blockId]['alias'] ?? 'unknown'
                     ]);
                 } else {
-                    \Log::warning('Block not found in specified row', [
+                    Log::warning('Block not found in specified row', [
                         'rowId' => $rowId,
                         'blockId' => $blockId,
                         'availableRows' => array_keys($this->rows),
@@ -521,7 +521,7 @@ class PageEditor extends Component
                 }
             } else {
                 // Fallback: search all rows for the block (maintain backward compatibility)
-                \Log::info('Searching all rows for block', ['blockId' => $blockId]);
+                Log::info('Searching all rows for block', ['blockId' => $blockId]);
 
                 $found = false;
                 foreach ($this->rows as $rId => $row) {
@@ -529,7 +529,7 @@ class PageEditor extends Component
                         $oldValue = $this->rows[$rId]['blocks'][$blockId]['properties'][$propertyName] ?? 'not_set';
                         $this->rows[$rId]['blocks'][$blockId]['properties'][$propertyName] = $value;
 
-                        \Log::info('Block property updated via fallback search', [
+                        Log::info('Block property updated via fallback search', [
                             'foundInRowId' => $rId,
                             'blockId' => $blockId,
                             'propertyName' => $propertyName,
@@ -544,7 +544,7 @@ class PageEditor extends Component
                 }
 
                 if (!$found) {
-                    \Log::warning('Block not found in any row', [
+                    Log::warning('Block not found in any row', [
                         'blockId' => $blockId,
                         'availableRows' => array_keys($this->rows),
                         'allBlockIds' => $this->getAllBlockIds()
@@ -649,9 +649,39 @@ class PageEditor extends Component
     #[On('deleteRow')]
     public function deleteRow($rowId)
     {
+        // First check if it's a top-level row
         if (isset($this->rows[$rowId])) {
             unset($this->rows[$rowId]);
+            return;
         }
+
+        // If not found as top-level row, search for it as a nested row in blocks
+        foreach ($this->rows as $parentRowId => $parentRow) {
+            if (isset($parentRow['blocks'][$rowId])) {
+                unset($this->rows[$parentRowId]['blocks'][$rowId]);
+                Log::info('Nested row deleted successfully', [
+                    'parentRowId' => $parentRowId,
+                    'deletedNestedRowId' => $rowId
+                ]);
+
+                // Notify the parent RowBlock component to update its blocks
+                $this->dispatch('nested-row-deleted',
+                    parentRowId: $parentRowId,
+                    deletedRowId: $rowId,
+                    updatedBlocks: $this->rows[$parentRowId]['blocks']
+                );
+
+                Log::info('PageEditor nested row deletion completed - dispatched nested-row-deleted event', [
+                    'parentRowId' => $parentRowId,
+                    'deletedRowId' => $rowId,
+                    'remainingBlocksCount' => count($this->rows[$parentRowId]['blocks'])
+                ]);
+
+                return;
+            }
+        }
+
+        Log::warning('Row not found for deletion', ['rowId' => $rowId]);
     }
 
     #[On('deleteBlock')]

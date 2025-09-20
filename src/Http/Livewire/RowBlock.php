@@ -45,6 +45,8 @@ class RowBlock extends Block
 
     public $contentCentered = true;
 
+    public $isNested = false;
+
     public function mount()
     {
         Log::info('RowBlock::mount called', [
@@ -309,7 +311,19 @@ class RowBlock extends Block
 
     public function makeClasses(): string
     {
-        $classString = app(PageBuilderService::class)->getCssClassesFromProperties($this->properties, isRowBlock: true);
+        if ($this->isNested) {
+            // For nested RowBlocks, don't include width/sizing properties as they're applied to the BuilderBlock wrapper
+            // Only include non-sizing properties like background, padding, etc.
+            $propertiesWithoutSizing = $this->properties;
+            unset($propertiesWithoutSizing['mobileWidth']);
+            unset($propertiesWithoutSizing['tabletWidth']);
+            unset($propertiesWithoutSizing['desktopWidth']);
+
+            $classString = app(PageBuilderService::class)->getCssClassesFromProperties($propertiesWithoutSizing, isRowBlock: false);
+        } else {
+            // For top-level RowBlocks, include all properties including width
+            $classString = app(PageBuilderService::class)->getCssClassesFromProperties($this->properties, isRowBlock: true);
+        }
 
         return $classString;
     }
@@ -471,5 +485,44 @@ class RowBlock extends Block
     public function getPageBuilderIcon(): string
     {
         return 'heroicon-o-rectangle-group';
+    }
+
+    #[On('nested-row-deleted')]
+    public function handleNestedRowDeleted($parentRowId, $deletedRowId, $updatedBlocks)
+    {
+        Log::info('RowBlock received nested-row-deleted event', [
+            'thisRowId' => $this->rowId,
+            'eventParentRowId' => $parentRowId,
+            'deletedRowId' => $deletedRowId,
+            'shouldUpdate' => $parentRowId === $this->rowId
+        ]);
+
+        // Only update if this RowBlock is the parent of the deleted nested row
+        if ($parentRowId === $this->rowId) {
+            $this->blocks = $updatedBlocks;
+
+            Log::info('RowBlock updated after nested row deletion', [
+                'parentRowId' => $parentRowId,
+                'deletedRowId' => $deletedRowId,
+                'remainingBlocksCount' => count($this->blocks)
+            ]);
+
+            // Force Livewire to detect the state change and re-render
+            $this->dispatch('$refresh');
+        }
+    }
+
+    public function refreshBlocks($updatedBlocks)
+    {
+        Log::info('RowBlock refreshBlocks called via JavaScript', [
+            'rowId' => $this->rowId,
+            'newBlocksCount' => count($updatedBlocks),
+            'updatedBlocks' => $updatedBlocks
+        ]);
+
+        $this->blocks = $updatedBlocks;
+
+        // Force a re-render of the component
+        $this->skipRender(false);
     }
 }
