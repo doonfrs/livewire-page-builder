@@ -75,7 +75,9 @@
                     :style="getColorStyle('{{ $currentValue }}')">
                 </div>
                 <span x-text="getColorName('{{ $currentValue }}')"></span>
-                <x-heroicon-o-chevron-down class="w-4 h-4 ml-auto text-gray-500 dark:text-gray-400" />
+                <svg class="w-4 h-4 ml-auto text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                </svg>
             </button>
         </div>
 
@@ -96,7 +98,9 @@
                 <h3 class="text-xs font-medium text-gray-900 dark:text-gray-100">{{ __('Select Color') }}</h3>
                 <button @click="closePopover()" type="button" class="text-gray-400 hover:text-gray-500 dark:hover:text-gray-300">
                     <span class="sr-only">{{ __('Close') }}</span>
-                    <x-heroicon-o-x-mark class="h-4 w-4" />
+                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
                 </button>
             </div>
 

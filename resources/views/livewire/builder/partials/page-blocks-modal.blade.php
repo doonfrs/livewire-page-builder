@@ -23,17 +23,23 @@
         @click.outside="$wire.closePageBlocksModal()">
         <button wire:click="closePageBlocksModal"
             class="absolute top-3 end-3 text-gray-400 hover:text-gray-700 dark:hover:text-gray-200">
-            <x-heroicon-o-x-mark class="w-6 h-6" />
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
         </button>
         <h2 class="text-xl font-bold mb-6 text-gray-800 dark:text-gray-100 flex items-center gap-2">
-            <x-heroicon-o-list-bullet class="w-6 h-6 text-pink-500" />
+            <svg class="w-6 h-6 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0ZM3.75 12h.007v.008H3.75V12Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm-.375 5.25h.007v.008H3.75v-.008Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+            </svg>
             {{ __('Page Blocks') }}
         </h2>
 
         <!-- Search filter -->
         <div class="relative mb-6">
             <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-                <x-heroicon-o-magnifying-glass class="w-4 h-4 text-gray-500 dark:text-gray-400" />
+                <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                </svg>
             </div>
             <input type="text" x-model="blockFilter"
                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-pink-500 focus:border-pink-500 block w-full ps-10 p-2.5 dark:bg-gray-800 dark:border-gray-700 dark:placeholder-gray-400 dark:text-white dark:focus:ring-pink-500 dark:focus:border-pink-500"
@@ -61,7 +67,9 @@
                                         <button wire:click="$dispatch('select-row', { rowId: rowId })"
                                             @click="$wire.closePageBlocksModal()"
                                             class="flex-shrink-0 w-8 h-8 flex items-center justify-center text-pink-500 bg-white dark:bg-gray-900 rounded-md shadow-sm hover:text-pink-600 hover:scale-105 transition-all">
-                                            <x-heroicon-o-rectangle-group class="w-5 h-5" />
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.25 7.125C2.25 6.504 2.754 6 3.375 6h6c.621 0 1.125.504 1.125 1.125v3.75c0 .621-.504 1.125-1.125 1.125h-6a1.125 1.125 0 0 1-1.125-1.125v-3.75ZM14.25 8.625c0-.621.504-1.125 1.125-1.125h5.25c.621 0 1.125.504 1.125 1.125v8.25c0 .621-.504 1.125-1.125 1.125h-5.25a1.125 1.125 0 0 1-1.125-1.125v-8.25ZM3.75 16.125c0-.621.504-1.125 1.125-1.125h5.25c.621 0 1.125.504 1.125 1.125v2.25c0 .621-.504 1.125-1.125 1.125h-5.25a1.125 1.125 0 0 1-1.125-1.125v-2.25Z" />
+                                            </svg>
                                         </button>
                                         <div class="font-medium">Row <span x-text="rowId.substring(0, 6)"></span></div>
                                         <div class="text-xs text-gray-500 dark:text-gray-400">
@@ -69,9 +77,9 @@
                                         </div>
                                     </div>
                                     <div class="flex items-center">
-                                        <x-heroicon-o-chevron-down
-                                            class="w-5 h-5 text-gray-500 transition-transform duration-200"
-                                            x-bind:class="isRowExpanded[rowId] ? 'rotate-180' : ''" />
+                                        <svg class="w-5 h-5 text-gray-500 transition-transform duration-200" x-bind:class="isRowExpanded[rowId] ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                                        </svg>
                                     </div>
                                 </div>
 
