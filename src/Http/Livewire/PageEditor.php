@@ -72,28 +72,104 @@ class PageEditor extends Component
             'theme_id' => $this->themeId,
         ]);
 
+        Log::info('PageEditor page loaded', [
+            'pageId' => $this->page->id,
+            'pageKey' => $this->page->key,
+            'themeId' => $this->page->theme_id,
+            'hasComponents' => !empty($this->page->components),
+            'componentsCount' => $this->page->components ? count($this->page->components) : 0,
+            'rawComponents' => $this->page->components ? json_encode($this->page->components, JSON_PRETTY_PRINT) : 'null',
+            'timestamp' => now()->toISOString()
+        ]);
+
         $this->rows = $this->page->components ? $this->page->components : [];
+
+        Log::info('PageEditor rows initialized', [
+            'pageId' => $this->page->id,
+            'rowsCount' => count($this->rows),
+            'rowIds' => array_keys($this->rows),
+            'detailedStructure' => $this->getDetailedComponentStructure()
+        ]);
     }
 
     #[On('save-page')]
     public function savePage()
     {
+        Log::info('PageEditor::savePage called', [
+            'pageKey' => $this->pageKey,
+            'themeId' => $this->themeId,
+            'pageExists' => isset($this->page) && $this->page,
+            'rowsCount' => count($this->rows),
+            'timestamp' => now()->toISOString()
+        ]);
+
         // Ensure we have a page to save to
         if (!isset($this->page) || !$this->page) {
             // If page doesn't exist but we have the required data, create it
             if ($this->pageKey && $this->themeId) {
+                Log::info('Creating new page', [
+                    'pageKey' => $this->pageKey,
+                    'themeId' => $this->themeId
+                ]);
+
                 $this->page = BuilderPage::firstOrCreate([
                     'key' => $this->pageKey,
                     'theme_id' => $this->themeId,
                 ]);
+
+                Log::info('Page created/found', [
+                    'pageId' => $this->page->id,
+                    'pageKey' => $this->page->key
+                ]);
             } else {
+                Log::warning('Cannot save page - missing pageKey or themeId', [
+                    'pageKey' => $this->pageKey,
+                    'themeId' => $this->themeId
+                ]);
                 // Cannot save without pageKey and themeId
                 return;
             }
         }
 
+        // Log detailed structure before saving
+        Log::info('Saving page components', [
+            'pageId' => $this->page->id,
+            'pageKey' => $this->page->key,
+            'componentStructure' => $this->getDetailedComponentStructure(),
+            'rawRowsData' => json_encode($this->rows, JSON_PRETTY_PRINT)
+        ]);
+
         $this->page->components = $this->rows;
         $this->page->saveOrFail();
+
+        Log::info('Page saved successfully', [
+            'pageId' => $this->page->id,
+            'pageKey' => $this->page->key,
+            'savedComponentsCount' => count($this->page->components)
+        ]);
+    }
+
+    private function getDetailedComponentStructure(): array
+    {
+        $structure = [];
+        foreach ($this->rows as $rowId => $row) {
+            $structure[$rowId] = [
+                'properties' => $row['properties'] ?? [],
+                'blocks' => []
+            ];
+
+            if (isset($row['blocks'])) {
+                foreach ($row['blocks'] as $blockId => $block) {
+                    $structure[$rowId]['blocks'][$blockId] = [
+                        'alias' => $block['alias'] ?? 'unknown',
+                        'properties' => $block['properties'] ?? [],
+                        'hasNestedBlocks' => isset($block['blocks']) && is_array($block['blocks']),
+                        'nestedBlocksCount' => isset($block['blocks']) ? count($block['blocks']) : 0
+                    ];
+                }
+            }
+        }
+        return $structure;
     }
 
     public function selectThemeForPage($themeId)
@@ -358,22 +434,142 @@ class PageEditor extends Component
     #[On('updateBlockProperty')]
     public function updateBlockProperty($rowId, $blockId, $propertyName, $value)
     {
+        \Log::info('PageEditor::updateBlockProperty called', [
+            'rowId' => $rowId,
+            'blockId' => $blockId,
+            'propertyName' => $propertyName,
+            'value' => $value,
+            'timestamp' => now()->toISOString()
+        ]);
+
         if ($rowId && !$blockId) {
-            // Updating row properties - only handle top-level rows
+            // Updating row properties - handle both top-level and nested rows
+            \Log::info('Updating row property', [
+                'rowId' => $rowId,
+                'propertyName' => $propertyName,
+                'value' => $value,
+                'isTopLevelRow' => isset($this->rows[$rowId])
+            ]);
+
             if (isset($this->rows[$rowId])) {
+                // Top-level row
                 $this->rows[$rowId]['properties'][$propertyName] = $value;
+                \Log::info('Top-level row property updated successfully', [
+                    'rowId' => $rowId,
+                    'propertyName' => $propertyName,
+                    'value' => $value
+                ]);
+            } else {
+                // Check if it's a nested row
+                $nestedRowFound = false;
+                foreach ($this->rows as $parentRowId => $parentRow) {
+                    if (isset($parentRow['blocks'][$rowId])) {
+                        // Found the nested row
+                        $this->rows[$parentRowId]['blocks'][$rowId]['properties'][$propertyName] = $value;
+                        $nestedRowFound = true;
+                        \Log::info('Nested row property updated successfully', [
+                            'parentRowId' => $parentRowId,
+                            'nestedRowId' => $rowId,
+                            'propertyName' => $propertyName,
+                            'value' => $value
+                        ]);
+                        break;
+                    }
+                }
+
+                if (!$nestedRowFound) {
+                    \Log::warning('Row not found (neither top-level nor nested)', ['rowId' => $rowId]);
+                }
             }
-            // Nested rows will handle their own properties via their RowBlock component
         } else {
             // Updating block properties
-            foreach ($this->rows as $rId => $row) {
-                if (isset($row['blocks'][$blockId])) {
-                    $this->rows[$rId]['blocks'][$blockId]['properties'][$propertyName] = $value;
-                    break;
+            \Log::info('Updating block property', [
+                'rowId' => $rowId,
+                'blockId' => $blockId,
+                'propertyName' => $propertyName,
+                'value' => $value
+            ]);
+
+            if ($rowId && $blockId) {
+                // If both rowId and blockId are provided, ensure the block is actually in that row
+                \Log::info('Checking specific row for block', [
+                    'rowId' => $rowId,
+                    'blockId' => $blockId,
+                    'rowExists' => isset($this->rows[$rowId]),
+                    'blockExists' => isset($this->rows[$rowId]['blocks'][$blockId])
+                ]);
+
+                if (isset($this->rows[$rowId]['blocks'][$blockId])) {
+                    $oldValue = $this->rows[$rowId]['blocks'][$blockId]['properties'][$propertyName] ?? 'not_set';
+                    $this->rows[$rowId]['blocks'][$blockId]['properties'][$propertyName] = $value;
+
+                    \Log::info('Block property updated successfully', [
+                        'rowId' => $rowId,
+                        'blockId' => $blockId,
+                        'propertyName' => $propertyName,
+                        'oldValue' => $oldValue,
+                        'newValue' => $value,
+                        'blockAlias' => $this->rows[$rowId]['blocks'][$blockId]['alias'] ?? 'unknown'
+                    ]);
+                } else {
+                    \Log::warning('Block not found in specified row', [
+                        'rowId' => $rowId,
+                        'blockId' => $blockId,
+                        'availableRows' => array_keys($this->rows),
+                        'blocksInRow' => isset($this->rows[$rowId]) ? array_keys($this->rows[$rowId]['blocks'] ?? []) : []
+                    ]);
+                }
+            } else {
+                // Fallback: search all rows for the block (maintain backward compatibility)
+                \Log::info('Searching all rows for block', ['blockId' => $blockId]);
+
+                $found = false;
+                foreach ($this->rows as $rId => $row) {
+                    if (isset($row['blocks'][$blockId])) {
+                        $oldValue = $this->rows[$rId]['blocks'][$blockId]['properties'][$propertyName] ?? 'not_set';
+                        $this->rows[$rId]['blocks'][$blockId]['properties'][$propertyName] = $value;
+
+                        \Log::info('Block property updated via fallback search', [
+                            'foundInRowId' => $rId,
+                            'blockId' => $blockId,
+                            'propertyName' => $propertyName,
+                            'oldValue' => $oldValue,
+                            'newValue' => $value,
+                            'blockAlias' => $this->rows[$rId]['blocks'][$blockId]['alias'] ?? 'unknown'
+                        ]);
+
+                        $found = true;
+                        break;
+                    }
+                }
+
+                if (!$found) {
+                    \Log::warning('Block not found in any row', [
+                        'blockId' => $blockId,
+                        'availableRows' => array_keys($this->rows),
+                        'allBlockIds' => $this->getAllBlockIds()
+                    ]);
                 }
             }
         }
         $this->skipRender();
+    }
+
+    private function getAllBlockIds(): array
+    {
+        $allBlockIds = [];
+        foreach ($this->rows as $rowId => $row) {
+            if (isset($row['blocks'])) {
+                foreach ($row['blocks'] as $blockId => $block) {
+                    $allBlockIds[] = [
+                        'rowId' => $rowId,
+                        'blockId' => $blockId,
+                        'alias' => $block['alias'] ?? 'unknown'
+                    ];
+                }
+            }
+        }
+        return $allBlockIds;
     }
 
     #[On('moveRowUp')]

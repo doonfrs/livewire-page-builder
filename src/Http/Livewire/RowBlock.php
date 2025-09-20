@@ -2,6 +2,7 @@
 
 namespace Trinavo\LivewirePageBuilder\Http\Livewire;
 
+use Illuminate\Support\Facades\Log;
 use Livewire\Attributes\On;
 use Trinavo\LivewirePageBuilder\Services\PageBuilderService;
 use Trinavo\LivewirePageBuilder\Support\Block;
@@ -14,7 +15,7 @@ class RowBlock extends Block
 
     public ?string $rowId = null;
 
-    public ?array $properties;
+    public ?array $properties = null;
 
     public $cssClasses;
 
@@ -26,7 +27,7 @@ class RowBlock extends Block
 
     public $tabletWidth = 'w-full';
 
-    public $desktopWidth = 'w-7xl';
+    public $desktopWidth = 'w-full';
 
     public $selfCentered = true;
 
@@ -46,10 +47,58 @@ class RowBlock extends Block
 
     public function mount()
     {
-        $this->properties = $this->properties ?? $this->getPropertyValues();
+        Log::info('RowBlock::mount called', [
+            'rowId' => $this->rowId,
+            'hasProperties' => !empty($this->properties),
+            'propertiesCount' => $this->properties ? count($this->properties) : 0,
+            'hasBlocks' => !empty($this->blocks),
+            'blocksCount' => count($this->blocks),
+            'editMode' => $this->editMode ?? false,
+            'timestamp' => now()->toISOString()
+        ]);
+
+        // Ensure properties are properly initialized with saved values or defaults
+        $defaultProperties = $this->getPropertyValues();
+
+        Log::info('RowBlock property initialization', [
+            'rowId' => $this->rowId,
+            'defaultPropertiesCount' => count($defaultProperties),
+            'passedPropertiesCount' => $this->properties ? count($this->properties) : 0,
+            'passedProperties' => $this->properties ? json_encode($this->properties, JSON_PRETTY_PRINT) : 'null'
+        ]);
+
+        // If properties were passed from parent (e.g., BuilderBlock), merge them with defaults
+        if ($this->properties) {
+            $beforeMerge = $this->properties;
+            $this->properties = array_merge($defaultProperties, $this->properties);
+
+            Log::info('RowBlock properties merged', [
+                'rowId' => $this->rowId,
+                'beforeMerge' => json_encode($beforeMerge, JSON_PRETTY_PRINT),
+                'afterMerge' => json_encode($this->properties, JSON_PRETTY_PRINT),
+                'mergedPropertiesCount' => count($this->properties)
+            ]);
+        } else {
+            $this->properties = $defaultProperties;
+
+            Log::info('RowBlock properties set to defaults', [
+                'rowId' => $this->rowId,
+                'defaultPropertiesCount' => count($this->properties)
+            ]);
+        }
+
         $this->blocks = $this->blocks ?? [];
         $this->cssClasses = $this->makeClasses();
         $this->inlineStyles = $this->makeInlineStyles();
+
+        Log::info('RowBlock::mount completed', [
+            'rowId' => $this->rowId,
+            'finalPropertiesCount' => count($this->properties),
+            'finalBlocksCount' => count($this->blocks),
+            'hasDesktopWidth' => isset($this->properties['desktopWidth']),
+            'desktopWidth' => $this->properties['desktopWidth'] ?? 'not_set',
+            'cssClasses' => $this->cssClasses
+        ]);
     }
 
     public function openBlockModal()
@@ -60,7 +109,7 @@ class RowBlock extends Block
     public function addBlockToThisRow($blockAlias, $blockPageName = null)
     {
         $blockClass = app(PageBuilderService::class)->getClassNameFromAlias($blockAlias);
-        if (!$blockClass) {
+        if (! $blockClass) {
             return;
         }
 
@@ -114,10 +163,11 @@ class RowBlock extends Block
     public function updateBlockProperty($rowId, $blockId, $propertyName, $value)
     {
         // Handle row property updates (when this RowBlock is being treated as a row)
-        if ($rowId == $this->rowId && !$blockId) {
+        if ($rowId == $this->rowId && ! $blockId) {
             $this->properties[$propertyName] = $value;
             $this->cssClasses = $this->makeClasses();
             $this->inlineStyles = $this->makeInlineStyles();
+
             return;
         }
 
@@ -130,6 +180,7 @@ class RowBlock extends Block
                 nestedRowId: $this->rowId,
                 blocks: $this->blocks
             );
+
             return;
         }
     }
