@@ -11,6 +11,7 @@ use Trinavo\LivewirePageBuilder\Tests\TestCase;
 class BlockAndRowManagementTest extends TestCase
 {
     protected Theme $theme;
+
     protected BuilderPage $page;
 
     protected function setUp(): void
@@ -34,7 +35,7 @@ class BlockAndRowManagementTest extends TestCase
         // Mock the config for the service to work properly in package testing
         config()->set('page-builder.blocks', [
             \Trinavo\LivewirePageBuilder\Blocks\RichText::class,
-            \Trinavo\LivewirePageBuilder\Blocks\Section::class,
+            \Trinavo\LivewirePageBuilder\Blocks\Spacer::class,
         ]);
         config()->set('page-builder.pages', []);
 
@@ -46,6 +47,7 @@ class BlockAndRowManagementTest extends TestCase
         // dump(collect($availableBlocks)->pluck('alias')->toArray());
 
         $component = Livewire::test(PageEditor::class);
+
         return $component
             ->set('pageKey', 'test-page')
             ->set('themeId', $this->theme->id)

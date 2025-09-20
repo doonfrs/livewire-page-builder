@@ -5,6 +5,10 @@ parameters:
   # Paths to analyse
   paths:
       - src
+      - tests
+      - routes
+      - database
+      - config
 
   # Directories to exclude
   excludePaths:

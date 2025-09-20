@@ -180,5 +180,6 @@
     "Theme created successfully": "تم إنشاء المظهر بنجاح",
     "Theme updated successfully": "تم تحديث المظهر بنجاح",
     "Set Default Theme": "تعيين المظهر الافتراضي",
-    "Row": "صف"
+    "Row": "صف",
+    "Spacer": "فاصل"
 }
