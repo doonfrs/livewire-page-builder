@@ -179,5 +179,7 @@
     "Clone failed": "Clone failed",
     "Theme deleted successfully": "Theme deleted successfully",
     "Theme created successfully": "Theme created successfully",
-    "Theme updated successfully": "Theme updated successfully"
+    "Theme updated successfully": "Theme updated successfully",
+    "Set Default Theme": "Set Default Theme",
+    "Row": "Row"
 }

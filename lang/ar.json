@@ -178,5 +178,7 @@
     "Clone failed": "فشل النسخ",
     "Theme deleted successfully": "تم حذف المظهر بنجاح",
     "Theme created successfully": "تم إنشاء المظهر بنجاح",
-    "Theme updated successfully": "تم تحديث المظهر بنجاح"
+    "Theme updated successfully": "تم تحديث المظهر بنجاح",
+    "Set Default Theme": "تعيين المظهر الافتراضي",
+    "Row": "صف"
 }
