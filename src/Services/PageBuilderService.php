@@ -257,6 +257,8 @@ class PageBuilderService
         $tabletWidth = $properties['tabletWidth'] ?? 'w-auto';
         $desktopWidth = $properties['desktopWidth'] ?? 'w-auto';
 
+        $classes = [];
+
         // Format width values (in case they are custom arbitrary values or classes)
         $classes[] = $this->formatSizeValue($mobileWidth, 'w');
 

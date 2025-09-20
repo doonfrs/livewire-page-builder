@@ -31,14 +31,9 @@ class BuilderBlock extends Component
             $block = app($blockClass);
             $this->properties = $this->properties ?? $block->getPropertyValues();
 
-            // Don't apply CSS classes to RowBlocks - they manage their own styling
-            if ($blockClass !== \Trinavo\LivewirePageBuilder\Http\Livewire\RowBlock::class) {
-                $this->cssClasses = $this->makeClasses();
-                $this->inlineStyles = $this->makeInlineStyles();
-            } else {
-                $this->cssClasses = '';
-                $this->inlineStyles = '';
-            }
+            // Apply CSS classes and styles for all block types including RowBlocks
+            $this->cssClasses = $this->makeClasses();
+            $this->inlineStyles = $this->makeInlineStyles();
         }
     }
 
@@ -49,10 +44,11 @@ class BuilderBlock extends Component
 
         $componentProperties = $this->properties;
 
-        // For RowBlock, add the nested blocks
+        // For RowBlock, add the nested blocks and mark as nested
         if ($blockClass === \Trinavo\LivewirePageBuilder\Http\Livewire\RowBlock::class) {
             $componentProperties['blocks'] = $this->blocks ?? [];
             $componentProperties['rowId'] = $this->blockId; // Use block ID as row ID for nested rows
+            $componentProperties['isNested'] = true; // Flag to indicate this is a nested row
         }
 
         return view('page-builder::livewire.builder.builder-block', [
@@ -102,17 +98,18 @@ class BuilderBlock extends Component
         }
         $this->properties[$propertyName] = $value;
 
-        // Don't update CSS classes for RowBlocks - they manage their own styling
-        $blockClass = $this->getBlockClass();
-        if ($blockClass !== \Trinavo\LivewirePageBuilder\Http\Livewire\RowBlock::class) {
-            $this->cssClasses = $this->makeClasses();
-            $this->inlineStyles = $this->makeInlineStyles();
-        }
+        // Update CSS classes and styles for all block types
+        $this->cssClasses = $this->makeClasses();
+        $this->inlineStyles = $this->makeInlineStyles();
     }
 
     public function makeClasses(): string
     {
-        $classString = app(PageBuilderService::class)->getCssClassesFromProperties($this->properties, isRowBlock: false);
+        // For RowBlocks, apply the sizing properties to the wrapper (this BuilderBlock)
+        // since it's the actual flex item in the parent container
+        $isRowBlock = $this->getBlockClass() === \Trinavo\LivewirePageBuilder\Http\Livewire\RowBlock::class;
+
+        $classString = app(PageBuilderService::class)->getCssClassesFromProperties($this->properties, isRowBlock: $isRowBlock);
 
         return $classString;
     }
