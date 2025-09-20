@@ -11,6 +11,7 @@ use Trinavo\LivewirePageBuilder\Tests\TestCase;
 class NestedRowWidthPropertyBugTest extends TestCase
 {
     protected Theme $theme;
+
     protected BuilderPage $page;
 
     protected function setUp(): void
@@ -33,7 +34,7 @@ class NestedRowWidthPropertyBugTest extends TestCase
     {
         config()->set('page-builder.blocks', [
             \Trinavo\LivewirePageBuilder\Blocks\RichText::class,
-            \Trinavo\LivewirePageBuilder\Blocks\Section::class,
+            \Trinavo\LivewirePageBuilder\Blocks\Spacer::class,
         ]);
         config()->set('page-builder.pages', []);
 
@@ -41,6 +42,7 @@ class NestedRowWidthPropertyBugTest extends TestCase
         $availableBlocks = $service->getAvailableBlocks();
 
         $component = Livewire::test(PageEditor::class);
+
         return $component
             ->set('pageKey', 'test-width-bug')
             ->set('themeId', $this->theme->id)
@@ -320,7 +322,7 @@ class NestedRowWidthPropertyBugTest extends TestCase
 
         // Additional verification: Test that the width is properly applied when the RowBlock component is instantiated
         // This simulates the @livewire() call in the blade template
-        $rowBlockComponent = new \Trinavo\LivewirePageBuilder\Http\Livewire\RowBlock();
+        $rowBlockComponent = new \Trinavo\LivewirePageBuilder\Http\Livewire\RowBlock;
         $rowBlockComponent->rowId = $targetNestedRowId;
         $rowBlockComponent->properties = $refreshedNestedRow['properties'];
         $rowBlockComponent->blocks = $refreshedNestedRow['blocks'] ?? [];

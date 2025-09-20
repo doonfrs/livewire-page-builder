@@ -11,6 +11,7 @@ use Trinavo\LivewirePageBuilder\Tests\TestCase;
 class PropertyPanelIDConfusionTest extends TestCase
 {
     protected Theme $theme;
+
     protected BuilderPage $page;
 
     protected function setUp(): void
@@ -33,7 +34,7 @@ class PropertyPanelIDConfusionTest extends TestCase
     {
         config()->set('page-builder.blocks', [
             \Trinavo\LivewirePageBuilder\Blocks\RichText::class,
-            \Trinavo\LivewirePageBuilder\Blocks\Section::class,
+            \Trinavo\LivewirePageBuilder\Blocks\Spacer::class,
         ]);
         config()->set('page-builder.pages', []);
 
@@ -41,6 +42,7 @@ class PropertyPanelIDConfusionTest extends TestCase
         $availableBlocks = $service->getAvailableBlocks();
 
         $component = Livewire::test(PageEditor::class);
+
         return $component
             ->set('pageKey', 'id-confusion-test')
             ->set('themeId', $this->theme->id)
@@ -154,7 +156,7 @@ class PropertyPanelIDConfusionTest extends TestCase
         $nestedRowData = $freshRows[$parentRowId]['blocks'][$nestedRowId];
 
         // Simulate how the nested RowBlock component is instantiated in the real app
-        $rowBlockComponent = new \Trinavo\LivewirePageBuilder\Http\Livewire\RowBlock();
+        $rowBlockComponent = new \Trinavo\LivewirePageBuilder\Http\Livewire\RowBlock;
         $rowBlockComponent->rowId = $nestedRowId;
         $rowBlockComponent->properties = $nestedRowData['properties'];
         $rowBlockComponent->blocks = $nestedRowData['blocks'] ?? [];

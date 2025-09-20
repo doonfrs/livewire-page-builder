@@ -11,6 +11,7 @@ use Trinavo\LivewirePageBuilder\Tests\TestCase;
 class NestedRowPropertyUpdateMethodTest extends TestCase
 {
     protected Theme $theme;
+
     protected BuilderPage $page;
 
     protected function setUp(): void
@@ -33,7 +34,7 @@ class NestedRowPropertyUpdateMethodTest extends TestCase
     {
         config()->set('page-builder.blocks', [
             \Trinavo\LivewirePageBuilder\Blocks\RichText::class,
-            \Trinavo\LivewirePageBuilder\Blocks\Section::class,
+            \Trinavo\LivewirePageBuilder\Blocks\Spacer::class,
         ]);
         config()->set('page-builder.pages', []);
 
@@ -41,6 +42,7 @@ class NestedRowPropertyUpdateMethodTest extends TestCase
         $availableBlocks = $service->getAvailableBlocks();
 
         $component = Livewire::test(PageEditor::class);
+
         return $component
             ->set('pageKey', 'update-method-test')
             ->set('themeId', $this->theme->id)

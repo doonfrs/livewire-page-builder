@@ -35,7 +35,7 @@ class NestedRowPropertyPersistenceTest extends TestCase
         // Mock the config for the service to work properly in package testing
         config()->set('page-builder.blocks', [
             \Trinavo\LivewirePageBuilder\Blocks\RichText::class,
-            \Trinavo\LivewirePageBuilder\Blocks\Section::class,
+            \Trinavo\LivewirePageBuilder\Blocks\Spacer::class,
         ]);
         config()->set('page-builder.pages', []);
 

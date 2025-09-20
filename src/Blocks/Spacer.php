@@ -4,23 +4,29 @@ namespace Trinavo\LivewirePageBuilder\Blocks;
 
 use Trinavo\LivewirePageBuilder\Support\Block;
 
-class Section extends Block
+class Spacer extends Block
 {
+    public $mobileWidth = 'w-full';
+
+    public $tabletWidth = 'w-full';
+
+    public $desktopWidth = 'w-full';
+
     public function getPageBuilderLabel(): string
     {
-        return __('Section');
+        return __('Spacer');
     }
 
     public function getPageBuilderIcon(): string
     {
-        return 'heroicon-o-rectangle-group';
+        return 'heroicon-o-rectangle-stack';
     }
 
     public function render()
     {
         if ($this->editMode) {
             return "<div class='text-gray-400 italic'>
-                {{__('Section')}}
+                {{__('Spacer')}}
             </div>";
         } else {
             return '<div>
