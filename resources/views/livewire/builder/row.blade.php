@@ -8,7 +8,7 @@
     <div class="block-row-inner">
         <!-- Elementor-style Row Controls -->
         <div
-            class="absolute top-[-35px] left-1/2 -translate-x-1/2 bg-pink-500 shadow-lg px-1 py-1 rounded-lg flex items-center space-x-1 z-50 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none group-hover:pointer-events-auto">
+            class="absolute top-[-15px] left-1/2 -translate-x-1/2 bg-pink-500 shadow-lg px-1 py-1 rounded-lg flex items-center space-x-1 z-50 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none group-hover:pointer-events-auto">
             <!-- Select Button -->
             <button wire:click="rowSelected()"
                 class="w-7 h-7 flex items-center justify-center text-white hover:bg-pink-600 rounded transition-colors duration-150"
@@ -196,7 +196,7 @@
             </div>
         </div>
 
-        <div class="row-blocks pt-4 pb-4 {{ $rowCssClasses }}">
+        <div class="row-blocks pt-10 pb-10 {{ $rowCssClasses }}">
             @foreach ($blocks as $blockId => $block)
                 @livewire(
                     'builder-block',
@@ -205,6 +205,7 @@
                         'blockId' => $blockId,
                         'rowId' => $rowId,
                         'properties' => $block['properties'] ?? [],
+                        'blocks' => $block['blocks'] ?? [], // Pass nested blocks for RowBlock
                         'editMode' => true,
                     ],
                     key($blockId)
