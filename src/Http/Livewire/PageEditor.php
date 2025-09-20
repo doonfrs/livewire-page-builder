@@ -78,6 +78,20 @@ class PageEditor extends Component
     #[On('save-page')]
     public function savePage()
     {
+        // Ensure we have a page to save to
+        if (!isset($this->page) || !$this->page) {
+            // If page doesn't exist but we have the required data, create it
+            if ($this->pageKey && $this->themeId) {
+                $this->page = BuilderPage::firstOrCreate([
+                    'key' => $this->pageKey,
+                    'theme_id' => $this->themeId,
+                ]);
+            } else {
+                // Cannot save without pageKey and themeId
+                return;
+            }
+        }
+
         $this->page->components = $this->rows;
         $this->page->saveOrFail();
     }
