@@ -8,12 +8,19 @@ use Livewire\Component;
 class FlexibleSizeProperty extends Component
 {
     public $property;
+
     public $value;
+
     public $rowId;
+
     public $blockId;
+
     public $mode = 'class'; // 'class' or 'custom'
+
     public $customValue = '';
+
     public $selectedClass = '';
+
     public $prefix = 'w'; // Will be set based on property name
 
     public function mount($property, $value = null, $rowId = null, $blockId = null)
@@ -50,11 +57,11 @@ class FlexibleSizeProperty extends Component
                 } else {
                     // Try to extract any numeric value as fallback
                     $this->customValue = preg_replace('/[^0-9.]/', '', $value);
-                    if (!$this->customValue) {
+                    if (! $this->customValue) {
                         // If we couldn't extract a value, it might be an unrecognized class
                         // Default to class mode with the first option
                         $this->mode = 'class';
-                        if (!empty($this->property['classes'])) {
+                        if (! empty($this->property['classes'])) {
                             $this->selectedClass = array_key_first($this->property['classes']);
                         }
                     }
@@ -119,13 +126,13 @@ class FlexibleSizeProperty extends Component
 
     protected function generateTailwindArbitraryValue()
     {
-        if (!$this->customValue) {
+        if (! $this->customValue) {
             return '';
         }
 
         // Generate Tailwind arbitrary value syntax
         // e.g., w-[100px], h-[200px], min-h-[300px]
-        return $this->prefix . '-[' . $this->customValue . $this->property['unit'] . ']';
+        return $this->prefix.'-['.$this->customValue.$this->property['unit'].']';
     }
 
     protected function updateValue($newValue)
@@ -137,7 +144,7 @@ class FlexibleSizeProperty extends Component
             'rowId' => $this->rowId,
             'blockId' => $this->blockId,
             'mode' => $this->mode,
-            'timestamp' => now()->toISOString()
+            'timestamp' => now()->toISOString(),
         ]);
 
         $this->value = $newValue;
@@ -151,8 +158,8 @@ class FlexibleSizeProperty extends Component
                 'rowId' => $this->rowId,
                 'blockId' => $this->blockId,
                 'propertyName' => $this->property['name'],
-                'value' => $newValue
-            ]
+                'value' => $newValue,
+            ],
         ]);
 
         $this->dispatch('updateBlockProperty', $this->rowId, $this->blockId, $this->property['name'], $newValue);

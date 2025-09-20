@@ -11,7 +11,9 @@ use Trinavo\LivewirePageBuilder\Tests\TestCase;
 class PageEditorTest extends TestCase
 {
     protected PageEditor $pageEditor;
+
     protected Theme $theme;
+
     protected BuilderPage $page;
 
     protected function setUp(): void
@@ -29,7 +31,7 @@ class PageEditorTest extends TestCase
             'components' => [],
         ]);
 
-        $this->pageEditor = new PageEditor();
+        $this->pageEditor = new PageEditor;
         $this->pageEditor->pageKey = 'test-page';
         $this->pageEditor->themeId = $this->theme->id;
         $this->pageEditor->page = $this->page;

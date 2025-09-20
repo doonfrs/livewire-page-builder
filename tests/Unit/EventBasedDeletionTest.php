@@ -11,7 +11,7 @@ class EventBasedDeletionTest extends TestCase
     /** @test */
     public function page_editor_dispatches_nested_row_deleted_event(): void
     {
-        $pageEditor = new PageEditor();
+        $pageEditor = new PageEditor;
         $pageEditor->rows = [
             'parent-row-id' => [
                 'blocks' => [
@@ -23,15 +23,15 @@ class EventBasedDeletionTest extends TestCase
                     'remaining-block' => [
                         'alias' => 'some-block',
                         'properties' => ['textColor' => '#000000'],
-                    ]
+                    ],
                 ],
-                'properties' => ['desktopWidth' => 'w-full']
-            ]
+                'properties' => ['desktopWidth' => 'w-full'],
+            ],
         ];
 
         // Capture dispatched events
         $dispatchedEvents = [];
-        $pageEditor->dispatch = function($eventName, ...$params) use (&$dispatchedEvents) {
+        $pageEditor->dispatch = function ($eventName, ...$params) use (&$dispatchedEvents) {
             $dispatchedEvents[] = ['name' => $eventName, 'params' => $params];
         };
 
@@ -50,7 +50,7 @@ class EventBasedDeletionTest extends TestCase
     /** @test */
     public function row_block_handles_nested_row_deleted_event(): void
     {
-        $rowBlock = new RowBlock();
+        $rowBlock = new RowBlock;
         $rowBlock->rowId = 'parent-row-id';
         $rowBlock->blocks = [
             'nested-row-1' => ['alias' => 'some-block', 'properties' => []],
@@ -77,7 +77,7 @@ class EventBasedDeletionTest extends TestCase
     /** @test */
     public function row_block_ignores_event_for_different_parent(): void
     {
-        $rowBlock = new RowBlock();
+        $rowBlock = new RowBlock;
         $rowBlock->rowId = 'different-row-id';
         $rowBlock->blocks = [
             'my-block' => ['alias' => 'some-block', 'properties' => []],

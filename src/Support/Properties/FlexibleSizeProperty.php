@@ -5,7 +5,9 @@ namespace Trinavo\LivewirePageBuilder\Support\Properties;
 class FlexibleSizeProperty extends BlockProperty
 {
     public array $classes = [];
+
     public bool $allowCustom = true;
+
     public string $unit = 'px';
 
     public function __construct(

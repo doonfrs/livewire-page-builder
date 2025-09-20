@@ -12,6 +12,7 @@ use Trinavo\LivewirePageBuilder\Tests\TestCase;
 class LivewireMethodsOnlyTest extends TestCase
 {
     protected Theme $theme;
+
     protected BuilderPage $page;
 
     protected function setUp(): void
@@ -93,7 +94,7 @@ class LivewireMethodsOnlyTest extends TestCase
     public function livewire_component_instantiation_works(): void
     {
         // Test direct component instantiation without Livewire testing framework
-        $pageEditor = new PageEditor();
+        $pageEditor = new PageEditor;
         $pageEditor->pageKey = 'test-page';
         $pageEditor->themeId = $this->theme->id;
         $pageEditor->page = $this->page;
@@ -116,7 +117,7 @@ class LivewireMethodsOnlyTest extends TestCase
     /** @test */
     public function row_block_direct_instantiation_works(): void
     {
-        $rowBlock = new RowBlock();
+        $rowBlock = new RowBlock;
         $rowBlock->rowId = 'test-row';
         $rowBlock->blocks = [];
         $rowBlock->properties = ['flex' => 'row'];
@@ -130,7 +131,7 @@ class LivewireMethodsOnlyTest extends TestCase
     /** @test */
     public function page_editor_can_handle_row_operations_directly(): void
     {
-        $pageEditor = new PageEditor();
+        $pageEditor = new PageEditor;
         $pageEditor->pageKey = 'test-page';
         $pageEditor->themeId = $this->theme->id;
         $pageEditor->page = $this->page;
@@ -155,7 +156,7 @@ class LivewireMethodsOnlyTest extends TestCase
     /** @test */
     public function row_block_can_handle_block_operations_directly(): void
     {
-        $rowBlock = new RowBlock();
+        $rowBlock = new RowBlock;
         $rowBlock->rowId = 'test-row';
         $rowBlock->blocks = [
             'block-1' => ['alias' => 'first-block'],
@@ -179,7 +180,7 @@ class LivewireMethodsOnlyTest extends TestCase
     /** @test */
     public function page_editor_preserves_data_integrity(): void
     {
-        $pageEditor = new PageEditor();
+        $pageEditor = new PageEditor;
         $pageEditor->pageKey = 'test-page';
         $pageEditor->themeId = $this->theme->id;
         $pageEditor->page = $this->page;
@@ -208,7 +209,7 @@ class LivewireMethodsOnlyTest extends TestCase
     /** @test */
     public function nested_row_sync_works_directly(): void
     {
-        $pageEditor = new PageEditor();
+        $pageEditor = new PageEditor;
         $pageEditor->pageKey = 'test-page';
         $pageEditor->themeId = $this->theme->id;
         $pageEditor->page = $this->page;

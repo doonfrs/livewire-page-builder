@@ -94,7 +94,7 @@ class BuilderBlock extends Component
     public function updateBlockProperty($rowId, $blockId, $propertyName, $value)
     {
         // Handle nested row property updates (when this BuilderBlock wraps a nested RowBlock)
-        if ($rowId && $rowId == $this->blockId && !$blockId) {
+        if ($rowId && $rowId == $this->blockId && ! $blockId) {
             // This is a nested row property update for this BuilderBlock
             $this->properties[$propertyName] = $value;
 
@@ -104,11 +104,12 @@ class BuilderBlock extends Component
 
             // Force re-render to reflect changes
             $this->dispatch('$refresh');
+
             return;
         }
 
         // Handle regular block property updates
-        if (!$rowId && $blockId == $this->blockId) {
+        if (! $rowId && $blockId == $this->blockId) {
             $this->properties[$propertyName] = $value;
 
             // Update CSS classes and styles for all block types

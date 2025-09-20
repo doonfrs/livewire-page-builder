@@ -12,7 +12,7 @@ class NestedRowUIBugTest extends TestCase
     public function demonstrates_ui_synchronization_bug_after_nested_row_deletion(): void
     {
         // Set up PageEditor with nested row structure
-        $pageEditor = new PageEditor();
+        $pageEditor = new PageEditor;
         $pageEditor->rows = [
             'parent-row-id' => [
                 'blocks' => [
@@ -27,14 +27,14 @@ class NestedRowUIBugTest extends TestCase
                     'another-block-id' => [
                         'alias' => 'some-other-block',
                         'properties' => ['textColor' => '#000000'],
-                    ]
+                    ],
                 ],
-                'properties' => ['desktopWidth' => 'w-full']
-            ]
+                'properties' => ['desktopWidth' => 'w-full'],
+            ],
         ];
 
         // Set up RowBlock component for the parent row (simulates frontend component)
-        $parentRowBlock = new RowBlock();
+        $parentRowBlock = new RowBlock;
         $parentRowBlock->rowId = 'parent-row-id';
         $parentRowBlock->properties = $pageEditor->rows['parent-row-id']['properties'];
         $parentRowBlock->blocks = $pageEditor->rows['parent-row-id']['blocks'];
@@ -76,7 +76,7 @@ class NestedRowUIBugTest extends TestCase
         // This test shows what should happen - when backend deletes nested row,
         // frontend components should be notified and update their data
 
-        $pageEditor = new PageEditor();
+        $pageEditor = new PageEditor;
         $pageEditor->rows = [
             'parent-row' => [
                 'blocks' => [
@@ -84,13 +84,13 @@ class NestedRowUIBugTest extends TestCase
                         'alias' => 'page-builder-trinavo-livewire-page-builder-http-livewire-row-block',
                         'properties' => ['desktopWidth' => 'w-1/3'],
                         'blocks' => [],
-                    ]
+                    ],
                 ],
-                'properties' => ['desktopWidth' => 'w-full']
-            ]
+                'properties' => ['desktopWidth' => 'w-full'],
+            ],
         ];
 
-        $parentRowBlock = new RowBlock();
+        $parentRowBlock = new RowBlock;
         $parentRowBlock->rowId = 'parent-row';
         $parentRowBlock->properties = $pageEditor->rows['parent-row']['properties'];
         $parentRowBlock->blocks = $pageEditor->rows['parent-row']['blocks'];
@@ -119,7 +119,7 @@ class NestedRowUIBugTest extends TestCase
         // When you have multiple RowBlock components on the page, none of them
         // get updated when PageEditor deletes a nested row
 
-        $pageEditor = new PageEditor();
+        $pageEditor = new PageEditor;
         $pageEditor->rows = [
             'parent-1' => [
                 'blocks' => [
@@ -127,9 +127,9 @@ class NestedRowUIBugTest extends TestCase
                         'alias' => 'page-builder-trinavo-livewire-page-builder-http-livewire-row-block',
                         'properties' => ['desktopWidth' => 'w-1/2'],
                         'blocks' => [],
-                    ]
+                    ],
                 ],
-                'properties' => ['desktopWidth' => 'w-full']
+                'properties' => ['desktopWidth' => 'w-full'],
             ],
             'parent-2' => [
                 'blocks' => [
@@ -137,18 +137,18 @@ class NestedRowUIBugTest extends TestCase
                         'alias' => 'page-builder-trinavo-livewire-page-builder-http-livewire-row-block',
                         'properties' => ['desktopWidth' => 'w-1/3'],
                         'blocks' => [],
-                    ]
+                    ],
                 ],
-                'properties' => ['desktopWidth' => 'w-full']
-            ]
+                'properties' => ['desktopWidth' => 'w-full'],
+            ],
         ];
 
         // Create multiple RowBlock component instances (simulating real app)
-        $rowBlock1 = new RowBlock();
+        $rowBlock1 = new RowBlock;
         $rowBlock1->rowId = 'parent-1';
         $rowBlock1->blocks = $pageEditor->rows['parent-1']['blocks'];
 
-        $rowBlock2 = new RowBlock();
+        $rowBlock2 = new RowBlock;
         $rowBlock2->rowId = 'parent-2';
         $rowBlock2->blocks = $pageEditor->rows['parent-2']['blocks'];
 
@@ -182,15 +182,15 @@ class NestedRowUIBugTest extends TestCase
         // those nested rows have their own $blocks property and don't automatically
         // know about changes in the PageEditor.
 
-        $pageEditor = new PageEditor();
+        $pageEditor = new PageEditor;
         $pageEditor->rows = [
             'parent' => [
                 'blocks' => ['nested' => ['alias' => 'row-block', 'properties' => [], 'blocks' => []]],
-                'properties' => []
-            ]
+                'properties' => [],
+            ],
         ];
 
-        $rowBlock = new RowBlock();
+        $rowBlock = new RowBlock;
         $rowBlock->blocks = ['nested' => ['alias' => 'row-block', 'properties' => [], 'blocks' => []]];
 
         // These are independent objects with independent state

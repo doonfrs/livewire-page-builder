@@ -10,7 +10,7 @@ class DeleteNestedRowComprehensiveTest extends TestCase
     /** @test */
     public function can_delete_nested_row_while_preserving_other_blocks(): void
     {
-        $pageEditor = new PageEditor();
+        $pageEditor = new PageEditor;
 
         // Create structure with multiple nested rows and regular blocks
         $pageEditor->rows = [
@@ -35,8 +35,8 @@ class DeleteNestedRowComprehensiveTest extends TestCase
                         'properties' => ['backgroundColor' => '#ffffff'],
                     ],
                 ],
-                'properties' => ['desktopWidth' => 'w-full']
-            ]
+                'properties' => ['desktopWidth' => 'w-full'],
+            ],
         ];
 
         // Delete one of the nested rows
@@ -54,7 +54,7 @@ class DeleteNestedRowComprehensiveTest extends TestCase
     /** @test */
     public function can_delete_nested_row_that_contains_blocks(): void
     {
-        $pageEditor = new PageEditor();
+        $pageEditor = new PageEditor;
 
         // Create nested row with its own blocks
         $pageEditor->rows = [
@@ -71,12 +71,12 @@ class DeleteNestedRowComprehensiveTest extends TestCase
                             'inner-block-2' => [
                                 'alias' => 'another-inner-block',
                                 'properties' => ['style' => 'bold'],
-                            ]
+                            ],
                         ],
-                    ]
+                    ],
                 ],
-                'properties' => ['desktopWidth' => 'w-full']
-            ]
+                'properties' => ['desktopWidth' => 'w-full'],
+            ],
         ];
 
         // Delete the nested row that contains blocks
@@ -90,7 +90,7 @@ class DeleteNestedRowComprehensiveTest extends TestCase
     /** @test */
     public function delete_nonexistent_row_does_not_cause_errors(): void
     {
-        $pageEditor = new PageEditor();
+        $pageEditor = new PageEditor;
 
         $pageEditor->rows = [
             'existing-row' => [
@@ -98,10 +98,10 @@ class DeleteNestedRowComprehensiveTest extends TestCase
                     'existing-block' => [
                         'alias' => 'some-block',
                         'properties' => [],
-                    ]
+                    ],
                 ],
-                'properties' => []
-            ]
+                'properties' => [],
+            ],
         ];
 
         // Try to delete a row that doesn't exist
@@ -115,7 +115,7 @@ class DeleteNestedRowComprehensiveTest extends TestCase
     /** @test */
     public function delete_top_level_row_still_works(): void
     {
-        $pageEditor = new PageEditor();
+        $pageEditor = new PageEditor;
 
         $pageEditor->rows = [
             'top-level-1' => [
@@ -124,14 +124,14 @@ class DeleteNestedRowComprehensiveTest extends TestCase
                         'alias' => 'page-builder-trinavo-livewire-page-builder-http-livewire-row-block',
                         'properties' => ['desktopWidth' => 'w-full'],
                         'blocks' => [],
-                    ]
+                    ],
                 ],
-                'properties' => ['desktopWidth' => 'w-full']
+                'properties' => ['desktopWidth' => 'w-full'],
             ],
             'top-level-2' => [
                 'blocks' => [],
-                'properties' => ['desktopWidth' => 'w-1/2']
-            ]
+                'properties' => ['desktopWidth' => 'w-1/2'],
+            ],
         ];
 
         // Delete a top-level row
@@ -146,7 +146,7 @@ class DeleteNestedRowComprehensiveTest extends TestCase
     /** @test */
     public function delete_nested_row_from_multiple_parent_rows(): void
     {
-        $pageEditor = new PageEditor();
+        $pageEditor = new PageEditor;
 
         // Create multiple parent rows, each with nested rows
         $pageEditor->rows = [
@@ -156,9 +156,9 @@ class DeleteNestedRowComprehensiveTest extends TestCase
                         'alias' => 'page-builder-trinavo-livewire-page-builder-http-livewire-row-block',
                         'properties' => ['desktopWidth' => 'w-full'],
                         'blocks' => [],
-                    ]
+                    ],
                 ],
-                'properties' => []
+                'properties' => [],
             ],
             'parent-2' => [
                 'blocks' => [
@@ -171,10 +171,10 @@ class DeleteNestedRowComprehensiveTest extends TestCase
                         'alias' => 'page-builder-trinavo-livewire-page-builder-http-livewire-row-block',
                         'properties' => ['desktopWidth' => 'w-1/2'],
                         'blocks' => [],
-                    ]
+                    ],
                 ],
-                'properties' => []
-            ]
+                'properties' => [],
+            ],
         ];
 
         // Delete a specific nested row

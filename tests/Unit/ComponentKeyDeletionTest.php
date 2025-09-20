@@ -10,7 +10,7 @@ class ComponentKeyDeletionTest extends TestCase
     /** @test */
     public function component_key_changes_when_nested_row_is_deleted(): void
     {
-        $pageEditor = new PageEditor();
+        $pageEditor = new PageEditor;
         $pageEditor->rows = [
             'parent-row-id' => [
                 'blocks' => [
@@ -23,15 +23,15 @@ class ComponentKeyDeletionTest extends TestCase
                         'alias' => 'page-builder-trinavo-livewire-page-builder-http-livewire-row-block',
                         'properties' => ['desktopWidth' => 'w-1/2'],
                         'blocks' => [],
-                    ]
+                    ],
                 ],
-                'properties' => ['desktopWidth' => 'w-full']
-            ]
+                'properties' => ['desktopWidth' => 'w-full'],
+            ],
         ];
 
         // Calculate component key before deletion
         $parentRow = $pageEditor->rows['parent-row-id'];
-        $keyBefore = 'parent-row-id' . '-' . count($parentRow['blocks']);
+        $keyBefore = 'parent-row-id'.'-'.count($parentRow['blocks']);
         $this->assertEquals('parent-row-id-2', $keyBefore);
 
         // Delete a nested row
@@ -39,7 +39,7 @@ class ComponentKeyDeletionTest extends TestCase
 
         // Calculate component key after deletion
         $parentRowAfter = $pageEditor->rows['parent-row-id'];
-        $keyAfter = 'parent-row-id' . '-' . count($parentRowAfter['blocks']);
+        $keyAfter = 'parent-row-id'.'-'.count($parentRowAfter['blocks']);
         $this->assertEquals('parent-row-id-1', $keyAfter);
 
         // Verify the key has changed, which will force component recreation
@@ -53,7 +53,7 @@ class ComponentKeyDeletionTest extends TestCase
     /** @test */
     public function component_key_accounts_for_all_blocks_deletion(): void
     {
-        $pageEditor = new PageEditor();
+        $pageEditor = new PageEditor;
         $pageEditor->rows = [
             'parent-row-id' => [
                 'blocks' => [
@@ -61,10 +61,10 @@ class ComponentKeyDeletionTest extends TestCase
                         'alias' => 'page-builder-trinavo-livewire-page-builder-http-livewire-row-block',
                         'properties' => ['desktopWidth' => 'w-full'],
                         'blocks' => [],
-                    ]
+                    ],
                 ],
-                'properties' => ['desktopWidth' => 'w-full']
-            ]
+                'properties' => ['desktopWidth' => 'w-full'],
+            ],
         ];
 
         // Key before deletion
@@ -75,7 +75,7 @@ class ComponentKeyDeletionTest extends TestCase
 
         // Key after deletion
         $parentRowAfter = $pageEditor->rows['parent-row-id'];
-        $keyAfter = 'parent-row-id' . '-' . count($parentRowAfter['blocks']);
+        $keyAfter = 'parent-row-id'.'-'.count($parentRowAfter['blocks']);
         $this->assertEquals('parent-row-id-0', $keyAfter);
 
         // Verify key changed and all blocks are gone
