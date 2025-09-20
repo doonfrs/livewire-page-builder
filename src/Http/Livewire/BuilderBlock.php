@@ -140,8 +140,6 @@ class BuilderBlock extends Component
      */
     public function copyBlock()
     {
-        $blockClass = $this->getBlockClass();
-
         $data = [
             'type' => 'Block',
             'blockId' => $this->blockId,
