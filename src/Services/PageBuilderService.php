@@ -257,15 +257,16 @@ class PageBuilderService
         $tabletWidth = $properties['tabletWidth'] ?? 'w-auto';
         $desktopWidth = $properties['desktopWidth'] ?? 'w-auto';
 
-        $classes[] = $mobileWidth;
+        // Format width values (in case they are custom arbitrary values or classes)
+        $classes[] = $this->formatSizeValue($mobileWidth, 'w');
 
         // Only add tablet/desktop widths if they're different from mobile
         if ($tabletWidth !== $mobileWidth) {
-            $classes[] = '@3xl:'.$tabletWidth;
+            $classes[] = '@3xl:'.$this->formatSizeValue($tabletWidth, 'w');
         }
 
         if ($desktopWidth !== $tabletWidth) {
-            $classes[] = '@5xl:'.$desktopWidth;
+            $classes[] = '@5xl:'.$this->formatSizeValue($desktopWidth, 'w');
         }
 
         return $classes;
@@ -321,30 +322,58 @@ class PageBuilderService
         $desktopMinHeight = $properties['desktopMinHeight'] ?? null;
 
         $classes = [];
+
+        // Handle height values
         if ($mobileHeight) {
-            $classes[] = 'h-['.$mobileHeight.'px]';
+            $classes[] = $this->formatSizeValue($mobileHeight, 'h');
         }
 
         if ($tabletHeight && $tabletHeight !== $mobileHeight) {
-            $classes[] = '@3xl:h-['.$tabletHeight.'px]';
+            $classes[] = '@3xl:'.$this->formatSizeValue($tabletHeight, 'h');
         }
 
         if ($desktopHeight && $desktopHeight !== $tabletHeight) {
-            $classes[] = '@5xl:h-['.$desktopHeight.'px]';
+            $classes[] = '@5xl:'.$this->formatSizeValue($desktopHeight, 'h');
         }
 
+        // Handle min-height values
         if ($mobileMinHeight) {
-            $classes[] = 'min-h-['.$mobileMinHeight.'px]';
+            $classes[] = $this->formatSizeValue($mobileMinHeight, 'min-h');
         }
 
         if ($tabletMinHeight && $tabletMinHeight !== $mobileMinHeight) {
-            $classes[] = '@3xl:min-h-['.$tabletMinHeight.'px]';
+            $classes[] = '@3xl:'.$this->formatSizeValue($tabletMinHeight, 'min-h');
         }
 
         if ($desktopMinHeight && $desktopMinHeight !== $tabletMinHeight) {
-            $classes[] = '@5xl:min-h-['.$desktopMinHeight.'px]';
+            $classes[] = '@5xl:'.$this->formatSizeValue($desktopMinHeight, 'min-h');
         }
 
         return implode(' ', $classes);
+    }
+
+    /**
+     * Format a size value - if it's already a Tailwind class, return as-is,
+     * otherwise convert numeric value to arbitrary value syntax
+     */
+    protected function formatSizeValue($value, $prefix): string
+    {
+        // If value is null or empty, return empty string
+        if (! $value) {
+            return '';
+        }
+
+        // Check if it's already a Tailwind class (starts with expected prefix)
+        if (str_starts_with($value, $prefix.'-')) {
+            return $value;
+        }
+
+        // Check if it's a numeric value (for backward compatibility)
+        if (is_numeric($value)) {
+            return $prefix.'-['.$value.'px]';
+        }
+
+        // Return as-is (might be a custom format)
+        return $value;
     }
 }

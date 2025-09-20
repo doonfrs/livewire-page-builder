@@ -7,6 +7,7 @@ use Livewire\Component;
 use Trinavo\LivewirePageBuilder\Services\PageBuilderService;
 use Trinavo\LivewirePageBuilder\Support\Properties\CheckboxProperty;
 use Trinavo\LivewirePageBuilder\Support\Properties\ColorProperty;
+use Trinavo\LivewirePageBuilder\Support\Properties\FlexibleSizeProperty;
 use Trinavo\LivewirePageBuilder\Support\Properties\ImageProperty;
 use Trinavo\LivewirePageBuilder\Support\Properties\SelectProperty;
 use Trinavo\LivewirePageBuilder\Support\Properties\TextProperty;
@@ -109,27 +110,29 @@ abstract class Block extends Component
     protected function getResponsiveProperties(): array
     {
         $widths = $this->getPageBuilderWidthList();
+        $heights = $this->getPageBuilderHeightList();
+        $minHeights = $this->getPageBuilderMinHeightList();
 
         return [
-            (new SelectProperty('mobileWidth', 'Mobile', $widths, defaultValue: $this->mobileWidth))
+            (new FlexibleSizeProperty('mobileWidth', 'Mobile', $widths, allowCustom: true, unit: 'px', defaultValue: $this->mobileWidth))
                 ->setGroup('width', 'Width', 3, 'heroicon-o-device-phone-mobile'),
-            (new SelectProperty('tabletWidth', 'Tablet', $widths, defaultValue: $this->tabletWidth))
+            (new FlexibleSizeProperty('tabletWidth', 'Tablet', $widths, allowCustom: true, unit: 'px', defaultValue: $this->tabletWidth))
                 ->setGroup('width', 'Width', 3, 'heroicon-o-device-tablet'),
-            (new SelectProperty('desktopWidth', 'Desktop', $widths, defaultValue: $this->desktopWidth))
+            (new FlexibleSizeProperty('desktopWidth', 'Desktop', $widths, allowCustom: true, unit: 'px', defaultValue: $this->desktopWidth))
                 ->setGroup('width', 'Width', 3, 'heroicon-o-device-desktop'),
 
-            (new TextProperty('mobileHeight', 'Mobile', numeric: true, defaultValue: $this->mobileHeight, min: 0))
+            (new FlexibleSizeProperty('mobileHeight', 'Mobile', $heights, allowCustom: true, unit: 'px', defaultValue: $this->mobileHeight))
                 ->setGroup('height', 'Height', 3, 'heroicon-o-device-phone-mobile'),
-            (new TextProperty('tabletHeight', 'Tablet', numeric: true, defaultValue: $this->tabletHeight, min: 0))
+            (new FlexibleSizeProperty('tabletHeight', 'Tablet', $heights, allowCustom: true, unit: 'px', defaultValue: $this->tabletHeight))
                 ->setGroup('height', 'Height', 3, 'heroicon-o-device-tablet'),
-            (new TextProperty('desktopHeight', 'Desktop', numeric: true, defaultValue: $this->desktopHeight, min: 0))
+            (new FlexibleSizeProperty('desktopHeight', 'Desktop', $heights, allowCustom: true, unit: 'px', defaultValue: $this->desktopHeight))
                 ->setGroup('height', 'Height', 3, 'heroicon-o-device-desktop'),
 
-            (new TextProperty('mobileMinHeight', 'Mobile', numeric: true, defaultValue: $this->mobileMinHeight, min: 0))
+            (new FlexibleSizeProperty('mobileMinHeight', 'Mobile', $minHeights, allowCustom: true, unit: 'px', defaultValue: $this->mobileMinHeight))
                 ->setGroup('min_height', 'Min Height', 3, 'heroicon-o-device-phone-mobile'),
-            (new TextProperty('tabletMinHeight', 'Tablet', numeric: true, defaultValue: $this->tabletMinHeight, min: 0))
+            (new FlexibleSizeProperty('tabletMinHeight', 'Tablet', $minHeights, allowCustom: true, unit: 'px', defaultValue: $this->tabletMinHeight))
                 ->setGroup('min_height', 'Min Height', 3, 'heroicon-o-device-tablet'),
-            (new TextProperty('desktopMinHeight', 'Desktop', numeric: true, defaultValue: $this->desktopMinHeight, min: 0))
+            (new FlexibleSizeProperty('desktopMinHeight', 'Desktop', $minHeights, allowCustom: true, unit: 'px', defaultValue: $this->desktopMinHeight))
                 ->setGroup('min_height', 'Min Height', 3, 'heroicon-o-device-desktop'),
         ];
     }
@@ -312,6 +315,77 @@ abstract class Block extends Component
             'w-6xl' => '6xl (1152px)',
             'w-7xl' => '7xl (1280px)',
             'w-full' => 'full',
+        ];
+    }
+
+    public function getPageBuilderHeightList(): array
+    {
+        return [
+            'h-auto' => 'Auto',
+            'h-fit' => 'Fit Content',
+            'h-full' => 'Full',
+            'h-screen' => 'Screen',
+            'h-svh' => 'Small Viewport Height',
+            'h-lvh' => 'Large Viewport Height',
+            'h-dvh' => 'Dynamic Viewport Height',
+            'h-min' => 'Min Content',
+            'h-max' => 'Max Content',
+            'h-1/2' => '1/2',
+            'h-1/3' => '1/3',
+            'h-2/3' => '2/3',
+            'h-1/4' => '1/4',
+            'h-2/4' => '2/4',
+            'h-3/4' => '3/4',
+            'h-1/5' => '1/5',
+            'h-2/5' => '2/5',
+            'h-3/5' => '3/5',
+            'h-4/5' => '4/5',
+            'h-1/6' => '1/6',
+            'h-2/6' => '2/6',
+            'h-3/6' => '3/6',
+            'h-4/6' => '4/6',
+            'h-5/6' => '5/6',
+            'h-3xs' => '3xs (256px)',
+            'h-2xs' => '2xs (288px)',
+            'h-xs' => 'xs (320px)',
+            'h-sm' => 'sm (384px)',
+            'h-md' => 'md (448px)',
+            'h-lg' => 'lg (512px)',
+            'h-xl' => 'xl (576px)',
+            'h-2xl' => '2xl (672px)',
+            'h-3xl' => '3xl (768px)',
+            'h-4xl' => '4xl (896px)',
+            'h-5xl' => '5xl (1024px)',
+            'h-6xl' => '6xl (1152px)',
+            'h-7xl' => '7xl (1280px)',
+        ];
+    }
+
+    public function getPageBuilderMinHeightList(): array
+    {
+        return [
+            'min-h-0' => 'None',
+            'min-h-full' => 'Full',
+            'min-h-screen' => 'Screen',
+            'min-h-svh' => 'Small Viewport Height',
+            'min-h-lvh' => 'Large Viewport Height',
+            'min-h-dvh' => 'Dynamic Viewport Height',
+            'min-h-min' => 'Min Content',
+            'min-h-max' => 'Max Content',
+            'min-h-fit' => 'Fit Content',
+            'min-h-3xs' => '3xs (256px)',
+            'min-h-2xs' => '2xs (288px)',
+            'min-h-xs' => 'xs (320px)',
+            'min-h-sm' => 'sm (384px)',
+            'min-h-md' => 'md (448px)',
+            'min-h-lg' => 'lg (512px)',
+            'min-h-xl' => 'xl (576px)',
+            'min-h-2xl' => '2xl (672px)',
+            'min-h-3xl' => '3xl (768px)',
+            'min-h-4xl' => '4xl (896px)',
+            'min-h-5xl' => '5xl (1024px)',
+            'min-h-6xl' => '6xl (1152px)',
+            'min-h-7xl' => '7xl (1280px)',
         ];
     }
 

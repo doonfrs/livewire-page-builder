@@ -68,6 +68,9 @@
                                 @elseif($property['type'] === 'richtext')
                                     <livewire:block-properties.richtext-property :property-name="$property['name']" :property-label="$property['label']"
                                         :current-value="$properties[$property['name']] ?? ''" :row-id="$rowId" :block-id="$blockId" :key="'richtext-property-' . $key" />
+                                @elseif($property['type'] === 'flexible-size')
+                                    <livewire:block-properties.flexible-size-property :property="$property" :value="$properties[$property['name']] ?? ''"
+                                        :row-id="$rowId" :block-id="$blockId" :key="'flexible-size-property-' . $key" />
                                 @else
                                     <div>
                                         <label
