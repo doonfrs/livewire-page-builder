@@ -19,7 +19,10 @@
     "require-dev": {
         "laravel/framework": "^12.0",
         "laravel/pint": "^1.22",
-        "larastan/larastan": "^3.7"
+        "larastan/larastan": "^3.7",
+        "phpunit/phpunit": "^11.0",
+        "orchestra/testbench": "^10.0",
+        "mockery/mockery": "^1.6"
     },
     "autoload": {
         "psr-4": {
@@ -29,6 +32,11 @@
             "src/Support/helpers.php",
             "src/helpers.php"
         ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Trinavo\\LivewirePageBuilder\\Tests\\": "tests/"
+        }
     },
     "extra": {
         "laravel": {
@@ -40,6 +48,10 @@
                 "ThemeEncryptionService": "Trinavo\\LivewirePageBuilder\\Facades\\ThemeEncryptionService"
             }
         }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit",
+        "test-coverage": "vendor/bin/phpunit --coverage-html coverage"
     },
     "minimum-stability": "dev",
     "prefer-stable": true
