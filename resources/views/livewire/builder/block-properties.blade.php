@@ -46,7 +46,7 @@
                                         </label>
                                         <input type="checkbox" id="property-{{ $property['name'] }}"
                                             class="form-checkbox h-5 w-5 mt-1.5 text-blue-600 rounded transition duration-150 ease-in-out border-gray-300 focus:ring-2 focus:ring-blue-200 dark:border-gray-600 dark:bg-gray-800 dark:ring-offset-gray-800"
-                                            @if ($properties[$property['name']] ?? false) checked @endif
+                                            @if ($properties[$property['name']] ?? $property['defaultValue'] ?? false) checked @endif
                                             wire:change.debounce.500ms="updateBlockProperty('{{ $rowId }}', '{{ $blockId }}', '{{ $property['name'] }}', $event.target.checked)">
                                     </div>
                                 @elseif($property['type'] === 'image')

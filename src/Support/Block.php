@@ -377,12 +377,12 @@ abstract class Block extends Component
     {
         $propertyValues = [];
         foreach ($this->getSharedProperties() as $property) {
-            if ($property->defaultValue) {
+            if ($property->defaultValue !== null) {
                 $propertyValues[$property->name] = $property->defaultValue;
             }
         }
         foreach ($this->getPageBuilderProperties() as $property) {
-            if ($property->defaultValue) {
+            if ($property->defaultValue !== null) {
                 $propertyValues[$property->name] = $property->defaultValue;
             }
         }
