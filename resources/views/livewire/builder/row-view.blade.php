@@ -8,7 +8,8 @@
                     'blockId' => $blockId,
                     'rowId' => $rowId,
                     'properties' => $block['properties'] ?? [],
-                    'editMode' => true,
+                    'blocks' => $block['blocks'] ?? [], // Pass nested blocks for RowBlock
+                    'editMode' => $properties['editMode'] ?? false,
                 ],
                 key($blockId)
             )

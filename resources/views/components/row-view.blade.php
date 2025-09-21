@@ -8,6 +8,15 @@
                             <x-page-builder::row-view :row="$row" />
                         @endforeach
                     </div>
+                @elseif (str_contains($block['alias'], 'row-block') && isset($block['blocks']))
+                    <div style="font-size:initial">
+                        @livewire($block['alias'], [
+                            'blocks' => $block['blocks'],
+                            'rowId' => $blockId,
+                            'properties' => $block['properties'],
+                            'editMode' => false,
+                        ], key($blockId))
+                    </div>
                 @else
                     <div style="font-size:initial">
                         @livewire($block['alias'], $block['properties'], key($blockId))

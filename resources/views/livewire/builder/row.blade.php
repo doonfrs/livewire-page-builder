@@ -5,7 +5,7 @@
     style="{{ $inlineStyles }} font-size:initial" :class="selected ? 'border-pink-500' : 'border-gray-300'"
     x-on:row-selected.window="selected = $event.detail.rowId == '{{ $rowId }}'"
     x-on:block-selected.window="selected = false">
-    <div class="block-row-inner {{ $isNested ? 'relative' : '' }}">
+    <div class="block-row-inner {{ $isNested ? 'relative' : '' }} h-full">
         <!-- Row Controls -->
         <div
             class="row-control absolute top-[-15px] left-1/2 -translate-x-1/2 bg-pink-500 shadow-lg px-1 py-1 rounded-lg flex items-center space-x-1 z-50 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none group-hover:pointer-events-auto">
@@ -127,7 +127,7 @@
                             "
                             class="px-2 py-1 text-xs rounded hover:bg-gray-200 dark:hover:bg-gray-600 border border-gray-100 dark:border-gray-600"
                             <x-heroicon-o-arrow-down class="w-3 h-3 inline-block" />
-                            {{ __('After') }}
+                        {{ __('After') }}
                         </button>
                     </div>
                 </div>
