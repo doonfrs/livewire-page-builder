@@ -265,6 +265,10 @@ class PageEditor extends Component
             }
         }
 
+        if (!$blockClass) {
+            return;
+        }
+
         $properties = app($blockClass)->getPropertyValues();
         if ($blockPageName) {
             $properties['blockPageName'] = $blockPageName;
