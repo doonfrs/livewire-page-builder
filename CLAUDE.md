@@ -13,6 +13,7 @@ alwaysApply: true
 - Always take care of dark / light mode
 - Please try not to create svg as much as possible, and use blade icons
 - We are using tailwind 4, please make sure to not to use deprecated classes / code <https://tailwindcss.com/docs/upgrade-guide#removed-deprecated-utilities> and if you encounter an old code, upgrade it
+- I prefer using blade icons instead of direct svgs
 - Deprecated Replacement
 bg-opacity-*Use opacity modifiers like bg-black/50
 text-opacity-* Use opacity modifiers like text-black/50

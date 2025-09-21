@@ -12,15 +12,16 @@
     "require": {
         "php": "^8.2",
         "livewire/livewire": "^3.6",
-        "laravel/helpers": "^1.7"
+        "laravel/helpers": "^1.7",
+        "blade-ui-kit/blade-heroicons": "^2.6",
+        "blade-ui-kit/blade-icons": "^1.8"
     },
     "require-dev": {
         "laravel/framework": "^12.0",
         "laravel/pint": "^1.22",
         "larastan/larastan": "^3.7",
-        "phpunit/phpunit": "^11.0",
-        "orchestra/testbench": "^10.0",
-        "mockery/mockery": "^1.6"
+        "orchestra/testbench": "^10.6",
+        "phpunit/phpunit": "^11.5"
     },
     "autoload": {
         "psr-4": {
@@ -46,10 +47,6 @@
                 "ThemeEncryptionService": "Trinavo\\LivewirePageBuilder\\Facades\\ThemeEncryptionService"
             }
         }
-    },
-    "scripts": {
-        "test": "vendor/bin/phpunit",
-        "test-coverage": "vendor/bin/phpunit --coverage-html coverage"
     },
     "minimum-stability": "dev",
     "prefer-stable": true

@@ -2,6 +2,8 @@
 
 namespace Trinavo\LivewirePageBuilder\Tests;
 
+use BladeUI\Heroicons\BladeHeroiconsServiceProvider;
+use BladeUI\Icons\BladeIconsServiceProvider;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\LivewireServiceProvider;
 use Orchestra\Testbench\TestCase as Orchestra;
@@ -22,6 +24,8 @@ abstract class TestCase extends Orchestra
     {
         return [
             LivewireServiceProvider::class,
+            BladeIconsServiceProvider::class,
+            BladeHeroiconsServiceProvider::class,
             PageBuilderServiceProvider::class,
         ];
     }
@@ -37,7 +41,7 @@ abstract class TestCase extends Orchestra
 
         config()->set('app.key', 'base64:'.base64_encode(random_bytes(32)));
 
-        // No longer need icon mocking since we use inline SVG
+        // Register Blade Heroicons for testing
 
         // Configure page builder
         config()->set('page-builder.pages', [
