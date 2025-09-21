@@ -1,8 +1,22 @@
 <!-- Modal for Page Blocks -->
-<div class="fixed inset-0 z-52 flex items-center justify-center bg-black/40" x-data="{
+<div class="fixed inset-0 z-52 flex items-center justify-center bg-black/40"
+    x-data="{
     blockFilter: '',
     allBlocks: @js($allPageBlocks),
     groupedBlocks: @js($groupedPageBlocks),
+    init() {
+        // Initialize all rows as collapsed
+        this.$nextTick(() => {
+            Object.keys(this.groupedBlocks).forEach(rowId => {
+                this.isRowExpanded[rowId] = false;
+            });
+            this.allBlocks.forEach(block => {
+                if (block.nestedBlocks && block.nestedBlocks.length > 0) {
+                    this.isRowExpanded[block.id] = false;
+                }
+            });
+        });
+    },
     filteredBlocks: function() {
         if (!this.blockFilter.trim()) {
             return this.allBlocks;
@@ -17,6 +31,49 @@
     isRowExpanded: {},
     toggleRow(rowId) {
         this.isRowExpanded[rowId] = !this.isRowExpanded[rowId];
+    },
+    renderBlockItem(block, depth = 0) {
+        const indent = depth * 16;
+        const hasNested = block.nestedBlocks && block.nestedBlocks.length > 0;
+
+        if (hasNested) {
+            // This is a nested row
+            return {
+                type: 'row',
+                block: block,
+                indent: indent,
+                hasNested: true
+            };
+        } else {
+            // Regular block
+            return {
+                type: 'block',
+                block: block,
+                indent: indent,
+                hasNested: false
+            };
+        }
+    },
+    getAllNestedBlocks(blocks, depth = 0, parentExpanded = true) {
+        let result = [];
+        blocks.forEach(block => {
+            const item = this.renderBlockItem(block, depth);
+            item.visible = parentExpanded; // Visible only if parent is expanded
+            result.push(item);
+
+            // If this has nested blocks, recurse
+            if (block.nestedBlocks && block.nestedBlocks.length > 0) {
+                // Check if this row is expanded (use the actual value, default to true)
+                const isExpanded = this.isRowExpanded[block.id] === true;
+                const nestedItems = this.getAllNestedBlocks(
+                    block.nestedBlocks,
+                    depth + 1,
+                    parentExpanded && isExpanded // Only visible if both parent and this row are expanded
+                );
+                result = result.concat(nestedItems);
+            }
+        });
+        return result;
     }
 }">
     <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-2xl p-8 relative"
@@ -58,44 +115,98 @@
                                 <div class="bg-gray-100 dark:bg-gray-800 p-3 flex items-center justify-between cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                                     @click="toggleRow(rowId)">
                                     <div class="flex items-center gap-2">
-                                        <button wire:click="$dispatch('select-row', { rowId: rowId })"
-                                            @click="$wire.closePageBlocksModal()"
-                                            class="flex-shrink-0 w-8 h-8 flex items-center justify-center text-pink-500 bg-white dark:bg-gray-900 rounded-md shadow-sm hover:text-pink-600 hover:scale-105 transition-all">
-                                            <x-heroicon-o-squares-plus class="w-5 h-5" />
-                                        </button>
-                                        <div class="font-medium">Row <span x-text="rowId.substring(0, 6)"></span></div>
+                                        <x-heroicon-o-rectangle-group class="w-5 h-5 text-blue-500" />
+                                        <div class="font-medium">{{ __('Row') }}</div>
                                         <div class="text-xs text-gray-500 dark:text-gray-400">
                                             <span x-text="row.blocks.length"></span> {{ __('blocks') }}
                                         </div>
                                     </div>
-                                    <div class="flex items-center">
-                                        <x-heroicon-o-chevron-down class="w-5 h-5 text-gray-500 transition-transform duration-200" x-bind:class="isRowExpanded[rowId] ? 'rotate-180' : ''" />
+                                    <div class="flex items-center gap-2">
+                                        <!-- Darker select button -->
+                                        <button
+                                            wire:click="$dispatch('select-row', { rowId: rowId })"
+                                            @click.stop="$wire.closePageBlocksModal()"
+                                            class="p-1.5 text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-all"
+                                            title="{{ __('Select entire row') }}">
+                                            <x-heroicon-o-cursor-arrow-rays class="w-4 h-4" />
+                                        </button>
+                                        <x-heroicon-o-chevron-down
+                                            class="w-5 h-5 text-gray-500 transition-transform duration-200"
+                                            x-bind:class="isRowExpanded[rowId] ? 'rotate-180' : ''" />
                                     </div>
                                 </div>
 
-                                <!-- Blocks in Row (Expandable) -->
+                                <!-- Blocks in Row (Expandable with recursive nesting) -->
                                 <div x-show="isRowExpanded[rowId]" x-transition:enter="transition ease-out duration-200"
                                     x-transition:enter-start="opacity-0 transform -translate-y-2"
                                     x-transition:enter-end="opacity-100 transform translate-y-0"
-                                    class="bg-white dark:bg-gray-900 ps-8 py-2">
-                                    <ul class="space-y-2">
-                                        <template x-for="block in row.blocks" :key="block.id">
-                                            <li>
-                                                <button wire:click="$dispatch('select-block', { blockId: block.id })"
+                                    class="bg-white dark:bg-gray-900 ps-4 pe-4 py-2">
+
+                                    <!-- Recursive Block List -->
+                                    <template x-for="item in getAllNestedBlocks(row.blocks)" :key="item.block.id">
+                                        <div x-show="item.visible" :style="`margin-left: ${item.indent}px`" class="my-2">
+                                            <!-- Nested Row -->
+                                            <template x-if="item.hasNested">
+                                                <div>
+                                                    <div
+                                                        class="flex items-center gap-2 p-2 bg-gray-50 dark:bg-gray-800 rounded-md">
+                                                        <button @click="toggleRow(item.block.id)"
+                                                            class="flex items-center gap-2 flex-1 text-left hover:text-pink-600 transition-colors">
+                                                            <x-heroicon-o-chevron-right
+                                                                class="w-4 h-4 transition-transform"
+                                                                x-bind:class="isRowExpanded[item.block.id] ? 'rotate-90' : ''" />
+                                                            <!-- Row icon -->
+                                                            <div class="flex-shrink-0 w-5 h-5 flex items-center justify-center text-blue-500">
+                                                                <x-heroicon-o-rectangle-group class="w-5 h-5" />
+                                                            </div>
+                                                            <span class="text-sm font-medium"
+                                                                x-text="item.block.label"></span>
+                                                            <span class="text-xs text-gray-500">
+                                                                (<span x-text="item.block.nestedBlocks.length"></span>
+                                                                {{ __('blocks') }})
+                                                            </span>
+                                                        </button>
+                                                        <!-- Darker select button with icon -->
+                                                        <button
+                                                            wire:click="$dispatch('select-block', { blockId: item.block.id })"
+                                                            @click="$wire.closePageBlocksModal()"
+                                                            class="p-1.5 text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-all"
+                                                            title="{{ __('Select this row') }}">
+                                                            <x-heroicon-o-cursor-arrow-rays class="w-4 h-4" />
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </template>
+
+                                            <!-- Regular Block -->
+                                            <template x-if="!item.hasNested">
+                                                <button
+                                                    wire:click="$dispatch('select-block', { blockId: item.block.id })"
                                                     @click="$wire.closePageBlocksModal()"
                                                     class="w-full group flex items-center gap-3 p-2 border border-gray-100 dark:border-gray-800 rounded-md hover:bg-pink-50 dark:hover:bg-pink-900/20 hover:border-pink-200 dark:hover:border-pink-700 transition-all duration-200 text-start focus:outline-none focus:ring-2 focus:ring-pink-200">
                                                     <div
                                                         class="flex-shrink-0 w-6 h-6 flex items-center justify-center text-pink-500 group-hover:text-pink-600 transition-colors">
-                                                        <div x-html="`<x-${block.icon} class='w-4 h-4' />`"></div>
+                                                        <template x-if="item.block.icon === 'heroicon-o-document-text'">
+                                                            <x-heroicon-o-document-text class="w-4 h-4" />
+                                                        </template>
+                                                        <template x-if="item.block.icon === 'heroicon-o-rectangle-stack'">
+                                                            <x-heroicon-o-rectangle-stack class="w-4 h-4" />
+                                                        </template>
+                                                        <template x-if="item.block.icon === 'heroicon-o-rectangle-group'">
+                                                            <x-heroicon-o-rectangle-group class="w-4 h-4" />
+                                                        </template>
+                                                        <template x-if="item.block.icon === 'heroicon-o-cube' || !item.block.icon">
+                                                            <x-heroicon-o-cube class="w-4 h-4" />
+                                                        </template>
                                                     </div>
                                                     <div class="flex-grow">
                                                         <div class="text-sm font-medium text-gray-800 dark:text-gray-100 group-hover:text-pink-700 dark:group-hover:text-pink-300 transition-colors"
-                                                            x-text="block.label"></div>
+                                                            x-text="item.block.label"></div>
                                                     </div>
                                                 </button>
-                                            </li>
-                                        </template>
-                                    </ul>
+                                            </template>
+                                        </div>
+                                    </template>
                                 </div>
                             </li>
                         </template>
@@ -119,7 +230,18 @@
                                 class="w-full group flex items-center gap-3 p-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm hover:bg-pink-50 dark:hover:bg-pink-900/20 hover:border-pink-200 dark:hover:border-pink-700 transition-all duration-200 text-start focus:outline-none focus:ring-2 focus:ring-pink-200">
                                 <div
                                     class="flex-shrink-0 w-8 h-8 flex items-center justify-center text-pink-500 group-hover:text-pink-600 transition-colors">
-                                    <div x-html="`<x-${block.icon} class='w-6 h-6' />`"></div>
+                                    <template x-if="block.icon === 'heroicon-o-document-text'">
+                                        <x-heroicon-o-document-text class="w-6 h-6" />
+                                    </template>
+                                    <template x-if="block.icon === 'heroicon-o-rectangle-stack'">
+                                        <x-heroicon-o-rectangle-stack class="w-6 h-6" />
+                                    </template>
+                                    <template x-if="block.icon === 'heroicon-o-rectangle-group'">
+                                        <x-heroicon-o-rectangle-group class="w-6 h-6" />
+                                    </template>
+                                    <template x-if="block.icon === 'heroicon-o-cube' || !block.icon">
+                                        <x-heroicon-o-cube class="w-6 h-6" />
+                                    </template>
                                 </div>
                                 <div class="flex-grow">
                                     <div class="font-medium text-gray-800 dark:text-gray-100 group-hover:text-pink-700 dark:group-hover:text-pink-300 transition-colors"
