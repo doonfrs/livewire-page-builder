@@ -100,7 +100,7 @@ class BlockAndRowManagementTest extends TestCase
 
         // Add multiple blocks
         $component->call('addBlockToRow', $rowId, 'page-builder-trinavo-livewire-page-builder-blocks-rich-text');
-        $component->call('addBlockToRow', $rowId, 'page-builder-trinavo-livewire-page-builder-blocks-section');
+        $component->call('addBlockToRow', $rowId, 'page-builder-trinavo-livewire-page-builder-blocks-spacer');
         $component->call('addBlockToRow', $rowId, 'page-builder-trinavo-livewire-page-builder-blocks-rich-text');
 
         // Verify 3 blocks were added
@@ -133,7 +133,7 @@ class BlockAndRowManagementTest extends TestCase
         $component->call('addRow');
         $firstRowId = array_key_first($component->get('rows'));
         $component->call('addBlockToRow', $firstRowId, 'page-builder-trinavo-livewire-page-builder-blocks-rich-text');
-        $component->call('addBlockToRow', $firstRowId, 'page-builder-trinavo-livewire-page-builder-blocks-section');
+        $component->call('addBlockToRow', $firstRowId, 'page-builder-trinavo-livewire-page-builder-blocks-spacer');
 
         // Add second row with blocks
         $component->call('addRow');
@@ -147,7 +147,7 @@ class BlockAndRowManagementTest extends TestCase
         $rows = $component->get('rows');
         $rowIds = array_keys($rows);
         $thirdRowId = $rowIds[2];
-        $component->call('addBlockToRow', $thirdRowId, 'page-builder-trinavo-livewire-page-builder-blocks-section');
+        $component->call('addBlockToRow', $thirdRowId, 'page-builder-trinavo-livewire-page-builder-blocks-spacer');
         $component->call('addBlockToRow', $thirdRowId, 'page-builder-trinavo-livewire-page-builder-blocks-rich-text');
 
         // Verify we have 3 rows
@@ -178,7 +178,7 @@ class BlockAndRowManagementTest extends TestCase
         $component->call('addRow');
         $firstRowId = array_key_first($component->get('rows'));
         $component->call('addBlockToRow', $firstRowId, 'page-builder-trinavo-livewire-page-builder-blocks-rich-text');
-        $component->call('addBlockToRow', $firstRowId, 'page-builder-trinavo-livewire-page-builder-blocks-section');
+        $component->call('addBlockToRow', $firstRowId, 'page-builder-trinavo-livewire-page-builder-blocks-spacer');
 
         $component->call('addRow');
         $rows = $component->get('rows');
@@ -190,7 +190,7 @@ class BlockAndRowManagementTest extends TestCase
         $rows = $component->get('rows');
         $rowIds = array_keys($rows);
         $thirdRowId = $rowIds[2];
-        $component->call('addBlockToRow', $thirdRowId, 'page-builder-trinavo-livewire-page-builder-blocks-section');
+        $component->call('addBlockToRow', $thirdRowId, 'page-builder-trinavo-livewire-page-builder-blocks-spacer');
 
         // Delete second row
         $component->call('deleteRow', $secondRowId);
@@ -238,7 +238,7 @@ class BlockAndRowManagementTest extends TestCase
         $rowId = array_key_first($component->get('rows'));
 
         $component->call('addBlockToRow', $rowId, 'page-builder-trinavo-livewire-page-builder-blocks-rich-text');
-        $component->call('addBlockToRow', $rowId, 'page-builder-trinavo-livewire-page-builder-blocks-section');
+        $component->call('addBlockToRow', $rowId, 'page-builder-trinavo-livewire-page-builder-blocks-spacer');
         $component->call('addBlockToRow', $rowId, 'page-builder-trinavo-livewire-page-builder-blocks-rich-text');
 
         // Get all block IDs
@@ -276,7 +276,7 @@ class BlockAndRowManagementTest extends TestCase
         $component->call('addRow');
         $row1Id = array_key_first($component->get('rows'));
         $component->call('addBlockToRow', $row1Id, 'page-builder-trinavo-livewire-page-builder-blocks-rich-text');
-        $component->call('addBlockToRow', $row1Id, 'page-builder-trinavo-livewire-page-builder-blocks-section');
+        $component->call('addBlockToRow', $row1Id, 'page-builder-trinavo-livewire-page-builder-blocks-spacer');
 
         $component->call('addRow');
         $rows = $component->get('rows');
@@ -286,7 +286,7 @@ class BlockAndRowManagementTest extends TestCase
         $component->call('addRow');
         $rows = $component->get('rows');
         $row3Id = array_keys($rows)[2];
-        $component->call('addBlockToRow', $row3Id, 'page-builder-trinavo-livewire-page-builder-blocks-section');
+        $component->call('addBlockToRow', $row3Id, 'page-builder-trinavo-livewire-page-builder-blocks-spacer');
 
         // Move rows around
         $component->call('moveRowDown', $row1Id);
@@ -298,7 +298,7 @@ class BlockAndRowManagementTest extends TestCase
         $component->call('deleteBlock', $row1Blocks[0]);
 
         // Add more blocks after deletion
-        $component->call('addBlockToRow', $row2Id, 'page-builder-trinavo-livewire-page-builder-blocks-section');
+        $component->call('addBlockToRow', $row2Id, 'page-builder-trinavo-livewire-page-builder-blocks-spacer');
         $component->call('addBlockToRow', $row3Id, 'page-builder-trinavo-livewire-page-builder-blocks-rich-text');
 
         // Delete a row
@@ -344,7 +344,7 @@ class BlockAndRowManagementTest extends TestCase
         $this->assertCount(0, $rows[$rowId]['blocks'], 'Block should be deleted via event');
 
         // Add another block and test deleteRow event
-        $component->call('addBlockToRow', $rowId, 'page-builder-trinavo-livewire-page-builder-blocks-section');
+        $component->call('addBlockToRow', $rowId, 'page-builder-trinavo-livewire-page-builder-blocks-spacer');
         $component->dispatch('deleteRow', rowId: $rowId);
 
         $rows = $component->get('rows');

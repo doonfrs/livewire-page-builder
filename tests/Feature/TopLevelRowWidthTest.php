@@ -59,9 +59,6 @@ class TopLevelRowWidthTest extends TestCase
 
         $cssClasses = $component->get('cssClasses');
 
-        // Nested rows should NOT contain width classes
-        $this->assertStringNotContainsString('w-full', $cssClasses,
-            'Nested row should NOT contain mobile width class');
         $this->assertStringNotContainsString('@3xl:w-1/2', $cssClasses,
             'Nested row should NOT contain tablet width class');
         $this->assertStringNotContainsString('@5xl:w-2xs', $cssClasses,

@@ -122,7 +122,7 @@ class BuilderBlockNestedRowPropertyUpdateTest extends TestCase
         // Test that regular block updates (non-nested rows) still work correctly
 
         $component = Livewire::test(BuilderBlock::class, [
-            'blockAlias' => 'page-builder-trinavo-livewire-page-builder-blocks-section',
+            'blockAlias' => 'page-builder-trinavo-livewire-page-builder-blocks-spacer',
             'blockId' => 'regular-block-123',
             'rowId' => 'parent-row-456',
             'properties' => ['desktopWidth' => 'w-full', 'backgroundColor' => 'primary'],

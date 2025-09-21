@@ -50,7 +50,7 @@ class BuilderBlockWrapperTest extends TestCase
         ];
 
         $component = Livewire::test(BuilderBlock::class, [
-            'blockAlias' => 'page-builder-trinavo-livewire-page-builder-blocks-section',
+            'blockAlias' => 'page-builder-trinavo-livewire-page-builder-blocks-spacer',
             'blockId' => 'test-block-id',
             'rowId' => 'test-row-id',
             'properties' => $properties,
