@@ -1,7 +1,7 @@
 <div class="h-full overflow-y-auto">
     <!-- Header -->
     <div
-        class="sticky top-0 bg-gradient-to-r from-gray-800 to-gray-700 text-white px-4 py-3 border-b border-gray-700 shadow-md">
+        class="sticky top-0 z-1 bg-gradient-to-r from-gray-800 to-gray-700 text-white px-4 py-3 border-b border-gray-700 shadow-md">
         <h2 class="text-lg font-medium flex items-center">
             <x-heroicon-o-adjustments-horizontal class="w-5 h-5 mr-2" />
             {{ __('Properties') }}
@@ -69,8 +69,8 @@
                                     <livewire:block-properties.richtext-property :property-name="$property['name']" :property-label="$property['label']"
                                         :current-value="$properties[$property['name']] ?? ''" :row-id="$rowId" :block-id="$blockId" :key="'richtext-property-' . $key" />
                                 @elseif($property['type'] === 'flexible-size')
-                                    <livewire:block-properties.flexible-size-property :property="$property" :value="$properties[$property['name']] ?? ''"
-                                        :row-id="$rowId" :block-id="$blockId" :key="'flexible-size-property-' . $key" />
+                                    <livewire:block-properties.flexible-size-property :property="$property"
+                                        :value="$properties[$property['name']] ?? ''" :row-id="$rowId" :block-id="$blockId" :key="'flexible-size-property-' . $key" />
                                 @else
                                     <div>
                                         <label
