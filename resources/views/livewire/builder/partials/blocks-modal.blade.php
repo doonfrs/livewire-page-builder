@@ -48,7 +48,7 @@
                         @if (isset($block['blockPageName']))
                             <x-heroicon-o-document class="w-10 h-10" />
                         @else
-                            <x-heroicon-o-cube class="w-10 h-10" />
+                            <x-dynamic-component :component="$block['icon'] ?? 'heroicon-o-cube'" class="w-10 h-10" />
                         @endif
                     </div>
                     <div class="font-semibold text-gray-800 dark:text-gray-100 mb-1 text-base">{{ $block['label'] }}

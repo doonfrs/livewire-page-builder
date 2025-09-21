@@ -265,7 +265,7 @@ class PageEditor extends Component
             }
         }
 
-        if (!$blockClass) {
+        if (! $blockClass) {
             return;
         }
 
@@ -378,12 +378,12 @@ class PageEditor extends Component
             // Get the icon component name and convert it to HTML
             $iconComponent = $block['icon'] ?? 'heroicon-o-cube';
 
-            // Return block data with iconHtml added
+            // Return block data with icon component name
             return [
                 'alias' => $block['alias'],
                 'label' => $block['label'],
                 'blockPageName' => $block['blockPageName'] ?? null,
-                'iconHtml' => '<x-'.$iconComponent.' class="w-10 h-10" />',
+                'icon' => $iconComponent,
             ];
         })->values()->toArray();
     }
@@ -881,7 +881,7 @@ class PageEditor extends Component
                 'alias' => $block['alias'],
                 'label' => $block['label'],
                 'blockPageName' => $block['blockPageName'] ?? null,
-                'iconHtml' => '<x-'.$iconComponent.' class="w-10 h-10" />',
+                'icon' => $iconComponent,
             ];
         })->values()->toArray();
 
