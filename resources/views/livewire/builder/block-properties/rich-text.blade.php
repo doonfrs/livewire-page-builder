@@ -19,9 +19,7 @@
     <div class="flex justify-between items-center mb-1">
         <label class="block text-sm font-medium text-gray-700 dark:text-gray-200">
             @if (isset($propertyLabel))
-                <svg class="inline w-4 h-4 mr-1 align-text-bottom text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
-                </svg>
+                <x-heroicon-o-document-text class="inline w-4 h-4 mr-1 align-text-bottom text-gray-400 dark:text-gray-500" />
                 {{ $propertyLabel }}
                 @if ($multilingual && count($contentLocales) > 1)
                     <span
@@ -36,9 +34,7 @@
             x-data="{}" 
             @click="$dispatch('open-variables-modal')" 
             class="inline-flex items-center text-xs px-2 py-1 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-600 dark:text-gray-300 rounded-md transition-colors duration-200">
-            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v18M3 9h18M9 3l-6 6M9 3l6 6M9 21l-6-6M9 21l6-6" />
-            </svg>
+            <x-heroicon-o-variable class="w-4 h-4 mr-1" />
             
             {{ __('Variables') }}
         </button>
@@ -102,9 +98,7 @@
                     {{ __('Available Variables') }}
                 </h3>
                 <button @click="open = false" class="text-gray-400 hover:text-gray-500 dark:hover:text-gray-300">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
+                    <x-heroicon-o-x-mark class="w-5 h-5" />
                 </button>
             </div>
             
@@ -118,9 +112,7 @@
                         placeholder="{{ __('Search variables...') }}"
                     >
                     <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-                        <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
-                        </svg>
+                        <x-heroicon-o-magnifying-glass class="w-4 h-4 text-gray-500 dark:text-gray-400" />
                     </div>
                 </div>
             </div>
