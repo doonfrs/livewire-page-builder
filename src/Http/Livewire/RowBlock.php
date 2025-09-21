@@ -315,11 +315,16 @@ class RowBlock extends Block
     {
         if ($this->isNested) {
             // For nested RowBlocks, don't include width/sizing properties as they're applied to the BuilderBlock wrapper
-            // Only include non-sizing properties like background, padding, etc.
+            // But ensure the nested row takes full width for proper control centering
             $propertiesWithoutSizing = $this->properties;
             unset($propertiesWithoutSizing['mobileWidth']);
             unset($propertiesWithoutSizing['tabletWidth']);
             unset($propertiesWithoutSizing['desktopWidth']);
+
+            // Force full width for nested rows to ensure controls are centered properly
+            $propertiesWithoutSizing['mobileWidth'] = 'w-full';
+            $propertiesWithoutSizing['tabletWidth'] = 'w-full';
+            $propertiesWithoutSizing['desktopWidth'] = 'w-full';
 
             $classString = app(PageBuilderService::class)->getCssClassesFromProperties($propertiesWithoutSizing, isRowBlock: false);
         } else {
