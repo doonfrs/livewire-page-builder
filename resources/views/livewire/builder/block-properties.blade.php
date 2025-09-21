@@ -3,9 +3,7 @@
     <div
         class="sticky top-0 bg-gradient-to-r from-gray-800 to-gray-700 text-white px-4 py-3 border-b border-gray-700 shadow-md">
         <h2 class="text-lg font-medium flex items-center">
-            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m0 0L7.5 6M7.5 6v0m0 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H3m15.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3.75 0H21" />
-            </svg>
+            <x-heroicon-o-adjustments-horizontal class="w-5 h-5 mr-2" />
             {{ __('Properties') }}
         </h2>
         <div class="mt-1 text-xs font-mono bg-gray-900/50 rounded px-2 py-1 truncate">
@@ -16,9 +14,7 @@
     <!-- Empty State -->
     @if (empty($blockProperties) || empty($properties))
         <div class="flex flex-col items-center justify-center h-64 text-center p-6">
-            <svg class="w-12 h-12 text-gray-300 mb-3 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6.429 9.75 8.571 4.286m0 0 8.571-4.286M15 13.036V21.75l-8.571-4.286M15 13.036l8.571 4.286v8.714L15 21.75M15 13.036 6.429 9.75v8.714L15 21.75" />
-            </svg>
+            <x-heroicon-o-cube class="w-12 h-12 text-gray-300 mb-3 dark:text-gray-600" />
             <div class="text-gray-500 font-medium dark:text-gray-400">{{ __('No properties available') }}</div>
             <div class="text-gray-400 text-sm mt-1 dark:text-gray-500">
                 {{ __('Select a block to view and edit its properties') }}</div>
