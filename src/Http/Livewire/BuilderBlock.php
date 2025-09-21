@@ -46,9 +46,14 @@ class BuilderBlock extends Component
 
         // For RowBlock, add the nested blocks and mark as nested
         if ($blockClass === \Trinavo\LivewirePageBuilder\Http\Livewire\RowBlock::class) {
-            $componentProperties['blocks'] = $this->blocks ?? [];
-            $componentProperties['rowId'] = $this->blockId; // Use block ID as row ID for nested rows
-            $componentProperties['isNested'] = true; // Flag to indicate this is a nested row
+            // Pass properties as a nested array for RowBlock
+            $componentProperties = [
+                'properties' => $this->properties,
+                'blocks' => $this->blocks ?? [],
+                'rowId' => $this->blockId, // Use block ID as row ID for nested rows
+                'isNested' => true, // Flag to indicate this is a nested row
+                'editMode' => $this->editMode,
+            ];
         }
 
         return view('page-builder::livewire.builder.builder-block', [
