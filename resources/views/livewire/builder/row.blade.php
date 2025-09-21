@@ -5,10 +5,10 @@
     style="{{ $inlineStyles }} font-size:initial" :class="selected ? 'border-pink-500' : 'border-gray-300'"
     x-on:row-selected.window="selected = $event.detail.rowId == '{{ $rowId }}'"
     x-on:block-selected.window="selected = false">
-    <div class="block-row-inner">
-        <!-- Elementor-style Row Controls -->
+    <div class="block-row-inner {{ $isNested ? 'relative' : '' }}">
+        <!-- Row Controls -->
         <div
-            class="absolute top-[-15px] left-1/2 -translate-x-1/2 bg-pink-500 shadow-lg px-1 py-1 rounded-lg flex items-center space-x-1 z-50 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none group-hover:pointer-events-auto">
+            class="row-control absolute top-[-15px] left-1/2 -translate-x-1/2 bg-pink-500 shadow-lg px-1 py-1 rounded-lg flex items-center space-x-1 z-50 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none group-hover:pointer-events-auto">
             <!-- Select Button -->
             <button wire:click="rowSelected()"
                 class="w-7 h-7 flex items-center justify-center text-white hover:bg-pink-600 rounded transition-colors duration-150"
@@ -45,7 +45,7 @@
         <!-- Hidden Drawer for Row Tools (appears on click of handle) -->
         <div x-data="{ open: false }"
             x-on:toggle-row-options.window="if($event.detail.rowId === '{{ $rowId }}') open = !open"
-            class="absolute top-[-35px] left-1/2 -translate-x-1/2 z-51">
+            class="absolute {{ $isNested ? 'top-[-35px]' : 'top-[-35px]' }} left-1/2 -translate-x-1/2 z-51">
             <div x-show="open" x-transition:enter="transition ease-out duration-200"
                 x-transition:enter-start="opacity-0 transform translate-y-2"
                 x-transition:enter-end="opacity-100 transform translate-y-0"
