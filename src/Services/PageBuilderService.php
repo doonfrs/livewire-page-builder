@@ -236,6 +236,12 @@ class PageBuilderService
             }
         }
 
+        // Add border classes
+        $borderClasses = $this->getBorderCssClassesFromProperties($properties);
+        if (count($borderClasses) > 0) {
+            $classes = array_merge($classes, $borderClasses);
+        }
+
         // Vertical alignment - allow customization instead of hardcoded centering
         $contentAlign = $properties['contentAlign'] ?? 'content-center';
         $classes[] = $contentAlign;
@@ -310,6 +316,12 @@ class PageBuilderService
             $styles[] = "background-repeat: $backgroundRepeat";
         }
 
+        // Add border color styles for hex colors
+        $borderStyles = $this->getBorderInlineStylesFromProperties($properties);
+        if (count($borderStyles) > 0) {
+            $styles = array_merge($styles, $borderStyles);
+        }
+
         $styleString = implode(';', $styles);
         if (trim($styleString) !== '') {
             $styleString .= ';';
@@ -356,6 +368,182 @@ class PageBuilderService
         }
 
         return implode(' ', $classes);
+    }
+
+    /**
+     * Get border CSS classes from properties
+     */
+    public function getBorderCssClassesFromProperties(array $properties): array
+    {
+        $classes = [];
+
+        // Border width classes
+        $borderWidth = $properties['borderWidth'] ?? null;
+        $borderTopWidth = $properties['borderTopWidth'] ?? null;
+        $borderRightWidth = $properties['borderRightWidth'] ?? null;
+        $borderBottomWidth = $properties['borderBottomWidth'] ?? null;
+        $borderLeftWidth = $properties['borderLeftWidth'] ?? null;
+
+        // Border color properties
+        $borderColor = $properties['borderColor'] ?? null;
+        $borderTopColor = $properties['borderTopColor'] ?? null;
+        $borderRightColor = $properties['borderRightColor'] ?? null;
+        $borderBottomColor = $properties['borderBottomColor'] ?? null;
+        $borderLeftColor = $properties['borderLeftColor'] ?? null;
+
+        // Border radius properties
+        $borderRadius = $properties['borderRadius'] ?? null;
+        $borderTopLeftRadius = $properties['borderTopLeftRadius'] ?? null;
+        $borderTopRightRadius = $properties['borderTopRightRadius'] ?? null;
+        $borderBottomRightRadius = $properties['borderBottomRightRadius'] ?? null;
+        $borderBottomLeftRadius = $properties['borderBottomLeftRadius'] ?? null;
+
+        // Add border width classes
+        if ($borderWidth) {
+            $classes[] = $borderWidth;
+        } else {
+            // Individual border widths
+            if ($borderTopWidth) {
+                $classes[] = $this->convertBorderDirection($borderTopWidth, 't');
+            }
+            if ($borderRightWidth) {
+                $classes[] = $this->convertBorderDirection($borderRightWidth, 'r');
+            }
+            if ($borderBottomWidth) {
+                $classes[] = $this->convertBorderDirection($borderBottomWidth, 'b');
+            }
+            if ($borderLeftWidth) {
+                $classes[] = $this->convertBorderDirection($borderLeftWidth, 'l');
+            }
+        }
+
+        // Add border color classes (only for non-hex colors)
+        if ($borderColor && !str_starts_with($borderColor, '#')) {
+            $classes[] = "border-$borderColor";
+        } else {
+            // Individual border colors (only for non-hex colors)
+            if ($borderTopColor && !str_starts_with($borderTopColor, '#')) {
+                $classes[] = "border-t-$borderTopColor";
+            }
+            if ($borderRightColor && !str_starts_with($borderRightColor, '#')) {
+                $classes[] = "border-r-$borderRightColor";
+            }
+            if ($borderBottomColor && !str_starts_with($borderBottomColor, '#')) {
+                $classes[] = "border-b-$borderBottomColor";
+            }
+            if ($borderLeftColor && !str_starts_with($borderLeftColor, '#')) {
+                $classes[] = "border-l-$borderLeftColor";
+            }
+        }
+
+        // Add border radius classes
+        if ($borderRadius) {
+            $classes[] = $borderRadius;
+        } else {
+            // Individual border radius
+            if ($borderTopLeftRadius) {
+                $classes[] = $this->convertBorderRadiusDirection($borderTopLeftRadius, 'tl');
+            }
+            if ($borderTopRightRadius) {
+                $classes[] = $this->convertBorderRadiusDirection($borderTopRightRadius, 'tr');
+            }
+            if ($borderBottomRightRadius) {
+                $classes[] = $this->convertBorderRadiusDirection($borderBottomRightRadius, 'br');
+            }
+            if ($borderBottomLeftRadius) {
+                $classes[] = $this->convertBorderRadiusDirection($borderBottomLeftRadius, 'bl');
+            }
+        }
+
+        return $classes;
+    }
+
+    /**
+     * Get border inline styles for hex colors
+     */
+    public function getBorderInlineStylesFromProperties(array $properties): array
+    {
+        $styles = [];
+
+        // Border color properties
+        $borderColor = $properties['borderColor'] ?? null;
+        $borderTopColor = $properties['borderTopColor'] ?? null;
+        $borderRightColor = $properties['borderRightColor'] ?? null;
+        $borderBottomColor = $properties['borderBottomColor'] ?? null;
+        $borderLeftColor = $properties['borderLeftColor'] ?? null;
+
+        // Add border color styles for hex colors
+        if ($borderColor && str_starts_with($borderColor, '#')) {
+            $styles[] = "border-color: $borderColor";
+        } else {
+            // Individual border colors for hex values
+            if ($borderTopColor && str_starts_with($borderTopColor, '#')) {
+                $styles[] = "border-top-color: $borderTopColor";
+            }
+            if ($borderRightColor && str_starts_with($borderRightColor, '#')) {
+                $styles[] = "border-right-color: $borderRightColor";
+            }
+            if ($borderBottomColor && str_starts_with($borderBottomColor, '#')) {
+                $styles[] = "border-bottom-color: $borderBottomColor";
+            }
+            if ($borderLeftColor && str_starts_with($borderLeftColor, '#')) {
+                $styles[] = "border-left-color: $borderLeftColor";
+            }
+        }
+
+        return $styles;
+    }
+
+    /**
+     * Convert border width class to directional border class
+     */
+    protected function convertBorderDirection($borderClass, $direction): string
+    {
+        if (!$borderClass) {
+            return '';
+        }
+
+        // Handle the different border width formats
+        if ($borderClass === 'border') {
+            return "border-{$direction}";
+        }
+
+        if (str_starts_with($borderClass, 'border-')) {
+            // Extract the width part (e.g., '2', '4', '8', '0')
+            $width = str_replace('border-', '', $borderClass);
+            return "border-{$direction}-{$width}";
+        }
+
+        return $borderClass;
+    }
+
+    /**
+     * Convert border radius class to directional border radius class
+     */
+    protected function convertBorderRadiusDirection($radiusClass, $direction): string
+    {
+        if (!$radiusClass) {
+            return '';
+        }
+
+        // Handle different radius formats
+        if ($radiusClass === 'rounded') {
+            return "rounded-{$direction}";
+        }
+
+        if (str_starts_with($radiusClass, 'rounded-')) {
+            // Extract the size part (e.g., 'sm', 'md', 'lg', etc.)
+            $size = str_replace('rounded-', '', $radiusClass);
+
+            // Special case for 'none'
+            if ($size === 'none') {
+                return "rounded-{$direction}-none";
+            }
+
+            return "rounded-{$direction}-{$size}";
+        }
+
+        return $radiusClass;
     }
 
     /**
