@@ -430,20 +430,20 @@ class PageBuilderService
         }
 
         // Add border color classes (only for non-hex colors)
-        if ($borderColor && !str_starts_with($borderColor, '#')) {
+        if ($borderColor && ! str_starts_with($borderColor, '#')) {
             $classes[] = "border-$borderColor";
         } else {
             // Individual border colors (only for non-hex colors)
-            if ($borderTopColor && !str_starts_with($borderTopColor, '#')) {
+            if ($borderTopColor && ! str_starts_with($borderTopColor, '#')) {
                 $classes[] = "border-t-$borderTopColor";
             }
-            if ($borderRightColor && !str_starts_with($borderRightColor, '#')) {
+            if ($borderRightColor && ! str_starts_with($borderRightColor, '#')) {
                 $classes[] = "border-r-$borderRightColor";
             }
-            if ($borderBottomColor && !str_starts_with($borderBottomColor, '#')) {
+            if ($borderBottomColor && ! str_starts_with($borderBottomColor, '#')) {
                 $classes[] = "border-b-$borderBottomColor";
             }
-            if ($borderLeftColor && !str_starts_with($borderLeftColor, '#')) {
+            if ($borderLeftColor && ! str_starts_with($borderLeftColor, '#')) {
                 $classes[] = "border-l-$borderLeftColor";
             }
         }
@@ -511,7 +511,7 @@ class PageBuilderService
      */
     protected function convertBorderDirection($borderClass, $direction): string
     {
-        if (!$borderClass) {
+        if (! $borderClass) {
             return '';
         }
 
@@ -523,6 +523,7 @@ class PageBuilderService
         if (str_starts_with($borderClass, 'border-')) {
             // Extract the width part (e.g., '2', '4', '8', '0')
             $width = str_replace('border-', '', $borderClass);
+
             return "border-{$direction}-{$width}";
         }
 
@@ -534,7 +535,7 @@ class PageBuilderService
      */
     protected function convertBorderRadiusDirection($radiusClass, $direction): string
     {
-        if (!$radiusClass) {
+        if (! $radiusClass) {
             return '';
         }
 
@@ -580,13 +581,13 @@ class PageBuilderService
         if ($hasCustomValues) {
             // Use custom shadow (will be handled in inline styles)
             $classes[] = 'shadow-custom';
-        } else if ($boxShadow) {
+        } elseif ($boxShadow) {
             // Use preset shadow
             $classes[] = $boxShadow;
         }
 
         // Add box shadow color class (only for non-hex colors and when using presets)
-        if ($boxShadowColor && !str_starts_with($boxShadowColor, '#') && !$hasCustomValues) {
+        if ($boxShadowColor && ! str_starts_with($boxShadowColor, '#') && ! $hasCustomValues) {
             $classes[] = "shadow-$boxShadowColor";
         }
 
@@ -619,20 +620,25 @@ class PageBuilderService
                 $shadowParts[] = 'inset';
             }
 
-            $shadowParts[] = $boxShadowOffsetX . 'px';
-            $shadowParts[] = $boxShadowOffsetY . 'px';
-            $shadowParts[] = $boxShadowBlur . 'px';
-            $shadowParts[] = $boxShadowSpread . 'px';
+            $shadowParts[] = $boxShadowOffsetX.'px';
+            $shadowParts[] = $boxShadowOffsetY.'px';
+            $shadowParts[] = $boxShadowBlur.'px';
+            $shadowParts[] = $boxShadowSpread.'px';
 
             // Add color
             if ($boxShadowColor) {
-                $shadowParts[] = $boxShadowColor;
+                // Check if it's a hex color
+                if (str_starts_with($boxShadowColor, '#')) {
+                    $shadowParts[] = $boxShadowColor;
+                } else {
+                    $shadowParts[] = "var(--color-{$boxShadowColor})";
+                }
             } else {
                 $shadowParts[] = 'rgba(0, 0, 0, 0.1)'; // Default shadow color
             }
 
-            $styles[] = 'box-shadow: ' . implode(' ', $shadowParts);
-        } else if ($boxShadowColor && str_starts_with($boxShadowColor, '#')) {
+            $styles[] = 'box-shadow: '.implode(' ', $shadowParts);
+        } elseif ($boxShadowColor && str_starts_with($boxShadowColor, '#')) {
             // Custom color for preset shadows
             $styles[] = "--tw-shadow-color: $boxShadowColor";
         }
