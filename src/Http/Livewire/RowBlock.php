@@ -317,9 +317,6 @@ class RowBlock extends Block
             // For nested RowBlocks, don't include width/sizing properties as they're applied to the BuilderBlock wrapper
             // But ensure the nested row takes full width for proper control centering
             $propertiesWithoutSizing = $this->properties;
-            unset($propertiesWithoutSizing['mobileWidth']);
-            unset($propertiesWithoutSizing['tabletWidth']);
-            unset($propertiesWithoutSizing['desktopWidth']);
 
             // Force full width for nested rows to ensure controls are centered properly
             $propertiesWithoutSizing['mobileWidth'] = 'w-full';

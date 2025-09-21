@@ -61,6 +61,12 @@ class PageBuilderRender
         $block['cssClasses'] = app(PageBuilderService::class)->getCssClassesFromProperties($block['properties'], true);
         $block['inlineStyles'] = app(PageBuilderService::class)->getInlineStylesFromProperties($block['properties']);
 
+        \Illuminate\Support\Facades\Log::info('PageBuilderRender::prepareBlock called', [
+            'alias' => $block['alias'],
+            'hasBlocks' => isset($block['blocks']),
+            'blocksCount' => isset($block['blocks']) ? count($block['blocks']) : 0,
+        ]);
+
         if ($block['alias'] == 'builder-page-block') {
             // For page blocks, we need to consider the theme context
             $blockPageName = $block['properties']['blockPageName'] ?? null;
@@ -79,6 +85,17 @@ class PageBuilderRender
                     }
                 }
             }
+        }
+
+        // Handle nested blocks for row-block components
+        if (isset($block['blocks']) && is_array($block['blocks']) && count($block['blocks']) > 0) {
+            \Illuminate\Support\Facades\Log::info('PageBuilderRender::prepareBlock processing nested blocks', [
+                'alias' => $block['alias'],
+                'nestedBlocksCount' => count($block['blocks']),
+                'nestedBlocks' => $block['blocks'],
+            ]);
+
+            $block['blocks'] = array_map([$this, 'prepareBlock'], $block['blocks']);
         }
 
         return $block;

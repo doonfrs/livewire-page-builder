@@ -140,6 +140,8 @@ class PageBuilderService
             $classes[] = "@5xl:gap-$desktopGap";
         }
 
+        $classes[] = 'h-full';
+
         return implode(' ', $classes);
     }
 
