@@ -102,6 +102,21 @@ abstract class Block extends Component
 
     public $borderBottomLeftRadius = null;
 
+    // Box shadow properties
+    public $boxShadow = null;
+
+    public $boxShadowColor = null;
+
+    public $boxShadowOffsetX = 0;
+
+    public $boxShadowOffsetY = 0;
+
+    public $boxShadowBlur = 0;
+
+    public $boxShadowSpread = 0;
+
+    public $boxShadowInset = false;
+
     public bool $editMode = false;
 
     /**
@@ -132,6 +147,7 @@ abstract class Block extends Component
             $this->getStyleProperties(),
             $this->getBackgroundImageProperties(),
             $this->getBorderProperties(),
+            $this->getBoxShadowProperties(),
             $this->getLayoutProperties()
         );
     }
@@ -306,6 +322,34 @@ abstract class Block extends Component
                 ->setGroup('border_radius', 'Border Radius', 5, 'heroicon-o-square-2-stack'),
             (new SelectProperty('borderBottomLeftRadius', 'Bottom Left', $borderRadiusOptions, defaultValue: $this->borderBottomLeftRadius))
                 ->setGroup('border_radius', 'Border Radius', 5, 'heroicon-o-square-2-stack'),
+        ];
+    }
+
+    /**
+     * Get box shadow properties
+     */
+    protected function getBoxShadowProperties(): array
+    {
+        $boxShadowOptions = $this->getBoxShadowList();
+
+        return [
+            // Shadow Basic Settings (3 items)
+            (new SelectProperty('boxShadow', 'Preset', $boxShadowOptions, defaultValue: $this->boxShadow))
+                ->setGroup('shadow_basic', 'Shadow Basic', 3, 'heroicon-o-sun'),
+            (new ColorProperty('boxShadowColor', 'Color', defaultValue: $this->boxShadowColor))
+                ->setGroup('shadow_basic', 'Shadow Basic', 3, 'heroicon-o-sun'),
+            (new TextProperty('boxShadowBlur', 'Blur', numeric: true, defaultValue: $this->boxShadowBlur, min: 0, max: 100))
+                ->setGroup('shadow_basic', 'Shadow Basic', 3, 'heroicon-o-sun'),
+
+            // Shadow Position (4 items)
+            (new TextProperty('boxShadowOffsetX', 'Offset X', numeric: true, defaultValue: $this->boxShadowOffsetX, min: -50, max: 50))
+                ->setGroup('shadow_position', 'Shadow Position', 4, 'heroicon-o-arrows-pointing-out'),
+            (new TextProperty('boxShadowOffsetY', 'Offset Y', numeric: true, defaultValue: $this->boxShadowOffsetY, min: -50, max: 50))
+                ->setGroup('shadow_position', 'Shadow Position', 4, 'heroicon-o-arrows-pointing-out'),
+            (new TextProperty('boxShadowSpread', 'Spread', numeric: true, defaultValue: $this->boxShadowSpread, min: -50, max: 50))
+                ->setGroup('shadow_position', 'Shadow Position', 4, 'heroicon-o-arrows-pointing-out'),
+            (new CheckboxProperty('boxShadowInset', 'Inset', defaultValue: $this->boxShadowInset))
+                ->setGroup('shadow_position', 'Shadow Position', 4, 'heroicon-o-arrows-pointing-out'),
         ];
     }
 
@@ -493,6 +537,21 @@ abstract class Block extends Component
             'rounded-2xl' => '2X Large',
             'rounded-3xl' => '3X Large',
             'rounded-full' => 'Full',
+        ];
+    }
+
+    public function getBoxShadowList(): array
+    {
+        return [
+            '' => 'None',
+            'shadow-sm' => 'Small',
+            'shadow' => 'Default',
+            'shadow-md' => 'Medium',
+            'shadow-lg' => 'Large',
+            'shadow-xl' => 'Extra Large',
+            'shadow-2xl' => '2X Large',
+            'shadow-inner' => 'Inner',
+            'shadow-none' => 'None',
         ];
     }
 

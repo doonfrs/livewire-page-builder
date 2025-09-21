@@ -1,0 +1,25 @@
+<div style="display: none;">
+    <!-- Box Shadow Classes -->
+    <div class="shadow-sm shadow shadow-md shadow-lg shadow-xl shadow-2xl shadow-inner shadow-none shadow-custom"></div>
+
+    <!-- Box Shadow Color Classes -->
+    <div class="shadow-gray-50 shadow-gray-100 shadow-gray-200 shadow-gray-300 shadow-gray-400 shadow-gray-500 shadow-gray-600 shadow-gray-700 shadow-gray-800 shadow-gray-900"></div>
+    <div class="shadow-red-300 shadow-red-400 shadow-red-500 shadow-red-600 shadow-red-700"></div>
+    <div class="shadow-blue-300 shadow-blue-400 shadow-blue-500 shadow-blue-600 shadow-blue-700"></div>
+    <div class="shadow-green-300 shadow-green-400 shadow-green-500 shadow-green-600 shadow-green-700"></div>
+    <div class="shadow-yellow-300 shadow-yellow-400 shadow-yellow-500 shadow-yellow-600 shadow-yellow-700"></div>
+    <div class="shadow-pink-300 shadow-pink-400 shadow-pink-500 shadow-pink-600 shadow-pink-700"></div>
+    <div class="shadow-purple-300 shadow-purple-400 shadow-purple-500 shadow-purple-600 shadow-purple-700"></div>
+    <div class="shadow-indigo-300 shadow-indigo-400 shadow-indigo-500 shadow-indigo-600 shadow-indigo-700"></div>
+
+    <!-- Box Shadow Theme Color Classes -->
+    <div class="shadow-base-100 shadow-base-200 shadow-base-300 shadow-base-content"></div>
+    <div class="shadow-primary shadow-primary-content"></div>
+    <div class="shadow-secondary shadow-secondary-content"></div>
+    <div class="shadow-accent shadow-accent-content"></div>
+    <div class="shadow-neutral shadow-neutral-content"></div>
+    <div class="shadow-info shadow-info-content"></div>
+    <div class="shadow-success shadow-success-content"></div>
+    <div class="shadow-warning shadow-warning-content"></div>
+    <div class="shadow-error shadow-error-content"></div>
+</div>

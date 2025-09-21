@@ -242,6 +242,12 @@ class PageBuilderService
             $classes = array_merge($classes, $borderClasses);
         }
 
+        // Add box shadow classes
+        $boxShadowClasses = $this->getBoxShadowCssClassesFromProperties($properties);
+        if (count($boxShadowClasses) > 0) {
+            $classes = array_merge($classes, $boxShadowClasses);
+        }
+
         // Vertical alignment - allow customization instead of hardcoded centering
         $contentAlign = $properties['contentAlign'] ?? 'content-center';
         $classes[] = $contentAlign;
@@ -320,6 +326,12 @@ class PageBuilderService
         $borderStyles = $this->getBorderInlineStylesFromProperties($properties);
         if (count($borderStyles) > 0) {
             $styles = array_merge($styles, $borderStyles);
+        }
+
+        // Add box shadow styles for hex colors
+        $boxShadowStyles = $this->getBoxShadowInlineStylesFromProperties($properties);
+        if (count($boxShadowStyles) > 0) {
+            $styles = array_merge($styles, $boxShadowStyles);
         }
 
         $styleString = implode(';', $styles);
@@ -544,6 +556,88 @@ class PageBuilderService
         }
 
         return $radiusClass;
+    }
+
+    /**
+     * Get box shadow CSS classes from properties
+     */
+    public function getBoxShadowCssClassesFromProperties(array $properties): array
+    {
+        $classes = [];
+
+        $boxShadow = $properties['boxShadow'] ?? null;
+        $boxShadowColor = $properties['boxShadowColor'] ?? null;
+        $boxShadowOffsetX = $properties['boxShadowOffsetX'] ?? 0;
+        $boxShadowOffsetY = $properties['boxShadowOffsetY'] ?? 0;
+        $boxShadowBlur = $properties['boxShadowBlur'] ?? 0;
+        $boxShadowSpread = $properties['boxShadowSpread'] ?? 0;
+        $boxShadowInset = $properties['boxShadowInset'] ?? false;
+
+        // Check if custom shadow values are used
+        $hasCustomValues = $boxShadowOffsetX != 0 || $boxShadowOffsetY != 0 ||
+                          $boxShadowBlur != 0 || $boxShadowSpread != 0 || $boxShadowInset;
+
+        if ($hasCustomValues) {
+            // Use custom shadow (will be handled in inline styles)
+            $classes[] = 'shadow-custom';
+        } else if ($boxShadow) {
+            // Use preset shadow
+            $classes[] = $boxShadow;
+        }
+
+        // Add box shadow color class (only for non-hex colors and when using presets)
+        if ($boxShadowColor && !str_starts_with($boxShadowColor, '#') && !$hasCustomValues) {
+            $classes[] = "shadow-$boxShadowColor";
+        }
+
+        return $classes;
+    }
+
+    /**
+     * Get box shadow inline styles for hex colors and custom values
+     */
+    public function getBoxShadowInlineStylesFromProperties(array $properties): array
+    {
+        $styles = [];
+
+        $boxShadowColor = $properties['boxShadowColor'] ?? null;
+        $boxShadowOffsetX = $properties['boxShadowOffsetX'] ?? 0;
+        $boxShadowOffsetY = $properties['boxShadowOffsetY'] ?? 0;
+        $boxShadowBlur = $properties['boxShadowBlur'] ?? 0;
+        $boxShadowSpread = $properties['boxShadowSpread'] ?? 0;
+        $boxShadowInset = $properties['boxShadowInset'] ?? false;
+
+        // Check if custom shadow values are used
+        $hasCustomValues = $boxShadowOffsetX != 0 || $boxShadowOffsetY != 0 ||
+                          $boxShadowBlur != 0 || $boxShadowSpread != 0 || $boxShadowInset;
+
+        if ($hasCustomValues) {
+            // Build custom box-shadow value
+            $shadowParts = [];
+
+            if ($boxShadowInset) {
+                $shadowParts[] = 'inset';
+            }
+
+            $shadowParts[] = $boxShadowOffsetX . 'px';
+            $shadowParts[] = $boxShadowOffsetY . 'px';
+            $shadowParts[] = $boxShadowBlur . 'px';
+            $shadowParts[] = $boxShadowSpread . 'px';
+
+            // Add color
+            if ($boxShadowColor) {
+                $shadowParts[] = $boxShadowColor;
+            } else {
+                $shadowParts[] = 'rgba(0, 0, 0, 0.1)'; // Default shadow color
+            }
+
+            $styles[] = 'box-shadow: ' . implode(' ', $shadowParts);
+        } else if ($boxShadowColor && str_starts_with($boxShadowColor, '#')) {
+            // Custom color for preset shadows
+            $styles[] = "--tw-shadow-color: $boxShadowColor";
+        }
+
+        return $styles;
     }
 
     /**
