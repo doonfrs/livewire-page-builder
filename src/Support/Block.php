@@ -288,40 +288,41 @@ abstract class Block extends Component
 
         return [
             // Border Width - All sides or individual
-            (new SelectProperty('borderWidth', 'All', $borderWidths, defaultValue: $this->borderWidth))
-                ->setGroup('border_width', 'Border Width', 5, 'heroicon-o-square-3-stack-3d'),
             (new SelectProperty('borderTopWidth', 'Top', $borderWidths, defaultValue: $this->borderTopWidth))
-                ->setGroup('border_width', 'Border Width', 5, 'heroicon-o-square-3-stack-3d'),
+                ->setGroup('border_width', 'Border Width', 4, 'heroicon-o-square-3-stack-3d'),
             (new SelectProperty('borderRightWidth', 'Right', $borderWidths, defaultValue: $this->borderRightWidth))
-                ->setGroup('border_width', 'Border Width', 5, 'heroicon-o-square-3-stack-3d'),
+                ->setGroup('border_width', 'Border Width', 4, 'heroicon-o-square-3-stack-3d'),
             (new SelectProperty('borderBottomWidth', 'Bottom', $borderWidths, defaultValue: $this->borderBottomWidth))
-                ->setGroup('border_width', 'Border Width', 5, 'heroicon-o-square-3-stack-3d'),
+                ->setGroup('border_width', 'Border Width', 4, 'heroicon-o-square-3-stack-3d'),
             (new SelectProperty('borderLeftWidth', 'Left', $borderWidths, defaultValue: $this->borderLeftWidth))
-                ->setGroup('border_width', 'Border Width', 5, 'heroicon-o-square-3-stack-3d'),
+                ->setGroup('border_width', 'Border Width', 4, 'heroicon-o-square-3-stack-3d'),
+            (new SelectProperty('borderWidth', 'All', $borderWidths, defaultValue: $this->borderWidth))
+                ->setGroup('border_width', 'Border Width', 4, 'heroicon-o-square-3-stack-3d'),
 
             // Border Color - All sides or individual
-            (new ColorProperty('borderColor', 'All', defaultValue: $this->borderColor))
-                ->setGroup('border_color', 'Border Color', 5, 'heroicon-o-swatch'),
             (new ColorProperty('borderTopColor', 'Top', defaultValue: $this->borderTopColor))
-                ->setGroup('border_color', 'Border Color', 5, 'heroicon-o-swatch'),
+                ->setGroup('border_color', 'Border Color', 4, 'heroicon-o-swatch'),
             (new ColorProperty('borderRightColor', 'Right', defaultValue: $this->borderRightColor))
-                ->setGroup('border_color', 'Border Color', 5, 'heroicon-o-swatch'),
+                ->setGroup('border_color', 'Border Color', 4, 'heroicon-o-swatch'),
             (new ColorProperty('borderBottomColor', 'Bottom', defaultValue: $this->borderBottomColor))
-                ->setGroup('border_color', 'Border Color', 5, 'heroicon-o-swatch'),
+                ->setGroup('border_color', 'Border Color', 4, 'heroicon-o-swatch'),
             (new ColorProperty('borderLeftColor', 'Left', defaultValue: $this->borderLeftColor))
-                ->setGroup('border_color', 'Border Color', 5, 'heroicon-o-swatch'),
+                ->setGroup('border_color', 'Border Color', 4, 'heroicon-o-swatch'),
+            (new ColorProperty('borderColor', 'All', defaultValue: $this->borderColor))
+                ->setGroup('border_color', 'Border Color', 4, 'heroicon-o-swatch'),
 
             // Border Radius - All corners or individual
-            (new SelectProperty('borderRadius', 'All', $borderRadiusOptions, defaultValue: $this->borderRadius))
-                ->setGroup('border_radius', 'Border Radius', 5, 'heroicon-o-square-2-stack'),
             (new SelectProperty('borderTopLeftRadius', 'Top Left', $borderRadiusOptions, defaultValue: $this->borderTopLeftRadius))
-                ->setGroup('border_radius', 'Border Radius', 5, 'heroicon-o-square-2-stack'),
+                ->setGroup('border_radius', 'Border Radius', 4, 'heroicon-o-square-2-stack'),
             (new SelectProperty('borderTopRightRadius', 'Top Right', $borderRadiusOptions, defaultValue: $this->borderTopRightRadius))
-                ->setGroup('border_radius', 'Border Radius', 5, 'heroicon-o-square-2-stack'),
+                ->setGroup('border_radius', 'Border Radius', 4, 'heroicon-o-square-2-stack'),
             (new SelectProperty('borderBottomRightRadius', 'Bottom Right', $borderRadiusOptions, defaultValue: $this->borderBottomRightRadius))
-                ->setGroup('border_radius', 'Border Radius', 5, 'heroicon-o-square-2-stack'),
+                ->setGroup('border_radius', 'Border Radius', 4, 'heroicon-o-square-2-stack'),
             (new SelectProperty('borderBottomLeftRadius', 'Bottom Left', $borderRadiusOptions, defaultValue: $this->borderBottomLeftRadius))
-                ->setGroup('border_radius', 'Border Radius', 5, 'heroicon-o-square-2-stack'),
+                ->setGroup('border_radius', 'Border Radius', 4, 'heroicon-o-square-2-stack'),
+            (new SelectProperty('borderRadius', 'All', $borderRadiusOptions, defaultValue: $this->borderRadius))
+                ->setGroup('border_radius', 'Border Radius', 4, 'heroicon-o-square-2-stack'),
+
         ];
     }
 

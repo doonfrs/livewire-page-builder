@@ -39,15 +39,15 @@
                             @endphp
                             <div wire:key="property-{{ $key }}" class="group">
                                 @if ($property['type'] === 'checkbox')
-                                    <div class="flex items-center">
-                                        <input type="checkbox" id="property-{{ $property['name'] }}"
-                                            class="form-checkbox h-5 w-5 text-blue-600 rounded transition duration-150 ease-in-out border-gray-300 focus:ring-2 focus:ring-blue-200 dark:border-gray-600 dark:bg-gray-800 dark:ring-offset-gray-800"
-                                            @if ($properties[$property['name']] ?? false) checked @endif
-                                            wire:change.debounce.500ms="updateBlockProperty('{{ $rowId }}', '{{ $blockId }}', '{{ $property['name'] }}', $event.target.checked)">
+                                    <div>
                                         <label for="property-{{ $property['name'] }}"
-                                            class="ml-2 ms-2 text-sm font-medium text-gray-700 cursor-pointer dark:text-gray-300">
+                                            class="block text-sm font-medium text-gray-700 mb-1 dark:text-gray-300">
                                             {{ $property['label'] }}
                                         </label>
+                                        <input type="checkbox" id="property-{{ $property['name'] }}"
+                                            class="form-checkbox h-5 w-5 mt-1.5 text-blue-600 rounded transition duration-150 ease-in-out border-gray-300 focus:ring-2 focus:ring-blue-200 dark:border-gray-600 dark:bg-gray-800 dark:ring-offset-gray-800"
+                                            @if ($properties[$property['name']] ?? false) checked @endif
+                                            wire:change.debounce.500ms="updateBlockProperty('{{ $rowId }}', '{{ $blockId }}', '{{ $property['name'] }}', $event.target.checked)">
                                     </div>
                                 @elseif($property['type'] === 'image')
                                     <livewire:block-properties.image-property :property-name="$property['name']" :property-label="$property['label']"
