@@ -492,7 +492,7 @@ class RowBlock extends Block
 
     public function getPageBuilderLabel(): string
     {
-        return 'Row';
+        return __('Row');
     }
 
     public function getPageBuilderIcon(): string
