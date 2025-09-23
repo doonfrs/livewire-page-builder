@@ -36,12 +36,13 @@ class Spacer extends Block
 
     public function render()
     {
+        $heightClasses = $this->getPageBuilderHeightClasses();
         if ($this->editMode) {
-            return "<div class='flex items-center justify-center text-gray-400 text-sm italic border border-dashed border-gray-300 bg-gray-50/50 w-full h-full min-h-8'>
+            return "<div class='flex items-center justify-center text-gray-400 text-sm italic border border-dashed border-gray-300 bg-gray-50/50 w-full min-h-8 {$heightClasses}'>
                 ".__('Spacer').'
             </div>';
         } else {
-            return '<div class="w-full h-full"></div>';
+            return "<div class='w-full {$heightClasses}'></div>";
         }
     }
 }
