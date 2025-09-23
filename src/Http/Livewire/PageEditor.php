@@ -648,7 +648,8 @@ class PageEditor extends Component
                 }
             }
         }
-        $this->skipRender();
+        // Check if auto-save is needed after block movement
+        Log::info('Block movement completed, checking if auto-save is needed');
     }
 
     private function getAllBlockIds(): array
@@ -672,8 +673,19 @@ class PageEditor extends Component
     #[On('moveRowUp')]
     public function moveRowUp($rowId)
     {
+        Log::info('PageEditor::moveRowUp called', [
+            'rowId' => $rowId,
+            'totalRows' => count($this->rows),
+            'currentOrder' => array_keys($this->rows),
+        ]);
+
         $rowIds = array_keys($this->rows);
         $currentIndex = array_search($rowId, $rowIds);
+
+        Log::info('Row movement analysis', [
+            'currentIndex' => $currentIndex,
+            'canMoveUp' => $currentIndex > 0,
+        ]);
 
         if ($currentIndex > 0) {
             $newOrder = $rowIds;
@@ -682,14 +694,33 @@ class PageEditor extends Component
             $newOrder[$currentIndex] = $temp;
 
             $this->rows = collect($newOrder)->mapWithKeys(fn ($id) => [$id => $this->rows[$id]])->toArray();
+
+            Log::info('Row moved up successfully', [
+                'rowId' => $rowId,
+                'newOrder' => array_keys($this->rows),
+            ]);
+        } else {
+            Log::info('Row cannot be moved up - already at top or not found', ['rowId' => $rowId]);
         }
     }
 
     #[On('moveRowDown')]
     public function moveRowDown($rowId)
     {
+        Log::info('PageEditor::moveRowDown called', [
+            'rowId' => $rowId,
+            'totalRows' => count($this->rows),
+            'currentOrder' => array_keys($this->rows),
+        ]);
+
         $rowIds = array_keys($this->rows);
         $currentIndex = array_search($rowId, $rowIds);
+
+        Log::info('Row movement analysis', [
+            'currentIndex' => $currentIndex,
+            'canMoveDown' => $currentIndex < count($this->rows) - 1,
+        ]);
+
         if ($currentIndex < count($this->rows) - 1) {
             $newOrder = $rowIds;
             $temp = $newOrder[$currentIndex + 1];
@@ -697,16 +728,40 @@ class PageEditor extends Component
             $newOrder[$currentIndex] = $temp;
 
             $this->rows = collect($newOrder)->mapWithKeys(fn ($id) => [$id => $this->rows[$id]])->toArray();
+
+            Log::info('Row moved down successfully', [
+                'rowId' => $rowId,
+                'newOrder' => array_keys($this->rows),
+            ]);
+        } else {
+            Log::info('Row cannot be moved down - already at bottom or not found', ['rowId' => $rowId]);
         }
     }
 
     #[On('moveBlockUp')]
     public function moveBlockUp($blockId)
     {
+        Log::info('PageEditor::moveBlockUp called', [
+            'blockId' => $blockId,
+            'totalRows' => count($this->rows),
+        ]);
+
+        // Only handle top-level blocks, let RowBlock handle nested blocks
         foreach ($this->rows as $rowId => $row) {
             if (isset($row['blocks'][$blockId])) {
+                Log::info('Block found in top-level row - PageEditor will handle movement', [
+                    'blockId' => $blockId,
+                    'rowId' => $rowId,
+                    'blocksInRow' => array_keys($row['blocks']),
+                ]);
+
                 $blockIds = array_keys($row['blocks']);
                 $currentIndex = array_search($blockId, $blockIds);
+
+                Log::info('Block movement analysis', [
+                    'currentIndex' => $currentIndex,
+                    'canMoveUp' => $currentIndex > 0,
+                ]);
 
                 if ($currentIndex > 0) {
                     $newOrder = $blockIds;
@@ -715,20 +770,53 @@ class PageEditor extends Component
                     $newOrder[$currentIndex] = $temp;
 
                     $this->rows[$rowId]['blocks'] = collect($newOrder)->mapWithKeys(fn ($id) => [$id => $row['blocks'][$id]])->toArray();
+
+                    Log::info('Block moved up successfully in top-level row', [
+                        'blockId' => $blockId,
+                        'rowId' => $rowId,
+                        'newOrder' => array_keys($this->rows[$rowId]['blocks']),
+                    ]);
+                } else {
+                    Log::info('Block cannot be moved up - already at top', [
+                        'blockId' => $blockId,
+                        'rowId' => $rowId,
+                    ]);
                 }
+                return; // Exit early - we found and handled the block
             }
         }
 
-        $this->skipRender();
+        Log::info('Block not found in top-level rows - RowBlock will handle nested movement', [
+            'blockId' => $blockId
+        ]);
     }
 
     #[On('moveBlockDown')]
     public function moveBlockDown($blockId)
     {
+        Log::info('PageEditor::moveBlockDown called', [
+            'blockId' => $blockId,
+            'totalRows' => count($this->rows),
+        ]);
+
+        // Only handle top-level blocks, let RowBlock handle nested blocks
         foreach ($this->rows as $rowId => $row) {
             if (isset($row['blocks'][$blockId])) {
+                Log::info('Block found in top-level row - PageEditor will handle movement', [
+                    'blockId' => $blockId,
+                    'rowId' => $rowId,
+                    'blocksInRow' => array_keys($row['blocks']),
+                ]);
+
                 $blockIds = array_keys($row['blocks']);
                 $currentIndex = array_search($blockId, $blockIds);
+
+                Log::info('Block movement analysis', [
+                    'currentIndex' => $currentIndex,
+                    'totalBlocks' => count($row['blocks']),
+                    'canMoveDown' => $currentIndex < count($row['blocks']) - 1,
+                ]);
+
                 if ($currentIndex < count($row['blocks']) - 1) {
                     $newOrder = $blockIds;
                     $temp = $newOrder[$currentIndex + 1];
@@ -736,11 +824,77 @@ class PageEditor extends Component
                     $newOrder[$currentIndex] = $temp;
 
                     $this->rows[$rowId]['blocks'] = collect($newOrder)->mapWithKeys(fn ($id) => [$id => $row['blocks'][$id]])->toArray();
+
+                    Log::info('Block moved down successfully in top-level row', [
+                        'blockId' => $blockId,
+                        'rowId' => $rowId,
+                        'newOrder' => array_keys($this->rows[$rowId]['blocks']),
+                    ]);
+                } else {
+                    Log::info('Block cannot be moved down - already at bottom', [
+                        'blockId' => $blockId,
+                        'rowId' => $rowId,
+                    ]);
                 }
+                return; // Exit early - we found and handled the block
             }
         }
 
-        $this->skipRender();
+        Log::info('Block not found in top-level rows - RowBlock will handle nested movement', [
+            'blockId' => $blockId
+        ]);
+    }
+
+    #[On('syncBlockOrder')]
+    public function syncBlockOrder($data)
+    {
+        $rowId = $data['rowId'];
+        $blockOrder = $data['blockOrder'];
+
+        Log::info('PageEditor::syncBlockOrder called', [
+            'rowId' => $rowId,
+            'newBlockOrder' => $blockOrder
+        ]);
+
+        // Find the row and update its block order recursively
+        $this->updateBlockOrderInStructure($this->rows, $rowId, $blockOrder);
+    }
+
+    private function updateBlockOrderInStructure(&$structure, $targetRowId, $blockOrder)
+    {
+        foreach ($structure as $rowId => &$row) {
+            // Check if this is the target row
+            if ($rowId === $targetRowId && isset($row['blocks'])) {
+                $currentBlocks = $row['blocks'];
+                $reorderedBlocks = [];
+
+                // Reorder blocks according to new order
+                foreach ($blockOrder as $blockId) {
+                    if (isset($currentBlocks[$blockId])) {
+                        $reorderedBlocks[$blockId] = $currentBlocks[$blockId];
+                    }
+                }
+
+                $row['blocks'] = $reorderedBlocks;
+
+                Log::info('PageEditor block order synced successfully', [
+                    'rowId' => $targetRowId,
+                    'syncedOrder' => array_keys($row['blocks'])
+                ]);
+                return true;
+            }
+
+            // Recursively search in nested blocks
+            if (isset($row['blocks'])) {
+                foreach ($row['blocks'] as $blockId => &$block) {
+                    if (isset($block['blocks'])) {
+                        $result = $this->updateBlockOrderInStructure($row['blocks'][$blockId]['blocks'], $targetRowId, $blockOrder);
+                        if ($result) return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     #[On('deleteRow')]

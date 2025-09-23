@@ -342,8 +342,20 @@ class RowBlock extends Block
     #[On('moveBlockUp')]
     public function moveBlockUp($blockId)
     {
+        Log::info('RowBlock::moveBlockUp called', [
+            'blockId' => $blockId,
+            'rowId' => $this->rowId,
+            'totalBlocks' => count($this->blocks),
+            'currentOrder' => array_keys($this->blocks),
+        ]);
+
         $blockIds = array_keys($this->blocks);
         $currentIndex = array_search($blockId, $blockIds);
+
+        Log::info('Block movement analysis in RowBlock', [
+            'currentIndex' => $currentIndex,
+            'canMoveUp' => $currentIndex > 0,
+        ]);
 
         if ($currentIndex > 0) {
             $newOrder = $blockIds;
@@ -352,15 +364,45 @@ class RowBlock extends Block
             $newOrder[$currentIndex] = $temp;
 
             $this->blocks = collect($newOrder)->mapWithKeys(fn ($id) => [$id => $this->blocks[$id]])->toArray();
+
+            Log::info('Block moved up successfully in RowBlock', [
+                'blockId' => $blockId,
+                'rowId' => $this->rowId,
+                'newOrder' => array_keys($this->blocks),
+            ]);
+
+            // Dispatch to PageEditor to sync the change
+            $this->dispatch('syncBlockOrder', [
+                'rowId' => $this->rowId,
+                'blockOrder' => array_keys($this->blocks),
+            ])->to('page-editor');
+        } else {
+            Log::info('Block cannot be moved up in RowBlock - already at top or not found', [
+                'blockId' => $blockId,
+                'rowId' => $this->rowId,
+            ]);
         }
     }
 
     #[On('moveBlockDown')]
     public function moveBlockDown($blockId)
     {
+        Log::info('RowBlock::moveBlockDown called', [
+            'blockId' => $blockId,
+            'rowId' => $this->rowId,
+            'totalBlocks' => count($this->blocks),
+            'currentOrder' => array_keys($this->blocks),
+        ]);
+
         $blockIds = array_keys($this->blocks);
         $currentIndex = array_search($blockId, $blockIds);
         $lastIndex = count($blockIds) - 1;
+
+        Log::info('Block movement analysis in RowBlock', [
+            'currentIndex' => $currentIndex,
+            'lastIndex' => $lastIndex,
+            'canMoveDown' => $currentIndex !== false && $currentIndex < $lastIndex,
+        ]);
 
         if ($currentIndex !== false && $currentIndex < $lastIndex) {
             $newOrder = $blockIds;
@@ -369,6 +411,23 @@ class RowBlock extends Block
             $newOrder[$currentIndex] = $temp;
 
             $this->blocks = collect($newOrder)->mapWithKeys(fn ($id) => [$id => $this->blocks[$id]])->toArray();
+
+            Log::info('Block moved down successfully in RowBlock', [
+                'blockId' => $blockId,
+                'rowId' => $this->rowId,
+                'newOrder' => array_keys($this->blocks),
+            ]);
+
+            // Dispatch to PageEditor to sync the change
+            $this->dispatch('syncBlockOrder', [
+                'rowId' => $this->rowId,
+                'blockOrder' => array_keys($this->blocks),
+            ])->to('page-editor');
+        } else {
+            Log::info('Block cannot be moved down in RowBlock - already at bottom or not found', [
+                'blockId' => $blockId,
+                'rowId' => $this->rowId,
+            ]);
         }
     }
 
