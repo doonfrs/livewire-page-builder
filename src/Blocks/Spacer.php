@@ -12,6 +12,18 @@ class Spacer extends Block
 
     public $desktopWidth = 'w-full';
 
+    public $mobileHeight = 'h-16';
+
+    public $tabletHeight = 'h-16';
+
+    public $desktopHeight = 'h-16';
+
+    public $mobileMinHeight = null;
+
+    public $tabletMinHeight = null;
+
+    public $desktopMinHeight = null;
+
     public function getPageBuilderLabel(): string
     {
         return __('Spacer');
@@ -25,12 +37,11 @@ class Spacer extends Block
     public function render()
     {
         if ($this->editMode) {
-            return "<div class='text-gray-400 italic'>
-                {{__('Spacer')}}
-            </div>";
-        } else {
-            return '<div>
+            return "<div class='flex items-center justify-center text-gray-400 text-sm italic border border-dashed border-gray-300 bg-gray-50/50 w-full h-full min-h-8'>
+                ".__('Spacer').'
             </div>';
+        } else {
+            return '<div class="w-full h-full"></div>';
         }
     }
 }
