@@ -658,40 +658,189 @@ class PageEditor extends Component
     #[On('deleteRow')]
     public function deleteRow($rowId)
     {
+        Log::info('PageEditor::deleteRow called', [
+            'rowId' => $rowId,
+            'totalTopLevelRows' => count($this->rows),
+            'topLevelRowIds' => array_keys($this->rows),
+        ]);
+
         // First check if it's a top-level row
         if (isset($this->rows[$rowId])) {
             unset($this->rows[$rowId]);
+            Log::info('Top-level row deleted successfully', ['rowId' => $rowId]);
+            return;
+        }
+
+        // If not found as top-level row, search recursively for nested rows
+        Log::info('Searching for nested row', [
+            'targetRowId' => $rowId,
+            'searchingInStructure' => array_keys($this->rows),
+        ]);
+
+        $result = $this->deleteNestedRowWithParent($this->rows, $rowId);
+        if ($result) {
+            Log::info('Nested row deleted successfully', [
+                'deletedNestedRowId' => $rowId,
+                'parentRowId' => $result['parentRowId'],
+            ]);
+
+            // Dispatch the event to notify components
+            $this->dispatch('nested-row-deleted',
+                parentRowId: $result['parentRowId'],
+                deletedRowId: $rowId,
+                updatedBlocks: $result['updatedBlocks']
+            );
 
             return;
         }
 
-        // If not found as top-level row, search for it as a nested row in blocks
-        foreach ($this->rows as $parentRowId => $parentRow) {
-            if (isset($parentRow['blocks'][$rowId])) {
-                unset($this->rows[$parentRowId]['blocks'][$rowId]);
-                Log::info('Nested row deleted successfully', [
+        Log::warning('Row not found for deletion', ['rowId' => $rowId]);
+    }
+
+    /**
+     * Recursively search and delete a nested row with parent tracking
+     */
+    private function deleteNestedRowWithParent(&$structure, $rowId, $parentRowId = null, $depth = 0)
+    {
+        $indent = str_repeat('  ', $depth);
+        Log::info("{$indent}deleteNestedRowWithParent: Searching at depth {$depth}", [
+            'targetRowId' => $rowId,
+            'currentLevelKeys' => array_keys($structure),
+            'parentRowId' => $parentRowId,
+            'depth' => $depth,
+        ]);
+
+        foreach ($structure as $currentRowId => &$row) {
+            Log::info("{$indent}Checking row/block: {$currentRowId}", [
+                'hasBlocks' => isset($row['blocks']),
+                'blocksCount' => isset($row['blocks']) ? count($row['blocks']) : 0,
+            ]);
+
+            // Check if this currentRowId is the target we want to delete
+            if ($currentRowId === $rowId) {
+                Log::info("{$indent}FOUND TARGET ROW AS KEY! Deleting row {$currentRowId} (parent: {$parentRowId})");
+                unset($structure[$currentRowId]);
+
+                return [
                     'parentRowId' => $parentRowId,
-                    'deletedNestedRowId' => $rowId,
-                ]);
+                    'updatedBlocks' => $structure
+                ];
+            }
 
-                // Notify the parent RowBlock component to update its blocks
-                $this->dispatch('nested-row-deleted',
-                    parentRowId: $parentRowId,
-                    deletedRowId: $rowId,
-                    updatedBlocks: $this->rows[$parentRowId]['blocks']
-                );
+            if (isset($row['blocks'])) {
+                Log::info("{$indent}  Row has blocks, iterating through " . count($row['blocks']) . " blocks");
+                foreach ($row['blocks'] as $blockId => &$block) {
+                    Log::info("{$indent}  Checking block: {$blockId}", [
+                        'isTargetRow' => $blockId === $rowId,
+                        'hasNestedBlocks' => isset($block['blocks']),
+                        'alias' => $block['alias'] ?? 'unknown',
+                    ]);
 
-                Log::info('PageEditor nested row deletion completed - dispatched nested-row-deleted event', [
-                    'parentRowId' => $parentRowId,
-                    'deletedRowId' => $rowId,
-                    'remainingBlocksCount' => count($this->rows[$parentRowId]['blocks']),
-                ]);
+                    // Check if this block is the row we want to delete
+                    Log::info("{$indent}  Comparing blockId '{$blockId}' with target '{$rowId}' - Match: " . ($blockId === $rowId ? 'YES' : 'NO'));
+                    if ($blockId === $rowId) {
+                        Log::info("{$indent}  FOUND TARGET ROW! Deleting block {$blockId} from parent {$currentRowId}");
+                        unset($structure[$currentRowId]['blocks'][$blockId]);
 
-                return;
+                        return [
+                            'parentRowId' => $currentRowId,
+                            'updatedBlocks' => $structure[$currentRowId]['blocks']
+                        ];
+                    }
+
+                    // If this block has nested blocks, search recursively
+                    if (isset($block['blocks'])) {
+                        Log::info("{$indent}  Recursing into block {$blockId} with " . count($block['blocks']) . " nested blocks");
+                        Log::info("{$indent}  Recursive structure keys: " . json_encode(array_keys($block['blocks'])));
+                        $result = $this->deleteNestedRowWithParent($block['blocks'], $rowId, $blockId, $depth + 1);
+                        if ($result) {
+                            return $result;
+                        }
+                    }
+                }
             }
         }
 
-        Log::warning('Row not found for deletion', ['rowId' => $rowId]);
+        Log::info("{$indent}deleteNestedRowWithParent: Target not found at depth {$depth}");
+        return false;
+    }
+
+    /**
+     * Recursively search and delete a nested row
+     */
+    private function deleteNestedRow(&$structure, $rowId, $depth = 0)
+    {
+        $indent = str_repeat('  ', $depth);
+        Log::info("{$indent}deleteNestedRow: Searching at depth {$depth}", [
+            'targetRowId' => $rowId,
+            'currentLevelKeys' => array_keys($structure),
+            'depth' => $depth,
+        ]);
+
+        foreach ($structure as $currentRowId => &$row) {
+            Log::info("{$indent}Checking row/block: {$currentRowId}", [
+                'hasBlocks' => isset($row['blocks']),
+                'blocksCount' => isset($row['blocks']) ? count($row['blocks']) : 0,
+            ]);
+
+            // Check if this currentRowId is the target we want to delete
+            if ($currentRowId === $rowId) {
+                Log::info("{$indent}FOUND TARGET ROW! Deleting row {$currentRowId}");
+                unset($structure[$currentRowId]);
+
+                // For this case, we need to find the parent to dispatch the event
+                // This should be handled by the calling context
+                Log::info('Target row deleted successfully from structure', [
+                    'deletedRowId' => $rowId,
+                ]);
+
+                return true;
+            }
+
+            if (isset($row['blocks'])) {
+                Log::info("{$indent}  Row has blocks, iterating through " . count($row['blocks']) . " blocks");
+                foreach ($row['blocks'] as $blockId => &$block) {
+                    Log::info("{$indent}  Checking block: {$blockId}", [
+                        'isTargetRow' => $blockId === $rowId,
+                        'hasNestedBlocks' => isset($block['blocks']),
+                        'alias' => $block['alias'] ?? 'unknown',
+                    ]);
+
+                    // Check if this block is the row we want to delete
+                    Log::info("{$indent}  Comparing blockId '{$blockId}' with target '{$rowId}' - Match: " . ($blockId === $rowId ? 'YES' : 'NO'));
+                    if ($blockId === $rowId) {
+                        Log::info("{$indent}  FOUND TARGET ROW! Deleting block {$blockId} from parent {$currentRowId}");
+                        unset($structure[$currentRowId]['blocks'][$blockId]);
+
+                        // Notify the parent RowBlock component to update its blocks
+                        $this->dispatch('nested-row-deleted',
+                            parentRowId: $currentRowId,
+                            deletedRowId: $rowId,
+                            updatedBlocks: $structure[$currentRowId]['blocks']
+                        );
+
+                        Log::info('PageEditor nested row deletion completed - dispatched nested-row-deleted event', [
+                            'parentRowId' => $currentRowId,
+                            'deletedRowId' => $rowId,
+                            'remainingBlocksCount' => count($structure[$currentRowId]['blocks']),
+                        ]);
+
+                        return true;
+                    }
+
+                    // If this block has nested blocks, search recursively
+                    if (isset($block['blocks'])) {
+                        Log::info("{$indent}  Recursing into block {$blockId} with " . count($block['blocks']) . " nested blocks");
+                        if ($this->deleteNestedRow($block['blocks'], $rowId, $depth + 1)) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+
+        Log::info("{$indent}deleteNestedRow: Target not found at depth {$depth}");
+        return false;
     }
 
     #[On('deleteBlock')]
