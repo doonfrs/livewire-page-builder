@@ -409,26 +409,63 @@ class PageEditor extends Component
     #[On('sync-nested-row-data')]
     public function syncNestedRowData($nestedRowId, $blocks)
     {
+        Log::info('PageEditor syncNestedRowData called', [
+            'nestedRowId' => $nestedRowId,
+            'blocksCount' => count($blocks),
+            'blocksData' => $blocks,
+        ]);
+
         // Find the nested row in the structure and update its blocks
-        $this->updateNestedRowBlocks($this->rows, $nestedRowId, $blocks);
+        $result = $this->updateNestedRowBlocks($this->rows, $nestedRowId, $blocks);
+
+        Log::info('PageEditor syncNestedRowData result', [
+            'nestedRowId' => $nestedRowId,
+            'updateSuccess' => $result,
+            'currentRowsStructure' => $this->rows,
+        ]);
     }
 
-    private function updateNestedRowBlocks(&$structure, $nestedRowId, $blocks)
+    private function updateNestedRowBlocks(&$structure, $nestedRowId, $blocks, $depth = 0)
     {
+        $indent = str_repeat('  ', $depth);
+        Log::info("{$indent}updateNestedRowBlocks called", [
+            'targetNestedRowId' => $nestedRowId,
+            'depth' => $depth,
+            'structureKeys' => array_keys($structure),
+            'blocksToSet' => $blocks,
+        ]);
+
         foreach ($structure as $rowId => $row) {
+            Log::info("{$indent}Checking row: {$rowId}");
+
+            // Check if this rowId is the target we want to update
+            if ($rowId === $nestedRowId) {
+                Log::info("{$indent}FOUND TARGET ROW AS KEY! Updating blocks for row {$nestedRowId}");
+                $structure[$rowId]['blocks'] = $blocks;
+                Log::info("{$indent}Updated blocks for target row {$nestedRowId}", [
+                    'newBlocksCount' => count($blocks),
+                    'newBlocks' => $blocks,
+                ]);
+                return true;
+            }
+
             if (isset($row['blocks'])) {
+                Log::info("{$indent}Row {$rowId} has blocks, checking " . count($row['blocks']) . " blocks");
                 foreach ($row['blocks'] as $blockId => $block) {
+                    Log::info("{$indent}  Checking block: {$blockId}");
+
                     // Check if this block is the nested row we're looking for
                     if ($blockId === $nestedRowId) {
+                        Log::info("{$indent}  FOUND TARGET ROW AS BLOCK! Updating blocks for nested row {$nestedRowId}");
                         $structure[$rowId]['blocks'][$blockId]['blocks'] = $blocks;
-
                         return true;
                     }
 
                     // If this block has nested blocks, recursively search
                     if (isset($block['blocks'])) {
+                        Log::info("{$indent}  Block {$blockId} has nested blocks, recursing");
                         $nestedBlocks = &$structure[$rowId]['blocks'][$blockId]['blocks'];
-                        if ($this->updateNestedRowBlocks($nestedBlocks, $nestedRowId, $blocks)) {
+                        if ($this->updateNestedRowBlocks($nestedBlocks, $nestedRowId, $blocks, $depth + 1)) {
                             return true;
                         }
                     }
@@ -436,6 +473,7 @@ class PageEditor extends Component
             }
         }
 
+        Log::info("{$indent}updateNestedRowBlocks: Target {$nestedRowId} not found at depth {$depth}");
         return false;
     }
 
