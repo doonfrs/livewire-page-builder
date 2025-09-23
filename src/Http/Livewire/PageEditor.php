@@ -477,6 +477,64 @@ class PageEditor extends Component
         return false;
     }
 
+    private function updateNestedRowProperty(&$structure, $nestedRowId, $propertyName, $value, $depth = 0)
+    {
+        $indent = str_repeat('  ', $depth);
+        Log::info("{$indent}updateNestedRowProperty called", [
+            'targetNestedRowId' => $nestedRowId,
+            'propertyName' => $propertyName,
+            'value' => $value,
+            'depth' => $depth,
+            'structureKeys' => array_keys($structure),
+        ]);
+
+        foreach ($structure as $rowId => $row) {
+            Log::info("{$indent}Checking row: {$rowId}");
+
+            // Check if this rowId is the target we want to update
+            if ($rowId === $nestedRowId) {
+                Log::info("{$indent}FOUND TARGET ROW AS KEY! Updating property for row {$nestedRowId}");
+                $structure[$rowId]['properties'][$propertyName] = $value;
+                Log::info("{$indent}Updated property for target row {$nestedRowId}", [
+                    'propertyName' => $propertyName,
+                    'newValue' => $value,
+                ]);
+                return true;
+            }
+
+            if (isset($row['blocks'])) {
+                Log::info("{$indent}Row {$rowId} has blocks, checking " . count($row['blocks']) . " blocks");
+                foreach ($row['blocks'] as $blockId => $block) {
+                    Log::info("{$indent}  Checking block: {$blockId}");
+
+                    // Check if this block is the nested row we're looking for
+                    if ($blockId === $nestedRowId) {
+                        Log::info("{$indent}  FOUND TARGET ROW AS BLOCK! Updating property for nested row {$nestedRowId}");
+                        $structure[$rowId]['blocks'][$blockId]['properties'][$propertyName] = $value;
+                        Log::info("{$indent}  Updated property for nested row {$nestedRowId}", [
+                            'parentRowId' => $rowId,
+                            'propertyName' => $propertyName,
+                            'newValue' => $value,
+                        ]);
+                        return true;
+                    }
+
+                    // If this block has nested blocks, recursively search
+                    if (isset($block['blocks'])) {
+                        Log::info("{$indent}  Block {$blockId} has nested blocks, recursing");
+                        $nestedBlocks = &$structure[$rowId]['blocks'][$blockId]['blocks'];
+                        if ($this->updateNestedRowProperty($nestedBlocks, $nestedRowId, $propertyName, $value, $depth + 1)) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+
+        Log::info("{$indent}updateNestedRowProperty: Target {$nestedRowId} not found at depth {$depth}");
+        return false;
+    }
+
     #[On('updateBlockProperty')]
     public function updateBlockProperty($rowId, $blockId, $propertyName, $value)
     {
@@ -506,22 +564,8 @@ class PageEditor extends Component
                     'value' => $value,
                 ]);
             } else {
-                // Check if it's a nested row
-                $nestedRowFound = false;
-                foreach ($this->rows as $parentRowId => $parentRow) {
-                    if (isset($parentRow['blocks'][$rowId])) {
-                        // Found the nested row
-                        $this->rows[$parentRowId]['blocks'][$rowId]['properties'][$propertyName] = $value;
-                        $nestedRowFound = true;
-                        Log::info('Nested row property updated successfully', [
-                            'parentRowId' => $parentRowId,
-                            'nestedRowId' => $rowId,
-                            'propertyName' => $propertyName,
-                            'value' => $value,
-                        ]);
-                        break;
-                    }
-                }
+                // Check if it's a nested row - use recursive search for deeply nested rows
+                $nestedRowFound = $this->updateNestedRowProperty($this->rows, $rowId, $propertyName, $value);
 
                 if (! $nestedRowFound) {
                     Log::warning('Row not found (neither top-level nor nested)', ['rowId' => $rowId]);
