@@ -408,6 +408,7 @@ class RowBlock extends Block
                 options: [
                     '' => 'None',
                     'visible' => 'Visible',
+                    'hidden' => 'Hidden',
                     'auto' => 'Auto',
                     'scroll' => 'Scroll',
                 ],
@@ -419,6 +420,7 @@ class RowBlock extends Block
                 options: [
                     '' => 'None',
                     'visible' => 'Visible',
+                    'hidden' => 'Hidden',
                     'auto' => 'Auto',
                     'scroll' => 'Scroll',
                 ],
