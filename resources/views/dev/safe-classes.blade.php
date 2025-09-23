@@ -160,4 +160,6 @@
     </div>
     <div class="content-start content-center content-end content-baseline content-stretch"></div>
     <div class="overflow-auto overflow-scroll overflow-visible"></div>
+    <div class="overflow-x-auto overflow-x-scroll overflow-x-visible"></div>
+    <div class="overflow-y-auto overflow-y-scroll overflow-y-visible"></div>
 </div>
