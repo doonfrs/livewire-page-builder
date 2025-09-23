@@ -402,8 +402,19 @@ class RowBlock extends Block
                 ],
             ),
             new SelectProperty(
-                name: 'overflow',
-                label: 'Overflow',
+                name: 'overflowX',
+                label: 'Overflow X',
+                defaultValue: '',
+                options: [
+                    '' => 'None',
+                    'visible' => 'Visible',
+                    'auto' => 'Auto',
+                    'scroll' => 'Scroll',
+                ],
+            ),
+            new SelectProperty(
+                name: 'overflowY',
+                label: 'Overflow Y',
                 defaultValue: '',
                 options: [
                     '' => 'None',
