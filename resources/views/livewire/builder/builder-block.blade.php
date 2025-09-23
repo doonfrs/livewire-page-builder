@@ -19,10 +19,10 @@
             showContextMenu = false;
         }
     " @click.outside="showContextMenu = false" > @endif
-    <div class="relative">
+    <div class="relative h-full">
     @if ($isRowBlock)
         <!-- For RowBlocks, add minimal click handling that doesn't interfere with inner blocks -->
-        <div class="builder-block relative" @click.self="$wire.blockSelected()">
+        <div class="builder-block relative h-full" @click.self="$wire.blockSelected()">
             @if (!$classExists)
                 <div class="text-red-500">{{ __('Unknown block') }}: {{ $blockAlias }}</div>
             @else
@@ -136,8 +136,8 @@
         <button
             @click="
                 showContextMenu = false;
-                confirm('{{ __('Are you sure you want to delete this block?') }}') 
-                && $dispatch('deleteBlock', { blockId: '{{ $blockId }}'}); 
+                confirm('{{ __('Are you sure you want to delete this block?') }}')
+                && $dispatch('deleteBlock', { blockId: '{{ $blockId }}'});
                 "
             class="flex items-center w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50 border-b border-gray-50">
             <x-heroicon-o-trash class="w-4 h-4 ms-0 me-3 text-red-500" />
