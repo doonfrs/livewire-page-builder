@@ -104,7 +104,16 @@ class PageBuilderService
         // Add vertical alignment to the flex container
         $contentAlign = $properties['contentAlign'] ?? 'content-center';
         if ($flex) {  // Only add vertical alignment when flex is active
-            $classes[] = $contentAlign;
+            // Map content-* classes to appropriate flexbox alignment classes
+            $alignmentMap = [
+                'content-start' => 'justify-start',
+                'content-center' => 'justify-center',
+                'content-end' => 'justify-end',
+                'content-stretch' => 'justify-stretch',
+            ];
+
+            $justifyClass = $alignmentMap[$contentAlign] ?? 'justify-center';
+            $classes[] = $justifyClass;
         }
 
         // Add overflow-x property
