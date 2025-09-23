@@ -668,6 +668,7 @@ class PageEditor extends Component
         if (isset($this->rows[$rowId])) {
             unset($this->rows[$rowId]);
             Log::info('Top-level row deleted successfully', ['rowId' => $rowId]);
+
             return;
         }
 
@@ -723,12 +724,12 @@ class PageEditor extends Component
 
                 return [
                     'parentRowId' => $parentRowId,
-                    'updatedBlocks' => $structure
+                    'updatedBlocks' => $structure,
                 ];
             }
 
             if (isset($row['blocks'])) {
-                Log::info("{$indent}  Row has blocks, iterating through " . count($row['blocks']) . " blocks");
+                Log::info("{$indent}  Row has blocks, iterating through ".count($row['blocks']).' blocks');
                 foreach ($row['blocks'] as $blockId => &$block) {
                     Log::info("{$indent}  Checking block: {$blockId}", [
                         'isTargetRow' => $blockId === $rowId,
@@ -737,21 +738,21 @@ class PageEditor extends Component
                     ]);
 
                     // Check if this block is the row we want to delete
-                    Log::info("{$indent}  Comparing blockId '{$blockId}' with target '{$rowId}' - Match: " . ($blockId === $rowId ? 'YES' : 'NO'));
+                    Log::info("{$indent}  Comparing blockId '{$blockId}' with target '{$rowId}' - Match: ".($blockId === $rowId ? 'YES' : 'NO'));
                     if ($blockId === $rowId) {
                         Log::info("{$indent}  FOUND TARGET ROW! Deleting block {$blockId} from parent {$currentRowId}");
                         unset($structure[$currentRowId]['blocks'][$blockId]);
 
                         return [
                             'parentRowId' => $currentRowId,
-                            'updatedBlocks' => $structure[$currentRowId]['blocks']
+                            'updatedBlocks' => $structure[$currentRowId]['blocks'],
                         ];
                     }
 
                     // If this block has nested blocks, search recursively
                     if (isset($block['blocks'])) {
-                        Log::info("{$indent}  Recursing into block {$blockId} with " . count($block['blocks']) . " nested blocks");
-                        Log::info("{$indent}  Recursive structure keys: " . json_encode(array_keys($block['blocks'])));
+                        Log::info("{$indent}  Recursing into block {$blockId} with ".count($block['blocks']).' nested blocks');
+                        Log::info("{$indent}  Recursive structure keys: ".json_encode(array_keys($block['blocks'])));
                         $result = $this->deleteNestedRowWithParent($block['blocks'], $rowId, $blockId, $depth + 1);
                         if ($result) {
                             return $result;
@@ -762,6 +763,7 @@ class PageEditor extends Component
         }
 
         Log::info("{$indent}deleteNestedRowWithParent: Target not found at depth {$depth}");
+
         return false;
     }
 
@@ -798,7 +800,7 @@ class PageEditor extends Component
             }
 
             if (isset($row['blocks'])) {
-                Log::info("{$indent}  Row has blocks, iterating through " . count($row['blocks']) . " blocks");
+                Log::info("{$indent}  Row has blocks, iterating through ".count($row['blocks']).' blocks');
                 foreach ($row['blocks'] as $blockId => &$block) {
                     Log::info("{$indent}  Checking block: {$blockId}", [
                         'isTargetRow' => $blockId === $rowId,
@@ -807,7 +809,7 @@ class PageEditor extends Component
                     ]);
 
                     // Check if this block is the row we want to delete
-                    Log::info("{$indent}  Comparing blockId '{$blockId}' with target '{$rowId}' - Match: " . ($blockId === $rowId ? 'YES' : 'NO'));
+                    Log::info("{$indent}  Comparing blockId '{$blockId}' with target '{$rowId}' - Match: ".($blockId === $rowId ? 'YES' : 'NO'));
                     if ($blockId === $rowId) {
                         Log::info("{$indent}  FOUND TARGET ROW! Deleting block {$blockId} from parent {$currentRowId}");
                         unset($structure[$currentRowId]['blocks'][$blockId]);
@@ -830,7 +832,7 @@ class PageEditor extends Component
 
                     // If this block has nested blocks, search recursively
                     if (isset($block['blocks'])) {
-                        Log::info("{$indent}  Recursing into block {$blockId} with " . count($block['blocks']) . " nested blocks");
+                        Log::info("{$indent}  Recursing into block {$blockId} with ".count($block['blocks']).' nested blocks');
                         if ($this->deleteNestedRow($block['blocks'], $rowId, $depth + 1)) {
                             return true;
                         }
@@ -840,6 +842,7 @@ class PageEditor extends Component
         }
 
         Log::info("{$indent}deleteNestedRow: Target not found at depth {$depth}");
+
         return false;
     }
 
