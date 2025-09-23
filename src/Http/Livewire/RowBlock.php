@@ -402,6 +402,17 @@ class RowBlock extends Block
                 ],
             ),
             new SelectProperty(
+                name: 'overflow',
+                label: 'Overflow',
+                defaultValue: '',
+                options: [
+                    '' => 'None',
+                    'visible' => 'Visible',
+                    'auto' => 'Auto',
+                    'scroll' => 'Scroll',
+                ],
+            ),
+            new SelectProperty(
                 name: 'contentAlign',
                 label: 'Content Alignment',
                 defaultValue: $this->contentAlign,

@@ -98,7 +98,7 @@
     {{-- Text color utilities --}}
     <div
         class="
-        text-gray-50 text-gray-100 text-gray-200 text-gray-300 text-gray-400 
+        text-gray-50 text-gray-100 text-gray-200 text-gray-300 text-gray-400
         text-gray-500 text-gray-600 text-gray-700 text-gray-800 text-gray-900
         text-red-300 text-red-400 text-red-500 text-red-600 text-red-700
         text-blue-300 text-blue-400 text-blue-500 text-blue-600 text-blue-700
@@ -128,7 +128,7 @@
     {{-- Background color utilities --}}
     <div
         class="
-        bg-gray-50 bg-gray-100 bg-gray-200 bg-gray-300 bg-gray-400 
+        bg-gray-50 bg-gray-100 bg-gray-200 bg-gray-300 bg-gray-400
         bg-gray-500 bg-gray-600 bg-gray-700 bg-gray-800 bg-gray-900
         bg-red-300 bg-red-400 bg-red-500 bg-red-600 bg-red-700
         bg-blue-300 bg-blue-400 bg-blue-500 bg-blue-600 bg-blue-700
@@ -159,4 +159,5 @@
     <div class="justify-start justify-center justify-end justify-between justify-around justify-evenly justify-stretch">
     </div>
     <div class="content-start content-center content-end content-baseline content-stretch"></div>
+    <div class="overflow-auto overflow-scroll overflow-visible"></div>
 </div>
