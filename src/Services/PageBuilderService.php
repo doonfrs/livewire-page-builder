@@ -107,6 +107,12 @@ class PageBuilderService
             $classes[] = $contentAlign;
         }
 
+        // Add overflow property
+        $overflow = $properties['overflow'] ?? '';
+        if ($overflow && $overflow !== '') {
+            $classes[] = "overflow-{$overflow}";
+        }
+
         $contentWidthMobile = $properties['contentWidthMobile'] ?? 'w-full';
         $contentWidthTablet = $properties['contentWidthTablet'] ?? 'w-full';
         $contentWidthDesktop = $properties['contentWidthDesktop'] ?? 'w-full';
