@@ -19,7 +19,7 @@
     @if ($mode === 'class')
         <!-- Class Selection -->
         <select wire:model.live="selectedClass" class="select select-bordered w-full">
-            <option value="">Select {{ strtolower($property['label']) }}</option>
+            <option value=""></option>
             @foreach ($property['classes'] as $class => $label)
                 <option value="{{ $class }}">{{ $label }}</option>
             @endforeach

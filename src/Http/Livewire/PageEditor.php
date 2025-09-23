@@ -446,11 +446,12 @@ class PageEditor extends Component
                     'newBlocksCount' => count($blocks),
                     'newBlocks' => $blocks,
                 ]);
+
                 return true;
             }
 
             if (isset($row['blocks'])) {
-                Log::info("{$indent}Row {$rowId} has blocks, checking " . count($row['blocks']) . " blocks");
+                Log::info("{$indent}Row {$rowId} has blocks, checking ".count($row['blocks']).' blocks');
                 foreach ($row['blocks'] as $blockId => $block) {
                     Log::info("{$indent}  Checking block: {$blockId}");
 
@@ -458,6 +459,7 @@ class PageEditor extends Component
                     if ($blockId === $nestedRowId) {
                         Log::info("{$indent}  FOUND TARGET ROW AS BLOCK! Updating blocks for nested row {$nestedRowId}");
                         $structure[$rowId]['blocks'][$blockId]['blocks'] = $blocks;
+
                         return true;
                     }
 
@@ -474,6 +476,7 @@ class PageEditor extends Component
         }
 
         Log::info("{$indent}updateNestedRowBlocks: Target {$nestedRowId} not found at depth {$depth}");
+
         return false;
     }
 
@@ -499,11 +502,12 @@ class PageEditor extends Component
                     'propertyName' => $propertyName,
                     'newValue' => $value,
                 ]);
+
                 return true;
             }
 
             if (isset($row['blocks'])) {
-                Log::info("{$indent}Row {$rowId} has blocks, checking " . count($row['blocks']) . " blocks");
+                Log::info("{$indent}Row {$rowId} has blocks, checking ".count($row['blocks']).' blocks');
                 foreach ($row['blocks'] as $blockId => $block) {
                     Log::info("{$indent}  Checking block: {$blockId}");
 
@@ -516,6 +520,7 @@ class PageEditor extends Component
                             'propertyName' => $propertyName,
                             'newValue' => $value,
                         ]);
+
                         return true;
                     }
 
@@ -532,6 +537,7 @@ class PageEditor extends Component
         }
 
         Log::info("{$indent}updateNestedRowProperty: Target {$nestedRowId} not found at depth {$depth}");
+
         return false;
     }
 
