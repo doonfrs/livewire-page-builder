@@ -107,7 +107,8 @@ class FlexibleSizeProperty extends Component
 
     public function updatedSelectedClass()
     {
-        if ($this->mode === 'class' && $this->selectedClass) {
+        if ($this->mode === 'class') {
+            // Allow clearing the value when empty option is selected
             $this->updateValue($this->selectedClass);
         }
     }
