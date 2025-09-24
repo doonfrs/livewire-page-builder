@@ -399,7 +399,9 @@ class PageEditor extends Component
                 $this->dispatch('add-block-to-nested-row',
                     rowId: $this->modalRowId,
                     blockAlias: $blockAlias,
-                    blockPageName: $blockPageName
+                    blockPageName: $blockPageName,
+                    beforeBlockId: $this->beforeBlockId,
+                    afterBlockId: $this->afterBlockId
                 );
             }
             $this->closeBlockModal();
@@ -782,12 +784,13 @@ class PageEditor extends Component
                         'rowId' => $rowId,
                     ]);
                 }
+
                 return; // Exit early - we found and handled the block
             }
         }
 
         Log::info('Block not found in top-level rows - RowBlock will handle nested movement', [
-            'blockId' => $blockId
+            'blockId' => $blockId,
         ]);
     }
 
@@ -836,12 +839,13 @@ class PageEditor extends Component
                         'rowId' => $rowId,
                     ]);
                 }
+
                 return; // Exit early - we found and handled the block
             }
         }
 
         Log::info('Block not found in top-level rows - RowBlock will handle nested movement', [
-            'blockId' => $blockId
+            'blockId' => $blockId,
         ]);
     }
 
@@ -853,7 +857,7 @@ class PageEditor extends Component
 
         Log::info('PageEditor::syncBlockOrder called', [
             'rowId' => $rowId,
-            'newBlockOrder' => $blockOrder
+            'newBlockOrder' => $blockOrder,
         ]);
 
         // Find the row and update its block order recursively
@@ -879,8 +883,9 @@ class PageEditor extends Component
 
                 Log::info('PageEditor block order synced successfully', [
                     'rowId' => $targetRowId,
-                    'syncedOrder' => array_keys($row['blocks'])
+                    'syncedOrder' => array_keys($row['blocks']),
                 ]);
+
                 return true;
             }
 
@@ -889,11 +894,14 @@ class PageEditor extends Component
                 foreach ($row['blocks'] as $blockId => &$block) {
                     if (isset($block['blocks'])) {
                         $result = $this->updateBlockOrderInStructure($row['blocks'][$blockId]['blocks'], $targetRowId, $blockOrder);
-                        if ($result) return true;
+                        if ($result) {
+                            return true;
+                        }
                     }
                 }
             }
         }
+
         return false;
     }
 
