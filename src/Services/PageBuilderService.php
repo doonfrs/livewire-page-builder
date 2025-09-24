@@ -116,6 +116,12 @@ class PageBuilderService
             $classes[] = $justifyClass;
         }
 
+        // Add position property
+        $position = $properties['position'] ?? null;
+        if ($position) {
+            $classes[] = $position;
+        }
+
         // Add overflow-x property
         $overflowX = $properties['overflowX'] ?? '';
         if ($overflowX && $overflowX !== '') {
@@ -272,6 +278,12 @@ class PageBuilderService
         // Vertical alignment - allow customization instead of hardcoded centering
         $contentAlign = $properties['contentAlign'] ?? 'content-center';
         $classes[] = $contentAlign;
+
+        // Add position property
+        $position = $properties['position'] ?? null;
+        if ($position) {
+            $classes[] = $position;
+        }
 
         $classString = implode(' ', array_unique($classes));
 

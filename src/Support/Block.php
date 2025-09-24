@@ -71,6 +71,9 @@ abstract class Block extends Component
 
     public $selfCentered = false;
 
+    // Position properties
+    public $position = null;
+
     // Border properties
     public $borderWidth = null;
 
@@ -361,6 +364,14 @@ abstract class Block extends Component
     {
         return [
             (new CheckboxProperty('selfCentered', 'Self Centered', defaultValue: $this->selfCentered))
+                ->setGroup('layout', 'Layout', 2, 'heroicon-o-rectangle-group'),
+            (new SelectProperty('position', 'Position', [
+                '' => 'Static (Default)',
+                'relative' => 'Relative',
+                'absolute' => 'Absolute',
+                'fixed' => 'Fixed',
+                'sticky' => 'Sticky',
+            ], defaultValue: $this->position))
                 ->setGroup('layout', 'Layout', 2, 'heroicon-o-rectangle-group'),
         ];
     }

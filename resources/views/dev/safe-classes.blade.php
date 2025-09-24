@@ -94,6 +94,23 @@
     {{-- Layout classes --}}
     <div class="container mx-auto md:container lg:container"></div>
 
+    {{-- Position utilities --}}
+    <div class="static relative absolute fixed sticky"></div>
+    <div class="@md:static @md:relative @md:absolute @md:fixed @md:sticky"></div>
+    <div class="@lg:static @lg:relative @lg:absolute @lg:fixed @lg:sticky"></div>
+    <div class="@xl:static @xl:relative @xl:absolute @xl:fixed @xl:sticky"></div>
+    <div class="@2xl:static @2xl:relative @2xl:absolute @2xl:fixed @2xl:sticky"></div>
+    <div class="@3xl:static @3xl:relative @3xl:absolute @3xl:fixed @3xl:sticky"></div>
+    <div class="@4xl:static @4xl:relative @4xl:absolute @4xl:fixed @4xl:sticky"></div>
+    <div class="@5xl:static @5xl:relative @5xl:absolute @5xl:fixed @5xl:sticky"></div>
+    <div class="md:static md:relative md:absolute md:fixed md:sticky"></div>
+    <div class="lg:static lg:relative lg:absolute lg:fixed lg:sticky"></div>
+    <div class="xl:static xl:relative xl:absolute xl:fixed xl:sticky"></div>
+    <div class="2xl:static 2xl:relative 2xl:absolute 2xl:fixed 2xl:sticky"></div>
+    <div class="3xl:static 3xl:relative 3xl:absolute 3xl:fixed 3xl:sticky"></div>
+    <div class="4xl:static 4xl:relative 4xl:absolute 4xl:fixed 4xl:sticky"></div>
+    <div class="5xl:static 5xl:relative 5xl:absolute 5xl:fixed 5xl:sticky"></div>
+
 
     {{-- Text color utilities --}}
     <div
