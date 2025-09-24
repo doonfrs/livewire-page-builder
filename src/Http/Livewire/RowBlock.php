@@ -107,7 +107,7 @@ class RowBlock extends Block
         $this->dispatch('openBlockModal', $this->rowId);
     }
 
-    public function addBlockToThisRow($blockAlias, $blockPageName = null)
+    public function addBlockToThisRow($blockAlias, $blockPageName = null, $beforeBlockId = null, $afterBlockId = null)
     {
         $blockClass = app(PageBuilderService::class)->getClassNameFromAlias($blockAlias);
         if (! $blockClass) {
@@ -134,7 +134,35 @@ class RowBlock extends Block
             ];
         }
 
-        $this->blocks[$blockId] = $block;
+        // Handle insertion position
+        if ($beforeBlockId) {
+            $blockIds = array_keys($this->blocks);
+            $position = array_search($beforeBlockId, $blockIds);
+
+            $newBlocks = [];
+            foreach ($blockIds as $index => $id) {
+                if ($index === $position) {
+                    $newBlocks[$blockId] = $block; // Add new block before
+                }
+                $newBlocks[$id] = $this->blocks[$id]; // Add existing block
+            }
+            $this->blocks = $newBlocks;
+        } elseif ($afterBlockId) {
+            $blockIds = array_keys($this->blocks);
+            $position = array_search($afterBlockId, $blockIds);
+
+            // Create new array in the correct order
+            $newBlocks = [];
+            foreach ($blockIds as $index => $id) {
+                $newBlocks[$id] = $this->blocks[$id]; // Add existing block
+                if ($index === $position) {
+                    $newBlocks[$blockId] = $block; // Add new block after
+                }
+            }
+            $this->blocks = $newBlocks;
+        } else {
+            $this->blocks[$blockId] = $block;
+        }
 
         // Sync changes back to parent structure
         $this->dispatch('sync-nested-row-data',
@@ -148,15 +176,17 @@ class RowBlock extends Block
             rowId: $this->rowId,
             blockId: $blockId,
             blockAlias: $blockAlias,
-            properties: $block['properties']
+            properties: $block['properties'],
+            beforeBlockId: $beforeBlockId,
+            afterBlockId: $afterBlockId
         );
     }
 
     #[On('add-block-to-nested-row')]
-    public function addBlockToNestedRow($rowId, $blockAlias, $blockPageName = null)
+    public function addBlockToNestedRow($rowId, $blockAlias, $blockPageName = null, $beforeBlockId = null, $afterBlockId = null)
     {
         if ($rowId === $this->rowId) {
-            $this->addBlockToThisRow($blockAlias, $blockPageName);
+            $this->addBlockToThisRow($blockAlias, $blockPageName, $beforeBlockId, $afterBlockId);
         }
     }
 

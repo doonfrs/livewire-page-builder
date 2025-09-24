@@ -2,7 +2,6 @@
 
 namespace Trinavo\LivewirePageBuilder\Tests\Unit;
 
-use Illuminate\Support\Facades\Log;
 use Livewire\Livewire;
 use Trinavo\LivewirePageBuilder\Http\Livewire\PageEditor;
 use Trinavo\LivewirePageBuilder\Http\Livewire\RowBlock;
@@ -13,6 +12,7 @@ use Trinavo\LivewirePageBuilder\Tests\TestCase;
 class NestedBlockMovementTest extends TestCase
 {
     protected Theme $theme;
+
     protected BuilderPage $page;
 
     protected function setUp(): void
@@ -71,26 +71,26 @@ class NestedBlockMovementTest extends TestCase
     public function it_can_move_blocks_in_level_2_nested_rows(): void
     {
         // Create a RowBlock component to test nested movement
-        $parentRowId = 'parent-row-' . uniqid();
-        $nestedRowId = 'nested-row-' . uniqid();
+        $parentRowId = 'parent-row-'.uniqid();
+        $nestedRowId = 'nested-row-'.uniqid();
 
-        $rowBlock = new RowBlock();
+        $rowBlock = new RowBlock;
         $rowBlock->rowId = $nestedRowId;
 
         // Set up level 2 nested structure: Row -> NestedRow -> Blocks
         $rowBlock->blocks = [
             'block-1' => [
                 'alias' => 'page-builder-trinavo-livewire-page-builder-blocks-spacer',
-                'properties' => ['desktopHeight' => 'h-20']
+                'properties' => ['desktopHeight' => 'h-20'],
             ],
             'block-2' => [
                 'alias' => 'page-builder-trinavo-livewire-page-builder-blocks-rich-text',
-                'properties' => ['content' => 'Test content']
+                'properties' => ['content' => 'Test content'],
             ],
             'block-3' => [
                 'alias' => 'page-builder-trinavo-livewire-page-builder-blocks-spacer',
-                'properties' => ['desktopHeight' => 'h-10']
-            ]
+                'properties' => ['desktopHeight' => 'h-10'],
+            ],
         ];
 
         // Get initial order
@@ -122,29 +122,29 @@ class NestedBlockMovementTest extends TestCase
     public function it_can_move_blocks_in_level_3_nested_rows(): void
     {
         // Create level 3 nested structure: Row -> NestedRow -> DeepNestedRow -> Blocks
-        $level3RowId = 'level3-row-' . uniqid();
+        $level3RowId = 'level3-row-'.uniqid();
 
-        $level3RowBlock = new RowBlock();
+        $level3RowBlock = new RowBlock;
         $level3RowBlock->rowId = $level3RowId;
 
         // Set up deeply nested blocks
         $level3RowBlock->blocks = [
             'deep-block-1' => [
                 'alias' => 'page-builder-trinavo-livewire-page-builder-blocks-spacer',
-                'properties' => ['desktopHeight' => 'h-32']
+                'properties' => ['desktopHeight' => 'h-32'],
             ],
             'deep-block-2' => [
                 'alias' => 'page-builder-trinavo-livewire-page-builder-blocks-rich-text',
-                'properties' => ['content' => 'Deep nested content']
+                'properties' => ['content' => 'Deep nested content'],
             ],
             'deep-block-3' => [
                 'alias' => 'page-builder-trinavo-livewire-page-builder-blocks-spacer',
-                'properties' => ['desktopHeight' => 'h-16']
+                'properties' => ['desktopHeight' => 'h-16'],
             ],
             'deep-block-4' => [
                 'alias' => 'page-builder-trinavo-livewire-page-builder-blocks-rich-text',
-                'properties' => ['content' => 'Another deep block']
-            ]
+                'properties' => ['content' => 'Another deep block'],
+            ],
         ];
 
         // Get initial order
@@ -194,18 +194,18 @@ class NestedBlockMovementTest extends TestCase
     /** @test */
     public function it_handles_block_movement_at_boundaries(): void
     {
-        $rowBlock = new RowBlock();
+        $rowBlock = new RowBlock;
         $rowBlock->rowId = 'boundary-test-row';
 
         $rowBlock->blocks = [
             'first-block' => [
                 'alias' => 'page-builder-trinavo-livewire-page-builder-blocks-spacer',
-                'properties' => []
+                'properties' => [],
             ],
             'last-block' => [
                 'alias' => 'page-builder-trinavo-livewire-page-builder-blocks-rich-text',
-                'properties' => []
-            ]
+                'properties' => [],
+            ],
         ];
 
         $initialOrder = array_keys($rowBlock->blocks);
@@ -274,14 +274,14 @@ class NestedBlockMovementTest extends TestCase
                 'blocks' => [
                     'top-block-1' => [
                         'alias' => 'page-builder-trinavo-livewire-page-builder-blocks-spacer',
-                        'properties' => ['desktopHeight' => 'h-20']
+                        'properties' => ['desktopHeight' => 'h-20'],
                     ],
                     'top-block-2' => [
                         'alias' => 'page-builder-trinavo-livewire-page-builder-blocks-rich-text',
-                        'properties' => ['content' => 'Test']
-                    ]
-                ]
-            ]
+                        'properties' => ['content' => 'Test'],
+                    ],
+                ],
+            ],
         ];
 
         $component->set('rows', $testStructure);
@@ -296,7 +296,7 @@ class NestedBlockMovementTest extends TestCase
 
         $component->call('syncBlockOrder', [
             'rowId' => $topLevelRowId,
-            'blockOrder' => $newBlockOrder
+            'blockOrder' => $newBlockOrder,
         ]);
 
         // Verify PageEditor updated its structure
@@ -322,9 +322,9 @@ class NestedBlockMovementTest extends TestCase
         ]);
 
         // Set up 3-level nested structure for sync testing
-        $parentRowId = 'parent-sync-' . uniqid();
-        $level2RowId = 'level2-sync-' . uniqid();
-        $level3RowId = 'level3-sync-' . uniqid();
+        $parentRowId = 'parent-sync-'.uniqid();
+        $level2RowId = 'level2-sync-'.uniqid();
+        $level3RowId = 'level3-sync-'.uniqid();
 
         $deepNestedStructure = [
             $parentRowId => [
@@ -340,22 +340,22 @@ class NestedBlockMovementTest extends TestCase
                                 'blocks' => [
                                     'deep-a' => [
                                         'alias' => 'page-builder-trinavo-livewire-page-builder-blocks-spacer',
-                                        'properties' => ['desktopHeight' => 'h-10']
+                                        'properties' => ['desktopHeight' => 'h-10'],
                                     ],
                                     'deep-b' => [
                                         'alias' => 'page-builder-trinavo-livewire-page-builder-blocks-rich-text',
-                                        'properties' => ['content' => 'Deep content']
+                                        'properties' => ['content' => 'Deep content'],
                                     ],
                                     'deep-c' => [
                                         'alias' => 'page-builder-trinavo-livewire-page-builder-blocks-spacer',
-                                        'properties' => ['desktopHeight' => 'h-20']
-                                    ]
-                                ]
-                            ]
-                        ]
-                    ]
-                ]
-            ]
+                                        'properties' => ['desktopHeight' => 'h-20'],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
         ];
 
         $component->set('rows', $deepNestedStructure);
@@ -371,7 +371,7 @@ class NestedBlockMovementTest extends TestCase
 
         $component->call('syncBlockOrder', [
             'rowId' => $level3RowId,
-            'blockOrder' => $newDeepOrder
+            'blockOrder' => $newDeepOrder,
         ]);
 
         // Verify the deeply nested structure was updated correctly
@@ -390,7 +390,7 @@ class NestedBlockMovementTest extends TestCase
     /** @test */
     public function it_preserves_block_properties_during_movement(): void
     {
-        $rowBlock = new RowBlock();
+        $rowBlock = new RowBlock;
         $rowBlock->rowId = 'properties-test-row';
 
         $originalProperties1 = ['desktopHeight' => 'h-32', 'backgroundColor' => 'primary'];
@@ -399,12 +399,12 @@ class NestedBlockMovementTest extends TestCase
         $rowBlock->blocks = [
             'prop-block-1' => [
                 'alias' => 'page-builder-trinavo-livewire-page-builder-blocks-spacer',
-                'properties' => $originalProperties1
+                'properties' => $originalProperties1,
             ],
             'prop-block-2' => [
                 'alias' => 'page-builder-trinavo-livewire-page-builder-blocks-rich-text',
-                'properties' => $originalProperties2
-            ]
+                'properties' => $originalProperties2,
+            ],
         ];
 
         // Move first block down
@@ -461,22 +461,22 @@ class NestedBlockMovementTest extends TestCase
                                 'blocks' => [
                                     'deep-block-a' => [
                                         'alias' => 'page-builder-trinavo-livewire-page-builder-blocks-spacer',
-                                        'properties' => ['desktopHeight' => 'h-10']
+                                        'properties' => ['desktopHeight' => 'h-10'],
                                     ],
                                     'deep-block-b' => [
                                         'alias' => 'page-builder-trinavo-livewire-page-builder-blocks-rich-text',
-                                        'properties' => ['content' => 'Level 3 content']
+                                        'properties' => ['content' => 'Level 3 content'],
                                     ],
                                     'deep-block-c' => [
                                         'alias' => 'page-builder-trinavo-livewire-page-builder-blocks-spacer',
-                                        'properties' => ['desktopHeight' => 'h-20']
-                                    ]
-                                ]
-                            ]
-                        ]
-                    ]
-                ]
-            ]
+                                        'properties' => ['desktopHeight' => 'h-20'],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
         ];
 
         $component->set('rows', $complexStructure);
@@ -486,7 +486,7 @@ class NestedBlockMovementTest extends TestCase
 
         $component->call('syncBlockOrder', [
             'rowId' => 'level2-row',
-            'blockOrder' => $newDeepOrder
+            'blockOrder' => $newDeepOrder,
         ]);
 
         // Verify the deep nested structure was updated
