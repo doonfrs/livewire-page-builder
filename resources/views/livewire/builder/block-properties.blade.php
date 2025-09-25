@@ -71,6 +71,18 @@
                                 @elseif($property['type'] === 'flexible-size')
                                     <livewire:block-properties.flexible-size-property :property="$property"
                                         :value="$properties[$property['name']] ?? ''" :row-id="$rowId" :block-id="$blockId" :key="'flexible-size-property-' . $key" />
+                                @elseif($property['type'] === 'responsive-spacing')
+                                    @php
+                                        $currentValues = [];
+                                        foreach ($property['fields'] as $deviceKey => $directions) {
+                                            foreach ($directions as $directionKey => $fieldName) {
+                                                $currentValues[$deviceKey][$directionKey] =
+                                                    $properties[$fieldName] ?? ($property['values'][$deviceKey][$directionKey] ?? null);
+                                            }
+                                        }
+                                    @endphp
+                                    <livewire:block-properties.responsive-spacing-property :property="$property"
+                                        :values="$currentValues" :row-id="$rowId" :block-id="$blockId" :key="'responsive-spacing-property-' . $key" />
                                 @else
                                     <div>
                                         <label
