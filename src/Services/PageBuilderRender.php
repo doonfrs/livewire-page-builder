@@ -13,8 +13,18 @@ class PageBuilderRender
     public function renderPage($pageKey, $themeId = null)
     {
         $themeId = $this->resolveThemeId($themeId);
+
+        // Validate theme exists if ID is provided
+        if ($themeId) {
+            $theme = Theme::find($themeId);
+            if (! $theme) {
+                abort(404, 'Theme not found. The theme with ID ' . $themeId . ' does not exist.');
+            }
+        } else {
+            $theme = null;
+        }
+
         $page = $this->parsePage($pageKey, $themeId);
-        $theme = $themeId ? Theme::find($themeId) : null;
 
         return view('page-builder::view-page', [
             'pageKey' => $pageKey,
