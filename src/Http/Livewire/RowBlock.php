@@ -353,10 +353,10 @@ class RowBlock extends Block
             $propertiesWithoutSizing['tabletWidth'] = 'w-full';
             $propertiesWithoutSizing['desktopWidth'] = 'w-full';
 
-            $classString = app(PageBuilderService::class)->getCssClassesFromProperties($propertiesWithoutSizing, isRowBlock: false);
+            $classString = app(PageBuilderService::class)->getCssClassesFromProperties($propertiesWithoutSizing);
         } else {
             // For top-level RowBlocks, include all properties including width
-            $classString = app(PageBuilderService::class)->getCssClassesFromProperties($this->properties, isRowBlock: true);
+            $classString = app(PageBuilderService::class)->getCssClassesFromProperties($this->properties);
         }
 
         return $classString;

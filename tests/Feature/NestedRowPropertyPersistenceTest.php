@@ -170,12 +170,12 @@ class NestedRowPropertyPersistenceTest extends TestCase
         // Update first nested row properties
         $component->call('updateBlockProperty', $parentRowId, $firstNestedRowId, 'backgroundColor', $firstRowBgColor);
         $component->call('updateBlockProperty', $parentRowId, $firstNestedRowId, 'textColor', $firstRowTextColor);
-        $component->call('updateBlockProperty', $parentRowId, $firstNestedRowId, 'paddingTop', $firstRowPadding);
+        $component->call('updateBlockProperty', $parentRowId, $firstNestedRowId, 'mobilePaddingTop', $firstRowPadding);
 
         // Update second nested row properties
         $component->call('updateBlockProperty', $parentRowId, $secondNestedRowId, 'backgroundColor', $secondRowBgColor);
         $component->call('updateBlockProperty', $parentRowId, $secondNestedRowId, 'textColor', $secondRowTextColor);
-        $component->call('updateBlockProperty', $parentRowId, $secondNestedRowId, 'paddingTop', $secondRowPadding);
+        $component->call('updateBlockProperty', $parentRowId, $secondNestedRowId, 'mobilePaddingTop', $secondRowPadding);
 
         // Save the page
         $component->call('savePage');
@@ -193,13 +193,13 @@ class NestedRowPropertyPersistenceTest extends TestCase
         $savedFirstNestedRow = $savedParentRow['blocks'][$firstNestedRowId];
         $this->assertEquals($firstRowBgColor, $savedFirstNestedRow['properties']['backgroundColor']);
         $this->assertEquals($firstRowTextColor, $savedFirstNestedRow['properties']['textColor']);
-        $this->assertEquals($firstRowPadding, $savedFirstNestedRow['properties']['paddingTop']);
+        $this->assertEquals($firstRowPadding, $savedFirstNestedRow['properties']['mobilePaddingTop']);
 
         // Verify second nested row properties
         $savedSecondNestedRow = $savedParentRow['blocks'][$secondNestedRowId];
         $this->assertEquals($secondRowBgColor, $savedSecondNestedRow['properties']['backgroundColor']);
         $this->assertEquals($secondRowTextColor, $savedSecondNestedRow['properties']['textColor']);
-        $this->assertEquals($secondRowPadding, $savedSecondNestedRow['properties']['paddingTop']);
+        $this->assertEquals($secondRowPadding, $savedSecondNestedRow['properties']['mobilePaddingTop']);
     }
 
     /** @test */
@@ -230,7 +230,7 @@ class NestedRowPropertyPersistenceTest extends TestCase
         $testPadding = '30';
 
         $component->call('updateBlockProperty', $parentRowId, $nestedRowBlockId, 'backgroundColor', $testBgColor);
-        $component->call('updateBlockProperty', $parentRowId, $nestedRowBlockId, 'paddingTop', $testPadding);
+        $component->call('updateBlockProperty', $parentRowId, $nestedRowBlockId, 'mobilePaddingTop', $testPadding);
 
         // Save the page
         $component->call('savePage');
@@ -251,7 +251,7 @@ class NestedRowPropertyPersistenceTest extends TestCase
 
         $reloadedNestedRow = $reloadedRows[$parentRowId]['blocks'][$nestedRowBlockId];
         $this->assertEquals($testBgColor, $reloadedNestedRow['properties']['backgroundColor'], 'Background color should reload correctly');
-        $this->assertEquals($testPadding, $reloadedNestedRow['properties']['paddingTop'], 'Padding should reload correctly');
+        $this->assertEquals($testPadding, $reloadedNestedRow['properties']['mobilePaddingTop'], 'Padding should reload correctly');
 
         // Test that we can still update properties after reload
         $newBgColor = '#ffff00'; // Yellow
@@ -321,7 +321,7 @@ class NestedRowPropertyPersistenceTest extends TestCase
         $savedProperties = [
             'backgroundColor' => '#ff0000',
             'textColor' => '#ffffff',
-            'paddingTop' => '20',
+            'mobilePaddingTop' => '20',
             'flex' => 'column',
         ];
 
@@ -345,7 +345,7 @@ class NestedRowPropertyPersistenceTest extends TestCase
         // Verify that saved properties are preserved and merged with defaults
         $this->assertEquals('#ff0000', $rowBlock->properties['backgroundColor'], 'Background color should be preserved from saved data');
         $this->assertEquals('#ffffff', $rowBlock->properties['textColor'], 'Text color should be preserved from saved data');
-        $this->assertEquals('20', $rowBlock->properties['paddingTop'], 'Padding should be preserved from saved data');
+        $this->assertEquals('20', $rowBlock->properties['mobilePaddingTop'], 'Padding should be preserved from saved data');
         $this->assertEquals('column', $rowBlock->properties['flex'], 'Flex direction should be preserved from saved data');
 
         // Verify that default properties are still present for unspecified values

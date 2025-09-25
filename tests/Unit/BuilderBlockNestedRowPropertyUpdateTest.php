@@ -154,8 +154,8 @@ class BuilderBlockNestedRowPropertyUpdateTest extends TestCase
             'desktopWidth' => 'w-2xs',
             'backgroundColor' => 'secondary',
             'textColor' => 'white',
-            'paddingTop' => 4,
-            'marginLeft' => 2,
+            'mobilePaddingTop' => 4,
+            'mobileMarginLeft' => 2,
         ];
 
         $component = Livewire::test(BuilderBlock::class, [

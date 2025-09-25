@@ -127,9 +127,7 @@ class BuilderBlock extends Component
     {
         // For RowBlocks, apply the sizing properties to the wrapper (this BuilderBlock)
         // since it's the actual flex item in the parent container
-        $isRowBlock = $this->getBlockClass() === \Trinavo\LivewirePageBuilder\Http\Livewire\RowBlock::class;
-
-        $classString = app(PageBuilderService::class)->getCssClassesFromProperties($this->properties, isRowBlock: $isRowBlock);
+        $classString = app(PageBuilderService::class)->getCssClassesFromProperties($this->properties);
 
         return $classString;
     }

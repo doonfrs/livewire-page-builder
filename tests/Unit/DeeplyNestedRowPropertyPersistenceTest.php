@@ -119,8 +119,8 @@ class DeeplyNestedRowPropertyPersistenceTest extends TestCase
                                     'desktopWidth' => 'w-full',
                                     'desktopHeight' => '',
                                     'backgroundColor' => '',
-                                    'paddingTop' => 0,
-                                    'paddingBottom' => 0,
+                                    'mobilePaddingTop' => 0,
+                                    'mobilePaddingBottom' => 0,
                                     'selfCentered' => false,
                                 ],
                                 'blocks' => [],
@@ -135,8 +135,8 @@ class DeeplyNestedRowPropertyPersistenceTest extends TestCase
         // Update multiple properties on the deeply nested row
         $pageEditor->updateBlockProperty('inner-target-row', null, 'desktopHeight', 'h-screen');
         $pageEditor->updateBlockProperty('inner-target-row', null, 'backgroundColor', '#007acc');
-        $pageEditor->updateBlockProperty('inner-target-row', null, 'paddingTop', 10);
-        $pageEditor->updateBlockProperty('inner-target-row', null, 'paddingBottom', 20);
+        $pageEditor->updateBlockProperty('inner-target-row', null, 'mobilePaddingTop', 10);
+        $pageEditor->updateBlockProperty('inner-target-row', null, 'mobilePaddingBottom', 20);
         $pageEditor->updateBlockProperty('inner-target-row', null, 'selfCentered', true);
 
         // Verify all properties were updated correctly
@@ -144,8 +144,8 @@ class DeeplyNestedRowPropertyPersistenceTest extends TestCase
 
         $this->assertEquals('h-screen', $targetProperties['desktopHeight']);
         $this->assertEquals('#007acc', $targetProperties['backgroundColor']);
-        $this->assertEquals(10, $targetProperties['paddingTop']);
-        $this->assertEquals(20, $targetProperties['paddingBottom']);
+        $this->assertEquals(10, $targetProperties['mobilePaddingTop']);
+        $this->assertEquals(20, $targetProperties['mobilePaddingBottom']);
         $this->assertTrue($targetProperties['selfCentered']);
     }
 

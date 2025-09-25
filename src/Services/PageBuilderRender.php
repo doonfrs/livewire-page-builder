@@ -46,7 +46,7 @@ class PageBuilderRender
 
     public function prepareRow($row)
     {
-        $row['cssClasses'] = app(PageBuilderService::class)->getCssClassesFromProperties($row['properties'], true);
+        $row['cssClasses'] = app(PageBuilderService::class)->getCssClassesFromProperties($row['properties']);
         $row['inlineStyles'] = app(PageBuilderService::class)->getInlineStylesFromProperties($row['properties']);
 
         $row['blocks'] = array_map([$this, 'prepareBlock'], $row['blocks']);
@@ -58,7 +58,7 @@ class PageBuilderRender
 
     public function prepareBlock($block)
     {
-        $block['cssClasses'] = app(PageBuilderService::class)->getCssClassesFromProperties($block['properties'], true);
+        $block['cssClasses'] = app(PageBuilderService::class)->getCssClassesFromProperties($block['properties']);
         $block['inlineStyles'] = app(PageBuilderService::class)->getInlineStylesFromProperties($block['properties']);
 
         \Illuminate\Support\Facades\Log::info('PageBuilderRender::prepareBlock called', [
