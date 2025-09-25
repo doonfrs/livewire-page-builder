@@ -37,6 +37,7 @@ class SafeClassGenerator
 
     protected array $specialWidthClasses = [
         'fit', 'min', 'max', 'full', 'screen', 'svw', 'lvw', 'dvw',
+        '3xs', '2xs', 'xs', 'sm', 'md', 'lg', 'xl', '2xl', '3xl', '4xl', '5xl', '6xl', '7xl',
     ];
 
     protected array $fractionWidthClasses = [

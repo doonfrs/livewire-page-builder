@@ -3,17 +3,17 @@
 
 {{-- Standard w classes --}}
 <div class="w-auto w-px w-0 w-0.5 w-1 w-1.5 w-2 w-2.5 w-3 w-3.5 w-4 w-5 w-6 w-7 w-8 w-9 w-10 w-11 w-12 w-14 w-16 w-20 w-24 w-28 w-32 w-36 w-40 w-44 w-48 w-52 w-56 w-60 w-64 w-72 w-80 w-96"></div>
-<div class="w-fit w-min w-max w-full w-screen w-svw w-lvw w-dvw"></div>
+<div class="w-fit w-min w-max w-full w-screen w-svw w-lvw w-dvw w-3xs w-2xs w-xs w-sm w-md w-lg w-xl w-2xl w-3xl w-4xl w-5xl w-6xl w-7xl"></div>
 <div class="w-1/2 w-1/3 w-2/3 w-1/4 w-2/4 w-3/4 w-1/5 w-2/5 w-3/5 w-4/5 w-1/6 w-2/6 w-3/6 w-4/6 w-5/6 w-1/12 w-2/12 w-3/12 w-4/12 w-5/12 w-6/12 w-7/12 w-8/12 w-9/12 w-10/12 w-11/12"></div>
 
 {{-- @3xl responsive w classes --}}
 <div class="@3xl:w-auto @3xl:w-px @3xl:w-0 @3xl:w-0.5 @3xl:w-1 @3xl:w-1.5 @3xl:w-2 @3xl:w-2.5 @3xl:w-3 @3xl:w-3.5 @3xl:w-4 @3xl:w-5 @3xl:w-6 @3xl:w-7 @3xl:w-8 @3xl:w-9 @3xl:w-10 @3xl:w-11 @3xl:w-12 @3xl:w-14 @3xl:w-16 @3xl:w-20 @3xl:w-24 @3xl:w-28 @3xl:w-32 @3xl:w-36 @3xl:w-40 @3xl:w-44 @3xl:w-48 @3xl:w-52 @3xl:w-56 @3xl:w-60 @3xl:w-64 @3xl:w-72 @3xl:w-80 @3xl:w-96"></div>
-<div class="@3xl:w-fit @3xl:w-min @3xl:w-max @3xl:w-full @3xl:w-screen @3xl:w-svw @3xl:w-lvw @3xl:w-dvw"></div>
+<div class="@3xl:w-fit @3xl:w-min @3xl:w-max @3xl:w-full @3xl:w-screen @3xl:w-svw @3xl:w-lvw @3xl:w-dvw @3xl:w-3xs @3xl:w-2xs @3xl:w-xs @3xl:w-sm @3xl:w-md @3xl:w-lg @3xl:w-xl @3xl:w-2xl @3xl:w-3xl @3xl:w-4xl @3xl:w-5xl @3xl:w-6xl @3xl:w-7xl"></div>
 <div class="@3xl:w-1/2 @3xl:w-1/3 @3xl:w-2/3 @3xl:w-1/4 @3xl:w-2/4 @3xl:w-3/4 @3xl:w-1/5 @3xl:w-2/5 @3xl:w-3/5 @3xl:w-4/5 @3xl:w-1/6 @3xl:w-2/6 @3xl:w-3/6 @3xl:w-4/6 @3xl:w-5/6 @3xl:w-1/12 @3xl:w-2/12 @3xl:w-3/12 @3xl:w-4/12 @3xl:w-5/12 @3xl:w-6/12 @3xl:w-7/12 @3xl:w-8/12 @3xl:w-9/12 @3xl:w-10/12 @3xl:w-11/12"></div>
 
 {{-- @5xl responsive w classes --}}
 <div class="@5xl:w-auto @5xl:w-px @5xl:w-0 @5xl:w-0.5 @5xl:w-1 @5xl:w-1.5 @5xl:w-2 @5xl:w-2.5 @5xl:w-3 @5xl:w-3.5 @5xl:w-4 @5xl:w-5 @5xl:w-6 @5xl:w-7 @5xl:w-8 @5xl:w-9 @5xl:w-10 @5xl:w-11 @5xl:w-12 @5xl:w-14 @5xl:w-16 @5xl:w-20 @5xl:w-24 @5xl:w-28 @5xl:w-32 @5xl:w-36 @5xl:w-40 @5xl:w-44 @5xl:w-48 @5xl:w-52 @5xl:w-56 @5xl:w-60 @5xl:w-64 @5xl:w-72 @5xl:w-80 @5xl:w-96"></div>
-<div class="@5xl:w-fit @5xl:w-min @5xl:w-max @5xl:w-full @5xl:w-screen @5xl:w-svw @5xl:w-lvw @5xl:w-dvw"></div>
+<div class="@5xl:w-fit @5xl:w-min @5xl:w-max @5xl:w-full @5xl:w-screen @5xl:w-svw @5xl:w-lvw @5xl:w-dvw @5xl:w-3xs @5xl:w-2xs @5xl:w-xs @5xl:w-sm @5xl:w-md @5xl:w-lg @5xl:w-xl @5xl:w-2xl @5xl:w-3xl @5xl:w-4xl @5xl:w-5xl @5xl:w-6xl @5xl:w-7xl"></div>
 <div class="@5xl:w-1/2 @5xl:w-1/3 @5xl:w-2/3 @5xl:w-1/4 @5xl:w-2/4 @5xl:w-3/4 @5xl:w-1/5 @5xl:w-2/5 @5xl:w-3/5 @5xl:w-4/5 @5xl:w-1/6 @5xl:w-2/6 @5xl:w-3/6 @5xl:w-4/6 @5xl:w-5/6 @5xl:w-1/12 @5xl:w-2/12 @5xl:w-3/12 @5xl:w-4/12 @5xl:w-5/12 @5xl:w-6/12 @5xl:w-7/12 @5xl:w-8/12 @5xl:w-9/12 @5xl:w-10/12 @5xl:w-11/12"></div>
 
 {{-- Custom w classes with arbitrary pixel values (1px to 500px) --}}

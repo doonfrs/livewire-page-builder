@@ -206,21 +206,21 @@ abstract class Block extends Component
             (new FlexibleSizeProperty('tabletWidth', 'Tablet', $widths, allowCustom: true, unit: 'px', defaultValue: $this->tabletWidth))
                 ->setGroup('width', 'Width', 3, 'heroicon-o-device-tablet'),
             (new FlexibleSizeProperty('desktopWidth', 'Desktop', $widths, allowCustom: true, unit: 'px', defaultValue: $this->desktopWidth))
-                ->setGroup('width', 'Width', 3, 'heroicon-o-device-desktop'),
+                ->setGroup('width', 'Width', 3, 'heroicon-o-computer-desktop'),
 
             (new FlexibleSizeProperty('mobileHeight', 'Mobile', $heights, allowCustom: true, unit: 'px', defaultValue: $this->mobileHeight))
                 ->setGroup('height', 'Height', 3, 'heroicon-o-device-phone-mobile'),
             (new FlexibleSizeProperty('tabletHeight', 'Tablet', $heights, allowCustom: true, unit: 'px', defaultValue: $this->tabletHeight))
                 ->setGroup('height', 'Height', 3, 'heroicon-o-device-tablet'),
             (new FlexibleSizeProperty('desktopHeight', 'Desktop', $heights, allowCustom: true, unit: 'px', defaultValue: $this->desktopHeight))
-                ->setGroup('height', 'Height', 3, 'heroicon-o-device-desktop'),
+                ->setGroup('height', 'Height', 3, 'heroicon-o-computer-desktop'),
 
             (new FlexibleSizeProperty('mobileMinHeight', 'Mobile', $minHeights, allowCustom: true, unit: 'px', defaultValue: $this->mobileMinHeight))
                 ->setGroup('min_height', 'Min Height', 3, 'heroicon-o-device-phone-mobile'),
             (new FlexibleSizeProperty('tabletMinHeight', 'Tablet', $minHeights, allowCustom: true, unit: 'px', defaultValue: $this->tabletMinHeight))
                 ->setGroup('min_height', 'Min Height', 3, 'heroicon-o-device-tablet'),
             (new FlexibleSizeProperty('desktopMinHeight', 'Desktop', $minHeights, allowCustom: true, unit: 'px', defaultValue: $this->desktopMinHeight))
-                ->setGroup('min_height', 'Min Height', 3, 'heroicon-o-device-desktop'),
+                ->setGroup('min_height', 'Min Height', 3, 'heroicon-o-computer-desktop'),
         ];
     }
 
@@ -247,13 +247,13 @@ abstract class Block extends Component
         return [
             // Desktop Padding
             (new TextProperty('desktopPaddingTop', 'Top', numeric: true, defaultValue: $this->desktopPaddingTop, min: 0))
-                ->setGroup('desktop_padding', 'Desktop Padding', 4, 'heroicon-o-device-desktop'),
+                ->setGroup('desktop_padding', 'Desktop Padding', 4, 'heroicon-o-computer-desktop'),
             (new TextProperty('desktopPaddingRight', 'Right', numeric: true, defaultValue: $this->desktopPaddingRight, min: 0))
-                ->setGroup('desktop_padding', 'Desktop Padding', 4, 'heroicon-o-device-desktop'),
+                ->setGroup('desktop_padding', 'Desktop Padding', 4, 'heroicon-o-computer-desktop'),
             (new TextProperty('desktopPaddingBottom', 'Bottom', numeric: true, defaultValue: $this->desktopPaddingBottom, min: 0))
-                ->setGroup('desktop_padding', 'Desktop Padding', 4, 'heroicon-o-device-desktop'),
+                ->setGroup('desktop_padding', 'Desktop Padding', 4, 'heroicon-o-computer-desktop'),
             (new TextProperty('desktopPaddingLeft', 'Left', numeric: true, defaultValue: $this->desktopPaddingLeft, min: 0))
-                ->setGroup('desktop_padding', 'Desktop Padding', 4, 'heroicon-o-device-desktop'),
+                ->setGroup('desktop_padding', 'Desktop Padding', 4, 'heroicon-o-computer-desktop'),
 
             // Tablet Padding
             (new TextProperty('tabletPaddingTop', 'Top', numeric: true, defaultValue: $this->tabletPaddingTop, min: 0))
@@ -277,13 +277,13 @@ abstract class Block extends Component
 
             // Desktop Margin
             (new TextProperty('desktopMarginTop', 'Top', numeric: true, defaultValue: $this->desktopMarginTop, min: 0))
-                ->setGroup('desktop_margin', 'Desktop Margin', 4, 'heroicon-o-device-desktop'),
+                ->setGroup('desktop_margin', 'Desktop Margin', 4, 'heroicon-o-computer-desktop'),
             (new TextProperty('desktopMarginRight', 'Right', numeric: true, defaultValue: $this->desktopMarginRight, min: 0))
-                ->setGroup('desktop_margin', 'Desktop Margin', 4, 'heroicon-o-device-desktop'),
+                ->setGroup('desktop_margin', 'Desktop Margin', 4, 'heroicon-o-computer-desktop'),
             (new TextProperty('desktopMarginBottom', 'Bottom', numeric: true, defaultValue: $this->desktopMarginBottom, min: 0))
-                ->setGroup('desktop_margin', 'Desktop Margin', 4, 'heroicon-o-device-desktop'),
+                ->setGroup('desktop_margin', 'Desktop Margin', 4, 'heroicon-o-computer-desktop'),
             (new TextProperty('desktopMarginLeft', 'Left', numeric: true, defaultValue: $this->desktopMarginLeft, min: 0))
-                ->setGroup('desktop_margin', 'Desktop Margin', 4, 'heroicon-o-device-desktop'),
+                ->setGroup('desktop_margin', 'Desktop Margin', 4, 'heroicon-o-computer-desktop'),
 
             // Tablet Margin
             (new TextProperty('tabletMarginTop', 'Top', numeric: true, defaultValue: $this->tabletMarginTop, min: 0))
