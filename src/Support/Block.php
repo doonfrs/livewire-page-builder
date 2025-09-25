@@ -40,38 +40,56 @@ abstract class Block extends Component
 
     // Padding properties - Desktop
     public $desktopPaddingTop = 0;
+
     public $desktopPaddingRight = 0;
+
     public $desktopPaddingBottom = 0;
+
     public $desktopPaddingLeft = 0;
 
     // Padding properties - Tablet
     public $tabletPaddingTop = 0;
+
     public $tabletPaddingRight = 0;
+
     public $tabletPaddingBottom = 0;
+
     public $tabletPaddingLeft = 0;
 
     // Padding properties - Mobile
     public $mobilePaddingTop = 0;
+
     public $mobilePaddingRight = 0;
+
     public $mobilePaddingBottom = 0;
+
     public $mobilePaddingLeft = 0;
 
     // Margin properties - Desktop
     public $desktopMarginTop = 0;
+
     public $desktopMarginRight = 0;
+
     public $desktopMarginBottom = 0;
+
     public $desktopMarginLeft = 0;
 
     // Margin properties - Tablet
     public $tabletMarginTop = 0;
+
     public $tabletMarginRight = 0;
+
     public $tabletMarginBottom = 0;
+
     public $tabletMarginLeft = 0;
 
     // Margin properties - Mobile
     public $mobileMarginTop = 0;
+
     public $mobileMarginRight = 0;
+
     public $mobileMarginBottom = 0;
+
     public $mobileMarginLeft = 0;
 
     public $textColor = null;
@@ -513,6 +531,7 @@ abstract class Block extends Component
         ];
 
         $service = app(PageBuilderService::class);
+
         return $service->getCssClassesFromProperties($properties);
     }
 

@@ -288,44 +288,44 @@ class PageBuilderService
         // Add responsive margin classes
         // Mobile margin
         if ($mobileMarginTop != 0) {
-            $classes[] = $mobileMarginTop < 0 ? "-mt-" . abs($mobileMarginTop) : "mt-$mobileMarginTop";
+            $classes[] = $mobileMarginTop < 0 ? '-mt-'.abs($mobileMarginTop) : "mt-$mobileMarginTop";
         }
         if ($mobileMarginRight != 0) {
-            $classes[] = $mobileMarginRight < 0 ? "-mr-" . abs($mobileMarginRight) : "mr-$mobileMarginRight";
+            $classes[] = $mobileMarginRight < 0 ? '-mr-'.abs($mobileMarginRight) : "mr-$mobileMarginRight";
         }
         if ($mobileMarginBottom != 0) {
-            $classes[] = $mobileMarginBottom < 0 ? "-mb-" . abs($mobileMarginBottom) : "mb-$mobileMarginBottom";
+            $classes[] = $mobileMarginBottom < 0 ? '-mb-'.abs($mobileMarginBottom) : "mb-$mobileMarginBottom";
         }
         if ($mobileMarginLeft != 0) {
-            $classes[] = $mobileMarginLeft < 0 ? "-ml-" . abs($mobileMarginLeft) : "ml-$mobileMarginLeft";
+            $classes[] = $mobileMarginLeft < 0 ? '-ml-'.abs($mobileMarginLeft) : "ml-$mobileMarginLeft";
         }
 
         // Tablet margin (only if different from mobile)
         if ($tabletMarginTop != $mobileMarginTop && $tabletMarginTop != 0) {
-            $classes[] = $tabletMarginTop < 0 ? "@3xl:-mt-" . abs($tabletMarginTop) : "@3xl:mt-$tabletMarginTop";
+            $classes[] = $tabletMarginTop < 0 ? '@3xl:-mt-'.abs($tabletMarginTop) : "@3xl:mt-$tabletMarginTop";
         }
         if ($tabletMarginRight != $mobileMarginRight && $tabletMarginRight != 0) {
-            $classes[] = $tabletMarginRight < 0 ? "@3xl:-mr-" . abs($tabletMarginRight) : "@3xl:mr-$tabletMarginRight";
+            $classes[] = $tabletMarginRight < 0 ? '@3xl:-mr-'.abs($tabletMarginRight) : "@3xl:mr-$tabletMarginRight";
         }
         if ($tabletMarginBottom != $mobileMarginBottom && $tabletMarginBottom != 0) {
-            $classes[] = $tabletMarginBottom < 0 ? "@3xl:-mb-" . abs($tabletMarginBottom) : "@3xl:mb-$tabletMarginBottom";
+            $classes[] = $tabletMarginBottom < 0 ? '@3xl:-mb-'.abs($tabletMarginBottom) : "@3xl:mb-$tabletMarginBottom";
         }
         if ($tabletMarginLeft != $mobileMarginLeft && $tabletMarginLeft != 0) {
-            $classes[] = $tabletMarginLeft < 0 ? "@3xl:-ml-" . abs($tabletMarginLeft) : "@3xl:ml-$tabletMarginLeft";
+            $classes[] = $tabletMarginLeft < 0 ? '@3xl:-ml-'.abs($tabletMarginLeft) : "@3xl:ml-$tabletMarginLeft";
         }
 
         // Desktop margin (only if different from tablet)
         if ($desktopMarginTop != $tabletMarginTop && $desktopMarginTop != 0) {
-            $classes[] = $desktopMarginTop < 0 ? "@5xl:-mt-" . abs($desktopMarginTop) : "@5xl:mt-$desktopMarginTop";
+            $classes[] = $desktopMarginTop < 0 ? '@5xl:-mt-'.abs($desktopMarginTop) : "@5xl:mt-$desktopMarginTop";
         }
         if ($desktopMarginRight != $tabletMarginRight && $desktopMarginRight != 0) {
-            $classes[] = $desktopMarginRight < 0 ? "@5xl:-mr-" . abs($desktopMarginRight) : "@5xl:mr-$desktopMarginRight";
+            $classes[] = $desktopMarginRight < 0 ? '@5xl:-mr-'.abs($desktopMarginRight) : "@5xl:mr-$desktopMarginRight";
         }
         if ($desktopMarginBottom != $tabletMarginBottom && $desktopMarginBottom != 0) {
-            $classes[] = $desktopMarginBottom < 0 ? "@5xl:-mb-" . abs($desktopMarginBottom) : "@5xl:mb-$desktopMarginBottom";
+            $classes[] = $desktopMarginBottom < 0 ? '@5xl:-mb-'.abs($desktopMarginBottom) : "@5xl:mb-$desktopMarginBottom";
         }
         if ($desktopMarginLeft != $tabletMarginLeft && $desktopMarginLeft != 0) {
-            $classes[] = $desktopMarginLeft < 0 ? "@5xl:-ml-" . abs($desktopMarginLeft) : "@5xl:ml-$desktopMarginLeft";
+            $classes[] = $desktopMarginLeft < 0 ? '@5xl:-ml-'.abs($desktopMarginLeft) : "@5xl:ml-$desktopMarginLeft";
         }
 
         if ($textColor) {
