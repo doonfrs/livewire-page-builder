@@ -38,12 +38,12 @@ class NestedRowFlexWidthTest extends TestCase
             ];
 
             // Test for row blocks (should preserve width classes)
-            $rowBlockClasses = $this->service->getCssClassesFromProperties($properties, isRowBlock: true);
+            $rowBlockClasses = $this->service->getCssClassesFromProperties($properties);
             $this->assertStringContainsString($widthClass, $rowBlockClasses,
                 "Row block with {$widthClass} should contain {$widthClass}");
 
             // Test for regular blocks (should also preserve width classes)
-            $regularBlockClasses = $this->service->getCssClassesFromProperties($properties, isRowBlock: false);
+            $regularBlockClasses = $this->service->getCssClassesFromProperties($properties);
             $this->assertStringContainsString($widthClass, $regularBlockClasses,
                 "Regular block with {$widthClass} should contain {$widthClass}");
         }
@@ -59,7 +59,7 @@ class NestedRowFlexWidthTest extends TestCase
         ];
 
         // Even for row blocks, arbitrary values should remain as width
-        $rowBlockClasses = $this->service->getCssClassesFromProperties($properties, isRowBlock: true);
+        $rowBlockClasses = $this->service->getCssClassesFromProperties($properties);
         $this->assertStringContainsString('w-[200px]', $rowBlockClasses,
             'Row block with arbitrary width should keep the width class');
         $this->assertStringContainsString('w-[100px]', $rowBlockClasses,
