@@ -68,7 +68,7 @@ class PageEditor extends Component
             // Validate that the theme exists
             if (! $this->currentTheme) {
                 // Theme ID was provided but doesn't exist in the database
-                abort(404, 'Theme not found. The theme with ID ' . $this->themeId . ' does not exist.');
+                abort(404, 'Theme not found. The theme with ID '.$this->themeId.' does not exist.');
             }
         }
 

@@ -18,7 +18,7 @@ class PageBuilderRender
         if ($themeId) {
             $theme = Theme::find($themeId);
             if (! $theme) {
-                abort(404, 'Theme not found. The theme with ID ' . $themeId . ' does not exist.');
+                abort(404, 'Theme not found. The theme with ID '.$themeId.' does not exist.');
             }
         } else {
             $theme = null;
