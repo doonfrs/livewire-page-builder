@@ -1,6 +1,6 @@
 ---
-description: 
-globs: 
+description:
+globs:
 alwaysApply: true
 ---
 
@@ -32,3 +32,7 @@ decoration-clone box-decoration-clone
 - try to avoid writing @php inside livewire views please
 - Using Livewire 3, please make sure not to use deprecated method <https://livewire.laravel.com/docs/upgrading#emitup>
 - it is a laravel package the main folder is src/ not app/
+
+## Coding Style
+
+- I prefer always to use named arguments when calling function as var:val
