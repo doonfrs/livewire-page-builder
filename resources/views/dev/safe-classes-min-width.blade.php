@@ -3,15 +3,15 @@
 
 {{-- Standard min-w classes --}}
 <div class="min-w-auto min-w-px min-w-0 min-w-0.5 min-w-1 min-w-1.5 min-w-2 min-w-2.5 min-w-3 min-w-3.5 min-w-4 min-w-5 min-w-6 min-w-7 min-w-8 min-w-9 min-w-10 min-w-11 min-w-12 min-w-14 min-w-16 min-w-20 min-w-24 min-w-28 min-w-32 min-w-36 min-w-40 min-w-44 min-w-48 min-w-52 min-w-56 min-w-60 min-w-64 min-w-72 min-w-80 min-w-96"></div>
-<div class="min-w-fit min-w-min min-w-max min-w-full min-w-screen min-w-svw min-w-lvw min-w-dvw"></div>
+<div class="min-w-fit min-w-min min-w-max min-w-full min-w-screen min-w-svw min-w-lvw min-w-dvw min-w-3xs min-w-2xs min-w-xs min-w-sm min-w-md min-w-lg min-w-xl min-w-2xl min-w-3xl min-w-4xl min-w-5xl min-w-6xl min-w-7xl"></div>
 
 {{-- @3xl responsive min-w classes --}}
 <div class="@3xl:min-w-auto @3xl:min-w-px @3xl:min-w-0 @3xl:min-w-0.5 @3xl:min-w-1 @3xl:min-w-1.5 @3xl:min-w-2 @3xl:min-w-2.5 @3xl:min-w-3 @3xl:min-w-3.5 @3xl:min-w-4 @3xl:min-w-5 @3xl:min-w-6 @3xl:min-w-7 @3xl:min-w-8 @3xl:min-w-9 @3xl:min-w-10 @3xl:min-w-11 @3xl:min-w-12 @3xl:min-w-14 @3xl:min-w-16 @3xl:min-w-20 @3xl:min-w-24 @3xl:min-w-28 @3xl:min-w-32 @3xl:min-w-36 @3xl:min-w-40 @3xl:min-w-44 @3xl:min-w-48 @3xl:min-w-52 @3xl:min-w-56 @3xl:min-w-60 @3xl:min-w-64 @3xl:min-w-72 @3xl:min-w-80 @3xl:min-w-96"></div>
-<div class="@3xl:min-w-fit @3xl:min-w-min @3xl:min-w-max @3xl:min-w-full @3xl:min-w-screen @3xl:min-w-svw @3xl:min-w-lvw @3xl:min-w-dvw"></div>
+<div class="@3xl:min-w-fit @3xl:min-w-min @3xl:min-w-max @3xl:min-w-full @3xl:min-w-screen @3xl:min-w-svw @3xl:min-w-lvw @3xl:min-w-dvw @3xl:min-w-3xs @3xl:min-w-2xs @3xl:min-w-xs @3xl:min-w-sm @3xl:min-w-md @3xl:min-w-lg @3xl:min-w-xl @3xl:min-w-2xl @3xl:min-w-3xl @3xl:min-w-4xl @3xl:min-w-5xl @3xl:min-w-6xl @3xl:min-w-7xl"></div>
 
 {{-- @5xl responsive min-w classes --}}
 <div class="@5xl:min-w-auto @5xl:min-w-px @5xl:min-w-0 @5xl:min-w-0.5 @5xl:min-w-1 @5xl:min-w-1.5 @5xl:min-w-2 @5xl:min-w-2.5 @5xl:min-w-3 @5xl:min-w-3.5 @5xl:min-w-4 @5xl:min-w-5 @5xl:min-w-6 @5xl:min-w-7 @5xl:min-w-8 @5xl:min-w-9 @5xl:min-w-10 @5xl:min-w-11 @5xl:min-w-12 @5xl:min-w-14 @5xl:min-w-16 @5xl:min-w-20 @5xl:min-w-24 @5xl:min-w-28 @5xl:min-w-32 @5xl:min-w-36 @5xl:min-w-40 @5xl:min-w-44 @5xl:min-w-48 @5xl:min-w-52 @5xl:min-w-56 @5xl:min-w-60 @5xl:min-w-64 @5xl:min-w-72 @5xl:min-w-80 @5xl:min-w-96"></div>
-<div class="@5xl:min-w-fit @5xl:min-w-min @5xl:min-w-max @5xl:min-w-full @5xl:min-w-screen @5xl:min-w-svw @5xl:min-w-lvw @5xl:min-w-dvw"></div>
+<div class="@5xl:min-w-fit @5xl:min-w-min @5xl:min-w-max @5xl:min-w-full @5xl:min-w-screen @5xl:min-w-svw @5xl:min-w-lvw @5xl:min-w-dvw @5xl:min-w-3xs @5xl:min-w-2xs @5xl:min-w-xs @5xl:min-w-sm @5xl:min-w-md @5xl:min-w-lg @5xl:min-w-xl @5xl:min-w-2xl @5xl:min-w-3xl @5xl:min-w-4xl @5xl:min-w-5xl @5xl:min-w-6xl @5xl:min-w-7xl"></div>
 
 {{-- Custom min-w classes with arbitrary pixel values (1px to 500px) --}}
 <div class="min-w-[1px] min-w-[2px] min-w-[3px] min-w-[4px] min-w-[5px] min-w-[6px] min-w-[7px] min-w-[8px] min-w-[9px] min-w-[10px] min-w-[11px] min-w-[12px] min-w-[13px] min-w-[14px] min-w-[15px] min-w-[16px] min-w-[17px] min-w-[18px] min-w-[19px] min-w-[20px]"></div>
