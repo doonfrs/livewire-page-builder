@@ -71,6 +71,12 @@
                                 @elseif($property['type'] === 'flexible-size')
                                     <livewire:block-properties.flexible-size-property :property="$property"
                                         :value="$properties[$property['name']] ?? ''" :row-id="$rowId" :block-id="$blockId" :key="'flexible-size-property-' . $key" />
+                                @elseif($property['type'] === 'padding')
+                                    <livewire:block-properties.padding-property :property="$property"
+                                        :value="$properties" :row-id="$rowId" :block-id="$blockId" :key="'padding-property-' . $key" />
+                                @elseif($property['type'] === 'margin')
+                                    <livewire:block-properties.margin-property :property="$property"
+                                        :value="$properties" :row-id="$rowId" :block-id="$blockId" :key="'margin-property-' . $key" />
                                 @else
                                     <div>
                                         <label

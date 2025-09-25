@@ -248,6 +248,9 @@ class SafeClassGenerator
             }
         }
 
+        // Add arbitrary value classes for custom spacing
+        $lines[] = $this->generateArbitraryPaddingClasses($min, $max, $breakpoints);
+
         $filePath = $outputDir.'/safe-classes-padding.blade.php';
         file_put_contents($filePath, implode("\n", $lines));
         echo "Generated: {$filePath}\n";
@@ -301,6 +304,9 @@ class SafeClassGenerator
                 $lines[] = '';
             }
         }
+
+        // Add arbitrary value classes for custom spacing
+        $lines[] = $this->generateArbitraryMarginClasses($min, $max, $breakpoints);
 
         $filePath = $outputDir.'/safe-classes-margin.blade.php';
         file_put_contents($filePath, implode("\n", $lines));
@@ -1043,6 +1049,100 @@ class SafeClassGenerator
                 $classes[] = $class;
             }
             $lines[] = '<div class="'.implode(' ', $classes).'"></div>';
+        }
+
+        return implode("\n", $lines);
+    }
+
+    protected function generateArbitraryMarginClasses(int $min, int $max, array $breakpoints): string
+    {
+        $lines = [];
+        $lines[] = '';
+        $lines[] = '{{-- Arbitrary value margin classes --}}';
+
+        // Margin directions
+        $directions = ['m', 'mt', 'mr', 'mb', 'ml', 'mx', 'my'];
+
+        // Generate arbitrary value classes for custom spacing (chunked to avoid extremely long lines)
+        $chunkSize = 20;
+        for ($i = $min; $i <= $max; $i += $chunkSize) {
+            $classes = [];
+            for ($j = $i; $j <= min($i + $chunkSize - 1, $max); $j++) {
+                foreach ($directions as $direction) {
+                    // Positive classes
+                    $classes[] = "{$direction}-[{$j}px]";
+                    // Negative classes (except for 0)
+                    if ($j > 0) {
+                        $classes[] = "-{$direction}-[{$j}px]";
+                    }
+                }
+            }
+            $lines[] = '<div class="'.implode(' ', $classes).'"></div>';
+        }
+        $lines[] = '';
+
+        // Responsive arbitrary value classes
+        foreach ($breakpoints as $breakpoint) {
+            $breakpoint = trim($breakpoint);
+            $lines[] = "{{-- @{$breakpoint} responsive arbitrary value margin classes --}}";
+
+            for ($i = $min; $i <= $max; $i += $chunkSize) {
+                $classes = [];
+                for ($j = $i; $j <= min($i + $chunkSize - 1, $max); $j++) {
+                    foreach ($directions as $direction) {
+                        // Positive classes
+                        $classes[] = "@{$breakpoint}:{$direction}-[{$j}px]";
+                        // Negative classes (except for 0)
+                        if ($j > 0) {
+                            $classes[] = "@{$breakpoint}:-{$direction}-[{$j}px]";
+                        }
+                    }
+                }
+                $lines[] = '<div class="'.implode(' ', $classes).'"></div>';
+            }
+            $lines[] = '';
+        }
+
+        return implode("\n", $lines);
+    }
+
+    protected function generateArbitraryPaddingClasses(int $min, int $max, array $breakpoints): string
+    {
+        $lines = [];
+        $lines[] = '';
+        $lines[] = '{{-- Arbitrary value padding classes --}}';
+
+        // Padding directions
+        $directions = ['p', 'pt', 'pr', 'pb', 'pl', 'px', 'py'];
+
+        // Generate arbitrary value classes for custom spacing (chunked to avoid extremely long lines)
+        $chunkSize = 20;
+        for ($i = $min; $i <= $max; $i += $chunkSize) {
+            $classes = [];
+            for ($j = $i; $j <= min($i + $chunkSize - 1, $max); $j++) {
+                foreach ($directions as $direction) {
+                    $classes[] = "{$direction}-[{$j}px]";
+                }
+            }
+            $lines[] = '<div class="'.implode(' ', $classes).'"></div>';
+        }
+        $lines[] = '';
+
+        // Responsive arbitrary value classes
+        foreach ($breakpoints as $breakpoint) {
+            $breakpoint = trim($breakpoint);
+            $lines[] = "{{-- @{$breakpoint} responsive arbitrary value padding classes --}}";
+
+            for ($i = $min; $i <= $max; $i += $chunkSize) {
+                $classes = [];
+                for ($j = $i; $j <= min($i + $chunkSize - 1, $max); $j++) {
+                    foreach ($directions as $direction) {
+                        $classes[] = "@{$breakpoint}:{$direction}-[{$j}px]";
+                    }
+                }
+                $lines[] = '<div class="'.implode(' ', $classes).'"></div>';
+            }
+            $lines[] = '';
         }
 
         return implode("\n", $lines);

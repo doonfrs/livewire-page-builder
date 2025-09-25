@@ -178,37 +178,37 @@ class PageBuilderService
         $hiddenTablet = $properties['hiddenTablet'] ?? false;
         $hiddenDesktop = $properties['hiddenDesktop'] ?? false;
 
-        // Device-specific padding
-        $mobilePaddingTop = $properties['mobilePaddingTop'] ?? 0;
-        $mobilePaddingRight = $properties['mobilePaddingRight'] ?? 0;
-        $mobilePaddingBottom = $properties['mobilePaddingBottom'] ?? 0;
-        $mobilePaddingLeft = $properties['mobilePaddingLeft'] ?? 0;
+        // Device-specific padding (handle empty strings)
+        $mobilePaddingTop = $this->parseNumericValue($properties['mobilePaddingTop'] ?? 0);
+        $mobilePaddingRight = $this->parseNumericValue($properties['mobilePaddingRight'] ?? 0);
+        $mobilePaddingBottom = $this->parseNumericValue($properties['mobilePaddingBottom'] ?? 0);
+        $mobilePaddingLeft = $this->parseNumericValue($properties['mobilePaddingLeft'] ?? 0);
 
-        $tabletPaddingTop = $properties['tabletPaddingTop'] ?? 0;
-        $tabletPaddingRight = $properties['tabletPaddingRight'] ?? 0;
-        $tabletPaddingBottom = $properties['tabletPaddingBottom'] ?? 0;
-        $tabletPaddingLeft = $properties['tabletPaddingLeft'] ?? 0;
+        $tabletPaddingTop = $this->parseNumericValue($properties['tabletPaddingTop'] ?? 0);
+        $tabletPaddingRight = $this->parseNumericValue($properties['tabletPaddingRight'] ?? 0);
+        $tabletPaddingBottom = $this->parseNumericValue($properties['tabletPaddingBottom'] ?? 0);
+        $tabletPaddingLeft = $this->parseNumericValue($properties['tabletPaddingLeft'] ?? 0);
 
-        $desktopPaddingTop = $properties['desktopPaddingTop'] ?? 0;
-        $desktopPaddingRight = $properties['desktopPaddingRight'] ?? 0;
-        $desktopPaddingBottom = $properties['desktopPaddingBottom'] ?? 0;
-        $desktopPaddingLeft = $properties['desktopPaddingLeft'] ?? 0;
+        $desktopPaddingTop = $this->parseNumericValue($properties['desktopPaddingTop'] ?? 0);
+        $desktopPaddingRight = $this->parseNumericValue($properties['desktopPaddingRight'] ?? 0);
+        $desktopPaddingBottom = $this->parseNumericValue($properties['desktopPaddingBottom'] ?? 0);
+        $desktopPaddingLeft = $this->parseNumericValue($properties['desktopPaddingLeft'] ?? 0);
 
-        // Device-specific margin
-        $mobileMarginTop = $properties['mobileMarginTop'] ?? 0;
-        $mobileMarginRight = $properties['mobileMarginRight'] ?? 0;
-        $mobileMarginBottom = $properties['mobileMarginBottom'] ?? 0;
-        $mobileMarginLeft = $properties['mobileMarginLeft'] ?? 0;
+        // Device-specific margin (handle empty strings)
+        $mobileMarginTop = $this->parseNumericValue($properties['mobileMarginTop'] ?? 0);
+        $mobileMarginRight = $this->parseNumericValue($properties['mobileMarginRight'] ?? 0);
+        $mobileMarginBottom = $this->parseNumericValue($properties['mobileMarginBottom'] ?? 0);
+        $mobileMarginLeft = $this->parseNumericValue($properties['mobileMarginLeft'] ?? 0);
 
-        $tabletMarginTop = $properties['tabletMarginTop'] ?? 0;
-        $tabletMarginRight = $properties['tabletMarginRight'] ?? 0;
-        $tabletMarginBottom = $properties['tabletMarginBottom'] ?? 0;
-        $tabletMarginLeft = $properties['tabletMarginLeft'] ?? 0;
+        $tabletMarginTop = $this->parseNumericValue($properties['tabletMarginTop'] ?? 0);
+        $tabletMarginRight = $this->parseNumericValue($properties['tabletMarginRight'] ?? 0);
+        $tabletMarginBottom = $this->parseNumericValue($properties['tabletMarginBottom'] ?? 0);
+        $tabletMarginLeft = $this->parseNumericValue($properties['tabletMarginLeft'] ?? 0);
 
-        $desktopMarginTop = $properties['desktopMarginTop'] ?? 0;
-        $desktopMarginRight = $properties['desktopMarginRight'] ?? 0;
-        $desktopMarginBottom = $properties['desktopMarginBottom'] ?? 0;
-        $desktopMarginLeft = $properties['desktopMarginLeft'] ?? 0;
+        $desktopMarginTop = $this->parseNumericValue($properties['desktopMarginTop'] ?? 0);
+        $desktopMarginRight = $this->parseNumericValue($properties['desktopMarginRight'] ?? 0);
+        $desktopMarginBottom = $this->parseNumericValue($properties['desktopMarginBottom'] ?? 0);
+        $desktopMarginLeft = $this->parseNumericValue($properties['desktopMarginLeft'] ?? 0);
 
         $selfCentered = $properties['selfCentered'] ?? false;
         $textColor = $properties['textColor'] ?? null;
@@ -245,87 +245,151 @@ class PageBuilderService
         // Add responsive padding classes
         // Mobile padding
         if ($mobilePaddingTop > 0) {
-            $classes[] = "pt-$mobilePaddingTop";
+            $classes[] = $this->generateSpacingClass('pt', $mobilePaddingTop);
         }
         if ($mobilePaddingRight > 0) {
-            $classes[] = "pr-$mobilePaddingRight";
+            $classes[] = $this->generateSpacingClass('pr', $mobilePaddingRight);
         }
         if ($mobilePaddingBottom > 0) {
-            $classes[] = "pb-$mobilePaddingBottom";
+            $classes[] = $this->generateSpacingClass('pb', $mobilePaddingBottom);
         }
         if ($mobilePaddingLeft > 0) {
-            $classes[] = "pl-$mobilePaddingLeft";
+            $classes[] = $this->generateSpacingClass('pl', $mobilePaddingLeft);
         }
 
         // Tablet padding (only if different from mobile)
-        if ($tabletPaddingTop != $mobilePaddingTop && $tabletPaddingTop > 0) {
-            $classes[] = "@3xl:pt-$tabletPaddingTop";
+        if ($tabletPaddingTop != $mobilePaddingTop) {
+            if ($tabletPaddingTop > 0) {
+                $classes[] = $this->generateSpacingClass('@3xl:pt', $tabletPaddingTop);
+            } else {
+                $classes[] = '@3xl:pt-0';
+            }
         }
-        if ($tabletPaddingRight != $mobilePaddingRight && $tabletPaddingRight > 0) {
-            $classes[] = "@3xl:pr-$tabletPaddingRight";
+        if ($tabletPaddingRight != $mobilePaddingRight) {
+            if ($tabletPaddingRight > 0) {
+                $classes[] = $this->generateSpacingClass('@3xl:pr', $tabletPaddingRight);
+            } else {
+                $classes[] = '@3xl:pr-0';
+            }
         }
-        if ($tabletPaddingBottom != $mobilePaddingBottom && $tabletPaddingBottom > 0) {
-            $classes[] = "@3xl:pb-$tabletPaddingBottom";
+        if ($tabletPaddingBottom != $mobilePaddingBottom) {
+            if ($tabletPaddingBottom > 0) {
+                $classes[] = $this->generateSpacingClass('@3xl:pb', $tabletPaddingBottom);
+            } else {
+                $classes[] = '@3xl:pb-0';
+            }
         }
-        if ($tabletPaddingLeft != $mobilePaddingLeft && $tabletPaddingLeft > 0) {
-            $classes[] = "@3xl:pl-$tabletPaddingLeft";
+        if ($tabletPaddingLeft != $mobilePaddingLeft) {
+            if ($tabletPaddingLeft > 0) {
+                $classes[] = $this->generateSpacingClass('@3xl:pl', $tabletPaddingLeft);
+            } else {
+                $classes[] = '@3xl:pl-0';
+            }
         }
 
         // Desktop padding (only if different from tablet)
-        if ($desktopPaddingTop != $tabletPaddingTop && $desktopPaddingTop > 0) {
-            $classes[] = "@5xl:pt-$desktopPaddingTop";
+        if ($desktopPaddingTop != $tabletPaddingTop) {
+            if ($desktopPaddingTop > 0) {
+                $classes[] = $this->generateSpacingClass('@5xl:pt', $desktopPaddingTop);
+            } else {
+                $classes[] = '@5xl:pt-0';
+            }
         }
-        if ($desktopPaddingRight != $tabletPaddingRight && $desktopPaddingRight > 0) {
-            $classes[] = "@5xl:pr-$desktopPaddingRight";
+        if ($desktopPaddingRight != $tabletPaddingRight) {
+            if ($desktopPaddingRight > 0) {
+                $classes[] = $this->generateSpacingClass('@5xl:pr', $desktopPaddingRight);
+            } else {
+                $classes[] = '@5xl:pr-0';
+            }
         }
-        if ($desktopPaddingBottom != $tabletPaddingBottom && $desktopPaddingBottom > 0) {
-            $classes[] = "@5xl:pb-$desktopPaddingBottom";
+        if ($desktopPaddingBottom != $tabletPaddingBottom) {
+            if ($desktopPaddingBottom > 0) {
+                $classes[] = $this->generateSpacingClass('@5xl:pb', $desktopPaddingBottom);
+            } else {
+                $classes[] = '@5xl:pb-0';
+            }
         }
-        if ($desktopPaddingLeft != $tabletPaddingLeft && $desktopPaddingLeft > 0) {
-            $classes[] = "@5xl:pl-$desktopPaddingLeft";
+        if ($desktopPaddingLeft != $tabletPaddingLeft) {
+            if ($desktopPaddingLeft > 0) {
+                $classes[] = $this->generateSpacingClass('@5xl:pl', $desktopPaddingLeft);
+            } else {
+                $classes[] = '@5xl:pl-0';
+            }
         }
 
         // Add responsive margin classes
         // Mobile margin
         if ($mobileMarginTop != 0) {
-            $classes[] = $mobileMarginTop < 0 ? '-mt-'.abs($mobileMarginTop) : "mt-$mobileMarginTop";
+            $classes[] = $mobileMarginTop < 0 ? $this->generateSpacingClass('-mt', abs($mobileMarginTop)) : $this->generateSpacingClass('mt', $mobileMarginTop);
         }
         if ($mobileMarginRight != 0) {
-            $classes[] = $mobileMarginRight < 0 ? '-mr-'.abs($mobileMarginRight) : "mr-$mobileMarginRight";
+            $classes[] = $mobileMarginRight < 0 ? $this->generateSpacingClass('-mr', abs($mobileMarginRight)) : $this->generateSpacingClass('mr', $mobileMarginRight);
         }
         if ($mobileMarginBottom != 0) {
-            $classes[] = $mobileMarginBottom < 0 ? '-mb-'.abs($mobileMarginBottom) : "mb-$mobileMarginBottom";
+            $classes[] = $mobileMarginBottom < 0 ? $this->generateSpacingClass('-mb', abs($mobileMarginBottom)) : $this->generateSpacingClass('mb', $mobileMarginBottom);
         }
         if ($mobileMarginLeft != 0) {
-            $classes[] = $mobileMarginLeft < 0 ? '-ml-'.abs($mobileMarginLeft) : "ml-$mobileMarginLeft";
+            $classes[] = $mobileMarginLeft < 0 ? $this->generateSpacingClass('-ml', abs($mobileMarginLeft)) : $this->generateSpacingClass('ml', $mobileMarginLeft);
         }
 
         // Tablet margin (only if different from mobile)
-        if ($tabletMarginTop != $mobileMarginTop && $tabletMarginTop != 0) {
-            $classes[] = $tabletMarginTop < 0 ? '@3xl:-mt-'.abs($tabletMarginTop) : "@3xl:mt-$tabletMarginTop";
+        if ($tabletMarginTop != $mobileMarginTop) {
+            if ($tabletMarginTop != 0) {
+                $classes[] = $tabletMarginTop < 0 ? $this->generateSpacingClass('@3xl:-mt', abs($tabletMarginTop)) : $this->generateSpacingClass('@3xl:mt', $tabletMarginTop);
+            } else {
+                $classes[] = '@3xl:mt-0';
+            }
         }
-        if ($tabletMarginRight != $mobileMarginRight && $tabletMarginRight != 0) {
-            $classes[] = $tabletMarginRight < 0 ? '@3xl:-mr-'.abs($tabletMarginRight) : "@3xl:mr-$tabletMarginRight";
+        if ($tabletMarginRight != $mobileMarginRight) {
+            if ($tabletMarginRight != 0) {
+                $classes[] = $tabletMarginRight < 0 ? $this->generateSpacingClass('@3xl:-mr', abs($tabletMarginRight)) : $this->generateSpacingClass('@3xl:mr', $tabletMarginRight);
+            } else {
+                $classes[] = '@3xl:mr-0';
+            }
         }
-        if ($tabletMarginBottom != $mobileMarginBottom && $tabletMarginBottom != 0) {
-            $classes[] = $tabletMarginBottom < 0 ? '@3xl:-mb-'.abs($tabletMarginBottom) : "@3xl:mb-$tabletMarginBottom";
+        if ($tabletMarginBottom != $mobileMarginBottom) {
+            if ($tabletMarginBottom != 0) {
+                $classes[] = $tabletMarginBottom < 0 ? $this->generateSpacingClass('@3xl:-mb', abs($tabletMarginBottom)) : $this->generateSpacingClass('@3xl:mb', $tabletMarginBottom);
+            } else {
+                $classes[] = '@3xl:mb-0';
+            }
         }
-        if ($tabletMarginLeft != $mobileMarginLeft && $tabletMarginLeft != 0) {
-            $classes[] = $tabletMarginLeft < 0 ? '@3xl:-ml-'.abs($tabletMarginLeft) : "@3xl:ml-$tabletMarginLeft";
+        if ($tabletMarginLeft != $mobileMarginLeft) {
+            if ($tabletMarginLeft != 0) {
+                $classes[] = $tabletMarginLeft < 0 ? $this->generateSpacingClass('@3xl:-ml', abs($tabletMarginLeft)) : $this->generateSpacingClass('@3xl:ml', $tabletMarginLeft);
+            } else {
+                $classes[] = '@3xl:ml-0';
+            }
         }
 
         // Desktop margin (only if different from tablet)
-        if ($desktopMarginTop != $tabletMarginTop && $desktopMarginTop != 0) {
-            $classes[] = $desktopMarginTop < 0 ? '@5xl:-mt-'.abs($desktopMarginTop) : "@5xl:mt-$desktopMarginTop";
+        if ($desktopMarginTop != $tabletMarginTop) {
+            if ($desktopMarginTop != 0) {
+                $classes[] = $desktopMarginTop < 0 ? $this->generateSpacingClass('@5xl:-mt', abs($desktopMarginTop)) : $this->generateSpacingClass('@5xl:mt', $desktopMarginTop);
+            } else {
+                $classes[] = '@5xl:mt-0';
+            }
         }
-        if ($desktopMarginRight != $tabletMarginRight && $desktopMarginRight != 0) {
-            $classes[] = $desktopMarginRight < 0 ? '@5xl:-mr-'.abs($desktopMarginRight) : "@5xl:mr-$desktopMarginRight";
+        if ($desktopMarginRight != $tabletMarginRight) {
+            if ($desktopMarginRight != 0) {
+                $classes[] = $desktopMarginRight < 0 ? $this->generateSpacingClass('@5xl:-mr', abs($desktopMarginRight)) : $this->generateSpacingClass('@5xl:mr', $desktopMarginRight);
+            } else {
+                $classes[] = '@5xl:mr-0';
+            }
         }
-        if ($desktopMarginBottom != $tabletMarginBottom && $desktopMarginBottom != 0) {
-            $classes[] = $desktopMarginBottom < 0 ? '@5xl:-mb-'.abs($desktopMarginBottom) : "@5xl:mb-$desktopMarginBottom";
+        if ($desktopMarginBottom != $tabletMarginBottom) {
+            if ($desktopMarginBottom != 0) {
+                $classes[] = $desktopMarginBottom < 0 ? $this->generateSpacingClass('@5xl:-mb', abs($desktopMarginBottom)) : $this->generateSpacingClass('@5xl:mb', $desktopMarginBottom);
+            } else {
+                $classes[] = '@5xl:mb-0';
+            }
         }
-        if ($desktopMarginLeft != $tabletMarginLeft && $desktopMarginLeft != 0) {
-            $classes[] = $desktopMarginLeft < 0 ? '@5xl:-ml-'.abs($desktopMarginLeft) : "@5xl:ml-$desktopMarginLeft";
+        if ($desktopMarginLeft != $tabletMarginLeft) {
+            if ($desktopMarginLeft != 0) {
+                $classes[] = $desktopMarginLeft < 0 ? $this->generateSpacingClass('@5xl:-ml', abs($desktopMarginLeft)) : $this->generateSpacingClass('@5xl:ml', $desktopMarginLeft);
+            } else {
+                $classes[] = '@5xl:ml-0';
+            }
         }
 
         if ($textColor) {
@@ -780,5 +844,44 @@ class PageBuilderService
 
         // Return as-is (might be a custom format)
         return $value;
+    }
+
+    /**
+     * Generate a spacing class that works with the safe class list
+     * Uses standard Tailwind values when available, otherwise arbitrary values
+     */
+    protected function generateSpacingClass(string $prefix, $value): string
+    {
+        // Standard Tailwind spacing values that are in the safe class list
+        $standardSpacingValues = [
+            '0', '0.5', '1', '1.5', '2', '2.5', '3', '3.5', '4', '5', '6', '7', '8', '9',
+            '10', '11', '12', '14', '16', '20', '24', '28', '32', '36', '40', '44', '48',
+            '52', '56', '60', '64', '72', '80', '96'
+        ];
+
+        // Check if it's a standard spacing value
+        if (in_array((string)$value, $standardSpacingValues)) {
+            return "{$prefix}-{$value}";
+        }
+
+        // Use arbitrary value for custom spacing
+        return "{$prefix}-[{$value}px]";
+    }
+
+    /**
+     * Parse a value that might be a string, empty string, or numeric value
+     * and return a proper numeric value or 0
+     */
+    protected function parseNumericValue($value)
+    {
+        if ($value === null || $value === '') {
+            return 0;
+        }
+
+        if (is_numeric($value)) {
+            return (float) $value;
+        }
+
+        return 0;
     }
 }

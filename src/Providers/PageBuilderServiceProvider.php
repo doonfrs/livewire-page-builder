@@ -11,6 +11,8 @@ use Trinavo\LivewirePageBuilder\Http\Livewire\BlockProperties;
 use Trinavo\LivewirePageBuilder\Http\Livewire\BlockProperties\ColorPicker;
 use Trinavo\LivewirePageBuilder\Http\Livewire\BlockProperties\FlexibleSizeProperty;
 use Trinavo\LivewirePageBuilder\Http\Livewire\BlockProperties\ImageProperty;
+use Trinavo\LivewirePageBuilder\Http\Livewire\BlockProperties\MarginProperty;
+use Trinavo\LivewirePageBuilder\Http\Livewire\BlockProperties\PaddingProperty;
 use Trinavo\LivewirePageBuilder\Http\Livewire\BlockProperties\RichTextProperty;
 use Trinavo\LivewirePageBuilder\Http\Livewire\BlockProperties\SelectProperty;
 use Trinavo\LivewirePageBuilder\Http\Livewire\BuilderBlock;
@@ -167,6 +169,8 @@ class PageBuilderServiceProvider extends ServiceProvider
         Livewire::component('block-properties.color-picker', ColorPicker::class);
         Livewire::component('block-properties.flexible-size-property', FlexibleSizeProperty::class);
         Livewire::component('block-properties.image-property', ImageProperty::class);
+        Livewire::component('block-properties.padding-property', PaddingProperty::class);
+        Livewire::component('block-properties.margin-property', MarginProperty::class);
         Livewire::component('block-properties.select-property', SelectProperty::class);
         Livewire::component('block-properties.richtext-property', RichTextProperty::class);
         Livewire::component('language-switcher', \Trinavo\LivewirePageBuilder\Http\Livewire\LanguageSwitcher::class);

@@ -9,6 +9,8 @@ use Trinavo\LivewirePageBuilder\Support\Properties\CheckboxProperty;
 use Trinavo\LivewirePageBuilder\Support\Properties\ColorProperty;
 use Trinavo\LivewirePageBuilder\Support\Properties\FlexibleSizeProperty;
 use Trinavo\LivewirePageBuilder\Support\Properties\ImageProperty;
+use Trinavo\LivewirePageBuilder\Support\Properties\MarginProperty;
+use Trinavo\LivewirePageBuilder\Support\Properties\PaddingProperty;
 use Trinavo\LivewirePageBuilder\Support\Properties\SelectProperty;
 use Trinavo\LivewirePageBuilder\Support\Properties\TextProperty;
 
@@ -245,65 +247,8 @@ abstract class Block extends Component
     protected function getSpacingProperties(): array
     {
         return [
-            // Desktop Padding
-            (new TextProperty('desktopPaddingTop', 'Top', numeric: true, defaultValue: $this->desktopPaddingTop, min: 0))
-                ->setGroup('desktop_padding', 'Desktop Padding', 4, 'heroicon-o-computer-desktop'),
-            (new TextProperty('desktopPaddingRight', 'Right', numeric: true, defaultValue: $this->desktopPaddingRight, min: 0))
-                ->setGroup('desktop_padding', 'Desktop Padding', 4, 'heroicon-o-computer-desktop'),
-            (new TextProperty('desktopPaddingBottom', 'Bottom', numeric: true, defaultValue: $this->desktopPaddingBottom, min: 0))
-                ->setGroup('desktop_padding', 'Desktop Padding', 4, 'heroicon-o-computer-desktop'),
-            (new TextProperty('desktopPaddingLeft', 'Left', numeric: true, defaultValue: $this->desktopPaddingLeft, min: 0))
-                ->setGroup('desktop_padding', 'Desktop Padding', 4, 'heroicon-o-computer-desktop'),
-
-            // Tablet Padding
-            (new TextProperty('tabletPaddingTop', 'Top', numeric: true, defaultValue: $this->tabletPaddingTop, min: 0))
-                ->setGroup('tablet_padding', 'Tablet Padding', 4, 'heroicon-o-device-tablet'),
-            (new TextProperty('tabletPaddingRight', 'Right', numeric: true, defaultValue: $this->tabletPaddingRight, min: 0))
-                ->setGroup('tablet_padding', 'Tablet Padding', 4, 'heroicon-o-device-tablet'),
-            (new TextProperty('tabletPaddingBottom', 'Bottom', numeric: true, defaultValue: $this->tabletPaddingBottom, min: 0))
-                ->setGroup('tablet_padding', 'Tablet Padding', 4, 'heroicon-o-device-tablet'),
-            (new TextProperty('tabletPaddingLeft', 'Left', numeric: true, defaultValue: $this->tabletPaddingLeft, min: 0))
-                ->setGroup('tablet_padding', 'Tablet Padding', 4, 'heroicon-o-device-tablet'),
-
-            // Mobile Padding
-            (new TextProperty('mobilePaddingTop', 'Top', numeric: true, defaultValue: $this->mobilePaddingTop, min: 0))
-                ->setGroup('mobile_padding', 'Mobile Padding', 4, 'heroicon-o-device-phone-mobile'),
-            (new TextProperty('mobilePaddingRight', 'Right', numeric: true, defaultValue: $this->mobilePaddingRight, min: 0))
-                ->setGroup('mobile_padding', 'Mobile Padding', 4, 'heroicon-o-device-phone-mobile'),
-            (new TextProperty('mobilePaddingBottom', 'Bottom', numeric: true, defaultValue: $this->mobilePaddingBottom, min: 0))
-                ->setGroup('mobile_padding', 'Mobile Padding', 4, 'heroicon-o-device-phone-mobile'),
-            (new TextProperty('mobilePaddingLeft', 'Left', numeric: true, defaultValue: $this->mobilePaddingLeft, min: 0))
-                ->setGroup('mobile_padding', 'Mobile Padding', 4, 'heroicon-o-device-phone-mobile'),
-
-            // Desktop Margin
-            (new TextProperty('desktopMarginTop', 'Top', numeric: true, defaultValue: $this->desktopMarginTop, min: 0))
-                ->setGroup('desktop_margin', 'Desktop Margin', 4, 'heroicon-o-computer-desktop'),
-            (new TextProperty('desktopMarginRight', 'Right', numeric: true, defaultValue: $this->desktopMarginRight, min: 0))
-                ->setGroup('desktop_margin', 'Desktop Margin', 4, 'heroicon-o-computer-desktop'),
-            (new TextProperty('desktopMarginBottom', 'Bottom', numeric: true, defaultValue: $this->desktopMarginBottom, min: 0))
-                ->setGroup('desktop_margin', 'Desktop Margin', 4, 'heroicon-o-computer-desktop'),
-            (new TextProperty('desktopMarginLeft', 'Left', numeric: true, defaultValue: $this->desktopMarginLeft, min: 0))
-                ->setGroup('desktop_margin', 'Desktop Margin', 4, 'heroicon-o-computer-desktop'),
-
-            // Tablet Margin
-            (new TextProperty('tabletMarginTop', 'Top', numeric: true, defaultValue: $this->tabletMarginTop, min: 0))
-                ->setGroup('tablet_margin', 'Tablet Margin', 4, 'heroicon-o-device-tablet'),
-            (new TextProperty('tabletMarginRight', 'Right', numeric: true, defaultValue: $this->tabletMarginRight, min: 0))
-                ->setGroup('tablet_margin', 'Tablet Margin', 4, 'heroicon-o-device-tablet'),
-            (new TextProperty('tabletMarginBottom', 'Bottom', numeric: true, defaultValue: $this->tabletMarginBottom, min: 0))
-                ->setGroup('tablet_margin', 'Tablet Margin', 4, 'heroicon-o-device-tablet'),
-            (new TextProperty('tabletMarginLeft', 'Left', numeric: true, defaultValue: $this->tabletMarginLeft, min: 0))
-                ->setGroup('tablet_margin', 'Tablet Margin', 4, 'heroicon-o-device-tablet'),
-
-            // Mobile Margin
-            (new TextProperty('mobileMarginTop', 'Top', numeric: true, defaultValue: $this->mobileMarginTop, min: 0))
-                ->setGroup('mobile_margin', 'Mobile Margin', 4, 'heroicon-o-device-phone-mobile'),
-            (new TextProperty('mobileMarginRight', 'Right', numeric: true, defaultValue: $this->mobileMarginRight, min: 0))
-                ->setGroup('mobile_margin', 'Mobile Margin', 4, 'heroicon-o-device-phone-mobile'),
-            (new TextProperty('mobileMarginBottom', 'Bottom', numeric: true, defaultValue: $this->mobileMarginBottom, min: 0))
-                ->setGroup('mobile_margin', 'Mobile Margin', 4, 'heroicon-o-device-phone-mobile'),
-            (new TextProperty('mobileMarginLeft', 'Left', numeric: true, defaultValue: $this->mobileMarginLeft, min: 0))
-                ->setGroup('mobile_margin', 'Mobile Margin', 4, 'heroicon-o-device-phone-mobile'),
+            new PaddingProperty('spacing_padding', 'Padding'),
+            new MarginProperty('spacing_margin', 'Margin'),
         ];
     }
 
