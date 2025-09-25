@@ -38,3 +38,7 @@ decoration-clone box-decoration-clone
 
 - This is a package and we are using it inside the shop laravel project, to access the laravel.log you have to connect to the docker trinavo_shop
 - The laravel project is in /var/www/html
+
+## Coding Style
+
+- I prefer always to use named arguments when calling function as var:val
