@@ -68,8 +68,18 @@ class PageBuilderRender
 
     public function prepareBlock($block)
     {
-        $block['cssClasses'] = app(PageBuilderService::class)->getCssClassesFromProperties($block['properties']);
-        $block['inlineStyles'] = app(PageBuilderService::class)->getInlineStylesFromProperties($block['properties']);
+        $pageBuilderService = app(PageBuilderService::class);
+
+        $block['cssClasses'] = $pageBuilderService->getCssClassesFromProperties($block['properties']);
+        $block['inlineStyles'] = $pageBuilderService->getInlineStylesFromProperties($block['properties']);
+
+        $block['component_exists'] = $pageBuilderService->isBlockAliasRegistered($block['alias'] ?? '');
+
+        if (! $block['component_exists']) {
+            \Illuminate\Support\Facades\Log::warning('PageBuilderRender detected missing component during render', [
+                'alias' => $block['alias'] ?? 'unknown',
+            ]);
+        }
 
         \Illuminate\Support\Facades\Log::info('PageBuilderRender::prepareBlock called', [
             'alias' => $block['alias'],

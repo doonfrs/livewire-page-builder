@@ -70,6 +70,19 @@ class PageBuilderService
         }
     }
 
+    public function isBlockAliasRegistered(string $alias): bool
+    {
+        if ($alias === 'builder-page-block' || $alias === 'row-block') {
+            return true;
+        }
+
+        if (str_contains($alias, 'row-block')) {
+            return true;
+        }
+
+        return (bool) $this->getClassNameFromAlias($alias);
+    }
+
     public function getClassAlias($blockClass): string
     {
         $alias = Str::kebab(str_replace('\\', '-', $blockClass));

@@ -12,7 +12,25 @@
     </div>
 
     <!-- Empty State -->
-    @if (empty($blockProperties) || empty($properties))
+    @if ($componentMissing)
+        @php
+            $alias = $missingBlockAlias ?? __('unknown');
+            $readableAlias = \Illuminate\Support\Str::of($alias)
+                ->after('page-builder-')
+                ->replace('-', ' ')
+                ->headline();
+        @endphp
+        <div class="flex flex-col items-center justify-center h-64 text-center p-6 text-amber-700">
+            <x-heroicon-o-exclamation-triangle class="w-12 h-12 text-amber-400 mb-3" />
+            <div class="text-lg font-semibold">{{ __('Missing block component') }}</div>
+            <div class="text-sm mt-1">
+                {{ __(':block (:alias) is no longer available. Remove or replace this block to keep the page working.', [
+                    'block' => $readableAlias,
+                    'alias' => $alias,
+                ]) }}
+            </div>
+        </div>
+    @elseif (empty($blockProperties) || empty($properties))
         <div class="flex flex-col items-center justify-center h-64 text-center p-6">
             <x-heroicon-o-cube class="w-12 h-12 text-gray-300 mb-3 dark:text-gray-600" />
             <div class="text-gray-500 font-medium dark:text-gray-400">{{ __('No properties available') }}</div>

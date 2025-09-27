@@ -27,6 +27,10 @@ class BlockProperties extends Component
 
     public $blockLabel = null;
 
+    public bool $componentMissing = false;
+
+    public ?string $missingBlockAlias = null;
+
     public function render()
     {
         if (! empty($this->blockProperties)) {
@@ -107,6 +111,9 @@ class BlockProperties extends Component
     #[On('row-selected')]
     public function rowSelected($rowId, $properties)
     {
+        $this->componentMissing = false;
+        $this->missingBlockAlias = null;
+
         $this->rowId = $rowId;
         $this->blockId = null;
         $this->properties = $properties;
@@ -121,8 +128,11 @@ class BlockProperties extends Component
     }
 
     #[On('block-selected')]
-    public function blockSelected($blockId, $properties, $blockClass)
+    public function blockSelected($blockId, $properties, $blockClass, $blockAlias = null)
     {
+        $this->componentMissing = false;
+        $this->missingBlockAlias = null;
+
         $this->blockId = $blockId;
         $this->rowId = null;
         $this->properties = $properties;
@@ -132,6 +142,17 @@ class BlockProperties extends Component
         } else {
             $this->blockClass = $this->resolveBlockClass($blockClass);
         }
+
+        if (! $this->blockClass || ! class_exists($this->blockClass)) {
+            $this->componentMissing = true;
+            $this->missingBlockAlias = $blockAlias;
+            $this->blockLabel = __('Missing block component');
+            $this->blockProperties = [];
+            $this->propertyGroups = [];
+
+            return;
+        }
+
         $this->blockLabel = Str::headline(class_basename($this->blockClass));
         $this->blockProperties =
             array_map(function (BlockProperty $property) {
@@ -148,5 +169,7 @@ class BlockProperties extends Component
                 return $blockClass;
             }
         }
+
+        return null;
     }
 }

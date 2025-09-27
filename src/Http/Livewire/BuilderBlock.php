@@ -27,7 +27,7 @@ class BuilderBlock extends Component
     public function mount()
     {
         $blockClass = $this->getBlockClass();
-        if (class_exists($blockClass)) {
+        if (is_string($blockClass) && class_exists($blockClass)) {
             $block = app($blockClass);
             $this->properties = $this->properties ?? $block->getPropertyValues();
 
@@ -60,7 +60,7 @@ class BuilderBlock extends Component
             'blockAlias' => $this->blockAlias,
             'blockId' => $this->blockId,
             'editMode' => $this->editMode,
-            'classExists' => class_exists($blockClass),
+            'classExists' => is_string($blockClass) && class_exists($blockClass),
             'componentProperties' => $componentProperties,
             'isRowBlock' => $blockClass === \Trinavo\LivewirePageBuilder\Http\Livewire\RowBlock::class,
         ]);
@@ -77,6 +77,7 @@ class BuilderBlock extends Component
             blockId: $this->blockId,
             properties: $this->properties,
             blockClass: md5($this->getBlockClass()),
+            blockAlias: $this->blockAlias,
         );
     }
 
@@ -87,6 +88,7 @@ class BuilderBlock extends Component
             blockId: $this->blockId,
             properties: $this->properties,
             blockClass: md5($this->getBlockClass()),
+            blockAlias: $this->blockAlias,
         );
     }
 
