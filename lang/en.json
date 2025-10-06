@@ -182,5 +182,10 @@
     "Theme updated successfully": "Theme updated successfully",
     "Set Default Theme": "Set Default Theme",
     "Row": "Row",
-    "Spacer": "Spacer"
+    "Spacer": "Spacer",
+    "Preview Mode": "Preview Mode",
+    "Previewing theme ':name'": "Previewing theme ':name'",
+    "Preview mode cancelled": "Preview mode cancelled",
+    "Exit Preview": "Exit Preview",
+    "Back to Themes": "Back to Themes"
 }

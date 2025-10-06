@@ -181,5 +181,10 @@
     "Theme updated successfully": "تم تحديث المظهر بنجاح",
     "Set Default Theme": "تعيين المظهر الافتراضي",
     "Row": "صف",
-    "Spacer": "فاصل"
+    "Spacer": "فاصل",
+    "Preview Mode": "وضع المعاينة",
+    "Previewing theme ':name'": "معاينة القالب ':name'",
+    "Preview mode cancelled": "تم إلغاء وضع المعاينة",
+    "Exit Preview": "إنهاء المعاينة",
+    "Back to Themes": "العودة للقوالب"
 }
