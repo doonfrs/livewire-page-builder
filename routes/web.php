@@ -19,6 +19,16 @@ Route::middleware($middleware)->prefix('page-builder')->group(function () {
     // Theme Management Routes
     Route::get('/themes', ThemeManager::class)->name('page-builder.themes');
 
+    // Preview Management Routes
+    Route::get('/preview/cancel', function () {
+        session()->forget('page_builder_preview_theme_id');
+
+        return redirect('/')->with('notify', [
+            'message' => __('Preview mode cancelled'),
+            'type' => 'success',
+        ]);
+    })->name('page-builder.preview.cancel');
+
     // Page Builder Routes - Updated to use theme IDs
     Route::get(
         '/editor/{pageKey}/{themeId?}',

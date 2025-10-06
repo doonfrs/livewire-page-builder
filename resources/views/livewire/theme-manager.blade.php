@@ -131,6 +131,13 @@
                                             {{ __('Design Pages') }}
                                         </a>
 
+                                        <!-- Preview Action -->
+                                        <button wire:click="previewTheme({{ $theme['id'] }})"
+                                            class="w-full inline-flex items-center justify-center px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium rounded-lg focus:ring-2 focus:ring-purple-200 transition-all duration-150">
+                                            <x-heroicon-o-eye class="w-4 h-4 mr-2" />
+                                            {{ __('Preview') }}
+                                        </button>
+
                                         <!-- Secondary Actions -->
                                         <div class="grid grid-cols-3 gap-2 mb-2">
                                             <button wire:click="openEditModal({{ $theme['id'] }})"

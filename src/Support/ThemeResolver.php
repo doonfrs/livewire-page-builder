@@ -9,7 +9,7 @@ trait ThemeResolver
 {
     /**
      * Resolve the theme ID to use.
-     * Priority: explicit parameter -> database default -> first available theme -> null
+     * Priority: explicit parameter -> preview session -> route parameter -> database default -> first available theme -> null
      */
     protected function resolveThemeId($themeId = null)
     {
@@ -17,6 +17,12 @@ trait ThemeResolver
         // If a specific theme ID is provided, use it
         if ($themeId) {
             return $themeId;
+        }
+
+        // Check for preview theme in session
+        $previewThemeId = session('page_builder_preview_theme_id');
+        if ($previewThemeId) {
+            return $previewThemeId;
         }
 
         if (request()->route('themeId')) {

@@ -359,6 +359,43 @@ class ThemeManager extends Component
         $this->cloneName = '';
     }
 
+    /**
+     * Set a theme as preview and redirect to homepage
+     */
+    public function previewTheme($themeId)
+    {
+        $theme = Theme::find($themeId);
+
+        if (! $theme) {
+            $this->dispatch('notify', message: __('Theme not found'), type: 'error');
+
+            return;
+        }
+
+        // Set preview theme in session
+        session(['page_builder_preview_theme_id' => $themeId]);
+
+        $this->dispatch('notify',
+            message: __("Previewing theme ':name'", ['name' => $theme->name]),
+            type: 'info'
+        );
+
+        // Redirect to app homepage
+        return redirect('/');
+    }
+
+    /**
+     * Cancel preview mode and return to normal theme
+     */
+    public function cancelPreview()
+    {
+        session()->forget('page_builder_preview_theme_id');
+
+        $this->dispatch('notify', message: __('Preview mode cancelled'), type: 'success');
+
+        return redirect('/page-builder/themes');
+    }
+
     public function cloneTheme()
     {
         if (! $this->themeToClone) {
