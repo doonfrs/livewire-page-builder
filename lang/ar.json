@@ -186,5 +186,7 @@
     "Previewing theme ':name'": "معاينة القالب ':name'",
     "Preview mode cancelled": "تم إلغاء وضع المعاينة",
     "Exit Preview": "إنهاء المعاينة",
-    "Back to Themes": "العودة للقوالب"
+    "Back to Themes": "العودة للقوالب",
+    "Back": "رجوع",
+    "Exit": "خروج"
 }

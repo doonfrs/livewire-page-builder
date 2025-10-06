@@ -17,6 +17,7 @@ use Trinavo\LivewirePageBuilder\Http\Livewire\BlockProperties\SelectProperty;
 use Trinavo\LivewirePageBuilder\Http\Livewire\BuilderBlock;
 use Trinavo\LivewirePageBuilder\Http\Livewire\BuilderPageBlock;
 use Trinavo\LivewirePageBuilder\Http\Livewire\PageEditor;
+use Trinavo\LivewirePageBuilder\Http\Livewire\PreviewBar;
 use Trinavo\LivewirePageBuilder\Http\Livewire\RowBlock;
 use Trinavo\LivewirePageBuilder\Http\Livewire\ThemeManager;
 use Trinavo\LivewirePageBuilder\Services\LocalizationService;
@@ -172,6 +173,7 @@ class PageBuilderServiceProvider extends ServiceProvider
         Livewire::component('block-properties.select-property', SelectProperty::class);
         Livewire::component('block-properties.richtext-property', RichTextProperty::class);
         Livewire::component('language-switcher', \Trinavo\LivewirePageBuilder\Http\Livewire\LanguageSwitcher::class);
+        Livewire::component('page-builder.preview-bar', PreviewBar::class);
     }
 
     /**

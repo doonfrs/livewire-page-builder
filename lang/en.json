@@ -187,5 +187,7 @@
     "Previewing theme ':name'": "Previewing theme ':name'",
     "Preview mode cancelled": "Preview mode cancelled",
     "Exit Preview": "Exit Preview",
-    "Back to Themes": "Back to Themes"
+    "Back to Themes": "Back to Themes",
+    "Back": "Back",
+    "Exit": "Exit"
 }
