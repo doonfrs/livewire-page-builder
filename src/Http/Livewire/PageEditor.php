@@ -31,6 +31,8 @@ class PageEditor extends Component
 
     public ?string $afterBlockId = null;
 
+    public ?string $replaceBlockId = null;
+
     public ?string $pageKey = null;
 
     public ?int $themeId = null;
@@ -337,13 +339,14 @@ class PageEditor extends Component
     }
 
     #[On('openBlockModal')]
-    public function openBlockModal($rowId, $beforeBlockId = null, $afterBlockId = null)
+    public function openBlockModal($rowId, $beforeBlockId = null, $afterBlockId = null, $replaceBlockId = null)
     {
         $this->showBlockModal = true;
         $this->blockFilter = '';
         $this->modalRowId = $rowId;
         $this->beforeBlockId = $beforeBlockId;
         $this->afterBlockId = $afterBlockId;
+        $this->replaceBlockId = $replaceBlockId;
     }
 
     public function closeBlockModal()
@@ -352,6 +355,7 @@ class PageEditor extends Component
         $this->modalRowId = null;
         $this->beforeBlockId = null;
         $this->afterBlockId = null;
+        $this->replaceBlockId = null;
     }
 
     #[On('openPageBlocksModal')]
@@ -397,9 +401,21 @@ class PageEditor extends Component
     public function addBlockToModalRow($blockAlias, $blockPageName = null)
     {
         if ($this->modalRowId) {
+            // Handle replace operation
+            if ($this->replaceBlockId) {
+                // Set beforeBlockId to add the new block before the old one
+                $this->beforeBlockId = $this->replaceBlockId;
+                $blockToDelete = $this->replaceBlockId;
+            }
+
             // Check if this is a top-level row
             if (isset($this->rows[$this->modalRowId])) {
                 $this->addBlockToRow($this->modalRowId, $blockAlias, $blockPageName);
+
+                // Delete the old block if this is a replace operation
+                if (isset($blockToDelete)) {
+                    $this->deleteBlock($blockToDelete);
+                }
             } else {
                 // This is a nested row, dispatch event for RowBlock components to handle
                 $this->dispatch('add-block-to-nested-row',
@@ -407,7 +423,8 @@ class PageEditor extends Component
                     blockAlias: $blockAlias,
                     blockPageName: $blockPageName,
                     beforeBlockId: $this->beforeBlockId,
-                    afterBlockId: $this->afterBlockId
+                    afterBlockId: $this->afterBlockId,
+                    replaceBlockId: $this->replaceBlockId
                 );
             }
             $this->closeBlockModal();
@@ -1484,17 +1501,66 @@ class PageEditor extends Component
             return;
         }
 
-        // Copy the components
-        $this->rows = $sourcePage->components;
+        // Copy the components with new unique IDs
+        $this->rows = $this->regenerateComponentIds($sourcePage->components);
 
         // Save the current page with copied components
         $this->savePage();
 
         // Show success message
-        $this->dispatch('notify', [
-            'type' => 'success',
-            'message' => __('Components copied successfully from :page', ['page' => $this->getPageLabel($sourcePageKey)]),
-        ]);
+        $this->dispatch('notify',
+            message: __('Components copied successfully from :page', ['page' => $this->getPageLabel($sourcePageKey)]),
+            type: 'success'
+        );
+    }
+
+    /**
+     * Regenerate unique IDs for all components
+     */
+    private function regenerateComponentIds(array $components): array
+    {
+        $newComponents = [];
+
+        foreach ($components as $row) {
+            $newRowId = uniqid();
+            $newRow = [
+                'properties' => $row['properties'] ?? [],
+                'blocks' => [],
+            ];
+
+            if (isset($row['blocks'])) {
+                $newRow['blocks'] = $this->regenerateBlockIds($row['blocks']);
+            }
+
+            $newComponents[$newRowId] = $newRow;
+        }
+
+        return $newComponents;
+    }
+
+    /**
+     * Recursively regenerate IDs for blocks
+     */
+    private function regenerateBlockIds(array $blocks): array
+    {
+        $newBlocks = [];
+
+        foreach ($blocks as $block) {
+            $newBlockId = uniqid();
+            $newBlock = [
+                'alias' => $block['alias'],
+                'properties' => $block['properties'] ?? [],
+            ];
+
+            // If this block has nested blocks (like RowBlock), regenerate their IDs too
+            if (isset($block['blocks'])) {
+                $newBlock['blocks'] = $this->regenerateBlockIds($block['blocks']);
+            }
+
+            $newBlocks[$newBlockId] = $newBlock;
+        }
+
+        return $newBlocks;
     }
 
     /**

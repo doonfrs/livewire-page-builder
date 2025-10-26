@@ -55,20 +55,20 @@
         </div>
 
         <button wire:click="blockSelected(); showContextMenu = false;"
-            class="flex items-center w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 border-b border-gray-50">
-            <x-heroicon-o-cursor-arrow-rays class="w-4 h-4 ms-0 me-3 text-gray-500" />
+            class="flex items-center w-full px-4 py-2 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 border-b border-gray-50 dark:border-gray-700 cursor-pointer">
+            <x-heroicon-o-cursor-arrow-rays class="w-4 h-4 ms-0 me-3 text-gray-500 dark:text-gray-400" />
             <span>{{ __('Select') }}</span>
         </button>
         <button wire:click="copyBlock(); showContextMenu = false;"
-            class="flex items-center w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 border-b border-gray-50">
-            <x-heroicon-o-clipboard-document class="w-4 h-4 ms-0 me-3 text-gray-500" />
+            class="flex items-center w-full px-4 py-2 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 border-b border-gray-50 dark:border-gray-700 cursor-pointer">
+            <x-heroicon-o-clipboard-document class="w-4 h-4 ms-0 me-3 text-gray-500 dark:text-gray-400" />
             <span>{{ __('Copy') }}</span>
         </button>
 
         <!-- Paste Block (combined before/after options) -->
-        <div class="flex items-center w-full px-4 py-2 text-sm text-gray-700 border-b border-gray-50">
+        <div class="flex items-center w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-300 border-b border-gray-50 dark:border-gray-700">
             <div class="flex items-center flex-1">
-                <x-heroicon-o-clipboard-document-check class="w-4 h-4 ms-0 me-3 text-gray-500" />
+                <x-heroicon-o-clipboard-document-check class="w-4 h-4 ms-0 me-3 text-gray-500 dark:text-gray-400" />
                 <span>{{ __('Paste') }}</span>
             </div>
             <div class="flex space-x-2 rtl:space-x-reverse">
@@ -96,7 +96,7 @@
                             });
                             showContextMenu = false;
                         "
-                    class="px-2 py-1 text-xs rounded hover:bg-gray-200 border border-gray-100"
+                    class="px-2 py-1 text-xs rounded hover:bg-gray-100 dark:hover:bg-gray-700 border border-gray-100 dark:border-gray-700 cursor-pointer"
                     title="{{ __('Paste Before Block') }}">
                     <x-heroicon-o-arrow-up class="w-3 h-3 inline-block" />
                     {{ __('Before') }}
@@ -125,7 +125,7 @@
                             });
                             showContextMenu = false;
                         "
-                    class="px-2 py-1 text-xs rounded hover:bg-gray-200 border border-gray-100"
+                    class="px-2 py-1 text-xs rounded hover:bg-gray-100 dark:hover:bg-gray-700 border border-gray-100 dark:border-gray-700 cursor-pointer"
                     title="{{ __('Paste After Block') }}">
                     <x-heroicon-o-arrow-down class="w-3 h-3 inline-block" />
                     {{ __('After') }}
@@ -134,35 +134,42 @@
         </div>
 
         <button
+            wire:click="$dispatch('openBlockModal', { rowId: '{{ $rowId }}', replaceBlockId: '{{ $blockId }}' }); showContextMenu = false;"
+            class="flex items-center w-full px-4 py-2 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 border-b border-gray-50 dark:border-gray-700 cursor-pointer">
+            <x-heroicon-o-arrow-path class="w-4 h-4 ms-0 me-3 text-gray-500 dark:text-gray-400" />
+            <span>{{ __('Replace') }}</span>
+        </button>
+
+        <button
             @click="
                 showContextMenu = false;
                 confirm('{{ __('Are you sure you want to delete this block?') }}')
                 && $dispatch('deleteBlock', { blockId: '{{ $blockId }}'});
                 "
-            class="flex items-center w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50 border-b border-gray-50">
-            <x-heroicon-o-trash class="w-4 h-4 ms-0 me-3 text-red-500" />
+            class="flex items-center w-full px-4 py-2 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 border-b border-gray-50 dark:border-gray-700 cursor-pointer">
+            <x-heroicon-o-trash class="w-4 h-4 ms-0 me-3 text-gray-500 dark:text-gray-400" />
             <span>{{ __('Delete') }}</span>
         </button>
 
-        <div class="border-t border-gray-200 my-1"></div>
+        <div class="border-t border-gray-200 dark:border-gray-700 my-1"></div>
 
         <!-- Move Block (combined Up/Down options) -->
-        <div class="flex items-center w-full px-4 py-2 text-sm text-gray-700 border-b border-gray-50">
+        <div class="flex items-center w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-300 border-b border-gray-50 dark:border-gray-700">
             <div class="flex items-center flex-1">
-                <x-heroicon-o-arrows-right-left class="w-4 h-4 ms-0 me-3 text-gray-500" />
+                <x-heroicon-o-arrows-right-left class="w-4 h-4 ms-0 me-3 text-gray-500 dark:text-gray-400" />
                 <span>{{ __('Move') }}</span>
             </div>
             <div class="flex space-x-2 rtl:space-x-reverse">
                 <button
                     wire:click="$dispatch('moveBlockUp', { blockId: '{{ $blockId }}'}); showContextMenu = false;"
-                    class="px-2 py-1 text-xs rounded hover:bg-gray-200 border border-gray-100"
+                    class="px-2 py-1 text-xs rounded hover:bg-gray-100 dark:hover:bg-gray-700 border border-gray-100 dark:border-gray-700 cursor-pointer"
                     title="{{ __('Move Block Up') }}">
                     <x-heroicon-o-arrow-up class="w-3 h-3 inline-block" />
                     {{ __('Up') }}
                 </button>
                 <button
                     wire:click="$dispatch('moveBlockDown', { blockId: '{{ $blockId }}'}); showContextMenu = false;"
-                    class="px-2 py-1 text-xs rounded hover:bg-gray-200 border border-gray-100"
+                    class="px-2 py-1 text-xs rounded hover:bg-gray-100 dark:hover:bg-gray-700 border border-gray-100 dark:border-gray-700 cursor-pointer"
                     title="{{ __('Move Block Down') }}">
                     <x-heroicon-o-arrow-down class="w-3 h-3 inline-block" />
                     {{ __('Down') }}
@@ -171,22 +178,22 @@
         </div>
 
         <!-- Add Block (combined Before/After options) -->
-        <div class="flex items-center w-full px-4 py-2 text-sm text-green-600">
+        <div class="flex items-center w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-300">
             <div class="flex items-center flex-1">
-                <x-heroicon-o-plus class="w-4 h-4 ms-0 me-3 text-green-500" />
+                <x-heroicon-o-plus class="w-4 h-4 ms-0 me-3 text-gray-500 dark:text-gray-400" />
                 <span>{{ __('Add Block') }}</span>
             </div>
             <div class="flex space-x-2 rtl:space-x-reverse">
                 <button
                     wire:click="$dispatch('openBlockModal', { rowId: '{{ $rowId }}', beforeBlockId: '{{ $blockId }}' }); showContextMenu = false;"
-                    class="px-2 py-1 text-xs rounded hover:bg-green-50 border border-green-100"
+                    class="px-2 py-1 text-xs rounded hover:bg-gray-100 dark:hover:bg-gray-700 border border-gray-100 dark:border-gray-700 cursor-pointer"
                     title="{{ __('Add Block Before') }}">
                     <x-heroicon-o-arrow-up class="w-3 h-3 inline-block" />
                     {{ __('Before') }}
                 </button>
                 <button
                     wire:click="$dispatch('openBlockModal', { rowId: '{{ $rowId }}', afterBlockId: '{{ $blockId }}' }); showContextMenu = false;"
-                    class="px-2 py-1 text-xs rounded hover:bg-green-50 border border-green-100"
+                    class="px-2 py-1 text-xs rounded hover:bg-gray-100 dark:hover:bg-gray-700 border border-gray-100 dark:border-gray-700 cursor-pointer"
                     title="{{ __('Add Block After') }}">
                     <x-heroicon-o-arrow-down class="w-3 h-3 inline-block" />
                     {{ __('After') }}

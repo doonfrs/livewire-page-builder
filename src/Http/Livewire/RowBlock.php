@@ -183,10 +183,28 @@ class RowBlock extends Block
     }
 
     #[On('add-block-to-nested-row')]
-    public function addBlockToNestedRow($rowId, $blockAlias, $blockPageName = null, $beforeBlockId = null, $afterBlockId = null)
+    public function addBlockToNestedRow($rowId, $blockAlias, $blockPageName = null, $beforeBlockId = null, $afterBlockId = null, $replaceBlockId = null)
     {
         if ($rowId === $this->rowId) {
-            $this->addBlockToThisRow($blockAlias, $blockPageName, $beforeBlockId, $afterBlockId);
+            // Handle replace operation
+            if ($replaceBlockId) {
+                // Set beforeBlockId to add the new block before the old one
+                $beforeBlockId = $replaceBlockId;
+                $this->addBlockToThisRow($blockAlias, $blockPageName, $beforeBlockId, $afterBlockId);
+
+                // Delete the old block
+                if (isset($this->blocks[$replaceBlockId])) {
+                    unset($this->blocks[$replaceBlockId]);
+
+                    // Sync changes back to parent
+                    $this->dispatch('sync-nested-row-data',
+                        nestedRowId: $this->rowId,
+                        blocks: $this->blocks
+                    );
+                }
+            } else {
+                $this->addBlockToThisRow($blockAlias, $blockPageName, $beforeBlockId, $afterBlockId);
+            }
         }
     }
 
