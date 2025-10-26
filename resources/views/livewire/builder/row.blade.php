@@ -66,66 +66,107 @@
 
                 <!-- Paste Row (combined with before/after options) -->
                 <div
-                    class="flex items-center w-full px-3 py-2 text-gray-700 dark:text-gray-300 border-b border-gray-50 dark:border-gray-700">
+                    class="flex items-center w-full px-3 py-2 text-gray-700 dark:text-gray-300 border-b border-gray-50 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
+                    @click="
+                        console.log('Row Paste clicked - reading clipboard for row {{ $rowId }}');
+                        navigator.clipboard.readText().then(text => {
+                            console.log('Clipboard read successful for row, length:', text ? text.length : 0);
+                            if (text) {
+                                try {
+                                    const data = JSON.parse(text);
+                                    console.log('Clipboard data parsed for row:', data);
+                                    if (data && data.type) {
+                                        console.log('Dispatching paste-from-clipboard event for row with position: after, targetRowId: {{ $rowId }}');
+                                        $dispatch('paste-from-clipboard', {
+                                            clipboardData: text,
+                                            targetRowId: '{{ $rowId }}',
+                                            position: 'after'
+                                        });
+                                    } else {
+                                        console.error('{{ __('Invalid clipboard data format') }}', data);
+                                    }
+                                } catch (e) {
+                                    console.error('{{ __('Failed to parse clipboard data:') }}', e);
+                                }
+                            } else {
+                                console.warn('Clipboard is empty for row');
+                            }
+                        }).catch(err => {
+                            console.error('{{ __('Failed to read clipboard contents:') }}', err);
+                        });
+                        open = false;
+                    ">
                     <div class="flex items-center flex-1">
                         <x-heroicon-o-clipboard-document-check class="w-4 h-4 ms-0 me-3" />
                         <span>{{ __('Paste') }}</span>
                     </div>
                     <div class="flex space-x-2 rtl:space-x-reverse">
                         <button
-                            @click="
+                            @click.stop="
+                                console.log('Row Paste BEFORE clicked for row {{ $rowId }}');
                                 navigator.clipboard.readText().then(text => {
+                                    console.log('Clipboard read for row before, length:', text ? text.length : 0);
                                     if (text) {
                                         try {
                                             const data = JSON.parse(text);
+                                            console.log('Parsed data for row before:', data);
                                             if (data && data.type) {
+                                                console.log('Dispatching paste-from-clipboard BEFORE for row {{ $rowId }}');
                                                 $dispatch('paste-from-clipboard', {
                                                     clipboardData: text,
                                                     targetRowId: '{{ $rowId }}',
                                                     position: 'before'
                                                 });
                                             } else {
-                                                console.error('{{ __('Invalid clipboard data format') }}');
+                                                console.error('{{ __('Invalid clipboard data format') }}', data);
                                             }
                                         } catch (e) {
                                             console.error('{{ __('Failed to parse clipboard data:') }}', e);
                                         }
+                                    } else {
+                                        console.warn('Clipboard is empty for row before');
                                     }
                                 }).catch(err => {
                                     console.error('{{ __('Failed to read clipboard contents:') }}', err);
                                 });
                                 open = false;
                             "
-                            class="px-2 py-1 text-xs rounded hover:bg-gray-100 dark:hover:bg-gray-700 border border-gray-100 dark:border-gray-700 cursor-pointer"
+                            class="px-2 py-1 text-xs rounded hover:bg-gray-200 dark:hover:bg-gray-600 border border-gray-100 dark:border-gray-700 cursor-pointer"
                             title="{{ __('Paste Before Row') }}">
                             <x-heroicon-o-arrow-up class="w-3 h-3 inline-block" />
                             {{ __('Before') }}
                         </button>
                         <button
-                            @click="
+                            @click.stop="
+                                console.log('Row Paste AFTER clicked for row {{ $rowId }}');
                                 navigator.clipboard.readText().then(text => {
+                                    console.log('Clipboard read for row after, length:', text ? text.length : 0);
                                     if (text) {
                                         try {
                                             const data = JSON.parse(text);
+                                            console.log('Parsed data for row after:', data);
                                             if (data && data.type) {
+                                                console.log('Dispatching paste-from-clipboard AFTER for row {{ $rowId }}');
                                                 $dispatch('paste-from-clipboard', {
                                                     clipboardData: text,
                                                     targetRowId: '{{ $rowId }}',
                                                     position: 'after'
                                                 });
                                             } else {
-                                                console.error('{{ __('Invalid clipboard data format') }}');
+                                                console.error('{{ __('Invalid clipboard data format') }}', data);
                                             }
                                         } catch (e) {
                                             console.error('{{ __('Failed to parse clipboard data:') }}', e);
                                         }
+                                    } else {
+                                        console.warn('Clipboard is empty for row after');
                                     }
                                 }).catch(err => {
                                     console.error('{{ __('Failed to read clipboard contents:') }}', err);
                                 });
                                 open = false;
                             "
-                            class="px-2 py-1 text-xs rounded hover:bg-gray-100 dark:hover:bg-gray-700 border border-gray-100 dark:border-gray-700 cursor-pointer"
+                            class="px-2 py-1 text-xs rounded hover:bg-gray-200 dark:hover:bg-gray-600 border border-gray-100 dark:border-gray-700 cursor-pointer"
                             title="{{ __('Paste After Row') }}">
                             <x-heroicon-o-arrow-down class="w-3 h-3 inline-block" />
                             {{ __('After') }}
@@ -135,20 +176,21 @@
 
                 <!-- Move Row (combined Up/Down) -->
                 <div
-                    class="flex items-center w-full px-3 py-2 text-gray-700 dark:text-gray-300 border-b border-gray-50 dark:border-gray-700">
+                    class="flex items-center w-full px-3 py-2 text-gray-700 dark:text-gray-300 border-b border-gray-50 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
+                    wire:click="moveRowDown()" @click="open = false">
                     <div class="flex items-center flex-1">
                         <x-heroicon-o-arrows-right-left class="w-4 h-4 ms-0 me-3" />
                         <span>{{ __('Move') }}</span>
                     </div>
                     <div class="flex space-x-2 rtl:space-x-reverse">
-                        <button wire:click="moveRowUp()" @click="open = false"
-                            class="px-2 py-1 text-xs rounded hover:bg-gray-100 dark:hover:bg-gray-700 border border-gray-100 dark:border-gray-700 cursor-pointer"
+                        <button wire:click.stop="moveRowUp()" @click="open = false"
+                            class="px-2 py-1 text-xs rounded hover:bg-gray-200 dark:hover:bg-gray-600 border border-gray-100 dark:border-gray-700 cursor-pointer"
                             title="{{ __('Move Row Up') }}">
                             <x-heroicon-o-arrow-up class="w-3 h-3 inline-block" />
                             {{ __('Up') }}
                         </button>
-                        <button wire:click="moveRowDown()" @click="open = false"
-                            class="px-2 py-1 text-xs rounded hover:bg-gray-100 dark:hover:bg-gray-700 border border-gray-100 dark:border-gray-700 cursor-pointer"
+                        <button wire:click.stop="moveRowDown()" @click="open = false"
+                            class="px-2 py-1 text-xs rounded hover:bg-gray-200 dark:hover:bg-gray-600 border border-gray-100 dark:border-gray-700 cursor-pointer"
                             title="{{ __('Move Row Down') }}">
                             <x-heroicon-o-arrow-down class="w-3 h-3 inline-block" />
                             {{ __('Down') }}
@@ -158,22 +200,23 @@
 
                 <!-- Add Row (combined Before/After) -->
                 <div
-                    class="flex items-center w-full px-3 py-2 text-gray-700 dark:text-gray-300 border-b border-gray-50 dark:border-gray-700">
+                    class="flex items-center w-full px-3 py-2 text-gray-700 dark:text-gray-300 border-b border-gray-50 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
+                    wire:click="$dispatch('addRow', {afterRowId: '{{ $rowId }}'})" @click="open = false">
                     <div class="flex items-center flex-1">
                         <x-heroicon-o-plus class="w-4 h-4 ms-0 me-3 text-gray-500 dark:text-gray-400" />
                         <span>{{ __('Add Row') }}</span>
                     </div>
                     <div class="flex space-x-2 rtl:space-x-reverse">
-                        <button wire:click="$dispatch('addRow', {beforeRowId: '{{ $rowId }}'})"
+                        <button wire:click.stop="$dispatch('addRow', {beforeRowId: '{{ $rowId }}'})"
                             @click="open = false"
-                            class="px-2 py-1 text-xs rounded hover:bg-gray-100 dark:hover:bg-gray-700 border border-gray-100 dark:border-gray-700 cursor-pointer"
+                            class="px-2 py-1 text-xs rounded hover:bg-gray-200 dark:hover:bg-gray-600 border border-gray-100 dark:border-gray-700 cursor-pointer"
                             title="{{ __('Add Row Before') }}">
                             <x-heroicon-o-arrow-up class="w-3 h-3 inline-block" />
                             {{ __('Before') }}
                         </button>
-                        <button wire:click="$dispatch('addRow', {afterRowId: '{{ $rowId }}'})"
+                        <button wire:click.stop="$dispatch('addRow', {afterRowId: '{{ $rowId }}'})"
                             @click="open = false"
-                            class="px-2 py-1 text-xs rounded hover:bg-gray-100 dark:hover:bg-gray-700 border border-gray-100 dark:border-gray-700 cursor-pointer"
+                            class="px-2 py-1 text-xs rounded hover:bg-gray-200 dark:hover:bg-gray-600 border border-gray-100 dark:border-gray-700 cursor-pointer"
                             title="{{ __('Add Row After') }}">
                             <x-heroicon-o-arrow-down class="w-3 h-3 inline-block" />
                             {{ __('After') }}

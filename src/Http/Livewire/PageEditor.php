@@ -1140,15 +1140,35 @@ class PageEditor extends Component
         $targetBlockId = null,
         $position = 'after')
     {
+        \Log::info('PageEditor::pasteFromClipboard called', [
+            'targetRowId' => $targetRowId,
+            'targetBlockId' => $targetBlockId,
+            'position' => $position,
+            'clipboardDataLength' => strlen($clipboardData ?? ''),
+        ]);
+
         try {
             $data = json_decode($clipboardData, true);
 
+            \Log::info('Clipboard data decoded', [
+                'hasData' => ! empty($data),
+                'type' => $data['type'] ?? 'null',
+                'dataKeys' => $data ? array_keys($data) : [],
+            ]);
+
             if (! $data || ! isset($data['type'])) {
+                \Log::warning('Invalid clipboard data - missing data or type');
+
                 return;
             }
 
             // Handle Row paste
             if ($data['type'] === 'RowBlock') {
+                \Log::info('Pasting RowBlock', [
+                    'targetRowId' => $targetRowId,
+                    'targetBlockId' => $targetBlockId,
+                    'position' => $position,
+                ]);
                 // If pasting through a block, find its parent row
                 if (! $targetRowId && $targetBlockId) {
                     foreach ($this->rows as $rowId => $row) {
@@ -1213,6 +1233,13 @@ class PageEditor extends Component
                     properties: $row['properties']
                 );
 
+                \Log::info('Row pasted successfully', [
+                    'newRowId' => $rowId,
+                    'position' => $position,
+                    'afterRowId' => $afterRowId ?? 'null',
+                    'beforeRowId' => $beforeRowId ?? 'null',
+                ]);
+
                 $this->dispatch(
                     'notify',
                     message: 'Row pasted successfully',
@@ -1221,14 +1248,23 @@ class PageEditor extends Component
             }
             // Handle Block paste
             elseif ($data['type'] === 'Block') {
+                \Log::info('Pasting Block', [
+                    'blockAlias' => $data['blockAlias'] ?? 'unknown',
+                    'targetRowId' => $targetRowId,
+                    'targetBlockId' => $targetBlockId,
+                    'position' => $position,
+                ]);
+
                 $blockId = uniqid();
                 $block = [
                     'alias' => $data['blockAlias'],
                     'properties' => $data['properties'] ?? [],
                 ];
 
-                // Find the row of the target block
+                // Find the row of the target block (including nested rows)
                 $parentRowId = null;
+
+                // First check top-level rows
                 foreach ($this->rows as $rowId => $row) {
                     if (isset($row['blocks'][$targetBlockId])) {
                         $parentRowId = $rowId;
@@ -1236,12 +1272,65 @@ class PageEditor extends Component
                     }
                 }
 
+                // If not found in top-level, search in nested RowBlocks
+                if (! $parentRowId) {
+                    $parentRowId = $this->findBlockInNestedRows($this->rows, $targetBlockId);
+                }
+
                 if (! $parentRowId && $targetRowId) {
                     $parentRowId = $targetRowId;
                 }
 
+                // Check if parent is a nested RowBlock or a top-level row
+                $isNestedRow = false;
+                if ($parentRowId && ! isset($this->rows[$parentRowId])) {
+                    // Parent is a nested RowBlock, not a top-level row
+                    $isNestedRow = true;
+                }
+
+                \Log::info('Parent row found for block paste', [
+                    'parentRowId' => $parentRowId ?? 'null',
+                    'targetBlockId' => $targetBlockId,
+                    'isNestedRow' => $isNestedRow,
+                ]);
+
                 if ($parentRowId) {
-                    if ($targetBlockId) {
+                    if ($isNestedRow) {
+                        // Parent is a nested RowBlock - use event-based approach like addBlockToModalRow
+                        \Log::info('Dispatching add-block-to-nested-row event for paste', [
+                            'rowId' => $parentRowId,
+                            'blockAlias' => $data['blockAlias'],
+                            'targetBlockId' => $targetBlockId,
+                            'position' => $position,
+                        ]);
+
+                        // Set position parameters before dispatching
+                        $beforeBlockId = null;
+                        $afterBlockId = null;
+                        if ($position === 'before') {
+                            $beforeBlockId = $targetBlockId;
+                        } else {
+                            $afterBlockId = $targetBlockId;
+                        }
+
+                        // Dispatch the same event used by addBlockToModalRow
+                        // This will be handled by RowBlock component which will sync back via sync-nested-row-data
+                        $this->dispatch('add-block-to-nested-row',
+                            rowId: $parentRowId,
+                            blockAlias: $data['blockAlias'],
+                            blockPageName: $data['blockPageName'] ?? null,
+                            beforeBlockId: $beforeBlockId,
+                            afterBlockId: $afterBlockId,
+                            replaceBlockId: null
+                        );
+
+                        $this->dispatch(
+                            'notify',
+                            message: 'Block pasted successfully',
+                            type: 'success'
+                        );
+                    } elseif ($targetBlockId) {
+                        // Parent is a top-level row with target block
                         // Create positioning parameters based on position value
                         $beforeBlockId = null;
                         $afterBlockId = null;
@@ -1277,16 +1366,36 @@ class PageEditor extends Component
                             blockAlias: $data['blockAlias'],
                             properties: $block['properties']
                         );
-                    }
 
-                    $this->dispatch(
-                        'notify',
-                        message: 'Block pasted successfully',
-                        type: 'success'
-                    );
+                        \Log::info('Block pasted successfully to top-level row', [
+                            'newBlockId' => $blockId,
+                            'parentRowId' => $parentRowId,
+                            'position' => $position,
+                            'beforeBlockId' => $beforeBlockId ?? 'null',
+                            'afterBlockId' => $afterBlockId ?? 'null',
+                        ]);
+
+                        $this->dispatch(
+                            'notify',
+                            message: 'Block pasted successfully',
+                            type: 'success'
+                        );
+                    }
+                } else {
+                    \Log::warning('No parent row found for block paste', [
+                        'targetRowId' => $targetRowId,
+                        'targetBlockId' => $targetBlockId,
+                    ]);
                 }
             }
         } catch (\Exception $e) {
+            \Log::error('Error pasting from clipboard', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+                'targetRowId' => $targetRowId,
+                'targetBlockId' => $targetBlockId,
+                'position' => $position,
+            ]);
             report($e);
             $this->dispatch(
                 'notify',
@@ -1294,6 +1403,188 @@ class PageEditor extends Component
                 type: 'error'
             );
         }
+    }
+
+    /**
+     * Add a block to a nested RowBlock in the $rows structure
+     */
+    private function addBlockToNestedRowInStructure(
+        array &$rows,
+        string $targetRowBlockId,
+        string $newBlockId,
+        array $newBlock,
+        ?string $targetBlockId = null,
+        string $position = 'after',
+        int $depth = 0
+    ): bool {
+        \Log::info('addBlockToNestedRowInStructure searching', [
+            'targetRowBlockId' => $targetRowBlockId,
+            'depth' => $depth,
+            'rowsCount' => count($rows),
+            'rowKeys' => array_keys($rows),
+        ]);
+
+        foreach ($rows as $rowId => &$row) {
+            \Log::info('Checking row/block', [
+                'id' => $rowId,
+                'hasBlocks' => isset($row['blocks']),
+                'blocksCount' => isset($row['blocks']) ? count($row['blocks']) : 0,
+            ]);
+
+            if (! isset($row['blocks'])) {
+                continue;
+            }
+
+            foreach ($row['blocks'] as $blockId => &$block) {
+                \Log::info('Checking nested block', [
+                    'blockId' => $blockId,
+                    'isTarget' => $blockId === $targetRowBlockId,
+                    'hasNestedBlocks' => isset($block['blocks']),
+                ]);
+
+                // Check if this is the target RowBlock
+                if ($blockId === $targetRowBlockId && isset($block['blocks'])) {
+                    \Log::info('Found target RowBlock, adding block', [
+                        'targetRowBlockId' => $targetRowBlockId,
+                        'newBlockId' => $newBlockId,
+                        'targetBlockId' => $targetBlockId,
+                        'position' => $position,
+                        'currentBlocksCount' => count($block['blocks']),
+                    ]);
+
+                    // Add block with positioning
+                    if ($targetBlockId && $position) {
+                        // Find position of target block
+                        $blockKeys = array_keys($block['blocks']);
+                        $targetIndex = array_search($targetBlockId, $blockKeys);
+
+                        if ($targetIndex !== false) {
+                            $insertIndex = $position === 'after' ? $targetIndex + 1 : $targetIndex;
+
+                            // Split and insert
+                            $before = array_slice($block['blocks'], 0, $insertIndex, true);
+                            $after = array_slice($block['blocks'], $insertIndex, null, true);
+
+                            $block['blocks'] = $before + [$newBlockId => $newBlock] + $after;
+
+                            \Log::info('Block inserted at position', [
+                                'targetIndex' => $targetIndex,
+                                'insertIndex' => $insertIndex,
+                                'totalBlocks' => count($block['blocks']),
+                            ]);
+                        } else {
+                            // Target block not found, add to end
+                            $block['blocks'][$newBlockId] = $newBlock;
+                        }
+                    } else {
+                        // No target block, add to end
+                        $block['blocks'][$newBlockId] = $newBlock;
+                    }
+
+                    return true;
+                }
+
+                // If this block has nested blocks, search recursively
+                if (isset($block['blocks']) && is_array($block['blocks'])) {
+                    \Log::info('Recursing into nested block', [
+                        'blockId' => $blockId,
+                        'nestedBlocksCount' => count($block['blocks']),
+                        'nestedBlockKeys' => array_keys($block['blocks']),
+                        'nextDepth' => $depth + 1,
+                    ]);
+
+                    // Recurse directly into the nested blocks
+                    // We need to search within this block's nested blocks
+                    foreach ($block['blocks'] as $nestedBlockId => &$nestedBlock) {
+                        if ($nestedBlockId === $targetRowBlockId && isset($nestedBlock['blocks'])) {
+                            \Log::info('Found target in immediate nested blocks', [
+                                'targetRowBlockId' => $targetRowBlockId,
+                                'depth' => $depth + 1,
+                            ]);
+
+                            // Add block with positioning
+                            if ($targetBlockId && $position) {
+                                $blockKeys = array_keys($nestedBlock['blocks']);
+                                $targetIndex = array_search($targetBlockId, $blockKeys);
+
+                                if ($targetIndex !== false) {
+                                    $insertIndex = $position === 'after' ? $targetIndex + 1 : $targetIndex;
+                                    $before = array_slice($nestedBlock['blocks'], 0, $insertIndex, true);
+                                    $after = array_slice($nestedBlock['blocks'], $insertIndex, null, true);
+                                    $nestedBlock['blocks'] = $before + [$newBlockId => $newBlock] + $after;
+                                } else {
+                                    $nestedBlock['blocks'][$newBlockId] = $newBlock;
+                                }
+                            } else {
+                                $nestedBlock['blocks'][$newBlockId] = $newBlock;
+                            }
+
+                            return true;
+                        }
+
+                        // Continue recursing deeper if this nested block also has blocks
+                        if (isset($nestedBlock['blocks']) && is_array($nestedBlock['blocks'])) {
+                            $tempRows = [$nestedBlockId => $nestedBlock];
+                            if ($this->addBlockToNestedRowInStructure(
+                                $tempRows,
+                                $targetRowBlockId,
+                                $newBlockId,
+                                $newBlock,
+                                $targetBlockId,
+                                $position,
+                                $depth + 2
+                            )) {
+                                $nestedBlock = $tempRows[$nestedBlockId];
+
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        \Log::info('Target RowBlock not found at this level', [
+            'targetRowBlockId' => $targetRowBlockId,
+            'depth' => $depth,
+        ]);
+
+        return false;
+    }
+
+    /**
+     * Recursively search for a block ID in nested RowBlocks
+     * Returns the parent row ID (which could be a nested RowBlock ID)
+     */
+    private function findBlockInNestedRows(array $rows, string $targetBlockId): ?string
+    {
+        foreach ($rows as $rowId => $row) {
+            if (! isset($row['blocks'])) {
+                continue;
+            }
+
+            foreach ($row['blocks'] as $blockId => $block) {
+                // Check if this block contains the target
+                if (isset($block['blocks'][$targetBlockId])) {
+                    \Log::info('Found block in nested RowBlock', [
+                        'nestedRowBlockId' => $blockId,
+                        'targetBlockId' => $targetBlockId,
+                    ]);
+
+                    return $blockId; // Return the RowBlock ID as the parent
+                }
+
+                // If this block is a RowBlock with nested blocks, search recursively
+                if (isset($block['blocks']) && is_array($block['blocks'])) {
+                    $nestedResult = $this->findBlockInNestedRows([$blockId => $block], $targetBlockId);
+                    if ($nestedResult) {
+                        return $nestedResult;
+                    }
+                }
+            }
+        }
+
+        return null;
     }
 
     public function render()

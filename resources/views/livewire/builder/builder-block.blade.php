@@ -66,66 +66,107 @@
         </button>
 
         <!-- Paste Block (combined before/after options) -->
-        <div class="flex items-center w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-300 border-b border-gray-50 dark:border-gray-700">
+        <div class="flex items-center w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-300 border-b border-gray-50 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
+            @click="
+                console.log('Block Paste clicked - reading clipboard for block {{ $blockId }}');
+                navigator.clipboard.readText().then(text => {
+                    console.log('Clipboard read successful, length:', text ? text.length : 0);
+                    if (text) {
+                        try {
+                            const data = JSON.parse(text);
+                            console.log('Clipboard data parsed:', data);
+                            if (data && data.type) {
+                                console.log('Dispatching paste-from-clipboard event with position: after, targetBlockId: {{ $blockId }}');
+                                $dispatch('paste-from-clipboard', {
+                                    clipboardData: text,
+                                    targetBlockId: '{{ $blockId }}',
+                                    position: 'after'
+                                });
+                            } else {
+                                console.error('{{ __('Invalid clipboard data format') }}', data);
+                            }
+                        } catch (e) {
+                            console.error('{{ __('Failed to parse clipboard data:') }}', e);
+                        }
+                    } else {
+                        console.warn('Clipboard is empty');
+                    }
+                }).catch(err => {
+                    console.error('{{ __('Failed to read clipboard contents:') }}', err);
+                });
+                showContextMenu = false;
+            ">
             <div class="flex items-center flex-1">
                 <x-heroicon-o-clipboard-document-check class="w-4 h-4 ms-0 me-3 text-gray-500 dark:text-gray-400" />
                 <span>{{ __('Paste') }}</span>
             </div>
             <div class="flex space-x-2 rtl:space-x-reverse">
                 <button
-                    @click="
+                    @click.stop="
+                            console.log('Block Paste BEFORE clicked for block {{ $blockId }}');
                             navigator.clipboard.readText().then(text => {
+                                console.log('Clipboard read for before, length:', text ? text.length : 0);
                                 if (text) {
                                     try {
                                         const data = JSON.parse(text);
+                                        console.log('Parsed data for before:', data);
                                         if (data && data.type) {
+                                            console.log('Dispatching paste-from-clipboard BEFORE for block {{ $blockId }}');
                                             $dispatch('paste-from-clipboard', {
                                                 clipboardData: text,
                                                 targetBlockId: '{{ $blockId }}',
                                                 position: 'before'
                                             });
                                         } else {
-                                            console.error('{{ __('Invalid clipboard data format') }}');
+                                            console.error('{{ __('Invalid clipboard data format') }}', data);
                                         }
                                     } catch (e) {
                                         console.error('{{ __('Failed to parse clipboard data:') }}', e);
                                     }
+                                } else {
+                                    console.warn('Clipboard is empty for before');
                                 }
                             }).catch(err => {
                                 console.error('{{ __('Failed to read clipboard contents:') }}', err);
                             });
                             showContextMenu = false;
                         "
-                    class="px-2 py-1 text-xs rounded hover:bg-gray-100 dark:hover:bg-gray-700 border border-gray-100 dark:border-gray-700 cursor-pointer"
+                    class="px-2 py-1 text-xs rounded hover:bg-gray-200 dark:hover:bg-gray-600 border border-gray-100 dark:border-gray-700 cursor-pointer"
                     title="{{ __('Paste Before Block') }}">
                     <x-heroicon-o-arrow-up class="w-3 h-3 inline-block" />
                     {{ __('Before') }}
                 </button>
                 <button
-                    @click="
+                    @click.stop="
+                            console.log('Block Paste AFTER clicked for block {{ $blockId }}');
                             navigator.clipboard.readText().then(text => {
+                                console.log('Clipboard read for after, length:', text ? text.length : 0);
                                 if (text) {
                                     try {
                                         const data = JSON.parse(text);
+                                        console.log('Parsed data for after:', data);
                                         if (data && data.type) {
+                                            console.log('Dispatching paste-from-clipboard AFTER for block {{ $blockId }}');
                                             $dispatch('paste-from-clipboard', {
                                                 clipboardData: text,
                                                 targetBlockId: '{{ $blockId }}',
                                                 position: 'after'
                                             });
                                         } else {
-                                            console.error('{{ __('Invalid clipboard data format') }}');
+                                            console.error('{{ __('Invalid clipboard data format') }}', data);
                                         }
                                     } catch (e) {
                                         console.error('{{ __('Failed to parse clipboard data:') }}', e);
                                     }
+                                } else {
+                                    console.warn('Clipboard is empty for after');
                                 }
                             }).catch(err => {
                                 console.error('{{ __('Failed to read clipboard contents:') }}', err);
                             });
                             showContextMenu = false;
                         "
-                    class="px-2 py-1 text-xs rounded hover:bg-gray-100 dark:hover:bg-gray-700 border border-gray-100 dark:border-gray-700 cursor-pointer"
+                    class="px-2 py-1 text-xs rounded hover:bg-gray-200 dark:hover:bg-gray-600 border border-gray-100 dark:border-gray-700 cursor-pointer"
                     title="{{ __('Paste After Block') }}">
                     <x-heroicon-o-arrow-down class="w-3 h-3 inline-block" />
                     {{ __('After') }}
@@ -154,22 +195,23 @@
         <div class="border-t border-gray-200 dark:border-gray-700 my-1"></div>
 
         <!-- Move Block (combined Up/Down options) -->
-        <div class="flex items-center w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-300 border-b border-gray-50 dark:border-gray-700">
+        <div class="flex items-center w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-300 border-b border-gray-50 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
+            wire:click="$dispatch('moveBlockDown', { blockId: '{{ $blockId }}'}); showContextMenu = false;">
             <div class="flex items-center flex-1">
                 <x-heroicon-o-arrows-right-left class="w-4 h-4 ms-0 me-3 text-gray-500 dark:text-gray-400" />
                 <span>{{ __('Move') }}</span>
             </div>
             <div class="flex space-x-2 rtl:space-x-reverse">
                 <button
-                    wire:click="$dispatch('moveBlockUp', { blockId: '{{ $blockId }}'}); showContextMenu = false;"
-                    class="px-2 py-1 text-xs rounded hover:bg-gray-100 dark:hover:bg-gray-700 border border-gray-100 dark:border-gray-700 cursor-pointer"
+                    wire:click.stop="$dispatch('moveBlockUp', { blockId: '{{ $blockId }}'}); showContextMenu = false;"
+                    class="px-2 py-1 text-xs rounded hover:bg-gray-200 dark:hover:bg-gray-600 border border-gray-100 dark:border-gray-700 cursor-pointer"
                     title="{{ __('Move Block Up') }}">
                     <x-heroicon-o-arrow-up class="w-3 h-3 inline-block" />
                     {{ __('Up') }}
                 </button>
                 <button
-                    wire:click="$dispatch('moveBlockDown', { blockId: '{{ $blockId }}'}); showContextMenu = false;"
-                    class="px-2 py-1 text-xs rounded hover:bg-gray-100 dark:hover:bg-gray-700 border border-gray-100 dark:border-gray-700 cursor-pointer"
+                    wire:click.stop="$dispatch('moveBlockDown', { blockId: '{{ $blockId }}'}); showContextMenu = false;"
+                    class="px-2 py-1 text-xs rounded hover:bg-gray-200 dark:hover:bg-gray-600 border border-gray-100 dark:border-gray-700 cursor-pointer"
                     title="{{ __('Move Block Down') }}">
                     <x-heroicon-o-arrow-down class="w-3 h-3 inline-block" />
                     {{ __('Down') }}
@@ -178,22 +220,23 @@
         </div>
 
         <!-- Add Block (combined Before/After options) -->
-        <div class="flex items-center w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-300">
+        <div class="flex items-center w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
+            wire:click="$dispatch('openBlockModal', { rowId: '{{ $rowId }}', afterBlockId: '{{ $blockId }}' }); showContextMenu = false;">
             <div class="flex items-center flex-1">
                 <x-heroicon-o-plus class="w-4 h-4 ms-0 me-3 text-gray-500 dark:text-gray-400" />
                 <span>{{ __('Add Block') }}</span>
             </div>
             <div class="flex space-x-2 rtl:space-x-reverse">
                 <button
-                    wire:click="$dispatch('openBlockModal', { rowId: '{{ $rowId }}', beforeBlockId: '{{ $blockId }}' }); showContextMenu = false;"
-                    class="px-2 py-1 text-xs rounded hover:bg-gray-100 dark:hover:bg-gray-700 border border-gray-100 dark:border-gray-700 cursor-pointer"
+                    wire:click.stop="$dispatch('openBlockModal', { rowId: '{{ $rowId }}', beforeBlockId: '{{ $blockId }}' }); showContextMenu = false;"
+                    class="px-2 py-1 text-xs rounded hover:bg-gray-200 dark:hover:bg-gray-600 border border-gray-100 dark:border-gray-700 cursor-pointer"
                     title="{{ __('Add Block Before') }}">
                     <x-heroicon-o-arrow-up class="w-3 h-3 inline-block" />
                     {{ __('Before') }}
                 </button>
                 <button
-                    wire:click="$dispatch('openBlockModal', { rowId: '{{ $rowId }}', afterBlockId: '{{ $blockId }}' }); showContextMenu = false;"
-                    class="px-2 py-1 text-xs rounded hover:bg-gray-100 dark:hover:bg-gray-700 border border-gray-100 dark:border-gray-700 cursor-pointer"
+                    wire:click.stop="$dispatch('openBlockModal', { rowId: '{{ $rowId }}', afterBlockId: '{{ $blockId }}' }); showContextMenu = false;"
+                    class="px-2 py-1 text-xs rounded hover:bg-gray-200 dark:hover:bg-gray-600 border border-gray-100 dark:border-gray-700 cursor-pointer"
                     title="{{ __('Add Block After') }}">
                     <x-heroicon-o-arrow-down class="w-3 h-3 inline-block" />
                     {{ __('After') }}
