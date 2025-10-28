@@ -23,9 +23,9 @@ class ThemeResolverTest extends TestCase
         {
             use ThemeResolver;
 
-            public function test_resolve_theme_id($themeId = null)
+            public function testResolveThemeId($themeId = null)
             {
-                return $this->resolveThemeId($themeId);
+                return $this->resolveThemeId(themeId: $themeId);
             }
         };
     }
