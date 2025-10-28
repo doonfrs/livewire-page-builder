@@ -225,12 +225,14 @@ class ThemeManager extends Component
             return;
         }
 
-        try {
-            // Check if this is the default theme
-            if ($this->themeToDelete->id == $this->defaultThemeId) {
-                throw new \Exception(__('Cannot delete the default theme'));
-            }
+        // Check if this is the default theme
+        if ($this->themeToDelete->id == $this->defaultThemeId) {
+            $this->dispatch('notify', message: __('Cannot delete the default theme'), type: 'error');
+            $this->closeDeleteModal();
+            return;
+        }
 
+        try {
             // Delete all pages associated with this theme
             $this->themeToDelete->pages()->delete();
 
