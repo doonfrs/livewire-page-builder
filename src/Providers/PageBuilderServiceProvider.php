@@ -22,6 +22,7 @@ use Trinavo\LivewirePageBuilder\Http\Livewire\RowBlock;
 use Trinavo\LivewirePageBuilder\Http\Livewire\ThemeManager;
 use Trinavo\LivewirePageBuilder\Services\LocalizationService;
 use Trinavo\LivewirePageBuilder\Services\PageBuilderService;
+use Trinavo\LivewirePageBuilder\Services\PageBuilderUIService;
 use Trinavo\LivewirePageBuilder\Services\ThemeEncryptionService;
 use Trinavo\LivewirePageBuilder\Services\ThemeService;
 
@@ -103,6 +104,11 @@ class PageBuilderServiceProvider extends ServiceProvider
         // Register the localization service
         $this->app->singleton(LocalizationService::class, function ($app) {
             return new LocalizationService;
+        });
+
+        // Register the UI customization service
+        $this->app->singleton(PageBuilderUIService::class, function ($app) {
+            return new PageBuilderUIService;
         });
 
         // Register the Variables class

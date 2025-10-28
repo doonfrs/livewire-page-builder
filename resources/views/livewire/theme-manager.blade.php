@@ -16,6 +16,12 @@
 
             <div class="flex items-center gap-3">
                 <livewire:language-switcher />
+
+                <!-- Custom Header HTML -->
+                @if (!empty($customHeaderHtml))
+                    {!! $customHeaderHtml !!}
+                @endif
+
                 <button wire:click="openImportModal"
                     class="inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-sm font-medium rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 focus:ring-2 focus:ring-pink-200 transition">
                     <x-heroicon-o-arrow-up-tray class="w-5 h-5 mr-1 ml-1" />

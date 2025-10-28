@@ -229,6 +229,7 @@ class ThemeManager extends Component
         if ($this->themeToDelete->id == $this->defaultThemeId) {
             $this->dispatch('notify', message: __('Cannot delete the default theme'), type: 'error');
             $this->closeDeleteModal();
+
             return;
         }
 
@@ -545,8 +546,12 @@ class ThemeManager extends Component
 
     public function render()
     {
+        // Get custom header HTML from UI service
+        $customHeaderHtml = app(\Trinavo\LivewirePageBuilder\Services\PageBuilderUIService::class)->getCustomThemeManagerHeaderHtml();
+
         return view('page-builder::livewire.theme-manager', [
             'selectedTheme' => $this->selectedTheme,
+            'customHeaderHtml' => $customHeaderHtml,
         ])->layout('page-builder::layouts.app');
     }
 }
