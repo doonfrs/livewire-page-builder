@@ -129,12 +129,6 @@ class PageBuilderService
             $classes[] = $justifyClass;
         }
 
-        // Add position property
-        $position = $properties['position'] ?? null;
-        if ($position) {
-            $classes[] = $position;
-        }
-
         // Add overflow-x property
         $overflowX = $properties['overflowX'] ?? '';
         if ($overflowX && $overflowX !== '') {
