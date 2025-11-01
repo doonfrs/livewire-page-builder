@@ -505,8 +505,8 @@ abstract class Block extends Component
     public function getAllProperties(): array
     {
         return array_merge(
-            $this->getSharedProperties(),
-            $this->getPageBuilderProperties()
+            $this->getPageBuilderProperties(),
+            $this->getSharedProperties()
         );
     }
 
