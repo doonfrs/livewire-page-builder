@@ -402,6 +402,12 @@ class PageBuilderService
             $classes[] = $position;
         }
 
+        // Add z-index property
+        $zIndex = $properties['zIndex'] ?? null;
+        if ($zIndex) {
+            $classes[] = $zIndex;
+        }
+
         $classString = implode(' ', array_unique($classes));
 
         $heightClasses = $this->getHeightCssClassesFromProperties($properties);

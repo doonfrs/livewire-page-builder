@@ -111,6 +111,8 @@ abstract class Block extends Component
     // Position properties
     public $position = null;
 
+    public $zIndex = null;
+
     // Border properties
     public $borderWidth = null;
 
@@ -428,7 +430,7 @@ abstract class Block extends Component
     {
         return [
             (new CheckboxProperty('selfCentered', 'Self Centered', defaultValue: $this->selfCentered))
-                ->setGroup('layout', 'Layout', 2, 'heroicon-o-rectangle-group'),
+                ->setGroup('layout', 'Layout', 3, 'heroicon-o-rectangle-group'),
             (new SelectProperty('position', 'Position', [
                 '' => 'Static (Default)',
                 'relative' => 'Relative',
@@ -436,7 +438,22 @@ abstract class Block extends Component
                 'fixed' => 'Fixed',
                 'sticky' => 'Sticky',
             ], defaultValue: $this->position))
-                ->setGroup('layout', 'Layout', 2, 'heroicon-o-rectangle-group'),
+                ->setGroup('layout', 'Layout', 3, 'heroicon-o-rectangle-group'),
+            (new SelectProperty('zIndex', 'Z-Index', [
+                '' => 'Auto (Default)',
+                '-z-50' => '-50',
+                '-z-40' => '-40',
+                '-z-30' => '-30',
+                '-z-20' => '-20',
+                '-z-10' => '-10',
+                'z-0' => '0',
+                'z-10' => '10',
+                'z-20' => '20',
+                'z-30' => '30',
+                'z-40' => '40',
+                'z-50' => '50',
+            ], defaultValue: $this->zIndex))
+                ->setGroup('layout', 'Layout', 3, 'heroicon-o-rectangle-group'),
         ];
     }
 
