@@ -179,7 +179,7 @@ class PageBuilderService
         return implode(' ', $classes);
     }
 
-    public function getCssClassesFromProperties(array $properties): ?string
+    public function getCssClassesFromProperties(array $properties, bool $isRow = false): ?string
     {
         $hiddenMobile = $properties['hiddenMobile'] ?? false;
         $hiddenTablet = $properties['hiddenTablet'] ?? false;
@@ -415,7 +415,7 @@ class PageBuilderService
             $classString .= ' '.$heightClasses;
         }
 
-        $widthClasses = $this->getWidthCssClassesFromProperties($properties);
+        $widthClasses = $this->getWidthCssClassesFromProperties($properties, isRow: $isRow);
         if (count($widthClasses) > 0) {
             $classString .= ' '.implode(' ', $widthClasses);
         }
@@ -423,11 +423,11 @@ class PageBuilderService
         return $classString;
     }
 
-    public function getWidthCssClassesFromProperties(array $properties): array
+    public function getWidthCssClassesFromProperties(array $properties, bool $isRow = false): array
     {
-        $mobileWidth = $properties['mobileWidth'] ?? 'w-auto';
-        $tabletWidth = $properties['tabletWidth'] ?? 'w-auto';
-        $desktopWidth = $properties['desktopWidth'] ?? 'w-auto';
+        $mobileWidth = $properties['mobileWidth'] ?? ($isRow ? 'w-full' : 'w-auto');
+        $tabletWidth = $properties['tabletWidth'] ?? ($isRow ? 'w-full' : 'w-auto');
+        $desktopWidth = $properties['desktopWidth'] ?? ($isRow ? 'w-full' : 'w-auto');
 
         $classes = [];
 
