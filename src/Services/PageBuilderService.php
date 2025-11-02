@@ -498,6 +498,22 @@ class PageBuilderService
         return $styleString;
     }
 
+    /**
+     * Get data attributes from properties (for DaisyUI themes, etc.)
+     */
+    public function getDataAttributesFromProperties(array $properties): string
+    {
+        $attributes = [];
+
+        $forceDarkMode = $properties['forceDarkMode'] ?? false;
+
+        if ($forceDarkMode) {
+            $attributes[] = 'data-theme="dark"';
+        }
+
+        return implode(' ', $attributes);
+    }
+
     public function getHeightCssClassesFromProperties(array $properties): string
     {
         $mobileHeight = $properties['mobileHeight'] ?? null;

@@ -248,18 +248,21 @@ class RowBlock extends Block
         }
 
         $rowCssClasses = app(PageBuilderService::class)->getRowCssClassesFromProperties($properties);
+        $dataAttributes = app(PageBuilderService::class)->getDataAttributesFromProperties($properties);
 
         if ($this->editMode) {
             return view('page-builder::livewire.builder.row', [
                 'rowId' => $this->rowId,
                 'properties' => $properties,
                 'rowCssClasses' => $rowCssClasses,
+                'dataAttributes' => $dataAttributes,
             ]);
         } else {
             return view('page-builder::livewire.builder.row-view', [
                 'rowId' => $this->rowId,
                 'properties' => $properties,
                 'rowCssClasses' => $rowCssClasses,
+                'dataAttributes' => $dataAttributes,
             ]);
         }
     }

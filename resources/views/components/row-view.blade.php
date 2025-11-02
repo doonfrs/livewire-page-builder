@@ -1,4 +1,4 @@
-<div class="{{ $row['cssClasses'] }} group" style="{{ $row['inlineStyles'] }}">
+<div class="{{ $row['cssClasses'] }} group" style="{{ $row['inlineStyles'] }}" {!! $row['dataAttributes'] ?? '' !!}>
     <div class="{{ $row['rowCssClasses'] }}">
         @foreach ($row['blocks'] as $blockId => $block)
             @php
@@ -10,7 +10,7 @@
                 @continue
             @endif
 
-            <div class="{{ $block['cssClasses'] }}" style="{{ $block['inlineStyles'] }}">
+            <div class="{{ $block['cssClasses'] }}" style="{{ $block['inlineStyles'] }}" {!! $block['dataAttributes'] ?? '' !!}>
                 @if ($block['alias'] == 'builder-page-block')
                     <div style="font-size:0">
                         @foreach ($block['rows'] ?? [] as $rowId => $row)

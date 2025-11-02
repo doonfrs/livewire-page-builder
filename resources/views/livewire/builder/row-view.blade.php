@@ -1,4 +1,4 @@
-<div class="{{ $cssClasses }}" style="{{ $inlineStyles }} font-size:initial">
+<div class="{{ $cssClasses }}" style="{{ $inlineStyles }} font-size:initial" {!! $dataAttributes !!}>
     <div class="row-blocks {{ $rowCssClasses }}">
         @foreach ($blocks as $blockId => $block)
             @php
@@ -43,7 +43,8 @@
             @else
                 {{-- For regular blocks, render them directly without builder wrapper --}}
                 <div class="{{ app(\Trinavo\LivewirePageBuilder\Services\PageBuilderService::class)->getCssClassesFromProperties($block['properties'] ?? [], false) }}"
-                    style="{{ app(\Trinavo\LivewirePageBuilder\Services\PageBuilderService::class)->getInlineStylesFromProperties($block['properties'] ?? []) }}">
+                    style="{{ app(\Trinavo\LivewirePageBuilder\Services\PageBuilderService::class)->getInlineStylesFromProperties($block['properties'] ?? []) }}"
+                    {!! app(\Trinavo\LivewirePageBuilder\Services\PageBuilderService::class)->getDataAttributesFromProperties($block['properties'] ?? []) !!}>
                     @livewire($block['alias'], $block['properties'] ?? [], key($blockId))
                 </div>
             @endif

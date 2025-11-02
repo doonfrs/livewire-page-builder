@@ -2,7 +2,9 @@
     selected: false
 }"
     class="block-row border relative transition-all duration-300 ease-in-out group {{ $cssClasses }}"
-    style="{{ $inlineStyles }} font-size:initial" :class="selected ? 'border-pink-500' : 'border-gray-300'"
+    style="{{ $inlineStyles }} font-size:initial"
+    {!! $dataAttributes !!}
+    :class="selected ? 'border-pink-500' : 'border-gray-300'"
     x-on:row-selected.window="selected = $event.detail.rowId == '{{ $rowId }}'"
     x-on:block-selected.window="selected = false">
     <div class="block-row-inner {{ $isNested ? 'relative' : '' }} h-full">

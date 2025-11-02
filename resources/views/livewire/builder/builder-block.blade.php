@@ -1,5 +1,6 @@
 <div id="block-{{ $blockId }}" x-data="{ selected: false, showContextMenu: false, x: 0, y: 0 }"
     class="{{ $cssClasses }} border transition-all duration-300 ease-in-out" style="{{ $inlineStyles }}"
+    {!! $dataAttributes !!}
     :class="selected ? 'border-blue-500' : 'border-gray-300'"
     x-on:block-selected.window="selected = $event.detail.blockId == '{{ $blockId }}'"
     x-on:row-selected.window="selected = false"

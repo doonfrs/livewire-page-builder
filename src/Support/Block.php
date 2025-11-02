@@ -159,6 +159,9 @@ abstract class Block extends Component
 
     public $boxShadowInset = false;
 
+    // Theme properties
+    public $forceDarkMode = false;
+
     public bool $editMode = false;
 
     /**
@@ -187,6 +190,7 @@ abstract class Block extends Component
             $this->getVisibilityProperties(),
             $this->getSpacingProperties(),
             $this->getStyleProperties(),
+            $this->getThemeProperties(),
             $this->getBackgroundImageProperties(),
             $this->getBorderProperties(),
             $this->getBoxShadowProperties(),
@@ -307,6 +311,16 @@ abstract class Block extends Component
                 ->setGroup('color', 'Color', 2, 'heroicon-o-swatch'),
             (new ColorProperty('backgroundColor', 'Background Color', defaultValue: $this->backgroundColor))
                 ->setGroup('color', 'Color', 2, 'heroicon-o-swatch'),
+        ];
+    }
+
+    /**
+     * Get theme properties
+     */
+    protected function getThemeProperties(): array
+    {
+        return [
+            new CheckboxProperty(name: 'forceDarkMode', label: 'Force Dark Mode', defaultValue: $this->forceDarkMode),
         ];
     }
 

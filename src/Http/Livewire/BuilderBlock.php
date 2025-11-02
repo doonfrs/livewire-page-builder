@@ -22,6 +22,8 @@ class BuilderBlock extends Component
 
     public $inlineStyles;
 
+    public $dataAttributes;
+
     public ?bool $editMode = false;
 
     public function mount()
@@ -31,9 +33,10 @@ class BuilderBlock extends Component
             $block = app($blockClass);
             $this->properties = $this->properties ?? $block->getPropertyValues();
 
-            // Apply CSS classes and styles for all block types including RowBlocks
+            // Apply CSS classes, styles, and data attributes for all block types including RowBlocks
             $this->cssClasses = $this->makeClasses();
             $this->inlineStyles = $this->makeInlineStyles();
+            $this->dataAttributes = $this->makeDataAttributes();
         }
     }
 
@@ -105,9 +108,10 @@ class BuilderBlock extends Component
             // This is a nested row property update for this BuilderBlock
             $this->properties[$propertyName] = $value;
 
-            // Update CSS classes and styles
+            // Update CSS classes, styles, and data attributes
             $this->cssClasses = $this->makeClasses();
             $this->inlineStyles = $this->makeInlineStyles();
+            $this->dataAttributes = $this->makeDataAttributes();
 
             // Force re-render to reflect changes
             $this->dispatch('$refresh');
@@ -119,9 +123,10 @@ class BuilderBlock extends Component
         if (! $rowId && $blockId == $this->blockId) {
             $this->properties[$propertyName] = $value;
 
-            // Update CSS classes and styles for all block types
+            // Update CSS classes, styles, and data attributes for all block types
             $this->cssClasses = $this->makeClasses();
             $this->inlineStyles = $this->makeInlineStyles();
+            $this->dataAttributes = $this->makeDataAttributes();
         }
     }
 
@@ -139,6 +144,13 @@ class BuilderBlock extends Component
         $styleString = app(PageBuilderService::class)->getInlineStylesFromProperties($this->properties);
 
         return $styleString;
+    }
+
+    public function makeDataAttributes(): string
+    {
+        $attributeString = app(PageBuilderService::class)->getDataAttributesFromProperties($this->properties);
+
+        return $attributeString;
     }
 
     /**

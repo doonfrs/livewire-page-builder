@@ -56,13 +56,14 @@ class PageBuilderRender
 
     public function prepareRow($row)
     {
-        $row['cssClasses'] = app(PageBuilderService::class)->getCssClassesFromProperties($row['properties'], isRow: true);
+        $pageBuilderService = app(PageBuilderService::class);
 
-        $row['inlineStyles'] = app(PageBuilderService::class)->getInlineStylesFromProperties($row['properties']);
+        $row['cssClasses'] = $pageBuilderService->getCssClassesFromProperties($row['properties'], isRow: true);
+        $row['inlineStyles'] = $pageBuilderService->getInlineStylesFromProperties($row['properties']);
+        $row['dataAttributes'] = $pageBuilderService->getDataAttributesFromProperties($row['properties']);
+        $row['rowCssClasses'] = $pageBuilderService->getRowCssClassesFromProperties($row['properties']);
 
         $row['blocks'] = array_map([$this, 'prepareBlock'], $row['blocks']);
-
-        $row['rowCssClasses'] = app(PageBuilderService::class)->getRowCssClassesFromProperties($row['properties']);
 
         return $row;
     }
@@ -73,6 +74,7 @@ class PageBuilderRender
 
         $block['cssClasses'] = $pageBuilderService->getCssClassesFromProperties($block['properties']);
         $block['inlineStyles'] = $pageBuilderService->getInlineStylesFromProperties($block['properties']);
+        $block['dataAttributes'] = $pageBuilderService->getDataAttributesFromProperties($block['properties']);
 
         $block['component_exists'] = $pageBuilderService->isBlockAliasRegistered($block['alias'] ?? '');
 
