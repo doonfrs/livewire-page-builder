@@ -108,6 +108,39 @@
             // Start checking after Livewire processes the response
             setTimeout(checkAndScroll, 300);
         "
+        x-on:block-pasted.window="
+            const blockId = $event.detail.blockId;
+            console.log('📋 block-pasted event received', {blockId});
+
+            let retryCount = 0;
+            const maxRetries = 10; // Max 2 seconds (10 * 200ms)
+
+            // Wait for Livewire to finish morphing the DOM
+            const checkAndScroll = () => {
+                console.log('🔍 Looking for pasted block element:', 'block-' + blockId, '(attempt', retryCount + 1, ')');
+                const el = document.getElementById('block-' + blockId);
+                if (el) {
+                    console.log('✅ Element found! Scrolling to block:', blockId);
+                    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    // Trigger selection after scroll
+                    setTimeout(() => {
+                        console.log('✅ Dispatching select-block event:', blockId);
+                        Livewire.dispatch('select-block', { blockId: blockId });
+                    }, 300);
+                } else {
+                    retryCount++;
+                    if (retryCount < maxRetries) {
+                        console.log('⏳ Retry', retryCount, '/', maxRetries);
+                        setTimeout(checkAndScroll, 200);
+                    } else {
+                        console.error('❌ Pasted block element not found after', maxRetries, 'retries:', 'block-' + blockId);
+                    }
+                }
+            };
+
+            // Start checking after Livewire processes the response
+            setTimeout(checkAndScroll, 300);
+        "
         x-on:row-duplicated.window="
             const rowId = $event.detail.rowId;
             console.log('🔄 row-duplicated event received', {rowId});

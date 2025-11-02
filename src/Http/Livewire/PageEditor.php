@@ -1803,6 +1803,15 @@ class PageEditor extends Component
                             beforeBlockId: $beforeBlockId,
                             afterBlockId: $afterBlockId
                         );
+
+                        // Dispatch event for scroll and selection
+                        $this->dispatch('block-pasted', blockId: $blockId);
+
+                        $this->dispatch(
+                            'notify',
+                            message: 'Block pasted successfully',
+                            type: 'success'
+                        );
                     } else {
                         // If no target block, add to the end of row
                         $beforeBlockId = null;
@@ -1826,6 +1835,9 @@ class PageEditor extends Component
                             'beforeBlockId' => $beforeBlockId,
                             'afterBlockId' => $afterBlockId,
                         ]);
+
+                        // Dispatch event for scroll and selection
+                        $this->dispatch('block-pasted', blockId: $blockId);
 
                         $this->dispatch(
                             'notify',
