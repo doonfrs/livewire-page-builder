@@ -48,7 +48,7 @@
         x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
         x-transition:leave="transition ease-in duration-75" x-transition:leave-start="opacity-100 scale-100"
         x-transition:leave-end="opacity-0 scale-95" :style="`position: fixed; left: ${x}px; top: ${y}px;`"
-        class="context-menu bg-white border border-gray-200 rounded-lg shadow-lg py-2 w-[250px] z-52">
+        class="context-menu bg-white border border-gray-200 rounded-lg shadow-lg py-2 w-[280px] z-52">
 
         <div
             class="px-4 py-1 text-xs font-semibold text-gray-500 uppercase tracking-wider border-b border-gray-100 dark:border-gray-700 mb-1">

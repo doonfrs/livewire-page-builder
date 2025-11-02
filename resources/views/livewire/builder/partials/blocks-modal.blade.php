@@ -31,6 +31,7 @@
                 <x-heroicon-o-magnifying-glass class="w-4 h-4 text-gray-500 dark:text-gray-400" />
             </div>
             <input type="text" wire:model.live="blockFilter"
+                x-init="$nextTick(() => $el.focus())"
                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-pink-500 focus:border-pink-500 block w-full ps-10 p-2.5 dark:bg-gray-800 dark:border-gray-700 dark:placeholder-gray-400 dark:text-white dark:focus:ring-pink-500 dark:focus:border-pink-500"
                 placeholder="{{ __('Search blocks...') }}">
         </div>
