@@ -4,9 +4,6 @@
 {{-- Position classes --}}
 <div class="static relative absolute fixed sticky"></div>
 
-{{-- Z-index classes --}}
-<div class="-z-50 -z-40 -z-30 -z-20 -z-10 z-0 z-10 z-20 z-30 z-40 z-50"></div>
-
 {{-- @md responsive position classes --}}
 <div class="@md:static @md:relative @md:absolute @md:fixed @md:sticky"></div>
 

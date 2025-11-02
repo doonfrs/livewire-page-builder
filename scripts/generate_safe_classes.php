@@ -571,6 +571,26 @@ class SafeClassGenerator
         $lines[] = '<div class="'.implode(' ', $daisyTextColors).'"></div>';
         $lines[] = '';
 
+        // Hover text color classes - standard colors
+        $lines[] = '{{-- Hover text color utilities --}}';
+        $hoverTextColorClasses = [];
+        foreach ($this->standardColors as $color => $shades) {
+            foreach ($shades as $shade) {
+                $hoverTextColorClasses[] = "hover:text-{$color}-{$shade}";
+            }
+        }
+        $lines[] = '<div class="'.implode(' ', $hoverTextColorClasses).'"></div>';
+        $lines[] = '';
+
+        // Hover text color classes - DaisyUI colors
+        $lines[] = '{{-- DaisyUI Theme Hover Text Color Utilities --}}';
+        $hoverDaisyTextColors = [];
+        foreach ($this->daisyColors as $color) {
+            $hoverDaisyTextColors[] = "hover:text-{$color}";
+        }
+        $lines[] = '<div class="'.implode(' ', $hoverDaisyTextColors).'"></div>';
+        $lines[] = '';
+
         // Background color classes - standard colors
         $lines[] = '{{-- Background color utilities --}}';
         $bgColorClasses = [];
@@ -589,6 +609,26 @@ class SafeClassGenerator
             $daisyBgColors[] = "bg-{$color}";
         }
         $lines[] = '<div class="'.implode(' ', $daisyBgColors).'"></div>';
+        $lines[] = '';
+
+        // Hover background color classes - standard colors
+        $lines[] = '{{-- Hover background color utilities --}}';
+        $hoverBgColorClasses = [];
+        foreach ($this->standardColors as $color => $shades) {
+            foreach ($shades as $shade) {
+                $hoverBgColorClasses[] = "hover:bg-{$color}-{$shade}";
+            }
+        }
+        $lines[] = '<div class="'.implode(' ', $hoverBgColorClasses).'"></div>';
+        $lines[] = '';
+
+        // Hover background color classes - DaisyUI colors
+        $lines[] = '{{-- DaisyUI Theme Hover Background Color Utilities --}}';
+        $hoverDaisyBgColors = [];
+        foreach ($this->daisyColors as $color) {
+            $hoverDaisyBgColors[] = "hover:bg-{$color}";
+        }
+        $lines[] = '<div class="'.implode(' ', $hoverDaisyBgColors).'"></div>';
         $lines[] = '';
 
         $filePath = $outputDir.'/safe-classes-colors.blade.php';
@@ -890,6 +930,24 @@ class SafeClassGenerator
         $lines[] = '    <div class="'.implode(' ', $daisyTextColors).'"></div>';
 
         $lines[] = '';
+        $lines[] = '    {{-- Hover text color utilities --}}';
+        $hoverTextColorClasses = [];
+        foreach ($this->standardColors as $color => $shades) {
+            foreach ($shades as $shade) {
+                $hoverTextColorClasses[] = "hover:text-{$color}-{$shade}";
+            }
+        }
+        $lines[] = '    <div class="'.implode(' ', $hoverTextColorClasses).'"></div>';
+
+        $lines[] = '';
+        $lines[] = '    {{-- DaisyUI Theme Hover Text Color Utilities --}}';
+        $hoverDaisyTextColors = [];
+        foreach ($this->daisyColors as $color) {
+            $hoverDaisyTextColors[] = "hover:text-{$color}";
+        }
+        $lines[] = '    <div class="'.implode(' ', $hoverDaisyTextColors).'"></div>';
+
+        $lines[] = '';
         $lines[] = '    {{-- Background color utilities --}}';
         $bgColorClasses = [];
         foreach ($this->standardColors as $color => $shades) {
@@ -906,6 +964,24 @@ class SafeClassGenerator
             $daisyBgColors[] = "bg-{$color}";
         }
         $lines[] = '    <div class="'.implode(' ', $daisyBgColors).'"></div>';
+
+        $lines[] = '';
+        $lines[] = '    {{-- Hover background color utilities --}}';
+        $hoverBgColorClasses = [];
+        foreach ($this->standardColors as $color => $shades) {
+            foreach ($shades as $shade) {
+                $hoverBgColorClasses[] = "hover:bg-{$color}-{$shade}";
+            }
+        }
+        $lines[] = '    <div class="'.implode(' ', $hoverBgColorClasses).'"></div>';
+
+        $lines[] = '';
+        $lines[] = '    {{-- DaisyUI Theme Hover Background Color Utilities --}}';
+        $hoverDaisyBgColors = [];
+        foreach ($this->daisyColors as $color) {
+            $hoverDaisyBgColors[] = "hover:bg-{$color}";
+        }
+        $lines[] = '    <div class="'.implode(' ', $hoverDaisyBgColors).'"></div>';
         $lines[] = '';
     }
 
