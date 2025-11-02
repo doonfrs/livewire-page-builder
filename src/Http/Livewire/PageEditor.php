@@ -1114,6 +1114,149 @@ class PageEditor extends Component
         }
     }
 
+    #[On('duplicateBlock')]
+    public function duplicateBlock($data)
+    {
+        $blockId = $data['blockId'] ?? null;
+        $blockAlias = $data['blockAlias'] ?? null;
+        $properties = $data['properties'] ?? [];
+        $blocks = $data['blocks'] ?? null;
+        $rowId = $data['rowId'] ?? null;
+
+        if (!$blockId || !$blockAlias) {
+            Log::warning('duplicateBlock: Missing required data', [
+                'blockId' => $blockId,
+                'blockAlias' => $blockAlias,
+            ]);
+            return;
+        }
+
+        Log::info('PageEditor::duplicateBlock called', [
+            'blockId' => $blockId,
+            'blockAlias' => $blockAlias,
+            'rowId' => $rowId,
+            'hasBlocks' => !empty($blocks),
+        ]);
+
+        // Try to find the block in top-level rows first
+        $foundRowId = null;
+        $foundBlock = null;
+
+        if ($rowId && isset($this->rows[$rowId]['blocks'][$blockId])) {
+            $foundRowId = $rowId;
+            $foundBlock = $this->rows[$rowId]['blocks'][$blockId];
+            Log::info('✅ Block found in top-level row', ['rowId' => $rowId]);
+        } else {
+            // Search top-level rows
+            foreach ($this->rows as $rId => $row) {
+                if (isset($row['blocks'][$blockId])) {
+                    $foundRowId = $rId;
+                    $foundBlock = $row['blocks'][$blockId];
+                    Log::info('✅ Block found in top-level search', ['rowId' => $rId]);
+                    break;
+                }
+            }
+
+            // If not found in top-level, search nested rows
+            if (!$foundRowId) {
+                Log::info('🔍 Searching in nested rows for block', ['blockId' => $blockId]);
+                $foundRowId = $this->findBlockInNestedRows($this->rows, $blockId);
+
+                if ($foundRowId) {
+                    Log::info('✅ Block found in nested row', ['nestedRowId' => $foundRowId]);
+                    // Get the block data from the nested row
+                    $foundBlock = $this->getBlockFromNestedRow($this->rows, $foundRowId, $blockId);
+                }
+            }
+        }
+
+        if (!$foundRowId || !$foundBlock) {
+            Log::warning('❌ duplicateBlock: Block not found anywhere', [
+                'blockId' => $blockId,
+                'rowId' => $rowId,
+            ]);
+
+            $this->dispatch(
+                'notify',
+                message: 'Failed to duplicate block: Block not found',
+                type: 'error'
+            );
+            return;
+        }
+
+        // Create new block ID
+        $newBlockId = uniqid();
+
+        // Clone the block data
+        $newBlock = [
+            'alias' => $foundBlock['alias'],
+            'properties' => $foundBlock['properties'] ?? [],
+        ];
+
+        // If this block has nested blocks (RowBlock), clone them with new IDs
+        if (!empty($foundBlock['blocks'])) {
+            $newBlock['blocks'] = $this->regenerateBlockIds($foundBlock['blocks']);
+        }
+
+        Log::info('Block duplicated - preparing to dispatch events', [
+            'originalBlockId' => $blockId,
+            'newBlockId' => $newBlockId,
+            'rowId' => $foundRowId,
+        ]);
+
+        Log::info('🔄 Dispatching block-added event', [
+            'rowId' => $foundRowId,
+            'blockId' => $newBlockId,
+            'blockAlias' => $newBlock['alias'],
+            'afterBlockId' => $blockId,
+            'hasProperties' => !empty($newBlock['properties']),
+            'propertiesCount' => count($newBlock['properties']),
+        ]);
+
+        Log::info('🔍 Current rows structure', [
+            'rowIds' => array_keys($this->rows),
+            'targetRowExists' => isset($this->rows[$foundRowId]),
+            'targetRowBlockCount' => isset($this->rows[$foundRowId]) ? count($this->rows[$foundRowId]['blocks']) : 0,
+        ]);
+
+        // DON'T modify $this->rows here - let RowBlock handle it via block-added event
+        // RowBlock will add the block to its local state and sync back via sync-nested-row-data
+
+        // Dispatch 'block-added' event - RowBlock will handle adding it to its blocks array
+        Log::info('⚡ About to dispatch block-added event...');
+        $this->dispatch(
+            'block-added',
+            rowId: $foundRowId,
+            blockId: $newBlockId,
+            blockAlias: $newBlock['alias'],
+            properties: $newBlock['properties'],
+            beforeBlockId: null,
+            afterBlockId: $blockId  // Insert after the original block
+        );
+        Log::info('⚡ Dispatch completed');
+
+        Log::info('📢 Dispatching block-duplicated event', [
+            'blockId' => $newBlockId,
+        ]);
+
+        // Dispatch custom 'block-duplicated' event to handle scroll and selection with proper timing
+        $this->dispatch(
+            'block-duplicated',
+            blockId: $newBlockId
+        );
+
+        Log::info('🔔 Dispatching notify event');
+
+        // Success notification
+        $this->dispatch(
+            'notify',
+            message: 'Block duplicated successfully',
+            type: 'success'
+        );
+
+        Log::info('✅ All duplicate events dispatched successfully');
+    }
+
     /**
      * Handle pasting clipboard data
      */
@@ -1729,6 +1872,40 @@ class PageEditor extends Component
                     $nestedResult = $this->findBlockInNestedRows([$blockId => $block], $targetBlockId);
                     if ($nestedResult) {
                         return $nestedResult;
+                    }
+                }
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Get block data from a nested row
+     * Returns the block data array
+     */
+    private function getBlockFromNestedRow(array $rows, string $parentRowId, string $targetBlockId): ?array
+    {
+        foreach ($rows as $rowId => $row) {
+            if (! isset($row['blocks'])) {
+                continue;
+            }
+
+            foreach ($row['blocks'] as $blockId => $block) {
+                // Check if this is the parent row we're looking for
+                if ($blockId === $parentRowId && isset($block['blocks'][$targetBlockId])) {
+                    Log::info('✅ Retrieved block from nested row', [
+                        'parentRowId' => $parentRowId,
+                        'targetBlockId' => $targetBlockId,
+                    ]);
+                    return $block['blocks'][$targetBlockId];
+                }
+
+                // If this block has nested blocks, search recursively
+                if (isset($block['blocks']) && is_array($block['blocks'])) {
+                    $result = $this->getBlockFromNestedRow([$blockId => $block], $parentRowId, $targetBlockId);
+                    if ($result) {
+                        return $result;
                     }
                 }
             }

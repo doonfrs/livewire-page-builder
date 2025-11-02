@@ -216,4 +216,25 @@ class BuilderBlock extends Component
             type: 'success'
         );
     }
+
+    /**
+     * Duplicate block (clone and place after current block).
+     */
+    public function duplicateBlock()
+    {
+        $data = [
+            'blockId' => $this->blockId,
+            'blockAlias' => $this->blockAlias,
+            'properties' => $this->properties,
+            'rowId' => $this->rowId,
+        ];
+
+        // Include nested blocks if this is a RowBlock
+        if (!empty($this->blocks)) {
+            $data['blocks'] = $this->blocks;
+        }
+
+        // Dispatch event to duplicate the block
+        $this->dispatch('duplicateBlock', data: $data);
+    }
 }

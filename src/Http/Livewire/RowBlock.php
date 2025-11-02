@@ -318,9 +318,21 @@ class RowBlock extends Block
     #[On('block-added')]
     public function blockAdded($rowId, $blockId, $blockAlias, $properties, $beforeBlockId = null, $afterBlockId = null)
     {
+        Log::info('🎯 RowBlock::blockAdded called', [
+            'targetRowId' => $rowId,
+            'thisRowId' => $this->rowId,
+            'blockId' => $blockId,
+            'blockAlias' => $blockAlias,
+            'beforeBlockId' => $beforeBlockId,
+            'afterBlockId' => $afterBlockId,
+        ]);
+
         if ($rowId != $this->rowId) {
+            Log::info('⏭️ Skipping - not for this row');
             return;
         }
+
+        Log::info('✅ Processing block-added for this row');
 
         // Special handling for nested rows
         if ($blockAlias === 'trinavo-livewire-page-builder-http-livewire-row-block') {
@@ -337,6 +349,7 @@ class RowBlock extends Block
         }
 
         if ($beforeBlockId) {
+            Log::info('📍 Inserting BEFORE block', ['beforeBlockId' => $beforeBlockId]);
             $blockIds = array_keys($this->blocks);
             $position = array_search($beforeBlockId, $blockIds);
 
@@ -350,8 +363,10 @@ class RowBlock extends Block
             }
             $this->blocks = $newBlocks;
         } elseif ($afterBlockId) {
+            Log::info('📍 Inserting AFTER block', ['afterBlockId' => $afterBlockId]);
             $blockIds = array_keys($this->blocks);
             $position = array_search($afterBlockId, $blockIds);
+            Log::info('📊 Position found', ['position' => $position, 'totalBlocks' => count($blockIds)]);
 
             // Create new array in the correct order
             $newBlocks = [];
@@ -362,9 +377,27 @@ class RowBlock extends Block
                 }
             }
             $this->blocks = $newBlocks;
+            Log::info('✅ Block added after position', ['newBlockCount' => count($this->blocks)]);
         } else {
+            Log::info('📍 Appending block to end');
             $this->blocks[$blockId] = $block;
         }
+
+        Log::info('🏁 RowBlock::blockAdded completed', [
+            'totalBlocks' => count($this->blocks),
+            'blockIds' => array_keys($this->blocks),
+        ]);
+
+        // Sync changes back to parent PageEditor structure
+        Log::info('🔄 Syncing blocks back to PageEditor');
+        $this->dispatch('sync-nested-row-data',
+            nestedRowId: $this->rowId,
+            blocks: $this->blocks
+        );
+
+        // The component will auto-render because $this->blocks changed
+        // But we need to wait longer on the frontend for Livewire to finish rendering
+        Log::info('✅ RowBlock will re-render automatically with new blocks');
     }
 
     #[On('deleteBlock')]

@@ -106,6 +106,12 @@
             <span>{{ __('Cut') }}</span>
         </button>
 
+        <button wire:click="duplicateBlock(); showContextMenu = false;"
+            class="flex items-center w-full px-4 py-2 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 border-b border-gray-50 dark:border-gray-700 cursor-pointer">
+            <x-heroicon-o-document-duplicate class="w-4 h-4 ms-0 me-3 text-gray-500 dark:text-gray-400" />
+            <span>{{ __('Duplicate') }}</span>
+        </button>
+
         <!-- Paste Block (combined before/after options) -->
         <div class="flex items-center w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-300 border-b border-gray-50 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
             @click="

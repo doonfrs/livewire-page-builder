@@ -55,14 +55,58 @@
             if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
             $dispatch('row-selected', { rowId: $event.detail.rowId, properties: $event.detail.properties });
     }, 200);"
-        x-on:block-added.window="setTimeout(() => {
-            const el = document.getElementById('block-' + $event.detail.blockId);
-            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }, 200);"
+        x-on:block-added.window="
+            console.log('➕ block-added event received', $event.detail);
+            setTimeout(() => {
+                const blockId = $event.detail.blockId;
+                console.log('🔍 [block-added] Looking for element:', 'block-' + blockId);
+                const el = document.getElementById('block-' + blockId);
+                console.log('📍 [block-added] Element found:', el);
+                if (el) {
+                    console.log('📜 [block-added] Scrolling to block');
+                    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                } else {
+                    console.error('❌ [block-added] Element not found');
+                }
+            }, 500);
+        "
         x-on:block-selected.window="
             currentSelectedBlockId = $event.detail.blockId;
             currentSelectedRowId = null;
             console.log('Block selected:', currentSelectedBlockId);
+        "
+        x-on:block-duplicated.window="
+            const blockId = $event.detail.blockId;
+            console.log('🔄 block-duplicated event received', {blockId});
+
+            let retryCount = 0;
+            const maxRetries = 10; // Max 2 seconds (10 * 200ms)
+
+            // Wait for Livewire to finish morphing the DOM
+            const checkAndScroll = () => {
+                console.log('🔍 Looking for block element:', 'block-' + blockId, '(attempt', retryCount + 1, ')');
+                const el = document.getElementById('block-' + blockId);
+                if (el) {
+                    console.log('✅ Element found! Scrolling to block:', blockId);
+                    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    // Trigger selection after scroll
+                    setTimeout(() => {
+                        console.log('✅ Dispatching select-block event:', blockId);
+                        Livewire.dispatch('select-block', { blockId: blockId });
+                    }, 300);
+                } else {
+                    retryCount++;
+                    if (retryCount < maxRetries) {
+                        console.log('⏳ Retry', retryCount, '/', maxRetries);
+                        setTimeout(checkAndScroll, 200);
+                    } else {
+                        console.error('❌ Block element not found after', maxRetries, 'retries:', 'block-' + blockId);
+                    }
+                }
+            };
+
+            // Start checking after Livewire processes the response
+            setTimeout(checkAndScroll, 300);
         "
         x-on:row-selected.window="
             currentSelectedRowId = $event.detail.rowId;
