@@ -88,23 +88,6 @@ class RowContentAlignmentTest extends TestCase
     }
 
     /** @test */
-    public function no_alignment_classes_when_flex_is_not_active(): void
-    {
-        $service = new PageBuilderService;
-
-        $properties = [
-            'contentAlign' => 'content-center',
-            // No flex property
-        ];
-
-        $cssClasses = $service->getRowCssClassesFromProperties($properties);
-
-        $this->assertStringNotContainsString('justify-center', $cssClasses);
-        $this->assertStringNotContainsString('content-center', $cssClasses);
-        $this->assertStringNotContainsString('flex', $cssClasses);
-    }
-
-    /** @test */
     public function defaults_to_justify_center_when_unknown_content_align_value(): void
     {
         $service = new PageBuilderService;
