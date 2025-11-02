@@ -139,6 +139,143 @@ The base `Block` class automatically provides the following shared properties:
 - Size (cover, contain, auto, 100%)
 - Repeat (no-repeat, repeat, repeat-x, repeat-y)
 
+## Working with Colors
+
+The page builder provides a `ColorData` class to handle color values that can be either Tailwind CSS classes or custom CSS colors (hex, rgb, rgba, hsl, hsla).
+
+### ColorData Class
+
+The `ColorData` class is a value object that parses and provides convenient methods for working with colors in your blocks:
+
+```php
+use Trinavo\LivewirePageBuilder\Support\ColorData;
+
+// Parse a color property
+$colorData = $this->parseColorProperty('backgroundColor', 'bg-base-200');
+
+// Or parse a color value directly
+$colorData = $this->parseColor('#ffffff');
+$colorData = $this->parseColor('bg-primary');
+$colorData = $this->parseColor('rgba(255, 0, 0, 0.5)');
+```
+
+### ColorData Methods
+
+The `ColorData` class provides several helper methods:
+
+#### Type Checking Methods
+- `isClass()`: Returns true if the color is a Tailwind class
+- `isCss()`: Returns true if the color is a CSS color (hex, rgb, rgba, hsl, hsla)
+- `isEmpty()`: Returns true if no color is set
+
+#### Basic Class Helpers
+These methods automatically add the appropriate Tailwind prefix and remove any existing prefixes:
+
+- `toBgClass()`: Returns `bg-{color}` for Tailwind classes (e.g., 'primary' → 'bg-primary')
+- `toTextClass()`: Returns `text-{color}` for Tailwind classes (e.g., 'primary' → 'text-primary')
+- `toBorderClass()`: Returns `border-{color}` for Tailwind classes (e.g., 'primary' → 'border-primary')
+- `toDecorationClass()`: Returns `decoration-{color}` for underline colors
+- `toShadowClass()`: Returns `shadow-{color}` for shadow colors
+- `toRingClass()`: Returns `ring-{color}` for ring/outline colors
+
+#### State Modifier Class Helpers
+These methods add both the state prefix (hover:, active:, focus:) and the color type prefix:
+
+- `toHoverBgClass()`: Returns `hover:bg-{color}` (e.g., 'primary' → 'hover:bg-primary')
+- `toHoverTextClass()`: Returns `hover:text-{color}`
+- `toHoverBorderClass()`: Returns `hover:border-{color}`
+- `toActiveBgClass()`: Returns `active:bg-{color}`
+- `toActiveTextClass()`: Returns `active:text-{color}`
+- `toActiveBorderClass()`: Returns `active:border-{color}`
+- `toFocusBgClass()`: Returns `focus:bg-{color}`
+- `toFocusTextClass()`: Returns `focus:text-{color}`
+- `toFocusBorderClass()`: Returns `focus:border-{color}`
+- `toFocusRingClass()`: Returns `focus:ring-{color}`
+
+#### Legacy Methods
+- `toClass()`: Returns the raw color value as-is (no prefix added)
+- `toInlineStyle(string $property)`: Returns inline CSS style property
+- `toStyleAttribute(string $property)`: Returns complete style attribute string
+- `toCssVariable()`: Returns raw value for CSS custom properties
+
+### Example Usage in Component
+
+```php
+class Header extends Block
+{
+    public $backgroundColor = null;
+    public $hoverTextColor = null;
+
+    public function render()
+    {
+        return view('livewire.header', [
+            // No need to include 'bg-' prefix in default - helper methods add it automatically
+            'bgColorData' => $this->parseColorProperty('backgroundColor', 'base-200'),
+            'hoverTextData' => $this->parseColorProperty('hoverTextColor', 'primary'),
+        ]);
+    }
+}
+```
+
+### Example Usage in View
+
+```blade
+<!-- Basic background color example -->
+<div class="navbar {{ $bgColorData->toBgClass() }}"
+     {!! $bgColorData->toStyleAttribute('background-color') !!}>
+    <!-- Content -->
+</div>
+
+<!-- Hover state example -->
+<a href="#" class="menu-item {{ $hoverTextData->toHoverTextClass() }}">
+    Menu Item
+</a>
+
+<!-- Multiple color states -->
+<button class="btn
+    {{ $bgColorData->toBgClass() }}
+    {{ $textColorData->toTextClass() }}
+    {{ $hoverBgData->toHoverBgClass() }}
+    {{ $hoverTextData->toHoverTextClass() }}">
+    Click me
+</button>
+
+<!-- The helper methods handle prefix logic automatically -->
+<!-- 'primary' → 'bg-primary', 'bg-primary' → 'bg-primary' (idempotent) -->
+<!-- '#ffffff' → '' (CSS colors return empty string for class helpers) -->
+```
+
+### Advanced Example with CSS Variables
+
+For hover states and dynamic styling, you can use CSS variables:
+
+```blade
+@php
+    $hoverColor = $this->parseColorProperty('hoverColor');
+@endphp
+
+<div @if ($hoverColor->isCss()) style="--hover-color: {{ $hoverColor->value }};" @endif>
+    <button class="btn {{ $hoverColor->toClass() }}">
+        Hover me
+    </button>
+</div>
+
+@if ($hoverColor->isCss())
+    <style>
+        .btn:hover {
+            color: var(--hover-color) !important;
+        }
+    </style>
+@endif
+```
+
+### Benefits
+
+- **Type Safety**: Clear separation between Tailwind classes and CSS colors
+- **Cleaner Views**: No need to repeat color type checking logic
+- **Flexibility**: Supports both Tailwind classes and custom colors
+- **Dark Mode**: Tailwind classes automatically adapt to dark mode
+
 ## Example: Hero Block
 
 ```php

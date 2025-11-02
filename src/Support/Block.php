@@ -846,4 +846,28 @@ abstract class Block extends Component
             'properties' => $this->getPropertyValues(),
         ];
     }
+
+    /**
+     * Parse a color property value and return a ColorData object
+     *
+     * @param  string|null  $color  The color value to parse
+     * @param  string|null  $defaultClass  Default Tailwind class if color is null/empty
+     */
+    protected function parseColor(?string $color, ?string $defaultClass = null): ColorData
+    {
+        return ColorData::parse($color, $defaultClass);
+    }
+
+    /**
+     * Parse a color property by its property name
+     *
+     * @param  string  $propertyName  The name of the property containing the color value
+     * @param  string|null  $defaultClass  Default Tailwind class if color is null/empty
+     */
+    protected function parseColorProperty(string $propertyName, ?string $defaultClass = null): ColorData
+    {
+        $color = $this->$propertyName ?? null;
+
+        return $this->parseColor($color, $defaultClass);
+    }
 }
