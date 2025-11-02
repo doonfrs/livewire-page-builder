@@ -8,8 +8,7 @@
     deleteAction: null
 }"
     class="{{ $cssClasses }} border transition-all duration-300 ease-in-out" style="{{ $inlineStyles }}"
-    {!! $dataAttributes !!}
-    :class="selected ? 'border-blue-500' : 'border-gray-300'"
+    {!! $dataAttributes !!} :class="selected ? 'border-blue-500' : 'border-gray-300'"
     x-on:block-selected.window="selected = $event.detail.blockId == '{{ $blockId }}'"
     x-on:row-selected.window="selected = false"
     @if (!$isRowBlock) @contextmenu.prevent="
@@ -28,7 +27,7 @@
             showContextMenu = false;
         }
     " @click.outside="showContextMenu = false" > @endif
-    <div class="relative h-full">
+    <div class="relative h-full content-center">
     @if ($isRowBlock)
         <!-- For RowBlocks, add minimal click handling that doesn't interfere with inner blocks -->
         <div class="builder-block relative h-full" @click.self="$wire.blockSelected()">
