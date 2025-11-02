@@ -2,11 +2,14 @@
     <div class="{{ $row['rowCssClasses'] }}">
         @foreach ($row['blocks'] as $blockId => $block)
             @php
-                $componentExists = $block['component_exists'] ?? app(\Trinavo\LivewirePageBuilder\Services\PageBuilderService::class)
-                    ->isBlockAliasRegistered($block['alias'] ?? '');
+                $componentExists =
+                    $block['component_exists'] ??
+                    app(\Trinavo\LivewirePageBuilder\Services\PageBuilderService::class)->isBlockAliasRegistered(
+                        $block['alias'] ?? '',
+                    );
             @endphp
 
-            @if (! $componentExists)
+            @if (!$componentExists)
                 @continue
             @endif
 
@@ -18,16 +21,20 @@
                         @endforeach
                     </div>
                 @elseif (str_contains($block['alias'], 'row-block') && isset($block['blocks']))
-                    <div style="font-size:initial">
-                        @livewire($block['alias'], [
-                            'blocks' => $block['blocks'],
-                            'rowId' => $blockId,
-                            'properties' => $block['properties'],
-                            'editMode' => false,
-                        ], key($blockId))
+                    <div style="font-size:initial" class="h-full w-full">
+                        @livewire(
+                            $block['alias'],
+                            [
+                                'blocks' => $block['blocks'],
+                                'rowId' => $blockId,
+                                'properties' => $block['properties'],
+                                'editMode' => false,
+                            ],
+                            key($blockId)
+                        )
                     </div>
                 @else
-                    <div style="font-size:initial">
+                    <div style="font-size:initial" class="h-full w-full">
                         @livewire($block['alias'], $block['properties'], key($blockId))
                     </div>
                 @endif
