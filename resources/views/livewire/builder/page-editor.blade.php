@@ -6,6 +6,7 @@
         copySourcePageKey: null,
         copySourcePageLabel: null,
         deviceMode: 'desktop',
+        canvasBgColor: '#f9fafb',
         loading: true,
         canPaste: false,
         pasteDataType: null,
@@ -288,6 +289,16 @@
                         <x-heroicon-o-computer-desktop class="w-5 h-5" />
                     </button>
                 </div>
+
+                <!-- Canvas Background Color Picker -->
+                <input
+                    type="color"
+                    id="canvas-bg-color"
+                    x-model="canvasBgColor"
+                    class="w-10 h-10 rounded cursor-pointer border border-gray-300 dark:border-gray-600"
+                    title="{{ __('Change canvas background color') }}"
+                />
+
                 <!-- Language Switcher -->
                 <livewire:language-switcher />
             </div>
@@ -462,7 +473,7 @@
             </aside>
 
             <!-- Main Section (Scrollable) -->
-            <main class="flex-1 pt-10 pb-50 pr-0 bg-gray-50 dark:bg-gray-900 overflow-auto min-h-0 w-[80%]">
+            <main class="flex-1 pt-10 pb-50 pr-0 overflow-auto min-h-0 w-[80%]" :style="`background-color: ${canvasBgColor}`">
                 <div class="mx-auto @container"
                     :class="{
                         'w-[375px]': deviceMode === 'mobile',
