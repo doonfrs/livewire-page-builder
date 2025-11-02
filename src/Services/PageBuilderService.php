@@ -109,14 +109,14 @@ class PageBuilderService
     public function getRowCssClassesFromProperties($properties): string
     {
         $classes = [];
-        $flex = $properties['flex'] ?? null;
-        if ($flex) {
+        $flex = $properties['flex'] ?? 'row';  // Default to 'row' to match RowBlock default
+        if ($flex && $flex !== 'none') {
             $classes[] = "flex flex-{$flex}";
         }
 
         // Add vertical alignment to the flex container
         $contentAlign = $properties['contentAlign'] ?? 'content-center';
-        if ($flex) {  // Only add vertical alignment when flex is active
+        if ($flex && $flex !== 'none') {  // Only add vertical alignment when flex is active
             // Map content-* classes to appropriate flexbox alignment classes
             $alignmentMap = [
                 'content-start' => 'justify-start',
