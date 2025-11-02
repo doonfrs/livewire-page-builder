@@ -408,6 +408,12 @@ class PageBuilderService
             $classes[] = $zIndex;
         }
 
+        // Add text align property
+        $textAlign = $properties['textAlign'] ?? null;
+        if ($textAlign) {
+            $classes[] = $textAlign;
+        }
+
         $classString = implode(' ', array_unique($classes));
 
         $heightClasses = $this->getHeightCssClassesFromProperties($properties);

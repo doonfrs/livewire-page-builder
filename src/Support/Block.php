@@ -108,6 +108,8 @@ abstract class Block extends Component
 
     public $selfCentered = false;
 
+    public $textAlign = null;
+
     // Position properties
     public $position = null;
 
@@ -190,6 +192,7 @@ abstract class Block extends Component
             $this->getVisibilityProperties(),
             $this->getSpacingProperties(),
             $this->getStyleProperties(),
+            $this->getTextProperties(),
             $this->getThemeProperties(),
             $this->getBackgroundImageProperties(),
             $this->getBorderProperties(),
@@ -468,6 +471,25 @@ abstract class Block extends Component
                 'z-50' => '50',
             ], defaultValue: $this->zIndex))
                 ->setGroup('layout', 'Layout', 3, 'heroicon-o-rectangle-group'),
+        ];
+    }
+
+    /**
+     * Get text properties (alignment)
+     */
+    protected function getTextProperties(): array
+    {
+        return [
+            (new SelectProperty('textAlign', 'Text Align', [
+                '' => 'Default',
+                'text-left' => 'Left',
+                'text-center' => 'Center',
+                'text-right' => 'Right',
+                'text-justify' => 'Justify',
+                'text-start' => 'Start',
+                'text-end' => 'End',
+            ], defaultValue: $this->textAlign))
+                ->setGroup('text', 'Text', 1, 'heroicon-o-language'),
         ];
     }
 
