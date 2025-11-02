@@ -237,10 +237,11 @@
                 <!-- Remove Row Button -->
                 <button
                     @click="
-                confirm('{{ __('Are you sure you want to delete this row?') }}')
-                && $dispatch('deleteRow', {rowId: '{{ $rowId }}'})
+                if (confirm('{{ __('Are you sure you want to delete this row?') }}')) {
+                    open = false;
+                    setTimeout(() => $dispatch('deleteRow', {rowId: '{{ $rowId }}'}), 100);
+                }
                 "
-                    @click="open = false"
                     class="flex items-center w-full px-3 py-2 text-left text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 border-b border-gray-50 dark:border-gray-700 cursor-pointer"
                     title="{{ __('Remove Row') }}">
                     <x-heroicon-o-trash class="w-4 h-4 ms-0 me-3 text-gray-500 dark:text-gray-400" />
