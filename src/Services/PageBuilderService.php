@@ -392,6 +392,18 @@ class PageBuilderService
             $classes = array_merge($classes, $boxShadowClasses);
         }
 
+        // Add backdrop filter classes
+        $backdropFilterClasses = $this->getBackdropFilterCssClassesFromProperties($properties);
+        if (count($backdropFilterClasses) > 0) {
+            $classes = array_merge($classes, $backdropFilterClasses);
+        }
+
+        // Add filter classes
+        $filterClasses = $this->getFilterCssClassesFromProperties($properties);
+        if (count($filterClasses) > 0) {
+            $classes = array_merge($classes, $filterClasses);
+        }
+
         // Vertical alignment - allow customization instead of hardcoded centering
         $contentAlign = $properties['contentAlign'] ?? 'content-center';
         $classes[] = $contentAlign;
@@ -822,6 +834,43 @@ class PageBuilderService
         }
 
         return $styles;
+    }
+
+    /**
+     * Get backdrop filter CSS classes from properties
+     */
+    public function getBackdropFilterCssClassesFromProperties(array $properties): array
+    {
+        $classes = [];
+
+        $backdropBlur = $properties['backdropBlur'] ?? null;
+
+        if ($backdropBlur) {
+            $classes[] = $backdropBlur;
+        }
+
+        return $classes;
+    }
+
+    /**
+     * Get filter CSS classes from properties
+     */
+    public function getFilterCssClassesFromProperties(array $properties): array
+    {
+        $classes = [];
+
+        $blur = $properties['blur'] ?? null;
+        $dropShadow = $properties['dropShadow'] ?? null;
+
+        if ($blur) {
+            $classes[] = $blur;
+        }
+
+        if ($dropShadow) {
+            $classes[] = $dropShadow;
+        }
+
+        return $classes;
     }
 
     /**

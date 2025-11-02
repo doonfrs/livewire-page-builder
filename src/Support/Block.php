@@ -161,6 +161,13 @@ abstract class Block extends Component
 
     public $boxShadowInset = false;
 
+    // Filter properties
+    public $backdropBlur = null;
+
+    public $blur = null;
+
+    public $dropShadow = null;
+
     // Theme properties
     public $forceDarkMode = false;
 
@@ -197,6 +204,8 @@ abstract class Block extends Component
             $this->getBackgroundImageProperties(),
             $this->getBorderProperties(),
             $this->getBoxShadowProperties(),
+            $this->getBackdropFilterProperties(),
+            $this->getFilterProperties(),
             $this->getLayoutProperties()
         );
     }
@@ -437,6 +446,35 @@ abstract class Block extends Component
                 ->setGroup('shadow_position', 'Shadow Position', 4, 'heroicon-o-arrows-pointing-out'),
             (new CheckboxProperty('boxShadowInset', 'Inset', defaultValue: $this->boxShadowInset))
                 ->setGroup('shadow_position', 'Shadow Position', 4, 'heroicon-o-arrows-pointing-out'),
+        ];
+    }
+
+    /**
+     * Get backdrop filter properties
+     */
+    protected function getBackdropFilterProperties(): array
+    {
+        $backdropBlurOptions = $this->getBackdropBlurList();
+
+        return [
+            (new SelectProperty('backdropBlur', 'Backdrop Blur', $backdropBlurOptions, defaultValue: $this->backdropBlur))
+                ->setGroup('backdrop_filters', 'Backdrop Filters', 1, 'heroicon-o-sparkles'),
+        ];
+    }
+
+    /**
+     * Get filter properties
+     */
+    protected function getFilterProperties(): array
+    {
+        $blurOptions = $this->getBlurList();
+        $dropShadowOptions = $this->getDropShadowList();
+
+        return [
+            (new SelectProperty('blur', 'Blur', $blurOptions, defaultValue: $this->blur))
+                ->setGroup('filters', 'Filters', 2, 'heroicon-o-adjustments-horizontal'),
+            (new SelectProperty('dropShadow', 'Drop Shadow', $dropShadowOptions, defaultValue: $this->dropShadow))
+                ->setGroup('filters', 'Filters', 2, 'heroicon-o-adjustments-horizontal'),
         ];
     }
 
@@ -839,6 +877,50 @@ abstract class Block extends Component
             'shadow-2xl' => '2X Large',
             'shadow-inner' => 'Inner',
             'shadow-none' => 'None',
+        ];
+    }
+
+    public function getBackdropBlurList(): array
+    {
+        return [
+            '' => 'None',
+            'backdrop-blur-none' => 'None (Explicit)',
+            'backdrop-blur-sm' => 'Small',
+            'backdrop-blur' => 'Default',
+            'backdrop-blur-md' => 'Medium',
+            'backdrop-blur-lg' => 'Large',
+            'backdrop-blur-xl' => 'Extra Large',
+            'backdrop-blur-2xl' => '2X Large',
+            'backdrop-blur-3xl' => '3X Large',
+        ];
+    }
+
+    public function getBlurList(): array
+    {
+        return [
+            '' => 'None',
+            'blur-none' => 'None (Explicit)',
+            'blur-sm' => 'Small',
+            'blur' => 'Default',
+            'blur-md' => 'Medium',
+            'blur-lg' => 'Large',
+            'blur-xl' => 'Extra Large',
+            'blur-2xl' => '2X Large',
+            'blur-3xl' => '3X Large',
+        ];
+    }
+
+    public function getDropShadowList(): array
+    {
+        return [
+            '' => 'None',
+            'drop-shadow-none' => 'None (Explicit)',
+            'drop-shadow-sm' => 'Small',
+            'drop-shadow' => 'Default',
+            'drop-shadow-md' => 'Medium',
+            'drop-shadow-lg' => 'Large',
+            'drop-shadow-xl' => 'Extra Large',
+            'drop-shadow-2xl' => '2X Large',
         ];
     }
 
