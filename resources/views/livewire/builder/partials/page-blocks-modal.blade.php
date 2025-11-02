@@ -4,7 +4,38 @@
     blockFilter: '',
     allBlocks: @js($allPageBlocks),
     groupedBlocks: @js($groupedPageBlocks),
+    selectedBlockId: null,
+    selectedRowId: null,
+    getParentSelection() {
+        // Access the parent Alpine component's data
+        let parent = this.$el;
+        while (parent) {
+            parent = parent.parentElement;
+            if (parent && parent._x_dataStack) {
+                for (let data of parent._x_dataStack) {
+                    if (data.currentSelectedBlockId !== undefined || data.currentSelectedRowId !== undefined) {
+                        return {
+                            blockId: data.currentSelectedBlockId,
+                            rowId: data.currentSelectedRowId
+                        };
+                    }
+                }
+            }
+        }
+        return { blockId: null, rowId: null };
+    },
     init() {
+        // Get initial selection from parent scope
+        const selection = this.getParentSelection();
+        this.selectedBlockId = selection.blockId;
+        this.selectedRowId = selection.rowId;
+
+        console.log('Modal initialized with selection:', {
+            selectedBlockId: this.selectedBlockId,
+            selectedRowId: this.selectedRowId,
+            groupedBlockKeys: Object.keys(this.groupedBlocks)
+        });
+
         // Initialize all rows as collapsed
         this.$nextTick(() => {
             Object.keys(this.groupedBlocks).forEach(rowId => {
@@ -15,6 +46,60 @@
                     this.isRowExpanded[block.id] = false;
                 }
             });
+
+            // Expand parent rows if a block is selected
+            if (this.selectedBlockId) {
+                console.log('Expanding parent rows for block:', this.selectedBlockId);
+                this.expandParentRows(this.selectedBlockId);
+            }
+            // Expand row if it's selected (including nested rows)
+            if (this.selectedRowId) {
+                console.log('Expanding and highlighting selected row:', this.selectedRowId);
+                // Expand the selected row itself
+                this.isRowExpanded[this.selectedRowId] = true;
+                // Also expand parent rows if this is a nested row
+                this.expandParentRows(this.selectedRowId);
+            }
+
+            // Scroll to selected element after a short delay to allow DOM updates
+            setTimeout(() => {
+                let selectedElement = null;
+
+                // Try to find by looking for pink or blue highlighted elements
+                // Nested rows have ring-2 class
+                selectedElement = this.$el.querySelector('.ring-2.ring-pink-500');
+
+                if (!selectedElement) {
+                    selectedElement = this.$el.querySelector('.ring-2.ring-blue-500');
+                }
+
+                // If not found, try regular blocks (border-blue-500)
+                if (!selectedElement) {
+                    selectedElement = this.$el.querySelector('.border-blue-500');
+                }
+
+                // If not found, try top-level rows (border-pink-500)
+                if (!selectedElement) {
+                    selectedElement = this.$el.querySelector('.border-pink-500');
+                }
+
+                if (selectedElement) {
+                    const scrollContainer = this.$el.querySelector('.overflow-auto');
+                    if (scrollContainer) {
+                        // Get the position of the element relative to the scroll container
+                        const elementRect = selectedElement.getBoundingClientRect();
+                        const containerRect = scrollContainer.getBoundingClientRect();
+                        const relativeTop = elementRect.top - containerRect.top;
+                        const targetScroll = scrollContainer.scrollTop + relativeTop - (containerRect.height / 2) + (elementRect.height / 2);
+
+                        scrollContainer.scrollTo({
+                            top: targetScroll,
+                            behavior: 'smooth'
+                        });
+                        console.log('Scrolled to selected element');
+                    }
+                }
+            }, 300);
         });
     },
     filteredBlocks: function() {
@@ -31,6 +116,52 @@
     isRowExpanded: {},
     toggleRow(rowId) {
         this.isRowExpanded[rowId] = !this.isRowExpanded[rowId];
+    },
+    findBlockParents(blockId, blocks = null, parentRowId = null, path = []) {
+        // Search through grouped blocks if no blocks provided
+        if (blocks === null) {
+            for (const [rowId, row] of Object.entries(this.groupedBlocks)) {
+                const result = this.findBlockParents(blockId, row.blocks, rowId, [rowId]);
+                if (result) return result;
+            }
+            return null;
+        }
+
+        // Search through the current blocks array
+        for (const block of blocks) {
+            if (block.id === blockId) {
+                return { parentRowId, path };
+            }
+            // Check nested blocks recursively
+            if (block.nestedBlocks && block.nestedBlocks.length > 0) {
+                const result = this.findBlockParents(blockId, block.nestedBlocks, block.id, [...path, block.id]);
+                if (result) return result;
+            }
+        }
+        return null;
+    },
+    expandParentRows(blockId) {
+        const result = this.findBlockParents(blockId);
+        if (result && result.path) {
+            // Expand all parent rows in the path
+            result.path.forEach(rowId => {
+                this.isRowExpanded[rowId] = true;
+            });
+        }
+    },
+    handleBlockSelected(event) {
+        this.selectedBlockId = event.detail.blockId;
+        this.selectedRowId = null;
+        // Expand parent rows to make the block visible
+        this.expandParentRows(event.detail.blockId);
+    },
+    handleRowSelected(event) {
+        this.selectedRowId = event.detail.rowId;
+        this.selectedBlockId = null;
+        // Expand the row if it's collapsed
+        if (this.isRowExpanded[event.detail.rowId] === false) {
+            this.isRowExpanded[event.detail.rowId] = true;
+        }
     },
     renderBlockItem(block, depth = 0) {
         const indent = depth * 16;
@@ -77,7 +208,9 @@
     }
 }">
     <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-2xl p-8 relative"
-        @click.outside="$wire.closePageBlocksModal()">
+        @click.outside="$wire.closePageBlocksModal()"
+        x-on:block-selected.window="handleBlockSelected($event)"
+        x-on:row-selected.window="handleRowSelected($event)">
         <button wire:click="closePageBlocksModal"
             class="absolute top-3 end-3 text-gray-400 hover:text-gray-700 dark:hover:text-gray-200">
             <x-heroicon-o-x-mark class="w-6 h-6" />
@@ -110,9 +243,11 @@
 
                     <ul class="space-y-4">
                         <template x-for="(row, rowId) in groupedBlocks" :key="rowId">
-                            <li class="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
+                            <li class="border rounded-lg overflow-hidden transition-colors"
+                                :class="selectedRowId === rowId ? 'border-pink-500 bg-pink-50/50 dark:bg-pink-900/20' : 'border-gray-200 dark:border-gray-700'">
                                 <!-- Row Header -->
-                                <div class="bg-gray-100 dark:bg-gray-800 p-3 flex items-center justify-between cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                                <div class="p-3 flex items-center justify-between cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                                    :class="selectedRowId === rowId ? 'bg-pink-100 dark:bg-pink-900/30' : 'bg-gray-100 dark:bg-gray-800'"
                                     @click="toggleRow(rowId)">
                                     <div class="flex items-center gap-2">
                                         <x-heroicon-o-rectangle-group class="w-5 h-5 text-blue-500" />
@@ -149,7 +284,8 @@
                                             <template x-if="item.hasNested">
                                                 <div>
                                                     <div
-                                                        class="flex items-center gap-2 p-2 bg-gray-50 dark:bg-gray-800 rounded-md">
+                                                        class="flex items-center gap-2 p-2 rounded-md transition-colors"
+                                                        :class="(selectedBlockId === item.block.id || selectedRowId === item.block.id) ? 'bg-pink-100 dark:bg-pink-900/30 ring-2 ring-pink-500/50' : 'bg-gray-50 dark:bg-gray-800'">
                                                         <button @click="toggleRow(item.block.id)"
                                                             class="flex items-center gap-2 flex-1 text-left hover:text-pink-600 transition-colors">
                                                             <x-heroicon-o-chevron-right
@@ -183,7 +319,8 @@
                                                 <button
                                                     wire:click="$dispatch('select-block', { blockId: item.block.id })"
                                                     @click="$wire.closePageBlocksModal()"
-                                                    class="w-full group flex items-center gap-3 p-2 border border-gray-100 dark:border-gray-800 rounded-md hover:bg-pink-50 dark:hover:bg-pink-900/20 hover:border-pink-200 dark:hover:border-pink-700 transition-all duration-200 text-start focus:outline-none focus:ring-2 focus:ring-pink-200">
+                                                    class="w-full group flex items-center gap-3 p-2 border rounded-md hover:bg-pink-50 dark:hover:bg-pink-900/20 hover:border-pink-200 dark:hover:border-pink-700 transition-all duration-200 text-start focus:outline-none focus:ring-2 focus:ring-pink-200"
+                                                    :class="selectedBlockId === item.block.id ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20' : 'border-gray-100 dark:border-gray-800'">
                                                     <div
                                                         class="flex-shrink-0 w-6 h-6 flex items-center justify-center text-pink-500 group-hover:text-pink-600 transition-colors">
                                                         <template x-if="item.block.icon === 'heroicon-o-document-text'">
@@ -227,7 +364,8 @@
                         <li>
                             <button wire:click="$dispatch('select-block', { blockId: block.id })"
                                 @click="$wire.closePageBlocksModal()"
-                                class="w-full group flex items-center gap-3 p-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm hover:bg-pink-50 dark:hover:bg-pink-900/20 hover:border-pink-200 dark:hover:border-pink-700 transition-all duration-200 text-start focus:outline-none focus:ring-2 focus:ring-pink-200">
+                                class="w-full group flex items-center gap-3 p-3 bg-white dark:bg-gray-900 border rounded-lg shadow-sm hover:bg-pink-50 dark:hover:bg-pink-900/20 hover:border-pink-200 dark:hover:border-pink-700 transition-all duration-200 text-start focus:outline-none focus:ring-2 focus:ring-pink-200"
+                                :class="selectedBlockId === block.id ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20' : 'border-gray-200 dark:border-gray-700'">
                                 <div
                                     class="flex-shrink-0 w-8 h-8 flex items-center justify-center text-pink-500 group-hover:text-pink-600 transition-colors">
                                     <template x-if="block.icon === 'heroicon-o-document-text'">

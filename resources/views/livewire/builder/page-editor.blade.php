@@ -10,6 +10,8 @@
         loading: true,
         canPaste: false,
         pasteDataType: null,
+        currentSelectedBlockId: null,
+        currentSelectedRowId: null,
         checkClipboard: async function() {
             try {
                 const text = await navigator.clipboard.readText();
@@ -48,15 +50,25 @@
             }
         }
     }"
-        x-on:row-added.window="setTimeout(() => { 
-            const el = document.getElementById('row-' + $event.detail.rowId); 
-            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' }); 
+        x-on:row-added.window="setTimeout(() => {
+            const el = document.getElementById('row-' + $event.detail.rowId);
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
             $dispatch('row-selected', { rowId: $event.detail.rowId, properties: $event.detail.properties });
     }, 200);"
-        x-on:block-added.window="setTimeout(() => { 
-            const el = document.getElementById('block-' + $event.detail.blockId); 
-            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' }); 
+        x-on:block-added.window="setTimeout(() => {
+            const el = document.getElementById('block-' + $event.detail.blockId);
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }, 200);"
+        x-on:block-selected.window="
+            currentSelectedBlockId = $event.detail.blockId;
+            currentSelectedRowId = null;
+            console.log('Block selected:', currentSelectedBlockId);
+        "
+        x-on:row-selected.window="
+            currentSelectedRowId = $event.detail.rowId;
+            currentSelectedBlockId = null;
+            console.log('Row selected:', currentSelectedRowId);
+        "
         x-on:select-block.window="
         setTimeout(() => {
             const el = document.getElementById('block-' + $event.detail.blockId);
