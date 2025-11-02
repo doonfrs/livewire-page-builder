@@ -186,25 +186,28 @@ class RowBlock extends Block
     public function addBlockToNestedRow($rowId, $blockAlias, $blockPageName = null, $beforeBlockId = null, $afterBlockId = null, $replaceBlockId = null)
     {
         if ($rowId === $this->rowId) {
-            // Handle replace operation
+            // Handle replace operation - delete FIRST, then add
             if ($replaceBlockId) {
-                // Set beforeBlockId to add the new block before the old one
-                $beforeBlockId = $replaceBlockId;
-                $this->addBlockToThisRow($blockAlias, $blockPageName, $beforeBlockId, $afterBlockId);
+                // Find the next block after the one we're replacing
+                $blockIds = array_keys($this->blocks);
+                $replaceIndex = array_search($replaceBlockId, $blockIds);
 
-                // Delete the old block
-                if (isset($this->blocks[$replaceBlockId])) {
-                    unset($this->blocks[$replaceBlockId]);
-
-                    // Sync changes back to parent
-                    $this->dispatch('sync-nested-row-data',
-                        nestedRowId: $this->rowId,
-                        blocks: $this->blocks
-                    );
+                // Set position for new block
+                if ($replaceIndex !== false && isset($blockIds[$replaceIndex + 1])) {
+                    // There's a block after, insert before it
+                    $beforeBlockId = $blockIds[$replaceIndex + 1];
+                } else {
+                    // No block after, will add at end
+                    $beforeBlockId = null;
+                    $afterBlockId = null;
                 }
-            } else {
-                $this->addBlockToThisRow($blockAlias, $blockPageName, $beforeBlockId, $afterBlockId);
+
+                // Delete the old block FIRST
+                unset($this->blocks[$replaceBlockId]);
             }
+
+            // Now add the new block (this will sync automatically)
+            $this->addBlockToThisRow($blockAlias, $blockPageName, $beforeBlockId, $afterBlockId);
         }
     }
 

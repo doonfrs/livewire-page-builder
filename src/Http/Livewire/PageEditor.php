@@ -401,32 +401,16 @@ class PageEditor extends Component
     public function addBlockToModalRow($blockAlias, $blockPageName = null)
     {
         if ($this->modalRowId) {
-            // Handle replace operation
-            if ($this->replaceBlockId) {
-                // Set beforeBlockId to add the new block before the old one
-                $this->beforeBlockId = $this->replaceBlockId;
-                $blockToDelete = $this->replaceBlockId;
-            }
-
-            // Check if this is a top-level row
-            if (isset($this->rows[$this->modalRowId])) {
-                $this->addBlockToRow($this->modalRowId, $blockAlias, $blockPageName);
-
-                // Delete the old block if this is a replace operation
-                if (isset($blockToDelete)) {
-                    $this->deleteBlock($blockToDelete);
-                }
-            } else {
-                // This is a nested row, dispatch event for RowBlock components to handle
-                $this->dispatch('add-block-to-nested-row',
-                    rowId: $this->modalRowId,
-                    blockAlias: $blockAlias,
-                    blockPageName: $blockPageName,
-                    beforeBlockId: $this->beforeBlockId,
-                    afterBlockId: $this->afterBlockId,
-                    replaceBlockId: $this->replaceBlockId
-                );
-            }
+            // ALL rows are rendered as RowBlock components, so we ALWAYS dispatch the event
+            // This ensures the RowBlock component updates its own $blocks state
+            $this->dispatch('add-block-to-nested-row',
+                rowId: $this->modalRowId,
+                blockAlias: $blockAlias,
+                blockPageName: $blockPageName,
+                beforeBlockId: $this->beforeBlockId,
+                afterBlockId: $this->afterBlockId,
+                replaceBlockId: $this->replaceBlockId
+            );
             $this->closeBlockModal();
         }
     }
