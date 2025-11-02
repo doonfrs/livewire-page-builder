@@ -54,6 +54,7 @@
     "Select Block": "Select Block",
     "Paste Before Row": "Paste Before Row",
     "Paste After Row": "Paste After Row",
+    "Paste Inside Row": "Paste Inside Row",
     "Paste Before Block": "Paste Before Block",
     "Paste After Block": "Paste After Block",
     "Move Row Up": "Move Row Up",
@@ -190,5 +191,7 @@
     "Exit Preview": "Exit Preview",
     "Back to Themes": "Back to Themes",
     "Back": "Back",
-    "Exit": "Exit"
+    "Exit": "Exit",
+    "Inside": "Inside",
+    "Paste Inside": "Paste Inside"
 }

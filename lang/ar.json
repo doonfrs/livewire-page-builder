@@ -53,6 +53,7 @@
     "Select Block": "تحديد الكتلة",
     "Paste Before Row": "لصق قبل الصف",
     "Paste After Row": "لصق بعد الصف",
+    "Paste Inside Row": "لصق داخل الصف",
     "Paste Before Block": "لصق قبل الكتلة",
     "Paste After Block": "لصق بعد الكتلة",
     "Move Row Up": "نقل الصف للأعلى",
@@ -192,5 +193,7 @@
     "Exit": "خروج",
     "Cut": "قص",
     "Confirm Delete": "تأكيد الحذف",
-    "Yes, Delete": "نعم، احذف"
+    "Yes, Delete": "نعم، احذف",
+    "Inside": "داخل",
+    "Paste Inside": "لصق داخل"
 }

@@ -1153,6 +1153,137 @@ class PageEditor extends Component
                     'targetBlockId' => $targetBlockId,
                     'position' => $position,
                 ]);
+
+                // Handle "inside" position - paste as a nested block within the target row
+                if ($position === 'inside' && $targetRowId) {
+                    Log::info('Pasting RowBlock INSIDE target row', [
+                        'targetRowId' => $targetRowId,
+                    ]);
+
+                    $blockId = uniqid();
+
+                    // Generate new IDs for nested blocks
+                    $blocks = [];
+                    foreach ($data['blocks'] as $oldBlockId => $block) {
+                        $blocks[uniqid()] = $block;
+                    }
+
+                    // Create the nested RowBlock
+                    $nestedRowBlock = [
+                        'alias' => 'page-builder-app-livewire-shop-row',
+                        'properties' => $data['properties'] ?? [],
+                        'blocks' => $blocks,
+                    ];
+
+                    // Add to the target row's blocks
+                    if (isset($this->rows[$targetRowId])) {
+                        $this->rows[$targetRowId]['blocks'][$blockId] = $nestedRowBlock;
+
+                        Log::info('RowBlock pasted inside target row as nested block', [
+                            'targetRowId' => $targetRowId,
+                            'newBlockId' => $blockId,
+                        ]);
+
+                        $this->dispatch(
+                            'notify',
+                            message: 'Row pasted inside successfully',
+                            type: 'success'
+                        );
+
+                        return;
+                    } else {
+                        Log::warning('Target row not found for inside paste', [
+                            'targetRowId' => $targetRowId,
+                        ]);
+                        return;
+                    }
+                }
+
+                // Check if target is a nested row (not in top-level rows)
+                $isNestedRow = false;
+                if ($targetRowId && ! isset($this->rows[$targetRowId])) {
+                    $isNestedRow = true;
+                }
+
+                // Handle before/after paste to nested rows - paste as sibling nested row block
+                if ($isNestedRow && ($position === 'before' || $position === 'after')) {
+                    Log::info('Pasting RowBlock as sibling to nested row', [
+                        'nestedRowId' => $targetRowId,
+                        'position' => $position,
+                    ]);
+
+                    // Find which top-level row contains this nested row block
+                    $parentRowId = null;
+                    foreach ($this->rows as $rowId => $row) {
+                        if (isset($row['blocks'][$targetRowId])) {
+                            $parentRowId = $rowId;
+                            break;
+                        }
+                    }
+
+                    if ($parentRowId) {
+                        $blockId = uniqid();
+
+                        // Generate new IDs for nested blocks
+                        $blocks = [];
+                        foreach ($data['blocks'] as $oldBlockId => $block) {
+                            $blocks[uniqid()] = $block;
+                        }
+
+                        // Create the nested RowBlock as a sibling
+                        $nestedRowBlock = [
+                            'alias' => 'page-builder-app-livewire-shop-row',
+                            'properties' => $data['properties'] ?? [],
+                            'blocks' => $blocks,
+                        ];
+
+                        // Add as a sibling using targetRowId as the reference block
+                        $targetBlockId = $targetRowId;
+
+                        // Get current blocks
+                        $currentBlocks = $this->rows[$parentRowId]['blocks'] ?? [];
+                        $blockKeys = array_keys($currentBlocks);
+                        $targetIndex = array_search($targetBlockId, $blockKeys);
+
+                        if ($targetIndex !== false) {
+                            // Insert before or after the target block
+                            if ($position === 'before') {
+                                $insertIndex = $targetIndex;
+                            } else {
+                                $insertIndex = $targetIndex + 1;
+                            }
+
+                            $newBlocks = array_merge(
+                                array_slice($currentBlocks, 0, $insertIndex, true),
+                                [$blockId => $nestedRowBlock],
+                                array_slice($currentBlocks, $insertIndex, null, true)
+                            );
+
+                            $this->rows[$parentRowId]['blocks'] = $newBlocks;
+
+                            Log::info('RowBlock pasted as sibling to nested row', [
+                                'parentRowId' => $parentRowId,
+                                'newBlockId' => $blockId,
+                                'position' => $position,
+                                'targetBlockId' => $targetBlockId,
+                            ]);
+
+                            $this->dispatch(
+                                'notify',
+                                message: 'Row pasted successfully',
+                                type: 'success'
+                            );
+
+                            return;
+                        }
+                    }
+
+                    Log::warning('Could not find parent row for nested row paste', [
+                        'targetRowId' => $targetRowId,
+                    ]);
+                    return;
+                }
+
                 // If pasting through a block, find its parent row
                 if (! $targetRowId && $targetBlockId) {
                     foreach ($this->rows as $rowId => $row) {
@@ -1285,40 +1416,57 @@ class PageEditor extends Component
                     'parentRowId' => $parentRowId ?? 'null',
                     'targetBlockId' => $targetBlockId,
                     'isNestedRow' => $isNestedRow,
+                    'position' => $position,
                 ]);
 
+                // Handle special case: pasting to a nested row with before/after position
+                // In this case, we need to paste as a sibling in the parent row, not inside the nested row
+                if ($isNestedRow && ($position === 'before' || $position === 'after') && !$targetBlockId) {
+                    Log::info('Pasting Block as sibling to nested row (outside)', [
+                        'nestedRowId' => $parentRowId,
+                        'position' => $position,
+                    ]);
+
+                    // Find which top-level row contains this nested row block
+                    $actualParentRowId = null;
+                    foreach ($this->rows as $rowId => $row) {
+                        if (isset($row['blocks'][$parentRowId])) {
+                            $actualParentRowId = $rowId;
+                            break;
+                        }
+                    }
+
+                    if ($actualParentRowId) {
+                        // Use the nested row as the target block for positioning
+                        $targetBlockId = $parentRowId;
+                        $parentRowId = $actualParentRowId;
+                        $isNestedRow = false;
+
+                        Log::info('Found parent row for nested row', [
+                            'actualParentRowId' => $actualParentRowId,
+                            'nestedRowBlockId' => $targetBlockId,
+                        ]);
+                    }
+                }
+
                 if ($parentRowId) {
-                    if ($isNestedRow) {
-                        // Parent is a nested RowBlock - use event-based approach like addBlockToModalRow
-                        Log::info('Dispatching add-block-to-nested-row event for paste', [
+                    if ($isNestedRow && $position === 'inside') {
+                        // Parent is a nested RowBlock and position is 'inside' - add block inside the nested row
+                        Log::info('Dispatching add-block-to-nested-row event for paste inside', [
                             'rowId' => $parentRowId,
                             'blockAlias' => $data['blockAlias'],
-                            'targetBlockId' => $targetBlockId,
-                            'position' => $position,
+                            'position' => 'inside',
                         ]);
 
-                        // Set position parameters before dispatching
-                        $beforeBlockId = null;
-                        $afterBlockId = null;
-                        if ($targetBlockId) {
-                            // If we have a specific target block, use it for positioning
-                            if ($position === 'before') {
-                                $beforeBlockId = $targetBlockId;
-                            } else {
-                                $afterBlockId = $targetBlockId;
-                            }
-                        }
-
-                        // Dispatch the same event used by addBlockToModalRow
-                        // This will be handled by RowBlock component which will sync back via sync-nested-row-data
+                        // Dispatch the event to add block inside the nested row
                         $this->dispatch('add-block-to-nested-row',
                             rowId: $parentRowId,
                             blockAlias: $data['blockAlias'],
                             blockPageName: $data['blockPageName'] ?? null,
-                            beforeBlockId: $beforeBlockId,
-                            afterBlockId: $afterBlockId,
+                            beforeBlockId: null,
+                            afterBlockId: null,
                             replaceBlockId: null,
-                            position: $targetBlockId ? null : $position,  // Pass position when no target block
+                            position: 'inside',
                             properties: $data['properties'] ?? null,
                             blocks: $data['blocks'] ?? null
                         );

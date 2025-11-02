@@ -77,115 +77,190 @@
                     <span>{{ __('Cut') }}</span>
                 </button>
 
-                <!-- Paste Row (combined with before/after options) -->
-                <div
-                    class="flex items-center w-full px-3 py-2 text-gray-700 dark:text-gray-300 border-b border-gray-50 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
-                    @click="
-                        console.log('Row Paste clicked - reading clipboard for row {{ $rowId }}');
-                        navigator.clipboard.readText().then(text => {
-                            console.log('Clipboard read successful for row, length:', text ? text.length : 0);
-                            if (text) {
-                                try {
-                                    const data = JSON.parse(text);
-                                    console.log('Clipboard data parsed for row:', data);
-                                    if (data && data.type) {
-                                        console.log('Dispatching paste-from-clipboard event for row with position: after, targetRowId: {{ $rowId }}');
-                                        $dispatch('paste-from-clipboard', {
-                                            clipboardData: text,
-                                            targetRowId: '{{ $rowId }}',
-                                            position: 'after'
-                                        });
-                                    } else {
-                                        console.error('{{ __('Invalid clipboard data format') }}', data);
+                <!-- Paste Row -->
+                @if ($isNested)
+                    <!-- Nested Row: Show Before/After/Inside options -->
+                    <div
+                        class="flex items-center w-full px-3 py-2 text-gray-700 dark:text-gray-300 border-b border-gray-50 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
+                        @click="
+                            console.log('Nested Row Paste INSIDE clicked for row {{ $rowId }}');
+                            navigator.clipboard.readText().then(text => {
+                                console.log('Clipboard read successful for nested row, length:', text ? text.length : 0);
+                                if (text) {
+                                    try {
+                                        const data = JSON.parse(text);
+                                        console.log('Clipboard data parsed for nested row:', data);
+                                        if (data && data.type) {
+                                            console.log('Dispatching paste-from-clipboard event with position: inside, targetRowId: {{ $rowId }}');
+                                            $dispatch('paste-from-clipboard', {
+                                                clipboardData: text,
+                                                targetRowId: '{{ $rowId }}',
+                                                position: 'inside'
+                                            });
+                                        } else {
+                                            console.error('{{ __('Invalid clipboard data format') }}', data);
+                                        }
+                                    } catch (e) {
+                                        console.error('{{ __('Failed to parse clipboard data:') }}', e);
                                     }
-                                } catch (e) {
-                                    console.error('{{ __('Failed to parse clipboard data:') }}', e);
+                                } else {
+                                    console.warn('Clipboard is empty for nested row');
                                 }
-                            } else {
-                                console.warn('Clipboard is empty for row');
-                            }
-                        }).catch(err => {
-                            console.error('{{ __('Failed to read clipboard contents:') }}', err);
-                        });
-                        open = false;
-                    ">
-                    <div class="flex items-center flex-1">
+                            }).catch(err => {
+                                console.error('{{ __('Failed to read clipboard contents:') }}', err);
+                            });
+                            open = false;
+                        ">
+                        <div class="flex items-center flex-1">
+                            <x-heroicon-o-clipboard-document-check class="w-4 h-4 ms-0 me-3" />
+                            <span>{{ __('Paste') }}</span>
+                        </div>
+                        <div class="flex space-x-2 rtl:space-x-reverse">
+                            <button
+                                @click.stop="
+                                    console.log('Nested Row Paste BEFORE clicked for row {{ $rowId }}');
+                                    navigator.clipboard.readText().then(text => {
+                                        console.log('Clipboard read for before (outside), length:', text ? text.length : 0);
+                                        if (text) {
+                                            try {
+                                                const data = JSON.parse(text);
+                                                console.log('Parsed data for before (outside):', data);
+                                                if (data && data.type) {
+                                                    console.log('Dispatching paste-from-clipboard BEFORE (outside) for row {{ $rowId }}');
+                                                    $dispatch('paste-from-clipboard', {
+                                                        clipboardData: text,
+                                                        targetRowId: '{{ $rowId }}',
+                                                        position: 'before'
+                                                    });
+                                                } else {
+                                                    console.error('{{ __('Invalid clipboard data format') }}', data);
+                                                }
+                                            } catch (e) {
+                                                console.error('{{ __('Failed to parse clipboard data:') }}', e);
+                                            }
+                                        } else {
+                                            console.warn('Clipboard is empty for before (outside)');
+                                        }
+                                    }).catch(err => {
+                                        console.error('{{ __('Failed to read clipboard contents:') }}', err);
+                                    });
+                                    open = false;
+                                "
+                                class="px-2 py-1 text-xs rounded hover:bg-gray-200 dark:hover:bg-gray-600 border border-gray-100 dark:border-gray-700 cursor-pointer"
+                                title="{{ __('Paste Before Row (Outside)') }}">
+                                <x-heroicon-o-arrow-up class="w-3 h-3 inline-block" />
+                                {{ __('Before') }}
+                            </button>
+                            <button
+                                @click.stop="
+                                    console.log('Nested Row Paste INSIDE clicked for row {{ $rowId }}');
+                                    navigator.clipboard.readText().then(text => {
+                                        console.log('Clipboard read for inside, length:', text ? text.length : 0);
+                                        if (text) {
+                                            try {
+                                                const data = JSON.parse(text);
+                                                console.log('Parsed data for inside:', data);
+                                                if (data && data.type) {
+                                                    console.log('Dispatching paste-from-clipboard INSIDE for row {{ $rowId }}');
+                                                    $dispatch('paste-from-clipboard', {
+                                                        clipboardData: text,
+                                                        targetRowId: '{{ $rowId }}',
+                                                        position: 'inside'
+                                                    });
+                                                } else {
+                                                    console.error('{{ __('Invalid clipboard data format') }}', data);
+                                                }
+                                            } catch (e) {
+                                                console.error('{{ __('Failed to parse clipboard data:') }}', e);
+                                            }
+                                        } else {
+                                            console.warn('Clipboard is empty for inside');
+                                        }
+                                    }).catch(err => {
+                                        console.error('{{ __('Failed to read clipboard contents:') }}', err);
+                                    });
+                                    open = false;
+                                "
+                                class="px-2 py-1 text-xs rounded hover:bg-gray-200 dark:hover:bg-gray-600 border border-gray-100 dark:border-gray-700 cursor-pointer"
+                                title="{{ __('Paste Inside Row') }}">
+                                <x-heroicon-o-arrow-right-on-rectangle class="w-3 h-3 inline-block" />
+                                {{ __('Inside') }}
+                            </button>
+                            <button
+                                @click.stop="
+                                    console.log('Nested Row Paste AFTER clicked for row {{ $rowId }}');
+                                    navigator.clipboard.readText().then(text => {
+                                        console.log('Clipboard read for after (outside), length:', text ? text.length : 0);
+                                        if (text) {
+                                            try {
+                                                const data = JSON.parse(text);
+                                                console.log('Parsed data for after (outside):', data);
+                                                if (data && data.type) {
+                                                    console.log('Dispatching paste-from-clipboard AFTER (outside) for row {{ $rowId }}');
+                                                    $dispatch('paste-from-clipboard', {
+                                                        clipboardData: text,
+                                                        targetRowId: '{{ $rowId }}',
+                                                        position: 'after'
+                                                    });
+                                                } else {
+                                                    console.error('{{ __('Invalid clipboard data format') }}', data);
+                                                }
+                                            } catch (e) {
+                                                console.error('{{ __('Failed to parse clipboard data:') }}', e);
+                                            }
+                                        } else {
+                                            console.warn('Clipboard is empty for after (outside)');
+                                        }
+                                    }).catch(err => {
+                                        console.error('{{ __('Failed to read clipboard contents:') }}', err);
+                                    });
+                                    open = false;
+                                "
+                                class="px-2 py-1 text-xs rounded hover:bg-gray-200 dark:hover:bg-gray-600 border border-gray-100 dark:border-gray-700 cursor-pointer"
+                                title="{{ __('Paste After Row (Outside)') }}">
+                                <x-heroicon-o-arrow-down class="w-3 h-3 inline-block" />
+                                {{ __('After') }}
+                            </button>
+                        </div>
+                    </div>
+                @else
+                    <!-- Root Row: Show Inside option only -->
+                    <button
+                        @click="
+                            console.log('Root Row Paste INSIDE clicked for row {{ $rowId }}');
+                            navigator.clipboard.readText().then(text => {
+                                console.log('Clipboard read successful for root row, length:', text ? text.length : 0);
+                                if (text) {
+                                    try {
+                                        const data = JSON.parse(text);
+                                        console.log('Clipboard data parsed for root row:', data);
+                                        if (data && data.type) {
+                                            console.log('Dispatching paste-from-clipboard event with position: inside, targetRowId: {{ $rowId }}');
+                                            $dispatch('paste-from-clipboard', {
+                                                clipboardData: text,
+                                                targetRowId: '{{ $rowId }}',
+                                                position: 'inside'
+                                            });
+                                        } else {
+                                            console.error('{{ __('Invalid clipboard data format') }}', data);
+                                        }
+                                    } catch (e) {
+                                        console.error('{{ __('Failed to parse clipboard data:') }}', e);
+                                    }
+                                } else {
+                                    console.warn('Clipboard is empty for root row');
+                                }
+                            }).catch(err => {
+                                console.error('{{ __('Failed to read clipboard contents:') }}', err);
+                            });
+                            open = false;
+                        "
+                        class="flex items-center w-full px-3 py-2 text-left text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 border-b border-gray-50 dark:border-gray-700 cursor-pointer"
+                        title="{{ __('Paste Inside Row') }}">
                         <x-heroicon-o-clipboard-document-check class="w-4 h-4 ms-0 me-3" />
-                        <span>{{ __('Paste') }}</span>
-                    </div>
-                    <div class="flex space-x-2 rtl:space-x-reverse">
-                        <button
-                            @click.stop="
-                                console.log('Row Paste BEFORE clicked for row {{ $rowId }}');
-                                navigator.clipboard.readText().then(text => {
-                                    console.log('Clipboard read for row before, length:', text ? text.length : 0);
-                                    if (text) {
-                                        try {
-                                            const data = JSON.parse(text);
-                                            console.log('Parsed data for row before:', data);
-                                            if (data && data.type) {
-                                                console.log('Dispatching paste-from-clipboard BEFORE for row {{ $rowId }}');
-                                                $dispatch('paste-from-clipboard', {
-                                                    clipboardData: text,
-                                                    targetRowId: '{{ $rowId }}',
-                                                    position: 'before'
-                                                });
-                                            } else {
-                                                console.error('{{ __('Invalid clipboard data format') }}', data);
-                                            }
-                                        } catch (e) {
-                                            console.error('{{ __('Failed to parse clipboard data:') }}', e);
-                                        }
-                                    } else {
-                                        console.warn('Clipboard is empty for row before');
-                                    }
-                                }).catch(err => {
-                                    console.error('{{ __('Failed to read clipboard contents:') }}', err);
-                                });
-                                open = false;
-                            "
-                            class="px-2 py-1 text-xs rounded hover:bg-gray-200 dark:hover:bg-gray-600 border border-gray-100 dark:border-gray-700 cursor-pointer"
-                            title="{{ __('Paste Before Row') }}">
-                            <x-heroicon-o-arrow-up class="w-3 h-3 inline-block" />
-                            {{ __('Before') }}
-                        </button>
-                        <button
-                            @click.stop="
-                                console.log('Row Paste AFTER clicked for row {{ $rowId }}');
-                                navigator.clipboard.readText().then(text => {
-                                    console.log('Clipboard read for row after, length:', text ? text.length : 0);
-                                    if (text) {
-                                        try {
-                                            const data = JSON.parse(text);
-                                            console.log('Parsed data for row after:', data);
-                                            if (data && data.type) {
-                                                console.log('Dispatching paste-from-clipboard AFTER for row {{ $rowId }}');
-                                                $dispatch('paste-from-clipboard', {
-                                                    clipboardData: text,
-                                                    targetRowId: '{{ $rowId }}',
-                                                    position: 'after'
-                                                });
-                                            } else {
-                                                console.error('{{ __('Invalid clipboard data format') }}', data);
-                                            }
-                                        } catch (e) {
-                                            console.error('{{ __('Failed to parse clipboard data:') }}', e);
-                                        }
-                                    } else {
-                                        console.warn('Clipboard is empty for row after');
-                                    }
-                                }).catch(err => {
-                                    console.error('{{ __('Failed to read clipboard contents:') }}', err);
-                                });
-                                open = false;
-                            "
-                            class="px-2 py-1 text-xs rounded hover:bg-gray-200 dark:hover:bg-gray-600 border border-gray-100 dark:border-gray-700 cursor-pointer"
-                            title="{{ __('Paste After Row') }}">
-                            <x-heroicon-o-arrow-down class="w-3 h-3 inline-block" />
-                            {{ __('After') }}
-                        </button>
-                    </div>
-                </div>
+                        <span>{{ __('Paste Inside') }}</span>
+                    </button>
+                @endif
 
                 <!-- Move Row (combined Up/Down) -->
                 <div
