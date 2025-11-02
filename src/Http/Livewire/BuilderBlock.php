@@ -165,6 +165,11 @@ class BuilderBlock extends Component
             'properties' => $this->properties,
         ];
 
+        // Include nested blocks if this is a RowBlock
+        if (!empty($this->blocks)) {
+            $data['blocks'] = $this->blocks;
+        }
+
         $jsonData = json_encode($data);
 
         // Dispatch an event to copy to clipboard via JavaScript
@@ -190,6 +195,11 @@ class BuilderBlock extends Component
             'blockAlias' => $this->blockAlias,
             'properties' => $this->properties,
         ];
+
+        // Include nested blocks if this is a RowBlock
+        if (!empty($this->blocks)) {
+            $data['blocks'] = $this->blocks;
+        }
 
         $jsonData = json_encode($data);
 

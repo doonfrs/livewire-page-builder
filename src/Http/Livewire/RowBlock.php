@@ -107,14 +107,18 @@ class RowBlock extends Block
         $this->dispatch('openBlockModal', $this->rowId);
     }
 
-    public function addBlockToThisRow($blockAlias, $blockPageName = null, $beforeBlockId = null, $afterBlockId = null)
+    public function addBlockToThisRow($blockAlias, $blockPageName = null, $beforeBlockId = null, $afterBlockId = null, $properties = null, $blocks = null)
     {
         $blockClass = app(PageBuilderService::class)->getClassNameFromAlias($blockAlias);
         if (! $blockClass) {
             return;
         }
 
-        $properties = app($blockClass)->getPropertyValues();
+        // Use provided properties or get defaults
+        if ($properties === null) {
+            $properties = app($blockClass)->getPropertyValues();
+        }
+
         if ($blockPageName) {
             $properties['blockPageName'] = $blockPageName;
         }
@@ -125,13 +129,18 @@ class RowBlock extends Block
             $block = [
                 'alias' => $blockAlias,
                 'properties' => $properties,
-                'blocks' => [], // Nested rows start with empty blocks
+                'blocks' => $blocks ?? [], // Use provided blocks or empty array
             ];
         } else {
             $block = [
                 'alias' => $blockAlias,
                 'properties' => $properties,
             ];
+
+            // Include blocks if provided (for any block type that might have nested blocks)
+            if ($blocks !== null) {
+                $block['blocks'] = $blocks;
+            }
         }
 
         // Handle insertion position
@@ -183,7 +192,7 @@ class RowBlock extends Block
     }
 
     #[On('add-block-to-nested-row')]
-    public function addBlockToNestedRow($rowId, $blockAlias, $blockPageName = null, $beforeBlockId = null, $afterBlockId = null, $replaceBlockId = null)
+    public function addBlockToNestedRow($rowId, $blockAlias, $blockPageName = null, $beforeBlockId = null, $afterBlockId = null, $replaceBlockId = null, $properties = null, $blocks = null)
     {
         if ($rowId === $this->rowId) {
             // Handle replace operation - delete FIRST, then add
@@ -207,7 +216,14 @@ class RowBlock extends Block
             }
 
             // Now add the new block (this will sync automatically)
-            $this->addBlockToThisRow($blockAlias, $blockPageName, $beforeBlockId, $afterBlockId);
+            $this->addBlockToThisRow(
+                blockAlias: $blockAlias,
+                blockPageName: $blockPageName,
+                beforeBlockId: $beforeBlockId,
+                afterBlockId: $afterBlockId,
+                properties: $properties,
+                blocks: $blocks
+            );
         }
     }
 

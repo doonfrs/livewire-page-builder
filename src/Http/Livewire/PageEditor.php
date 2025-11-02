@@ -1245,6 +1245,11 @@ class PageEditor extends Component
                     'properties' => $data['properties'] ?? [],
                 ];
 
+                // Include nested blocks if this is a RowBlock with blocks
+                if (isset($data['blocks']) && !empty($data['blocks'])) {
+                    $block['blocks'] = $data['blocks'];
+                }
+
                 // Find the row of the target block (including nested rows)
                 $parentRowId = null;
 
@@ -1313,7 +1318,9 @@ class PageEditor extends Component
                             beforeBlockId: $beforeBlockId,
                             afterBlockId: $afterBlockId,
                             replaceBlockId: null,
-                            position: $targetBlockId ? null : $position  // Pass position when no target block
+                            position: $targetBlockId ? null : $position,  // Pass position when no target block
+                            properties: $data['properties'] ?? null,
+                            blocks: $data['blocks'] ?? null
                         );
 
                         $this->dispatch(
