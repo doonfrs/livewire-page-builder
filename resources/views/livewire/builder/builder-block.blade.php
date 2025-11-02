@@ -5,7 +5,31 @@
     y: 0,
     showDeleteModal: false,
     deleteMessage: '',
-    deleteAction: null
+    deleteAction: null,
+    calculatePosition(mouseX, mouseY) {
+        const menuWidth = 280;
+        const menuHeight = 500;
+        const padding = 10;
+
+        let x = mouseX;
+        let y = mouseY;
+
+        // Check if menu would overflow right edge
+        if (x + menuWidth > window.innerWidth - padding) {
+            x = window.innerWidth - menuWidth - padding;
+        }
+
+        // Check if menu would overflow bottom edge
+        if (y + menuHeight > window.innerHeight - padding) {
+            y = window.innerHeight - menuHeight - padding;
+        }
+
+        // Ensure menu doesn't go off the left or top edges
+        if (x < padding) x = padding;
+        if (y < padding) y = padding;
+
+        return { x, y };
+    }
 }"
     class="{{ $cssClasses }} border transition-all duration-300 ease-in-out" style="{{ $inlineStyles }}"
     {!! $dataAttributes !!} :class="selected ? 'border-blue-500' : 'border-gray-300'"
@@ -20,13 +44,14 @@
         $wire.blockSelected();
     " x-on:show-block-context-menu.window="
         if ($event.detail.blockId === '{{ $blockId }}') {
+            const pos = calculatePosition($event.detail.x, $event.detail.y);
+            x = pos.x;
+            y = pos.y;
             showContextMenu = true;
-            x = $event.detail.x;
-            y = $event.detail.y;
         } else {
             showContextMenu = false;
         }
-    " @click.outside="showContextMenu = false" > @endif
+    " > @endif
     <div class="relative h-full content-center">
     @if ($isRowBlock)
         <!-- For RowBlocks, add minimal click handling that doesn't interfere with inner blocks -->
@@ -51,11 +76,13 @@
         </div>
     @endif
     <!-- Context Menu UI -->
-    <div x-show="showContextMenu" x-transition:enter="transition ease-out duration-100"
-        x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
-        x-transition:leave="transition ease-in duration-75" x-transition:leave-start="opacity-100 scale-100"
-        x-transition:leave-end="opacity-0 scale-95" :style="`position: fixed; left: ${x}px; top: ${y}px;`"
-        class="context-menu bg-white border border-gray-200 rounded-lg shadow-lg py-2 w-[280px] z-52">
+    <template x-teleport="body">
+        <div x-show="showContextMenu" x-transition:enter="transition ease-out duration-100"
+            x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
+            x-transition:leave="transition ease-in duration-75" x-transition:leave-start="opacity-100 scale-100"
+            x-transition:leave-end="opacity-0 scale-95" :style="`position: fixed; left: ${x}px; top: ${y}px;`"
+            class="context-menu bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg py-2 w-[280px] z-[9999]"
+            @click.outside="showContextMenu = false">
 
         <div
             class="px-4 py-1 text-xs font-semibold text-gray-500 uppercase tracking-wider border-b border-gray-100 dark:border-gray-700 mb-1">
@@ -261,7 +288,8 @@
                 </button>
             </div>
         </div>
-    </div>
+        </div>
+    </template>
 
     <!-- Delete Confirmation Modal -->
     @include('page-builder::livewire.builder.partials.delete-confirmation-modal')
