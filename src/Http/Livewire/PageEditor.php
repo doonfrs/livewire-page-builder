@@ -1779,7 +1779,7 @@ class PageEditor extends Component
                             type: 'success'
                         );
                     } elseif ($targetBlockId) {
-                        // Parent is a top-level row with target block
+                        // Parent row with target block (top-level or nested)
                         // Create positioning parameters based on position value
                         $beforeBlockId = null;
                         $afterBlockId = null;
@@ -1790,8 +1790,16 @@ class PageEditor extends Component
                             $afterBlockId = $targetBlockId;
                         }
 
-                        // Add the block to the end initially
-                        $this->rows[$parentRowId]['blocks'][$blockId] = $block;
+                        // DON'T modify $this->rows directly - let RowBlock handle it via block-added event
+                        // RowBlock will add the block to its local state and sync back via sync-nested-row-data
+
+                        Log::info('Dispatching block-added for paste', [
+                            'isNestedRow' => $isNestedRow,
+                            'parentRowId' => $parentRowId,
+                            'blockId' => $blockId,
+                            'beforeBlockId' => $beforeBlockId,
+                            'afterBlockId' => $afterBlockId,
+                        ]);
 
                         // Dispatch to row-block component with position parameters
                         $this->dispatch(
@@ -1800,6 +1808,7 @@ class PageEditor extends Component
                             blockId: $blockId,
                             blockAlias: $data['blockAlias'],
                             properties: $block['properties'],
+                            blocks: $block['blocks'] ?? null,
                             beforeBlockId: $beforeBlockId,
                             afterBlockId: $afterBlockId
                         );
