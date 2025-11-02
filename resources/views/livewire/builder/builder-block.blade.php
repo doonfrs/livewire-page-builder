@@ -41,7 +41,6 @@
             x: $event.clientX,
             y: $event.clientY
         });
-        $wire.blockSelected();
     " x-on:show-block-context-menu.window="
         if ($event.detail.blockId === '{{ $blockId }}') {
             const pos = calculatePosition($event.detail.x, $event.detail.y);
