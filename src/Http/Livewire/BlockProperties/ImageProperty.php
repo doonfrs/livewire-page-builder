@@ -35,6 +35,11 @@ class ImageProperty extends Component
         $this->dispatch('updateBlockProperty', $this->rowId, $this->blockId, $this->propertyName, $url);
     }
 
+    public function updateImageUrl()
+    {
+        $this->dispatch('updateBlockProperty', $this->rowId, $this->blockId, $this->propertyName, $this->currentValue);
+    }
+
     public function removeImage()
     {
         $this->currentValue = null;

@@ -7,7 +7,7 @@
         <div class="border border-gray-300 rounded bg-gray-100 h-24 flex items-center justify-center dark:bg-gray-800 dark:border-gray-700 relative group overflow-hidden">
             @if(!empty($currentValue))
                 <img src="{{ $currentValue }}" class="h-full w-full object-cover" />
-                <button 
+                <button
                     class="absolute top-1 right-1 hidden group-hover:flex p-1 bg-red-500 text-white rounded-full hover:bg-red-600 focus:outline-none"
                     title="{{ __('Remove image') }}"
                     wire:click="removeImage()">
@@ -17,13 +17,24 @@
                 <x-heroicon-o-photo class="w-8 h-8 text-gray-400 dark:text-gray-600" />
             @endif
         </div>
-        <!-- Image selector button -->
+
+        <!-- URL input field -->
+        <div class="mt-2">
+            <input
+                type="text"
+                wire:model.blur="currentValue"
+                wire:change="updateImageUrl()"
+                placeholder="{{ __('Enter image URL') }}"
+                class="w-full px-3 py-1.5 text-xs border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400" />
+        </div>
+
+        <!-- Image upload button -->
         <div class="mt-2 flex justify-between items-center">
-            <input 
-                type="file" 
-                id="file-{{ $propertyName }}" 
-                class="hidden" 
-                accept="image/*" 
+            <input
+                type="file"
+                id="file-{{ $propertyName }}"
+                class="hidden"
+                accept="image/*"
                 wire:model="uploadedImage"
                 wire:change.debounce.500ms="uploadImage()" />
             <button
