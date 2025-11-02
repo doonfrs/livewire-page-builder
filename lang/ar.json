@@ -190,5 +190,7 @@
     "Back to Themes": "العودة للقوالب",
     "Back": "رجوع",
     "Exit": "خروج",
-    "Cut": "قص"
+    "Cut": "قص",
+    "Confirm Delete": "تأكيد الحذف",
+    "Yes, Delete": "نعم، احذف"
 }

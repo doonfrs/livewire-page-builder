@@ -1,4 +1,12 @@
-<div id="block-{{ $blockId }}" x-data="{ selected: false, showContextMenu: false, x: 0, y: 0 }"
+<div id="block-{{ $blockId }}" x-data="{
+    selected: false,
+    showContextMenu: false,
+    x: 0,
+    y: 0,
+    showDeleteModal: false,
+    deleteMessage: '',
+    deleteAction: null
+}"
     class="{{ $cssClasses }} border transition-all duration-300 ease-in-out" style="{{ $inlineStyles }}"
     {!! $dataAttributes !!}
     :class="selected ? 'border-blue-500' : 'border-gray-300'"
@@ -190,10 +198,13 @@
 
         <button
             @click="
-                if (confirm('{{ __('Are you sure you want to delete this block?') }}')) {
-                    showContextMenu = false;
-                    setTimeout(() => $dispatch('deleteBlock', { blockId: '{{ $blockId }}'}), 100);
-                }
+                showContextMenu = false;
+                deleteMessage = '{{ __('Are you sure you want to delete this block?') }}';
+                deleteAction = () => {
+                    showDeleteModal = false;
+                    setTimeout(() => $dispatch('deleteBlock', { blockId: '{{ $blockId }}' }), 100);
+                };
+                showDeleteModal = true;
                 "
             class="flex items-center w-full px-4 py-2 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 border-b border-gray-50 dark:border-gray-700 cursor-pointer">
             <x-heroicon-o-trash class="w-4 h-4 ms-0 me-3 text-gray-500 dark:text-gray-400" />
@@ -252,5 +263,8 @@
             </div>
         </div>
     </div>
+
+    <!-- Delete Confirmation Modal -->
+    @include('page-builder::livewire.builder.partials.delete-confirmation-modal')
 </div>
 </div>

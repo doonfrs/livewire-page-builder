@@ -1,5 +1,8 @@
 <div id="row-{{ $rowId }}" x-data="{
-    selected: false
+    selected: false,
+    showDeleteModal: false,
+    deleteMessage: '',
+    deleteAction: null
 }"
     class="block-row border relative transition-all duration-300 ease-in-out group {{ $cssClasses }}"
     style="{{ $inlineStyles }} font-size:initial"
@@ -237,11 +240,14 @@
                 <!-- Remove Row Button -->
                 <button
                     @click="
-                if (confirm('{{ __('Are you sure you want to delete this row?') }}')) {
-                    open = false;
-                    setTimeout(() => $dispatch('deleteRow', {rowId: '{{ $rowId }}'}), 100);
-                }
-                "
+                        open = false;
+                        deleteMessage = '{{ __('Are you sure you want to delete this row?') }}';
+                        deleteAction = () => {
+                            showDeleteModal = false;
+                            setTimeout(() => $dispatch('deleteRow', { rowId: '{{ $rowId }}' }), 100);
+                        };
+                        showDeleteModal = true;
+                    "
                     class="flex items-center w-full px-3 py-2 text-left text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 border-b border-gray-50 dark:border-gray-700 cursor-pointer"
                     title="{{ __('Remove Row') }}">
                     <x-heroicon-o-trash class="w-4 h-4 ms-0 me-3 text-gray-500 dark:text-gray-400" />
@@ -267,4 +273,7 @@
             @endforeach
         </div>
     </div>
+
+    <!-- Delete Confirmation Modal -->
+    @include('page-builder::livewire.builder.partials.delete-confirmation-modal')
 </div>
