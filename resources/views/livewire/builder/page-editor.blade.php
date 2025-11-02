@@ -108,6 +108,48 @@
             // Start checking after Livewire processes the response
             setTimeout(checkAndScroll, 300);
         "
+        x-on:row-duplicated.window="
+            const rowId = $event.detail.rowId;
+            console.log('🔄 row-duplicated event received', {rowId});
+
+            let retryCount = 0;
+            const maxRetries = 10; // Max 2 seconds (10 * 200ms)
+
+            // Wait for Livewire to finish morphing the DOM
+            const checkAndScroll = () => {
+                console.log('🔍 Looking for row element:', 'row-' + rowId, 'or block-' + rowId, '(attempt', retryCount + 1, ')');
+
+                // Try to find as a top-level row first
+                let el = document.getElementById('row-' + rowId);
+
+                // If not found, try as a nested row (which is wrapped in a block div)
+                if (!el) {
+                    console.log('🔍 Row not found, trying as block (nested row)');
+                    el = document.getElementById('block-' + rowId);
+                }
+
+                if (el) {
+                    console.log('✅ Element found! Scrolling to:', el.id);
+                    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    // Trigger selection after scroll
+                    setTimeout(() => {
+                        console.log('✅ Dispatching select-row event:', rowId);
+                        Livewire.dispatch('select-row', { rowId: rowId });
+                    }, 300);
+                } else {
+                    retryCount++;
+                    if (retryCount < maxRetries) {
+                        console.log('⏳ Retry', retryCount, '/', maxRetries);
+                        setTimeout(checkAndScroll, 200);
+                    } else {
+                        console.error('❌ Row/Block element not found after', maxRetries, 'retries. Tried:', 'row-' + rowId, 'and block-' + rowId);
+                    }
+                }
+            };
+
+            // Start checking after Livewire processes the response
+            setTimeout(checkAndScroll, 300);
+        "
         x-on:row-selected.window="
             currentSelectedRowId = $event.detail.rowId;
             currentSelectedBlockId = null;

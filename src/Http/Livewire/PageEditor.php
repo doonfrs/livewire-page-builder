@@ -1258,6 +1258,165 @@ class PageEditor extends Component
     }
 
     /**
+     * Duplicate a row (clone and place after current row with all its blocks).
+     */
+    #[On('duplicateRow')]
+    public function duplicateRow($data)
+    {
+        $rowId = $data['rowId'] ?? null;
+        $properties = $data['properties'] ?? [];
+        $blocks = $data['blocks'] ?? [];
+        $isNested = $data['isNested'] ?? false;
+
+        if (!$rowId) {
+            Log::warning('duplicateRow: Missing required rowId', ['data' => $data]);
+            $this->dispatch(
+                'notify',
+                message: 'Failed to duplicate row: Missing row ID',
+                type: 'error'
+            );
+            return;
+        }
+
+        Log::info('PageEditor::duplicateRow called', [
+            'rowId' => $rowId,
+            'isNested' => $isNested,
+            'blocksCount' => count($blocks),
+            'hasProperties' => !empty($properties),
+        ]);
+
+        // Check if this is a top-level row or nested row
+        if (isset($this->rows[$rowId])) {
+            // This is a top-level row
+            Log::info('✅ Duplicating top-level row', ['rowId' => $rowId]);
+
+            $originalRow = $this->rows[$rowId];
+
+            // Generate new row ID
+            $newRowId = uniqid();
+
+            // Clone the row with regenerated block IDs
+            $newRow = [
+                'properties' => $originalRow['properties'] ?? [],
+                'blocks' => $this->regenerateBlockIds($originalRow['blocks'] ?? []),
+            ];
+
+            Log::info('Created new row clone', [
+                'originalRowId' => $rowId,
+                'newRowId' => $newRowId,
+                'newBlocksCount' => count($newRow['blocks']),
+            ]);
+
+            // Find position of original row and insert after it
+            $rowKeys = array_keys($this->rows);
+            $position = array_search($rowId, $rowKeys);
+
+            if ($position !== false) {
+                $insertPosition = $position + 1;
+
+                // Insert the new row after the original
+                $newRows = array_merge(
+                    array_slice($this->rows, 0, $insertPosition, true),
+                    [$newRowId => $newRow],
+                    array_slice($this->rows, $insertPosition, null, true)
+                );
+
+                $this->rows = $newRows;
+
+                Log::info('✅ Top-level row duplicated successfully', [
+                    'originalRowId' => $rowId,
+                    'newRowId' => $newRowId,
+                    'insertedAt' => $insertPosition,
+                    'totalRows' => count($this->rows),
+                ]);
+
+                // Dispatch event for scroll and selection
+                $this->dispatch('row-duplicated', rowId: $newRowId);
+
+                $this->dispatch(
+                    'notify',
+                    message: 'Row duplicated successfully',
+                    type: 'success'
+                );
+
+                return;
+            }
+        } else {
+            // This is a nested row (RowBlock) - find its parent
+            Log::info('🔍 Searching for nested row parent', ['nestedRowId' => $rowId]);
+
+            $parentRowId = null;
+            foreach ($this->rows as $rId => $row) {
+                if (isset($row['blocks'][$rowId])) {
+                    $parentRowId = $rId;
+                    break;
+                }
+            }
+
+            if ($parentRowId) {
+                Log::info('✅ Found parent row for nested row', [
+                    'nestedRowId' => $rowId,
+                    'parentRowId' => $parentRowId,
+                ]);
+
+                // Generate new block/row ID for the duplicate
+                $newBlockId = uniqid();
+
+                // Clone the nested row block with regenerated IDs
+                $originalNestedRow = $this->rows[$parentRowId]['blocks'][$rowId];
+                $newNestedRow = [
+                    'alias' => $originalNestedRow['alias'] ?? 'page-builder-app-livewire-shop-row',
+                    'properties' => $originalNestedRow['properties'] ?? [],
+                    'blocks' => $this->regenerateBlockIds($originalNestedRow['blocks'] ?? []),
+                ];
+
+                Log::info('Created nested row clone', [
+                    'originalNestedRowId' => $rowId,
+                    'newBlockId' => $newBlockId,
+                    'newNestedBlocksCount' => count($newNestedRow['blocks']),
+                ]);
+
+                // DON'T modify $this->rows directly - let RowBlock handle it via block-added event
+                // Dispatch 'block-added' event - parent RowBlock will handle adding it to its blocks array
+                Log::info('⚡ Dispatching block-added event for nested row duplication');
+                $this->dispatch(
+                    'block-added',
+                    rowId: $parentRowId,
+                    blockId: $newBlockId,
+                    blockAlias: $newNestedRow['alias'],
+                    properties: $newNestedRow['properties'],
+                    blocks: $newNestedRow['blocks'],
+                    beforeBlockId: null,
+                    afterBlockId: $rowId  // Insert after the original nested row
+                );
+
+                Log::info('📢 Dispatching row-duplicated event for nested row', [
+                    'blockId' => $newBlockId,
+                ]);
+
+                // Dispatch event for scroll and selection (using blockId since nested rows are blocks)
+                $this->dispatch('row-duplicated', rowId: $newBlockId);
+
+                $this->dispatch(
+                    'notify',
+                    message: 'Nested row duplicated successfully',
+                    type: 'success'
+                );
+
+                return;
+            }
+        }
+
+        // If we reach here, something went wrong
+        Log::warning('❌ duplicateRow: Row not found', ['rowId' => $rowId]);
+        $this->dispatch(
+            'notify',
+            message: 'Failed to duplicate row: Row not found',
+            type: 'error'
+        );
+    }
+
+    /**
      * Handle pasting clipboard data
      */
     #[On('paste-from-clipboard')]

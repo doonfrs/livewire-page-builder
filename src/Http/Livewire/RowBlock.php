@@ -316,7 +316,7 @@ class RowBlock extends Block
     }
 
     #[On('block-added')]
-    public function blockAdded($rowId, $blockId, $blockAlias, $properties, $beforeBlockId = null, $afterBlockId = null)
+    public function blockAdded($rowId, $blockId, $blockAlias, $properties, $beforeBlockId = null, $afterBlockId = null, $blocks = null)
     {
         Log::info('🎯 RowBlock::blockAdded called', [
             'targetRowId' => $rowId,
@@ -325,6 +325,8 @@ class RowBlock extends Block
             'blockAlias' => $blockAlias,
             'beforeBlockId' => $beforeBlockId,
             'afterBlockId' => $afterBlockId,
+            'hasBlocks' => !empty($blocks),
+            'blocksCount' => $blocks ? count($blocks) : 0,
         ]);
 
         if ($rowId != $this->rowId) {
@@ -334,18 +336,36 @@ class RowBlock extends Block
 
         Log::info('✅ Processing block-added for this row');
 
-        // Special handling for nested rows
-        if ($blockAlias === 'trinavo-livewire-page-builder-http-livewire-row-block') {
+        // Special handling for nested rows (check if alias contains 'row' or if blocks are provided)
+        $isNestedRow = str_contains($blockAlias, 'row') || !empty($blocks);
+
+        if ($isNestedRow && !empty($blocks)) {
             $block = [
                 'alias' => $blockAlias,
                 'properties' => $properties,
-                'blocks' => [], // Nested rows start with empty blocks
+                'blocks' => $blocks, // Use provided blocks for nested row
             ];
+            Log::info('✅ Created nested row block with nested blocks', [
+                'alias' => $blockAlias,
+                'blocksCount' => count($block['blocks']),
+            ]);
+        } elseif ($isNestedRow) {
+            $block = [
+                'alias' => $blockAlias,
+                'properties' => $properties,
+                'blocks' => [], // New nested row starts with empty blocks
+            ];
+            Log::info('✅ Created empty nested row block', [
+                'alias' => $blockAlias,
+            ]);
         } else {
             $block = [
                 'alias' => $blockAlias,
                 'properties' => $properties,
             ];
+            Log::info('✅ Created regular block', [
+                'alias' => $blockAlias,
+            ]);
         }
 
         if ($beforeBlockId) {
@@ -746,5 +766,31 @@ class RowBlock extends Block
 
         // Force a re-render of the component
         $this->skipRender(false);
+    }
+
+    /**
+     * Duplicate this row (clone and place after current row with all its blocks).
+     */
+    public function duplicateRow()
+    {
+        Log::info('RowBlock::duplicateRow called', [
+            'rowId' => $this->rowId,
+            'blocksCount' => count($this->blocks),
+            'isNested' => $this->isNested,
+        ]);
+
+        $data = [
+            'rowId' => $this->rowId,
+            'properties' => $this->properties,
+            'blocks' => $this->blocks,
+            'isNested' => $this->isNested,
+        ];
+
+        // Dispatch event to PageEditor to handle the duplication
+        $this->dispatch('duplicateRow', data: $data);
+
+        Log::info('RowBlock duplicate event dispatched', [
+            'rowId' => $this->rowId,
+        ]);
     }
 }
