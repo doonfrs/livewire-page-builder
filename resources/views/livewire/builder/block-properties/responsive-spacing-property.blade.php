@@ -42,11 +42,20 @@
                         <label class="mb-1 block text-xs font-semibold text-gray-500 dark:text-gray-400">
                             {{ $directionLabel }}
                         </label>
-                        <input type="text"
+                        <select
                             class="w-full rounded border border-gray-300 p-2 text-sm focus:border-blue-400 focus:ring-2 focus:ring-blue-200 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200"
                             wire:key="responsive-{{ $property['name'] }}-all-{{ $directionKey }}"
-                            wire:model.live.debounce.400ms="values.all.{{ $directionKey }}"
-                            placeholder="-" />
+                            wire:model.live="values.all.{{ $directionKey }}">
+                            <option value="">-</option>
+                            @if ($property['name'] === 'margin')
+                                @foreach (['px', '0.5', '1', '1.5', '2', '2.5', '3', '3.5', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40'] as $spacing)
+                                    <option value="-{{ $spacing }}">-{{ $spacing }}</option>
+                                @endforeach
+                            @endif
+                            @foreach (['0', 'px', '0.5', '1', '1.5', '2', '2.5', '3', '3.5', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40'] as $spacing)
+                                <option value="{{ $spacing }}">{{ $spacing }}</option>
+                            @endforeach
+                        </select>
                     </div>
                 @endforeach
             </div>
@@ -65,11 +74,20 @@
                             <label class="mb-1 block text-xs font-semibold text-gray-500 dark:text-gray-400">
                                 {{ $directionLabel }}
                             </label>
-                            <input type="text"
+                            <select
                                 class="w-full rounded border border-gray-300 p-2 text-sm focus:border-blue-400 focus:ring-2 focus:ring-blue-200 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200"
                                 wire:key="responsive-{{ $property['name'] }}-{{ $deviceKey }}-{{ $directionKey }}"
-                                wire:model.live.debounce.400ms="values.{{ $deviceKey }}.{{ $directionKey }}"
-                                placeholder="-" />
+                                wire:model.live="values.{{ $deviceKey }}.{{ $directionKey }}">
+                                <option value="">-</option>
+                                @if ($property['name'] === 'margin')
+                                    @foreach (['px', '0.5', '1', '1.5', '2', '2.5', '3', '3.5', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40'] as $spacing)
+                                        <option value="-{{ $spacing }}">-{{ $spacing }}</option>
+                                    @endforeach
+                                @endif
+                                @foreach (['0', 'px', '0.5', '1', '1.5', '2', '2.5', '3', '3.5', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40'] as $spacing)
+                                    <option value="{{ $spacing }}">{{ $spacing }}</option>
+                                @endforeach
+                            </select>
                         </div>
                     @endforeach
                 </div>
