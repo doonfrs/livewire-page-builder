@@ -1,6 +1,9 @@
 <div>
     <div x-data="{
         isOpen: false,
+        currentValue: @entangle('currentValue'),
+        customColor: @entangle('customColor'),
+        opacity: @entangle('opacity'),
         activeTab: @entangle('activeTab'),
         getColorName(color) {
             if (!color) return 'None';
@@ -68,10 +71,12 @@
         <div class="flex items-center gap-2">
             <button type="button" @click="togglePopover()"
                 class="color-picker-button flex items-center gap-2 p-2 border border-gray-300 bg-white rounded w-full dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200">
-                <div class="w-6 h-6 rounded border border-gray-300 dark:border-gray-600 overflow-hidden"
-                    :class="getColorClass('{{ $currentValue }}')" :style="getColorStyle('{{ $currentValue }}')">
+                <div class="w-6 h-6 shrink-0 rounded border border-gray-300 dark:border-gray-600 overflow-hidden"
+                    :class="getColorClass(currentValue)" :style="getColorStyle(currentValue)">
                 </div>
-                <x-heroicon-o-chevron-down class="w-4 h-4 ml-auto text-gray-500 dark:text-gray-400" />
+                <span class="text-xs font-mono truncate flex-1 text-left text-gray-600 dark:text-gray-400"
+                    x-text="currentValue || 'None'"></span>
+                <x-heroicon-o-chevron-down class="w-4 h-4 shrink-0 text-gray-500 dark:text-gray-400" />
             </button>
         </div>
 
@@ -190,7 +195,7 @@
                     <div class="mb-3">
                         <label class="flex items-center justify-between text-xs text-gray-600 dark:text-gray-400 mb-1">
                             <span>{{ __('Opacity') }}</span>
-                            <span class="font-medium">{{ $opacity }}%</span>
+                            <span class="font-medium" x-text="`${opacity}%`"></span>
                         </label>
                         <input type="range" wire:model.live="opacity"
                             @input="applyCustomColorWithDebounce($event.target.value)"
@@ -203,7 +208,7 @@
                         <!-- Checkerboard background to show transparency -->
                         <div class="absolute inset-0 bg-[linear-gradient(45deg,#ccc_25%,transparent_25%),linear-gradient(-45deg,#ccc_25%,transparent_25%),linear-gradient(45deg,transparent_75%,#ccc_75%),linear-gradient(-45deg,transparent_75%,#ccc_75%)] bg-[length:20px_20px] bg-[position:0_0,0_10px,10px_-10px,-10px_0px]"></div>
                         <div class="absolute inset-0"
-                            :style="`background-color: ${getColorStyle('{{ $customColor }}').replace('background-color: ', '')}; opacity: {{ $opacity / 100 }};`"></div>
+                            :style="`background-color: ${customColor}; opacity: ${opacity / 100};`"></div>
                     </div>
                 </div>
 
