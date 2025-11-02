@@ -20,6 +20,8 @@ class ColorPicker extends Component
 
     public $customColor = '';
 
+    public $opacity = 100;
+
     public $activeTab = 'theme';
 
     public $presetColors = [
@@ -71,6 +73,23 @@ class ColorPicker extends Component
         if (str_starts_with($this->currentValue, '#')) {
             $this->customColor = $this->currentValue;
             $this->activeTab = 'custom';
+            // Extract opacity from hex8 format (#RRGGBBAA)
+            if (strlen($this->currentValue) === 9) {
+                $alpha = hexdec(substr($this->currentValue, 7, 2));
+                $this->opacity = round(($alpha / 255) * 100);
+                $this->customColor = substr($this->currentValue, 0, 7);
+            }
+        } elseif (str_starts_with($this->currentValue, 'rgb')) {
+            // Parse rgba format
+            preg_match('/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/', $this->currentValue, $matches);
+            if (count($matches) >= 4) {
+                $r = str_pad(dechex($matches[1]), 2, '0', STR_PAD_LEFT);
+                $g = str_pad(dechex($matches[2]), 2, '0', STR_PAD_LEFT);
+                $b = str_pad(dechex($matches[3]), 2, '0', STR_PAD_LEFT);
+                $this->customColor = "#{$r}{$g}{$b}";
+                $this->opacity = isset($matches[4]) ? round($matches[4] * 100) : 100;
+                $this->activeTab = 'custom';
+            }
         }
     }
 
@@ -104,7 +123,17 @@ class ColorPicker extends Component
     public function selectCustomColor()
     {
         if (! empty($this->customColor)) {
-            $this->currentValue = $this->customColor;
+            // If opacity is less than 100, convert to rgba format
+            if ($this->opacity < 100) {
+                $hex = ltrim($this->customColor, '#');
+                $r = hexdec(substr($hex, 0, 2));
+                $g = hexdec(substr($hex, 2, 2));
+                $b = hexdec(substr($hex, 4, 2));
+                $alpha = $this->opacity / 100;
+                $this->currentValue = "rgba({$r}, {$g}, {$b}, {$alpha})";
+            } else {
+                $this->currentValue = $this->customColor;
+            }
             $this->updateProperty();
         }
     }
@@ -113,6 +142,7 @@ class ColorPicker extends Component
     {
         $this->currentValue = '';
         $this->customColor = '';
+        $this->opacity = 100;
         $this->updateProperty();
     }
 

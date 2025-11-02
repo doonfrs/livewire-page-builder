@@ -185,8 +185,26 @@
                             @input="applyCustomColorWithDebounce($event.target.value)" placeholder="Hex color"
                             class="flex-1 p-2 text-sm border border-gray-300 rounded dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200" />
                     </div>
-                    <div class="h-10 w-full rounded border border-gray-300 dark:border-gray-600 mb-4"
-                        :style="getColorStyle('{{ $customColor }}')"></div>
+
+                    <!-- Opacity Slider -->
+                    <div class="mb-3">
+                        <label class="flex items-center justify-between text-xs text-gray-600 dark:text-gray-400 mb-1">
+                            <span>{{ __('Opacity') }}</span>
+                            <span class="font-medium">{{ $opacity }}%</span>
+                        </label>
+                        <input type="range" wire:model.live="opacity"
+                            @input="applyCustomColorWithDebounce($event.target.value)"
+                            min="0" max="100" step="1"
+                            class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700" />
+                    </div>
+
+                    <!-- Color Preview with Opacity -->
+                    <div class="relative h-10 w-full rounded border border-gray-300 dark:border-gray-600 mb-4 overflow-hidden">
+                        <!-- Checkerboard background to show transparency -->
+                        <div class="absolute inset-0 bg-[linear-gradient(45deg,#ccc_25%,transparent_25%),linear-gradient(-45deg,#ccc_25%,transparent_25%),linear-gradient(45deg,transparent_75%,#ccc_75%),linear-gradient(-45deg,transparent_75%,#ccc_75%)] bg-[length:20px_20px] bg-[position:0_0,0_10px,10px_-10px,-10px_0px]"></div>
+                        <div class="absolute inset-0"
+                            :style="`background-color: ${getColorStyle('{{ $customColor }}').replace('background-color: ', '')}; opacity: {{ $opacity / 100 }};`"></div>
+                    </div>
                 </div>
 
                 <!-- Footer Actions -->

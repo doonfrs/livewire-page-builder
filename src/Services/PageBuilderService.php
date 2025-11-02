@@ -368,14 +368,14 @@ class PageBuilderService
         }
 
         if ($textColor) {
-            if (! str_starts_with($textColor, '#')) {
+            if (! str_starts_with($textColor, '#') && ! str_starts_with($textColor, 'rgb')) {
                 $classes[] = "text-$textColor";
             }
         }
 
-        // Add background color classes or inline styles for hex colors
+        // Add background color classes or inline styles for hex and rgba colors
         if ($backgroundColor) {
-            if (! str_starts_with($backgroundColor, '#')) {
+            if (! str_starts_with($backgroundColor, '#') && ! str_starts_with($backgroundColor, 'rgb')) {
                 $classes[] = "bg-$backgroundColor";
             }
         }
@@ -456,16 +456,16 @@ class PageBuilderService
         $backgroundRepeat = $properties['backgroundRepeat'] ?? 'no-repeat';
 
         $styles = [];
-        // Add text color classes or inline styles for hex colors
+        // Add text color classes or inline styles for hex and rgba colors
         if ($textColor) {
-            if (str_starts_with($textColor, '#')) {
+            if (str_starts_with($textColor, '#') || str_starts_with($textColor, 'rgb')) {
                 $styles[] = "color: $textColor";
             }
         }
 
-        // Add background color classes or inline styles for hex colors
+        // Add background color classes or inline styles for hex and rgba colors
         if ($backgroundColor) {
-            if (str_starts_with($backgroundColor, '#')) {
+            if (str_starts_with($backgroundColor, '#') || str_starts_with($backgroundColor, 'rgb')) {
                 $styles[] = "background-color: $backgroundColor";
             }
         }
@@ -585,21 +585,21 @@ class PageBuilderService
             }
         }
 
-        // Add border color classes (only for non-hex colors)
-        if ($borderColor && ! str_starts_with($borderColor, '#')) {
+        // Add border color classes (only for Tailwind color names, not hex or rgba)
+        if ($borderColor && ! str_starts_with($borderColor, '#') && ! str_starts_with($borderColor, 'rgb')) {
             $classes[] = "border-$borderColor";
         } else {
-            // Individual border colors (only for non-hex colors)
-            if ($borderTopColor && ! str_starts_with($borderTopColor, '#')) {
+            // Individual border colors (only for Tailwind color names, not hex or rgba)
+            if ($borderTopColor && ! str_starts_with($borderTopColor, '#') && ! str_starts_with($borderTopColor, 'rgb')) {
                 $classes[] = "border-t-$borderTopColor";
             }
-            if ($borderRightColor && ! str_starts_with($borderRightColor, '#')) {
+            if ($borderRightColor && ! str_starts_with($borderRightColor, '#') && ! str_starts_with($borderRightColor, 'rgb')) {
                 $classes[] = "border-r-$borderRightColor";
             }
-            if ($borderBottomColor && ! str_starts_with($borderBottomColor, '#')) {
+            if ($borderBottomColor && ! str_starts_with($borderBottomColor, '#') && ! str_starts_with($borderBottomColor, 'rgb')) {
                 $classes[] = "border-b-$borderBottomColor";
             }
-            if ($borderLeftColor && ! str_starts_with($borderLeftColor, '#')) {
+            if ($borderLeftColor && ! str_starts_with($borderLeftColor, '#') && ! str_starts_with($borderLeftColor, 'rgb')) {
                 $classes[] = "border-l-$borderLeftColor";
             }
         }
@@ -640,21 +640,21 @@ class PageBuilderService
         $borderBottomColor = $properties['borderBottomColor'] ?? null;
         $borderLeftColor = $properties['borderLeftColor'] ?? null;
 
-        // Add border color styles for hex colors
-        if ($borderColor && str_starts_with($borderColor, '#')) {
+        // Add border color styles for hex and rgba colors
+        if ($borderColor && (str_starts_with($borderColor, '#') || str_starts_with($borderColor, 'rgb'))) {
             $styles[] = "border-color: $borderColor";
         } else {
-            // Individual border colors for hex values
-            if ($borderTopColor && str_starts_with($borderTopColor, '#')) {
+            // Individual border colors for hex and rgba values
+            if ($borderTopColor && (str_starts_with($borderTopColor, '#') || str_starts_with($borderTopColor, 'rgb'))) {
                 $styles[] = "border-top-color: $borderTopColor";
             }
-            if ($borderRightColor && str_starts_with($borderRightColor, '#')) {
+            if ($borderRightColor && (str_starts_with($borderRightColor, '#') || str_starts_with($borderRightColor, 'rgb'))) {
                 $styles[] = "border-right-color: $borderRightColor";
             }
-            if ($borderBottomColor && str_starts_with($borderBottomColor, '#')) {
+            if ($borderBottomColor && (str_starts_with($borderBottomColor, '#') || str_starts_with($borderBottomColor, 'rgb'))) {
                 $styles[] = "border-bottom-color: $borderBottomColor";
             }
-            if ($borderLeftColor && str_starts_with($borderLeftColor, '#')) {
+            if ($borderLeftColor && (str_starts_with($borderLeftColor, '#') || str_starts_with($borderLeftColor, 'rgb'))) {
                 $styles[] = "border-left-color: $borderLeftColor";
             }
         }
