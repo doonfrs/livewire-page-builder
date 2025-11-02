@@ -66,6 +66,14 @@
                     <span>{{ __('Copy') }}</span>
                 </button>
 
+                <!-- Cut Row Button -->
+                <button wire:click="cutRow()" @click="open = false"
+                    class="flex items-center w-full px-3 py-2 text-left text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700 border-b border-gray-50 dark:border-gray-700 cursor-pointer"
+                    title="{{ __('Cut Row') }}">
+                    <x-heroicon-o-scissors class="w-4 h-4 ms-0 me-3" />
+                    <span>{{ __('Cut') }}</span>
+                </button>
+
                 <!-- Paste Row (combined with before/after options) -->
                 <div
                     class="flex items-center w-full px-3 py-2 text-gray-700 dark:text-gray-300 border-b border-gray-50 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"

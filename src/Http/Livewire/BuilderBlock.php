@@ -177,4 +177,33 @@ class BuilderBlock extends Component
             type: 'success'
         );
     }
+
+    /**
+     * Cut block data to clipboard (copy and delete).
+     */
+    public function cutBlock()
+    {
+        // First, copy the block to clipboard
+        $data = [
+            'type' => 'Block',
+            'blockId' => $this->blockId,
+            'blockAlias' => $this->blockAlias,
+            'properties' => $this->properties,
+        ];
+
+        $jsonData = json_encode($data);
+
+        // Dispatch an event to copy to clipboard via JavaScript
+        $this->dispatch('copy-to-clipboard', data: $jsonData);
+
+        // Then delete the block
+        $this->dispatch('deleteBlock', blockId: $this->blockId);
+
+        // Success notification
+        $this->dispatch(
+            'notify',
+            message: 'Block cut to clipboard',
+            type: 'success'
+        );
+    }
 }

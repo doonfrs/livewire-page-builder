@@ -1248,19 +1248,23 @@ class PageEditor extends Component
                 // Find the row of the target block (including nested rows)
                 $parentRowId = null;
 
-                // First check top-level rows
-                foreach ($this->rows as $rowId => $row) {
-                    if (isset($row['blocks'][$targetBlockId])) {
-                        $parentRowId = $rowId;
-                        break;
+                // Only search for target block if targetBlockId is provided
+                if ($targetBlockId) {
+                    // First check top-level rows
+                    foreach ($this->rows as $rowId => $row) {
+                        if (isset($row['blocks'][$targetBlockId])) {
+                            $parentRowId = $rowId;
+                            break;
+                        }
+                    }
+
+                    // If not found in top-level, search in nested RowBlocks
+                    if (! $parentRowId) {
+                        $parentRowId = $this->findBlockInNestedRows($this->rows, $targetBlockId);
                     }
                 }
 
-                // If not found in top-level, search in nested RowBlocks
-                if (! $parentRowId) {
-                    $parentRowId = $this->findBlockInNestedRows($this->rows, $targetBlockId);
-                }
-
+                // If no parent found yet and targetRowId is provided, use it
                 if (! $parentRowId && $targetRowId) {
                     $parentRowId = $targetRowId;
                 }
@@ -1291,10 +1295,13 @@ class PageEditor extends Component
                         // Set position parameters before dispatching
                         $beforeBlockId = null;
                         $afterBlockId = null;
-                        if ($position === 'before') {
-                            $beforeBlockId = $targetBlockId;
-                        } else {
-                            $afterBlockId = $targetBlockId;
+                        if ($targetBlockId) {
+                            // If we have a specific target block, use it for positioning
+                            if ($position === 'before') {
+                                $beforeBlockId = $targetBlockId;
+                            } else {
+                                $afterBlockId = $targetBlockId;
+                            }
                         }
 
                         // Dispatch the same event used by addBlockToModalRow
@@ -1305,7 +1312,8 @@ class PageEditor extends Component
                             blockPageName: $data['blockPageName'] ?? null,
                             beforeBlockId: $beforeBlockId,
                             afterBlockId: $afterBlockId,
-                            replaceBlockId: null
+                            replaceBlockId: null,
+                            position: $targetBlockId ? null : $position  // Pass position when no target block
                         );
 
                         $this->dispatch(
