@@ -327,21 +327,22 @@ class RowBlock extends Block
             'blockAlias' => $blockAlias,
             'beforeBlockId' => $beforeBlockId,
             'afterBlockId' => $afterBlockId,
-            'hasBlocks' => !empty($blocks),
+            'hasBlocks' => ! empty($blocks),
             'blocksCount' => $blocks ? count($blocks) : 0,
         ]);
 
         if ($rowId != $this->rowId) {
             Log::info('⏭️ Skipping - not for this row');
+
             return;
         }
 
         Log::info('✅ Processing block-added for this row');
 
         // Special handling for nested rows (check if alias contains 'row' or if blocks are provided)
-        $isNestedRow = str_contains($blockAlias, 'row') || !empty($blocks);
+        $isNestedRow = str_contains($blockAlias, 'row') || ! empty($blocks);
 
-        if ($isNestedRow && !empty($blocks)) {
+        if ($isNestedRow && ! empty($blocks)) {
             $block = [
                 'alias' => $blockAlias,
                 'properties' => $properties,

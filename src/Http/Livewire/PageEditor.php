@@ -1123,11 +1123,12 @@ class PageEditor extends Component
         $blocks = $data['blocks'] ?? null;
         $rowId = $data['rowId'] ?? null;
 
-        if (!$blockId || !$blockAlias) {
+        if (! $blockId || ! $blockAlias) {
             Log::warning('duplicateBlock: Missing required data', [
                 'blockId' => $blockId,
                 'blockAlias' => $blockAlias,
             ]);
+
             return;
         }
 
@@ -1135,7 +1136,7 @@ class PageEditor extends Component
             'blockId' => $blockId,
             'blockAlias' => $blockAlias,
             'rowId' => $rowId,
-            'hasBlocks' => !empty($blocks),
+            'hasBlocks' => ! empty($blocks),
         ]);
 
         // Try to find the block in top-level rows first
@@ -1158,7 +1159,7 @@ class PageEditor extends Component
             }
 
             // If not found in top-level, search nested rows
-            if (!$foundRowId) {
+            if (! $foundRowId) {
                 Log::info('🔍 Searching in nested rows for block', ['blockId' => $blockId]);
                 $foundRowId = $this->findBlockInNestedRows($this->rows, $blockId);
 
@@ -1170,7 +1171,7 @@ class PageEditor extends Component
             }
         }
 
-        if (!$foundRowId || !$foundBlock) {
+        if (! $foundRowId || ! $foundBlock) {
             Log::warning('❌ duplicateBlock: Block not found anywhere', [
                 'blockId' => $blockId,
                 'rowId' => $rowId,
@@ -1181,6 +1182,7 @@ class PageEditor extends Component
                 message: __('Failed to duplicate block: Block not found'),
                 type: 'error'
             );
+
             return;
         }
 
@@ -1194,7 +1196,7 @@ class PageEditor extends Component
         ];
 
         // If this block has nested blocks (RowBlock), clone them with new IDs
-        if (!empty($foundBlock['blocks'])) {
+        if (! empty($foundBlock['blocks'])) {
             $newBlock['blocks'] = $this->regenerateBlockIds($foundBlock['blocks']);
         }
 
@@ -1209,7 +1211,7 @@ class PageEditor extends Component
             'blockId' => $newBlockId,
             'blockAlias' => $newBlock['alias'],
             'afterBlockId' => $blockId,
-            'hasProperties' => !empty($newBlock['properties']),
+            'hasProperties' => ! empty($newBlock['properties']),
             'propertiesCount' => count($newBlock['properties']),
         ]);
 
@@ -1268,13 +1270,14 @@ class PageEditor extends Component
         $blocks = $data['blocks'] ?? [];
         $isNested = $data['isNested'] ?? false;
 
-        if (!$rowId) {
+        if (! $rowId) {
             Log::warning('duplicateRow: Missing required rowId', ['data' => $data]);
             $this->dispatch(
                 'notify',
                 message: __('Failed to duplicate row: Missing row ID'),
                 type: 'error'
             );
+
             return;
         }
 
@@ -1282,7 +1285,7 @@ class PageEditor extends Component
             'rowId' => $rowId,
             'isNested' => $isNested,
             'blocksCount' => count($blocks),
-            'hasProperties' => !empty($properties),
+            'hasProperties' => ! empty($properties),
         ]);
 
         // Check if this is a top-level row or nested row
@@ -1500,6 +1503,7 @@ class PageEditor extends Component
                         Log::warning('Target row not found for inside paste', [
                             'targetRowId' => $targetRowId,
                         ]);
+
                         return;
                     }
                 }
@@ -1596,6 +1600,7 @@ class PageEditor extends Component
                     Log::warning('Could not find parent row for nested row paste', [
                         'targetRowId' => $targetRowId,
                     ]);
+
                     return;
                 }
 
@@ -1695,7 +1700,7 @@ class PageEditor extends Component
                 ];
 
                 // Include nested blocks if this is a RowBlock with blocks
-                if (isset($data['blocks']) && !empty($data['blocks'])) {
+                if (isset($data['blocks']) && ! empty($data['blocks'])) {
                     $block['blocks'] = $data['blocks'];
                 }
 
@@ -1739,7 +1744,7 @@ class PageEditor extends Component
 
                 // Handle special case: pasting to a nested row with before/after position
                 // In this case, we need to paste as a sibling in the parent row, not inside the nested row
-                if ($isNestedRow && ($position === 'before' || $position === 'after') && !$targetBlockId) {
+                if ($isNestedRow && ($position === 'before' || $position === 'after') && ! $targetBlockId) {
                     Log::info('Pasting Block as sibling to nested row (outside)', [
                         'nestedRowId' => $parentRowId,
                         'position' => $position,
@@ -2094,6 +2099,7 @@ class PageEditor extends Component
                         'parentRowId' => $parentRowId,
                         'targetBlockId' => $targetBlockId,
                     ]);
+
                     return $block['blocks'][$targetBlockId];
                 }
 

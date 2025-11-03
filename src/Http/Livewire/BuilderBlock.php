@@ -167,7 +167,7 @@ class BuilderBlock extends Component
         ];
 
         // Include nested blocks if this is a RowBlock
-        if (!empty($this->blocks)) {
+        if (! empty($this->blocks)) {
             $data['blocks'] = $this->blocks;
         }
 
@@ -198,7 +198,7 @@ class BuilderBlock extends Component
         ];
 
         // Include nested blocks if this is a RowBlock
-        if (!empty($this->blocks)) {
+        if (! empty($this->blocks)) {
             $data['blocks'] = $this->blocks;
         }
 
@@ -231,7 +231,7 @@ class BuilderBlock extends Component
         ];
 
         // Include nested blocks if this is a RowBlock
-        if (!empty($this->blocks)) {
+        if (! empty($this->blocks)) {
             $data['blocks'] = $this->blocks;
         }
 

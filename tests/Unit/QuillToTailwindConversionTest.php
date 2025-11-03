@@ -9,7 +9,7 @@ class QuillToTailwindConversionTest extends TestCase
 {
     protected function getRichTextBlock(): RichText
     {
-        return new RichText();
+        return new RichText;
     }
 
     /**

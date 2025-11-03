@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\File;
 class IconService
 {
     private const CACHE_KEY = 'livewire_page_builder_heroicons';
+
     private const CACHE_TTL = 3600; // 1 hour
 
     /**
@@ -39,7 +40,7 @@ class IconService
                        str_contains(strtolower($icon['searchTerms']), $query);
             });
 
-            if (!empty($filtered)) {
+            if (! empty($filtered)) {
                 $results[$styleName] = array_values($filtered);
             }
         }
@@ -70,7 +71,7 @@ class IconService
     {
         $heroiconsPath = base_path('vendor/blade-ui-kit/blade-heroicons/resources/svg');
 
-        if (!File::exists($heroiconsPath)) {
+        if (! File::exists($heroiconsPath)) {
             return [
                 'outline' => [],
                 'solid' => [],
@@ -93,7 +94,7 @@ class IconService
             $filename = $file->getFilenameWithoutExtension();
 
             // Extract style prefix and icon name
-            if (!preg_match('/^([osm])-(.+)$/', $filename, $matches)) {
+            if (! preg_match('/^([osm])-(.+)$/', $filename, $matches)) {
                 continue;
             }
 
@@ -102,7 +103,7 @@ class IconService
 
             $style = $this->getStyleName($stylePrefix);
 
-            if (!isset($icons[$style])) {
+            if (! isset($icons[$style])) {
                 continue;
             }
 
@@ -116,7 +117,7 @@ class IconService
 
         // Sort each style alphabetically by name
         foreach ($icons as $style => $styleIcons) {
-            usort($icons[$style], fn($a, $b) => strcmp($a['name'], $b['name']));
+            usort($icons[$style], fn ($a, $b) => strcmp($a['name'], $b['name']));
         }
 
         return $icons;

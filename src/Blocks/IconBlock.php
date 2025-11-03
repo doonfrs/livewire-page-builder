@@ -36,7 +36,7 @@ class IconBlock extends Block
         $iconHtml = '';
         $labelHtml = '';
 
-        if (!empty($this->icon)) {
+        if (! empty($this->icon)) {
             try {
                 $iconFactory = app(Factory::class);
                 $iconSvg = $iconFactory->svg(name: $this->icon, class: 'w-16 h-16 text-current');
@@ -47,8 +47,8 @@ class IconBlock extends Block
             }
         }
 
-        if (!empty($this->label)) {
-            $labelHtml = '<div class="mt-4 text-lg font-medium">' . e($this->label) . '</div>';
+        if (! empty($this->label)) {
+            $labelHtml = '<div class="mt-4 text-lg font-medium">'.e($this->label).'</div>';
         }
 
         return "<div class='flex flex-col items-center justify-center p-8'>

@@ -37,7 +37,7 @@ class IconProperty extends Component
     public function mount()
     {
         // Set first available style as default
-        if (!empty($this->propertyStyles)) {
+        if (! empty($this->propertyStyles)) {
             $this->selectedStyle = $this->propertyStyles[0];
         }
     }
@@ -94,13 +94,13 @@ class IconProperty extends Component
         $icons = [];
 
         foreach ($this->propertyStyles as $style) {
-            if (!isset($allIcons[$style])) {
+            if (! isset($allIcons[$style])) {
                 continue;
             }
 
             $styleIcons = $allIcons[$style];
 
-            if (!empty($this->searchQuery)) {
+            if (! empty($this->searchQuery)) {
                 $query = strtolower($this->searchQuery);
                 $styleIcons = array_filter($styleIcons, function ($icon) use ($query) {
                     return str_contains(strtolower($icon['name']), $query) ||
