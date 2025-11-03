@@ -1178,7 +1178,7 @@ class PageEditor extends Component
 
             $this->dispatch(
                 'notify',
-                message: 'Failed to duplicate block: Block not found',
+                message: __('Failed to duplicate block: Block not found'),
                 type: 'error'
             );
             return;
@@ -1250,7 +1250,7 @@ class PageEditor extends Component
         // Success notification
         $this->dispatch(
             'notify',
-            message: 'Block duplicated successfully',
+            message: __('Block duplicated successfully'),
             type: 'success'
         );
 
@@ -1272,7 +1272,7 @@ class PageEditor extends Component
             Log::warning('duplicateRow: Missing required rowId', ['data' => $data]);
             $this->dispatch(
                 'notify',
-                message: 'Failed to duplicate row: Missing row ID',
+                message: __('Failed to duplicate row: Missing row ID'),
                 type: 'error'
             );
             return;
@@ -1335,7 +1335,7 @@ class PageEditor extends Component
 
                 $this->dispatch(
                     'notify',
-                    message: 'Row duplicated successfully',
+                    message: __('Row duplicated successfully'),
                     type: 'success'
                 );
 
@@ -1399,7 +1399,7 @@ class PageEditor extends Component
 
                 $this->dispatch(
                     'notify',
-                    message: 'Nested row duplicated successfully',
+                    message: __('Nested row duplicated successfully'),
                     type: 'success'
                 );
 
@@ -1411,7 +1411,7 @@ class PageEditor extends Component
         Log::warning('❌ duplicateRow: Row not found', ['rowId' => $rowId]);
         $this->dispatch(
             'notify',
-            message: 'Failed to duplicate row: Row not found',
+            message: __('Failed to duplicate row: Row not found'),
             type: 'error'
         );
     }
@@ -1491,7 +1491,7 @@ class PageEditor extends Component
 
                         $this->dispatch(
                             'notify',
-                            message: 'Row pasted inside successfully',
+                            message: __('Row pasted inside successfully'),
                             type: 'success'
                         );
 
@@ -1586,7 +1586,7 @@ class PageEditor extends Component
 
                         $this->dispatch(
                             'notify',
-                            message: 'Row pasted successfully',
+                            message: __('Row pasted successfully'),
                             type: 'success'
                         );
 
@@ -1675,7 +1675,7 @@ class PageEditor extends Component
 
                 $this->dispatch(
                     'notify',
-                    message: 'Row pasted successfully',
+                    message: __('Row pasted successfully'),
                     type: 'success'
                 );
             }
@@ -1791,7 +1791,7 @@ class PageEditor extends Component
 
                         $this->dispatch(
                             'notify',
-                            message: 'Block pasted successfully',
+                            message: __('Block pasted successfully'),
                             type: 'success'
                         );
                     } elseif ($targetBlockId) {
@@ -1834,7 +1834,7 @@ class PageEditor extends Component
 
                         $this->dispatch(
                             'notify',
-                            message: 'Block pasted successfully',
+                            message: __('Block pasted successfully'),
                             type: 'success'
                         );
                     } else {
@@ -1866,7 +1866,7 @@ class PageEditor extends Component
 
                         $this->dispatch(
                             'notify',
-                            message: 'Block pasted successfully',
+                            message: __('Block pasted successfully'),
                             type: 'success'
                         );
                     }

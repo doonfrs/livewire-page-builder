@@ -691,7 +691,7 @@ class RowBlock extends Block
         // Success notification
         $this->dispatch(
             'notify',
-            message: 'Row copied to clipboard',
+            message: __('Row copied to clipboard'),
             type: 'success'
         );
     }
@@ -718,7 +718,7 @@ class RowBlock extends Block
         // Success notification
         $this->dispatch(
             'notify',
-            message: 'Row cut to clipboard',
+            message: __('Row cut to clipboard'),
             type: 'success'
         );
     }

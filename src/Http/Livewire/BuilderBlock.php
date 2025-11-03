@@ -179,7 +179,7 @@ class BuilderBlock extends Component
         // Success notification
         $this->dispatch(
             'notify',
-            message: 'Block copied to clipboard',
+            message: __('Block copied to clipboard'),
             type: 'success'
         );
     }
@@ -213,7 +213,7 @@ class BuilderBlock extends Component
         // Success notification
         $this->dispatch(
             'notify',
-            message: 'Block cut to clipboard',
+            message: __('Block cut to clipboard'),
             type: 'success'
         );
     }
