@@ -10,6 +10,7 @@ use Trinavo\LivewirePageBuilder\Console\InstallPageBuilderCommand;
 use Trinavo\LivewirePageBuilder\Http\Livewire\BlockProperties;
 use Trinavo\LivewirePageBuilder\Http\Livewire\BlockProperties\ColorPicker;
 use Trinavo\LivewirePageBuilder\Http\Livewire\BlockProperties\FlexibleSizeProperty;
+use Trinavo\LivewirePageBuilder\Http\Livewire\BlockProperties\IconProperty as IconPropertyComponent;
 use Trinavo\LivewirePageBuilder\Http\Livewire\BlockProperties\ImageProperty;
 use Trinavo\LivewirePageBuilder\Http\Livewire\BlockProperties\ResponsiveSpacingProperty as ResponsiveSpacingPropertyComponent;
 use Trinavo\LivewirePageBuilder\Http\Livewire\BlockProperties\RichTextProperty;
@@ -20,6 +21,7 @@ use Trinavo\LivewirePageBuilder\Http\Livewire\PageEditor;
 use Trinavo\LivewirePageBuilder\Http\Livewire\PreviewBar;
 use Trinavo\LivewirePageBuilder\Http\Livewire\RowBlock;
 use Trinavo\LivewirePageBuilder\Http\Livewire\ThemeManager;
+use Trinavo\LivewirePageBuilder\Services\IconService;
 use Trinavo\LivewirePageBuilder\Services\LocalizationService;
 use Trinavo\LivewirePageBuilder\Services\PageBuilderService;
 use Trinavo\LivewirePageBuilder\Services\PageBuilderUIService;
@@ -111,6 +113,11 @@ class PageBuilderServiceProvider extends ServiceProvider
             return new PageBuilderUIService;
         });
 
+        // Register the icon service
+        $this->app->singleton(IconService::class, function ($app) {
+            return new IconService;
+        });
+
         // Register the Variables class
         $this->app->singleton(Variables::class, function ($app) {
             return new Variables;
@@ -174,6 +181,7 @@ class PageBuilderServiceProvider extends ServiceProvider
         Livewire::component('builder-page-block', BuilderPageBlock::class);
         Livewire::component('block-properties.color-picker', ColorPicker::class);
         Livewire::component('block-properties.flexible-size-property', FlexibleSizeProperty::class);
+        Livewire::component('block-properties.icon-property', IconPropertyComponent::class);
         Livewire::component('block-properties.responsive-spacing-property', ResponsiveSpacingPropertyComponent::class);
         Livewire::component('block-properties.image-property', ImageProperty::class);
         Livewire::component('block-properties.select-property', SelectProperty::class);

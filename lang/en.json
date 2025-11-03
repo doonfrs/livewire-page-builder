@@ -252,5 +252,15 @@
     "This is a reusable page block": "This is a reusable page block",
     "unknown": "unknown",
     "Yes, Delete": "Yes, Delete",
-    "Confirm Delete": "Confirm Delete"
+    "Confirm Delete": "Confirm Delete",
+    "Icon Block": "Icon Block",
+    "Icon": "Icon",
+    "Label": "Label",
+    "Select Icon": "Select Icon",
+    "Remove icon": "Remove icon",
+    "Loading icons...": "Loading icons...",
+    "Search icons...": "Search icons...",
+    "Outline": "Outline",
+    "Solid": "Solid",
+    "Mini": "Mini"
 }

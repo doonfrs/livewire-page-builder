@@ -83,6 +83,10 @@
                                     <livewire:block-properties.select-property :property-name="$property['name']" :property-label="$property['label']"
                                         :property-options="$property['options']" :default-value="$property['defaultValue']" :current-value="$properties[$property['name']] ?? ''" :row-id="$rowId"
                                         :block-id="$blockId" :key="'select-property-' . $key" />
+                                @elseif($property['type'] === 'icon')
+                                    <livewire:block-properties.icon-property :property-name="$property['name']" :property-label="$property['label']"
+                                        :property-styles="$property['styles']" :default-value="$property['defaultValue']" :current-value="$properties[$property['name']] ?? ''" :row-id="$rowId"
+                                        :block-id="$blockId" :key="'icon-property-' . $key" />
                                 @elseif($property['type'] === 'richtext')
                                     <livewire:block-properties.richtext-property :property-name="$property['name']" :property-label="$property['label']"
                                         :current-value="$properties[$property['name']] ?? ''" :row-id="$rowId" :block-id="$blockId" :key="'richtext-property-' . $key" />

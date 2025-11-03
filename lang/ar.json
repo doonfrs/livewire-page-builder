@@ -258,5 +258,15 @@
     "Import failed - the file does not appear to be a valid theme file": "فشل الاستيراد - الملف لا يبدو أنه ملف مظهر صالح",
     "This file appears to be encrypted but cannot be decrypted. Please ensure you have the correct encryption key configured.": "يبدو أن هذا الملف مشفر ولكن لا يمكن فك تشفيره. يرجى التأكد من أن لديك مفتاح التشفير الصحيح المكون.",
     "This is a reusable page block": "هذه كتلة صفحة قابلة لإعادة الاستخدام",
-    "unknown": "غير معروف"
+    "unknown": "غير معروف",
+    "Icon Block": "كتلة الأيقونة",
+    "Icon": "أيقونة",
+    "Label": "تسمية",
+    "Select Icon": "اختر الأيقونة",
+    "Remove icon": "إزالة الأيقونة",
+    "Loading icons...": "جاري تحميل الأيقونات...",
+    "Search icons...": "ابحث عن الأيقونات...",
+    "Outline": "محدد",
+    "Solid": "ممتلئ",
+    "Mini": "صغير"
 }
