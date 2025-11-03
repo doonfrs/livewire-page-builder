@@ -1365,7 +1365,7 @@ class PageEditor extends Component
                 // Clone the nested row block with regenerated IDs
                 $originalNestedRow = $this->rows[$parentRowId]['blocks'][$rowId];
                 $newNestedRow = [
-                    'alias' => $originalNestedRow['alias'] ?? 'page-builder-app-livewire-shop-row',
+                    'alias' => $originalNestedRow['alias'] ?? 'page-builder-trinavo-livewire-page-builder-http-livewire-row-block',
                     'properties' => $originalNestedRow['properties'] ?? [],
                     'blocks' => $this->regenerateBlockIds($originalNestedRow['blocks'] ?? []),
                 ];
@@ -1472,7 +1472,7 @@ class PageEditor extends Component
 
                     // Create the nested RowBlock
                     $nestedRowBlock = [
-                        'alias' => 'page-builder-app-livewire-shop-row',
+                        'alias' => $data['blockAlias'] ?? 'page-builder-trinavo-livewire-page-builder-http-livewire-row-block',
                         'properties' => $data['properties'] ?? [],
                         'blocks' => $blocks,
                     ];
@@ -1485,6 +1485,9 @@ class PageEditor extends Component
                             'targetRowId' => $targetRowId,
                             'newBlockId' => $blockId,
                         ]);
+
+                        // Dispatch event for scroll and selection
+                        $this->dispatch('row-pasted', rowId: $blockId);
 
                         $this->dispatch(
                             'notify',
@@ -1534,50 +1537,60 @@ class PageEditor extends Component
 
                         // Create the nested RowBlock as a sibling
                         $nestedRowBlock = [
-                            'alias' => 'page-builder-app-livewire-shop-row',
+                            'alias' => $data['blockAlias'] ?? 'page-builder-trinavo-livewire-page-builder-http-livewire-row-block',
                             'properties' => $data['properties'] ?? [],
                             'blocks' => $blocks,
                         ];
 
-                        // Add as a sibling using targetRowId as the reference block
+                        // Use targetRowId as the reference block for positioning
                         $targetBlockId = $targetRowId;
 
-                        // Get current blocks
-                        $currentBlocks = $this->rows[$parentRowId]['blocks'] ?? [];
-                        $blockKeys = array_keys($currentBlocks);
-                        $targetIndex = array_search($targetBlockId, $blockKeys);
+                        // DON'T modify $this->rows directly - let RowBlock handle it via block-added event
+                        $beforeBlockId = null;
+                        $afterBlockId = null;
 
-                        if ($targetIndex !== false) {
-                            // Insert before or after the target block
-                            if ($position === 'before') {
-                                $insertIndex = $targetIndex;
-                            } else {
-                                $insertIndex = $targetIndex + 1;
-                            }
-
-                            $newBlocks = array_merge(
-                                array_slice($currentBlocks, 0, $insertIndex, true),
-                                [$blockId => $nestedRowBlock],
-                                array_slice($currentBlocks, $insertIndex, null, true)
-                            );
-
-                            $this->rows[$parentRowId]['blocks'] = $newBlocks;
-
-                            Log::info('RowBlock pasted as sibling to nested row', [
-                                'parentRowId' => $parentRowId,
-                                'newBlockId' => $blockId,
-                                'position' => $position,
-                                'targetBlockId' => $targetBlockId,
-                            ]);
-
-                            $this->dispatch(
-                                'notify',
-                                message: 'Row pasted successfully',
-                                type: 'success'
-                            );
-
-                            return;
+                        if ($position === 'before') {
+                            $beforeBlockId = $targetBlockId;
+                        } else {
+                            $afterBlockId = $targetBlockId;
                         }
+
+                        Log::info('Dispatching block-added for nested row paste', [
+                            'parentRowId' => $parentRowId,
+                            'blockId' => $blockId,
+                            'beforeBlockId' => $beforeBlockId,
+                            'afterBlockId' => $afterBlockId,
+                        ]);
+
+                        // Dispatch block-added event - parent RowBlock will handle adding it
+                        $this->dispatch(
+                            'block-added',
+                            rowId: $parentRowId,
+                            blockId: $blockId,
+                            blockAlias: $nestedRowBlock['alias'],
+                            properties: $nestedRowBlock['properties'],
+                            blocks: $nestedRowBlock['blocks'],
+                            beforeBlockId: $beforeBlockId,
+                            afterBlockId: $afterBlockId
+                        );
+
+                        Log::info('RowBlock paste dispatched as sibling to nested row', [
+                            'parentRowId' => $parentRowId,
+                            'newBlockId' => $blockId,
+                            'position' => $position,
+                            'targetBlockId' => $targetBlockId,
+                        ]);
+
+                        // Dispatch event for scroll and selection (using blockId since nested rows are blocks)
+                        $this->dispatch('row-pasted', rowId: $blockId);
+
+                        $this->dispatch(
+                            'notify',
+                            message: 'Row pasted successfully',
+                            type: 'success'
+                        );
+
+                        return;
                     }
 
                     Log::warning('Could not find parent row for nested row paste', [
@@ -1656,6 +1669,9 @@ class PageEditor extends Component
                     'afterRowId' => $afterRowId ?? 'null',
                     'beforeRowId' => $beforeRowId ?? 'null',
                 ]);
+
+                // Dispatch event for scroll and selection
+                $this->dispatch('row-pasted', rowId: $rowId);
 
                 $this->dispatch(
                     'notify',

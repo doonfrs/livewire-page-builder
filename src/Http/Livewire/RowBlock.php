@@ -16,6 +16,8 @@ class RowBlock extends Block
 
     public ?array $properties = null;
 
+    public ?string $blockAlias = null;
+
     public $cssClasses;
 
     public $inlineStyles;
@@ -678,6 +680,7 @@ class RowBlock extends Block
             'rowId' => $this->rowId,
             'properties' => $this->properties,
             'blocks' => $this->blocks,
+            'blockAlias' => $this->blockAlias,
         ];
 
         $jsonData = json_encode($data);
@@ -701,6 +704,7 @@ class RowBlock extends Block
             'rowId' => $this->rowId,
             'properties' => $this->properties,
             'blocks' => $this->blocks,
+            'blockAlias' => $this->blockAlias,
         ];
 
         $jsonData = json_encode($data);

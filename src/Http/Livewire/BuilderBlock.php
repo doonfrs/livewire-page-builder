@@ -56,6 +56,7 @@ class BuilderBlock extends Component
                 'rowId' => $this->blockId, // Use block ID as row ID for nested rows
                 'isNested' => true, // Flag to indicate this is a nested row
                 'editMode' => $this->editMode,
+                'blockAlias' => $this->blockAlias, // Pass the alias so RowBlock can include it when copying
             ];
         }
 
