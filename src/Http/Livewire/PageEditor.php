@@ -1468,23 +1468,34 @@ class PageEditor extends Component
                     $blockId = uniqid();
 
                     // Generate new IDs for nested blocks
-                    $blocks = [];
-                    foreach ($data['blocks'] as $oldBlockId => $block) {
-                        $blocks[uniqid()] = $block;
-                    }
+                    $blocks = $this->regenerateBlockIds($data['blocks'] ?? []);
 
-                    // Create the nested RowBlock
-                    $nestedRowBlock = [
-                        'alias' => $data['blockAlias'] ?? 'page-builder-trinavo-livewire-page-builder-http-livewire-row-block',
-                        'properties' => $data['properties'] ?? [],
-                        'blocks' => $blocks,
-                    ];
+                    // Create the nested RowBlock properties
+                    $nestedRowProperties = $data['properties'] ?? [];
+                    $nestedRowAlias = $data['blockAlias'] ?? 'page-builder-trinavo-livewire-page-builder-http-livewire-row-block';
 
-                    // Add to the target row's blocks
+                    // Check if target row exists
                     if (isset($this->rows[$targetRowId])) {
-                        $this->rows[$targetRowId]['blocks'][$blockId] = $nestedRowBlock;
+                        // Dispatch block-added event - RowBlock will handle adding it to its blocks array
+                        Log::info('Dispatching block-added for paste inside', [
+                            'rowId' => $targetRowId,
+                            'blockId' => $blockId,
+                            'blockAlias' => $nestedRowAlias,
+                            'blocksCount' => count($blocks),
+                        ]);
 
-                        Log::info('RowBlock pasted inside target row as nested block', [
+                        $this->dispatch(
+                            'block-added',
+                            rowId: $targetRowId,
+                            blockId: $blockId,
+                            blockAlias: $nestedRowAlias,
+                            properties: $nestedRowProperties,
+                            blocks: $blocks,
+                            beforeBlockId: null,
+                            afterBlockId: null
+                        );
+
+                        Log::info('RowBlock paste inside dispatched', [
                             'targetRowId' => $targetRowId,
                             'newBlockId' => $blockId,
                         ]);
