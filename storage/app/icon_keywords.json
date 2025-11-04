@@ -1,0 +1,799 @@
+{
+  "metadata": {
+    "generated_date": "2025-11-04",
+    "total_icon_references": 3366,
+    "unique_base_names": 2269,
+    "multi_variant_icons": 931,
+    "single_variant_icons": 1338,
+    "icon_sets": [
+      "Heroicons (Outline & Solid)",
+      "Bootstrap Icons"
+    ]
+  },
+  "semantic_categories": {
+    "navigation": {
+      "description": "Icons for directional movement and navigation",
+      "keywords": [
+        "arrow",
+        "chevron",
+        "skip",
+        "forward",
+        "backward",
+        "home",
+        "back",
+        "next",
+        "previous"
+      ],
+      "alternative_search_terms": [
+        "move",
+        "direction",
+        "navigate",
+        "browse",
+        "flow",
+        "arrow-keys"
+      ],
+      "popular_icons": [
+        "arrow-down",
+        "arrow-up",
+        "arrow-left",
+        "arrow-right",
+        "chevron-down",
+        "chevron-up",
+        "chevron-left",
+        "chevron-right",
+        "home",
+        "back",
+        "forward"
+      ],
+      "icon_count": 342
+    },
+    "communication": {
+      "description": "Icons for messaging, notifications, and contact",
+      "keywords": [
+        "envelope",
+        "chat",
+        "message",
+        "comment",
+        "phone",
+        "mobile",
+        "megaphone",
+        "bell",
+        "at-symbol"
+      ],
+      "alternative_search_terms": [
+        "send",
+        "talk",
+        "notify",
+        "contact",
+        "discuss",
+        "email",
+        "mail",
+        "conversation"
+      ],
+      "popular_icons": [
+        "envelope",
+        "chat",
+        "phone",
+        "bell",
+        "message",
+        "comment",
+        "send",
+        "inbox"
+      ],
+      "icon_count": 88
+    },
+    "media_and_files": {
+      "description": "Icons for documents, multimedia, and storage",
+      "keywords": [
+        "file",
+        "folder",
+        "document",
+        "image",
+        "photo",
+        "video",
+        "music",
+        "camera",
+        "clipboard"
+      ],
+      "alternative_search_terms": [
+        "view",
+        "organize",
+        "store",
+        "media",
+        "asset",
+        "upload",
+        "download"
+      ],
+      "popular_icons": [
+        "file",
+        "folder",
+        "image",
+        "photo",
+        "video",
+        "camera",
+        "document",
+        "clipboard"
+      ],
+      "icon_count": 208
+    },
+    "business_and_work": {
+      "description": "Icons for work and professional settings",
+      "keywords": [
+        "briefcase",
+        "building",
+        "house",
+        "office",
+        "bank",
+        "work",
+        "company",
+        "workplace"
+      ],
+      "alternative_search_terms": [
+        "company",
+        "organization",
+        "professional",
+        "workplace",
+        "business",
+        "corporate"
+      ],
+      "popular_icons": [
+        "briefcase",
+        "building",
+        "office",
+        "bank",
+        "house",
+        "store",
+        "workplace"
+      ],
+      "icon_count": 57
+    },
+    "payment_and_commerce": {
+      "description": "Icons for transactions, shopping, and shipping",
+      "keywords": [
+        "credit-card",
+        "wallet",
+        "shopping",
+        "cart",
+        "bag",
+        "gift",
+        "banknotes",
+        "currency",
+        "truck",
+        "package",
+        "box"
+      ],
+      "alternative_search_terms": [
+        "money",
+        "buy",
+        "sell",
+        "transaction",
+        "shipping",
+        "delivery",
+        "payment",
+        "purchase"
+      ],
+      "popular_icons": [
+        "credit-card",
+        "wallet",
+        "shopping-cart",
+        "bag",
+        "gift",
+        "truck",
+        "package",
+        "banknotes"
+      ],
+      "icon_count": 65
+    },
+    "time_and_calendar": {
+      "description": "Icons for time, scheduling, and reminders",
+      "keywords": [
+        "calendar",
+        "clock",
+        "alarm",
+        "timer",
+        "watch",
+        "hourglass",
+        "bell",
+        "time"
+      ],
+      "alternative_search_terms": [
+        "schedule",
+        "appointment",
+        "reminder",
+        "duration",
+        "event",
+        "date"
+      ],
+      "popular_icons": [
+        "calendar",
+        "clock",
+        "alarm",
+        "bell",
+        "timer",
+        "watch",
+        "hourglass"
+      ],
+      "icon_count": 67
+    },
+    "ui_controls": {
+      "description": "Icons for interactive form elements",
+      "keywords": [
+        "checkbox",
+        "radio",
+        "toggle",
+        "switch",
+        "slider",
+        "button",
+        "menu",
+        "input"
+      ],
+      "alternative_search_terms": [
+        "select",
+        "option",
+        "control",
+        "interact",
+        "form"
+      ],
+      "popular_icons": [
+        "checkbox",
+        "radio",
+        "toggle",
+        "slider",
+        "button",
+        "menu"
+      ],
+      "icon_count": 23
+    },
+    "status_and_feedback": {
+      "description": "Icons for status messages and validation",
+      "keywords": [
+        "check",
+        "x-mark",
+        "exclamation",
+        "alert",
+        "warning",
+        "error",
+        "success",
+        "shield"
+      ],
+      "alternative_search_terms": [
+        "validate",
+        "confirm",
+        "problem",
+        "complete",
+        "safe",
+        "ok"
+      ],
+      "popular_icons": [
+        "check",
+        "check-circle",
+        "x-mark",
+        "exclamation",
+        "alert",
+        "warning",
+        "shield"
+      ],
+      "icon_count": 76
+    },
+    "visibility_and_display": {
+      "description": "Icons for showing/hiding content",
+      "keywords": [
+        "eye",
+        "eye-slash",
+        "view",
+        "hide",
+        "visible",
+        "invisible"
+      ],
+      "alternative_search_terms": [
+        "show",
+        "display",
+        "reveal",
+        "preview",
+        "control"
+      ],
+      "popular_icons": [
+        "eye",
+        "eye-slash",
+        "view",
+        "hide"
+      ],
+      "icon_count": 21
+    },
+    "search_and_filter": {
+      "description": "Icons for finding and refining content",
+      "keywords": [
+        "magnifying-glass",
+        "funnel",
+        "filter",
+        "search",
+        "sort",
+        "find"
+      ],
+      "alternative_search_terms": [
+        "lookup",
+        "query",
+        "refine",
+        "process",
+        "discover"
+      ],
+      "popular_icons": [
+        "magnifying-glass",
+        "funnel",
+        "filter",
+        "search",
+        "sort"
+      ],
+      "icon_count": 34
+    },
+    "user_and_people": {
+      "description": "Icons for users and social features",
+      "keywords": [
+        "person",
+        "user",
+        "people",
+        "group",
+        "team",
+        "profile",
+        "avatar"
+      ],
+      "alternative_search_terms": [
+        "account",
+        "member",
+        "organization",
+        "contact",
+        "people"
+      ],
+      "popular_icons": [
+        "person",
+        "user",
+        "people",
+        "group",
+        "team",
+        "profile"
+      ],
+      "icon_count": 58
+    },
+    "technology_and_settings": {
+      "description": "Icons for technical and configuration aspects",
+      "keywords": [
+        "cog",
+        "settings",
+        "sliders",
+        "adjustments",
+        "database",
+        "server",
+        "cloud",
+        "code",
+        "bug"
+      ],
+      "alternative_search_terms": [
+        "configure",
+        "tech",
+        "develop",
+        "engineer",
+        "system",
+        "gear"
+      ],
+      "popular_icons": [
+        "cog",
+        "settings",
+        "database",
+        "server",
+        "cloud",
+        "code",
+        "bug"
+      ],
+      "icon_count": 71
+    },
+    "social_and_web": {
+      "description": "Icons for web and social connectivity",
+      "keywords": [
+        "globe",
+        "link",
+        "share",
+        "rss",
+        "social",
+        "facebook",
+        "twitter",
+        "instagram"
+      ],
+      "alternative_search_terms": [
+        "internet",
+        "web",
+        "network",
+        "connect",
+        "platform"
+      ],
+      "popular_icons": [
+        "globe",
+        "link",
+        "share",
+        "rss",
+        "world",
+        "web"
+      ],
+      "icon_count": 33
+    },
+    "editing_and_tools": {
+      "description": "Icons for creation and modification",
+      "keywords": [
+        "pencil",
+        "pen",
+        "eraser",
+        "paintbrush",
+        "palette",
+        "edit",
+        "wrench",
+        "tools"
+      ],
+      "alternative_search_terms": [
+        "create",
+        "modify",
+        "design",
+        "artist",
+        "craftsman"
+      ],
+      "popular_icons": [
+        "pencil",
+        "pen",
+        "eraser",
+        "edit",
+        "paintbrush",
+        "wrench"
+      ],
+      "icon_count": 22
+    }
+  },
+  "icon_groupings": {
+    "shipping_and_delivery": {
+      "search_terms": [
+        "shipping",
+        "delivery",
+        "package",
+        "logistics",
+        "freight"
+      ],
+      "icon_names": [
+        "truck",
+        "package",
+        "box",
+        "cart",
+        "bag",
+        "delivery"
+      ],
+      "related_categories": [
+        "payment_and_commerce"
+      ]
+    },
+    "document_types": {
+      "search_terms": [
+        "document",
+        "paper",
+        "file",
+        "page",
+        "sheet"
+      ],
+      "icon_names": [
+        "file",
+        "document",
+        "clipboard",
+        "clipboard-document",
+        "filetype"
+      ],
+      "related_categories": [
+        "media_and_files"
+      ]
+    },
+    "directions": {
+      "search_terms": [
+        "direction",
+        "arrow",
+        "navigation",
+        "movement"
+      ],
+      "icon_names": [
+        "arrow-up",
+        "arrow-down",
+        "arrow-left",
+        "arrow-right",
+        "arrow-up-left",
+        "arrow-up-right",
+        "arrow-down-left",
+        "arrow-down-right"
+      ],
+      "related_categories": [
+        "navigation"
+      ]
+    },
+    "states": {
+      "search_terms": [
+        "state",
+        "status",
+        "condition",
+        "mode"
+      ],
+      "icon_names": [
+        "check",
+        "x-mark",
+        "exclamation",
+        "warning",
+        "alert",
+        "shield"
+      ],
+      "related_categories": [
+        "status_and_feedback"
+      ]
+    },
+    "toggles": {
+      "search_terms": [
+        "toggle",
+        "switch",
+        "on-off",
+        "mode"
+      ],
+      "icon_names": [
+        "eye",
+        "eye-slash",
+        "bell",
+        "bell-slash",
+        "bookmark",
+        "bookmark-slash"
+      ],
+      "related_categories": [
+        "ui_controls"
+      ]
+    },
+    "actions": {
+      "search_terms": [
+        "action",
+        "operation",
+        "do",
+        "perform"
+      ],
+      "icon_names": [
+        "plus",
+        "minus",
+        "pencil",
+        "trash",
+        "download",
+        "upload",
+        "send"
+      ],
+      "related_categories": [
+        "editing_and_tools"
+      ]
+    }
+  },
+  "naming_patterns": {
+    "directional": {
+      "pattern": "*-up, *-down, *-left, *-right, *-up-left, *-up-right, *-down-left, *-down-right",
+      "examples": [
+        "arrow-up",
+        "arrow-down",
+        "chevron-left",
+        "chevron-right"
+      ]
+    },
+    "action_modifiers": {
+      "pattern": "*-plus, *-minus, *-check, *-x, *-dash",
+      "examples": [
+        "folder-plus",
+        "cart-check",
+        "user-minus",
+        "database-add"
+      ]
+    },
+    "state_variants": {
+      "pattern": "icon / icon-slash or icon / icon-fill",
+      "examples": [
+        "eye / eye-slash",
+        "bookmark / bookmark-slash",
+        "bell / bell-slash"
+      ]
+    },
+    "style_variants": {
+      "pattern": "heroicon-o (outline) vs heroicon-s (solid) vs bootstrap (with -fill)",
+      "examples": [
+        "heroicon-o-bell vs heroicon-s-bell vs bootstrap-bell-fill"
+      ]
+    },
+    "shape_variants": {
+      "pattern": "*-circle, *-square, *-diamond, *-octagon",
+      "examples": [
+        "check-circle",
+        "check-square",
+        "x-mark",
+        "x-circle"
+      ]
+    },
+    "compound": {
+      "pattern": "*-with-*, *-*-on-*, complex descriptions",
+      "examples": [
+        "cloud-arrow-up",
+        "arrow-down-on-square",
+        "chat-bubble-left"
+      ]
+    },
+    "numbered": {
+      "pattern": "number-circle, number-square, bars-N, battery-N",
+      "examples": [
+        "1-circle",
+        "battery-0",
+        "battery-50",
+        "bars-2",
+        "bars-3"
+      ]
+    },
+    "regional": {
+      "pattern": "globe-region-name",
+      "examples": [
+        "globe-americas",
+        "globe-asia-australia",
+        "globe-europe-africa"
+      ]
+    }
+  },
+  "most_common_icon_families": {
+    "arrows": {
+      "count": 81,
+      "examples": [
+        "arrow-down",
+        "arrow-left",
+        "arrow-right",
+        "arrow-up",
+        "arrow-90deg-up"
+      ]
+    },
+    "files": {
+      "count": 64,
+      "examples": [
+        "file",
+        "file-arrow-down",
+        "file-code",
+        "file-text"
+      ]
+    },
+    "chat": {
+      "count": 27,
+      "examples": [
+        "chat",
+        "chat-dots",
+        "chat-left",
+        "chat-bubble-left"
+      ]
+    },
+    "cloud": {
+      "count": 23,
+      "examples": [
+        "cloud",
+        "cloud-arrow-down",
+        "cloud-arrow-up",
+        "cloud-check"
+      ]
+    },
+    "person": {
+      "count": 41,
+      "examples": [
+        "person",
+        "person-badge",
+        "person-check",
+        "person-plus"
+      ]
+    },
+    "building": {
+      "count": 25,
+      "examples": [
+        "building",
+        "building-office",
+        "building-library"
+      ]
+    },
+    "calendar": {
+      "count": 14,
+      "examples": [
+        "calendar",
+        "calendar-check",
+        "calendar-date",
+        "calendar-event"
+      ]
+    },
+    "envelope": {
+      "count": 15,
+      "examples": [
+        "envelope",
+        "envelope-open",
+        "envelope-arrow-up"
+      ]
+    },
+    "folder": {
+      "count": 8,
+      "examples": [
+        "folder",
+        "folder-plus",
+        "folder-minus",
+        "folder-open"
+      ]
+    },
+    "currency": {
+      "count": 8,
+      "examples": [
+        "currency-dollar",
+        "currency-euro",
+        "currency-pound",
+        "currency-yen"
+      ]
+    }
+  },
+  "recommended_icons": {
+    "highest_priority": {
+      "reason": "Most common use cases and best cross-library support",
+      "icons": [
+        "arrow-down",
+        "arrow-left",
+        "arrow-right",
+        "arrow-up",
+        "check",
+        "check-circle",
+        "x-mark",
+        "x-circle",
+        "plus",
+        "minus",
+        "eye",
+        "eye-slash",
+        "search",
+        "magnifying-glass",
+        "menu",
+        "bars-3",
+        "settings",
+        "cog",
+        "calendar",
+        "clock",
+        "envelope",
+        "phone",
+        "user",
+        "heart",
+        "star"
+      ]
+    },
+    "medium_priority": {
+      "reason": "Common use cases with good support",
+      "icons": [
+        "file",
+        "folder",
+        "download",
+        "upload",
+        "edit",
+        "pencil",
+        "trash",
+        "bell",
+        "notification",
+        "bookmark",
+        "flag",
+        "gift",
+        "shopping-cart",
+        "map",
+        "location",
+        "cloud",
+        "database",
+        "shield",
+        "lock",
+        "share",
+        "link"
+      ]
+    },
+    "specialized": {
+      "reason": "Domain-specific or less frequently used",
+      "icons": [
+        "filetype-*",
+        "globe-americas",
+        "globe-asia-australia",
+        "globe-europe-africa",
+        "currency-*",
+        "sign-*",
+        "badge-*",
+        "emoji-*"
+      ]
+    }
+  }
+}

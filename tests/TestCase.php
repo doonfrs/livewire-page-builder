@@ -4,6 +4,7 @@ namespace Trinavo\LivewirePageBuilder\Tests;
 
 use BladeUI\Heroicons\BladeHeroiconsServiceProvider;
 use BladeUI\Icons\BladeIconsServiceProvider;
+use Davidhsianturi\BladeBootstrapIcons\BladeBootstrapIconsServiceProvider;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\LivewireServiceProvider;
 use Orchestra\Testbench\TestCase as Orchestra;
@@ -26,6 +27,7 @@ abstract class TestCase extends Orchestra
             LivewireServiceProvider::class,
             BladeIconsServiceProvider::class,
             BladeHeroiconsServiceProvider::class,
+            BladeBootstrapIconsServiceProvider::class,
             PageBuilderServiceProvider::class,
         ];
     }

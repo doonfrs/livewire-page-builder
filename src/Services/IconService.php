@@ -7,41 +7,95 @@ use Illuminate\Support\Facades\File;
 
 class IconService
 {
-    private const CACHE_KEY = 'livewire_page_builder_heroicons';
+    private const CACHE_KEY_HEROICONS = 'livewire_page_builder_heroicons';
+
+    private const CACHE_KEY_BOOTSTRAP = 'livewire_page_builder_bootstrap_icons';
 
     private const CACHE_TTL = 3600; // 1 hour
+
+    /**
+     * Get all available icons from specified sets
+     */
+    public function getIcons(array $sets = ['heroicons']): array
+    {
+        $icons = [];
+
+        foreach ($sets as $set) {
+            if ($set === 'heroicons') {
+                $icons['heroicons'] = $this->getHeroicons();
+            } elseif ($set === 'bootstrap') {
+                $icons['bootstrap'] = $this->getBootstrapIcons();
+            }
+        }
+
+        return $icons;
+    }
 
     /**
      * Get all available Heroicons grouped by style
      */
     public function getHeroicons(): array
     {
-        return Cache::remember(self::CACHE_KEY, self::CACHE_TTL, function () {
+        return Cache::remember(self::CACHE_KEY_HEROICONS, self::CACHE_TTL, function () {
             return $this->scanHeroicons();
         });
     }
 
     /**
-     * Search icons by name
+     * Get all available Bootstrap Icons grouped by style
      */
-    public function searchIcons(string $query, ?string $style = null): array
+    public function getBootstrapIcons(): array
     {
-        $icons = $this->getHeroicons();
-        $query = strtolower($query);
+        return Cache::remember(self::CACHE_KEY_BOOTSTRAP, self::CACHE_TTL, function () {
+            return $this->scanBootstrapIcons();
+        });
+    }
+
+    /**
+     * Search icons by name with keyword enhancement
+     */
+    public function searchIcons(string $query, ?string $style = null, array $sets = ['heroicons']): array
+    {
+        $query = strtolower(trim($query));
         $results = [];
 
-        foreach ($icons as $styleName => $styleIcons) {
-            if ($style && $style !== $styleName) {
-                continue;
-            }
+        if (empty($query)) {
+            return $results;
+        }
 
-            $filtered = array_filter($styleIcons, function ($icon) use ($query) {
-                return str_contains(strtolower($icon['name']), $query) ||
-                       str_contains(strtolower($icon['searchTerms']), $query);
-            });
+        // Get keyword mappings for enhanced search
+        $iconKeywords = app(IconKeywords::class);
+        $keywordMatches = $iconKeywords->findIconsByKeyword(query: $query);
 
-            if (! empty($filtered)) {
-                $results[$styleName] = array_values($filtered);
+        // Build search patterns: original query + keyword matches
+        $searchPatterns = array_merge([$query], $keywordMatches);
+
+        // Get all icons from specified sets
+        $allIconSets = $this->getIcons(sets: $sets);
+
+        foreach ($allIconSets as $setName => $setIcons) {
+            foreach ($setIcons as $styleName => $styleIcons) {
+                if ($style && $style !== $styleName) {
+                    continue;
+                }
+
+                $filtered = array_filter($styleIcons, function ($icon) use ($searchPatterns) {
+                    $iconName = strtolower($icon['name']);
+                    $searchTerms = strtolower($icon['searchTerms']);
+
+                    // Check if icon matches any of the search patterns
+                    foreach ($searchPatterns as $pattern) {
+                        if (str_contains($iconName, $pattern) || str_contains($searchTerms, $pattern)) {
+                            return true;
+                        }
+                    }
+
+                    return false;
+                });
+
+                if (! empty($filtered)) {
+                    $results[$setName][$styleName] = array_values($filtered);
+                }
             }
         }
 
@@ -61,7 +115,8 @@ class IconService
      */
     public function clearCache(): void
     {
-        Cache::forget(self::CACHE_KEY);
+        Cache::forget(self::CACHE_KEY_HEROICONS);
+        Cache::forget(self::CACHE_KEY_BOOTSTRAP);
     }
 
     /**
@@ -69,9 +124,21 @@ class IconService
      */
     private function scanHeroicons(): array
     {
-        $heroiconsPath = base_path('vendor/blade-ui-kit/blade-heroicons/resources/svg');
+        // Try multiple possible paths for better compatibility with test environments
+        $possiblePaths = [
+            base_path('vendor/blade-ui-kit/blade-heroicons/resources/svg'),
+            realpath(dirname(__DIR__, 2) . '/../vendor/blade-ui-kit/blade-heroicons/resources/svg'),
+        ];
 
-        if (! File::exists($heroiconsPath)) {
+        $heroiconsPath = null;
+        foreach ($possiblePaths as $path) {
+            if ($path && File::exists($path)) {
+                $heroiconsPath = $path;
+                break;
+            }
+        }
+
+        if (! $heroiconsPath) {
             return [
                 'outline' => [],
                 'solid' => [],
@@ -116,7 +183,7 @@ class IconService
         }
 
         // Sort each style alphabetically by name
-        foreach ($icons as $style => $styleIcons) {
+        foreach (array_keys($icons) as $style) {
             usort($icons[$style], fn ($a, $b) => strcmp($a['name'], $b['name']));
         }
 
@@ -134,5 +201,69 @@ class IconService
             'm' => 'mini',
             default => 'unknown',
         };
+    }
+
+    /**
+     * Scan Bootstrap Icons directory and build icon list
+     */
+    private function scanBootstrapIcons(): array
+    {
+        // Try multiple possible paths for better compatibility with test environments
+        $possiblePaths = [
+            base_path('vendor/davidhsianturi/blade-bootstrap-icons/resources/svg'),
+            realpath(dirname(__DIR__, 2) . '/../vendor/davidhsianturi/blade-bootstrap-icons/resources/svg'),
+        ];
+
+        $bootstrapIconsPath = null;
+        foreach ($possiblePaths as $path) {
+            if ($path && File::exists($path)) {
+                $bootstrapIconsPath = $path;
+                break;
+            }
+        }
+
+        if (! $bootstrapIconsPath) {
+            return [
+                'regular' => [],
+                'fill' => [],
+            ];
+        }
+
+        $files = File::allFiles($bootstrapIconsPath);
+        $icons = [
+            'regular' => [],
+            'fill' => [],
+        ];
+
+        foreach ($files as $file) {
+            if ($file->getExtension() !== 'svg') {
+                continue;
+            }
+
+            $filename = $file->getFilenameWithoutExtension();
+
+            // Determine style and icon name
+            if (str_ends_with($filename, '-fill')) {
+                $style = 'fill';
+                $iconName = substr($filename, 0, -5); // Remove '-fill' suffix
+            } else {
+                $style = 'regular';
+                $iconName = $filename;
+            }
+
+            $icons[$style][] = [
+                'name' => $iconName,
+                'filename' => $filename,
+                'component' => "bootstrap-{$filename}",
+                'searchTerms' => str_replace('-', ' ', $iconName),
+            ];
+        }
+
+        // Sort each style alphabetically by name
+        foreach (array_keys($icons) as $style) {
+            usort($icons[$style], fn ($a, $b) => strcmp($a['name'], $b['name']));
+        }
+
+        return $icons;
     }
 }

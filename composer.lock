@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c1e375c797fecece78415700b72b08f2",
+    "content-hash": "2664207f757f3ffba0cf7a0f83655cb1",
     "packages": [
         {
             "name": "blade-ui-kit/blade-heroicons",
@@ -284,6 +284,67 @@
                 }
             ],
             "time": "2024-02-09T16:56:22+00:00"
+        },
+        {
+            "name": "davidhsianturi/blade-bootstrap-icons",
+            "version": "v2.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/davidhsianturi/blade-bootstrap-icons.git",
+                "reference": "e4480e75c4c3b0b350dd8f3acf3dfc1bd9eb560f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/davidhsianturi/blade-bootstrap-icons/zipball/e4480e75c4c3b0b350dd8f3acf3dfc1bd9eb560f",
+                "reference": "e4480e75c4c3b0b350dd8f3acf3dfc1bd9eb560f",
+                "shasum": ""
+            },
+            "require": {
+                "blade-ui-kit/blade-icons": "^1.6",
+                "illuminate/support": "^9.0|^10.0|^11.0|^12.0",
+                "php": "^8.0"
+            },
+            "require-dev": {
+                "orchestra/testbench": "^7.0|^8.0|^9.0|^10.1",
+                "phpunit/phpunit": "^9.0|^10.5|^11.5"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Davidhsianturi\\BladeBootstrapIcons\\BladeBootstrapIconsServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Davidhsianturi\\BladeBootstrapIcons\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "David H. Sianturi",
+                    "email": "davidhsianturi@gmail.com",
+                    "homepage": "https://davidhsianturi.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A package to easily make use of Bootstrap Icons in your Laravel Blade views.",
+            "homepage": "https://github.com/davidhsianturi/blade-bootstrap-icons",
+            "keywords": [
+                "Bootstrap Icons",
+                "blade",
+                "laravel"
+            ],
+            "support": {
+                "issues": "https://github.com/davidhsianturi/blade-bootstrap-icons/issues",
+                "source": "https://github.com/davidhsianturi/blade-bootstrap-icons/tree/v2.1.0"
+            },
+            "time": "2025-06-18T12:39:09+00:00"
         },
         {
             "name": "dflydev/dot-access-data",

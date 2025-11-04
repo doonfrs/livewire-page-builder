@@ -26,7 +26,7 @@ class IconBlock extends Block
     public function getPageBuilderProperties(): array
     {
         return [
-            IconProperty::make(name: 'icon', label: __('Icon'), styles: ['outline', 'solid', 'mini'], defaultValue: 'heroicon-o-star'),
+            IconProperty::make(name: 'icon', label: __('Icon'), styles: ['outline', 'solid', 'mini', 'regular', 'fill'], sets: ['heroicons', 'bootstrap'], defaultValue: 'heroicon-o-star'),
             TextProperty::make(name: 'label', label: __('Label'), defaultValue: 'Icon'),
         ];
     }

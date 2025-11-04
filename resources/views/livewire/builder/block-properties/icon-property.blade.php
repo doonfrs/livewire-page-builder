@@ -57,6 +57,28 @@
                         placeholder="{{ __('Search icons...') }}"
                         class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400" />
 
+                    <!-- Icon Set tabs -->
+                    @if(count($availableSets) > 1)
+                        <div class="mt-3">
+                            <label class="text-xs font-medium text-gray-700 dark:text-gray-300 mb-1 block">{{ __('Icon Set') }}</label>
+                            <div class="flex gap-2">
+                                @foreach($availableSets as $set => $label)
+                                    <button
+                                        type="button"
+                                        wire:click="$set('selectedSet', '{{ $set }}')"
+                                        class="px-3 py-1.5 text-sm font-medium rounded-md transition-colors
+                                            @if($selectedSet === $set)
+                                                bg-green-600 text-white dark:bg-green-700
+                                            @else
+                                                bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600
+                                            @endif">
+                                        {{ $label }}
+                                    </button>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
+
                     <!-- Style tabs -->
                     @if(count($availableStyles) > 1)
                         <div class="flex gap-2 mt-3">
