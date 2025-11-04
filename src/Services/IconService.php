@@ -2,16 +2,10 @@
 
 namespace Trinavo\LivewirePageBuilder\Services;
 
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\File;
 
 class IconService
 {
-    private const CACHE_KEY_HEROICONS = 'livewire_page_builder_heroicons';
-
-    private const CACHE_KEY_BOOTSTRAP = 'livewire_page_builder_bootstrap_icons';
-
-    private const CACHE_TTL = 3600; // 1 hour
 
     /**
      * Get all available icons from specified sets
@@ -36,9 +30,7 @@ class IconService
      */
     public function getHeroicons(): array
     {
-        return Cache::remember(self::CACHE_KEY_HEROICONS, self::CACHE_TTL, function () {
-            return $this->scanHeroicons();
-        });
+        return $this->scanHeroicons();
     }
 
     /**
@@ -46,9 +38,7 @@ class IconService
      */
     public function getBootstrapIcons(): array
     {
-        return Cache::remember(self::CACHE_KEY_BOOTSTRAP, self::CACHE_TTL, function () {
-            return $this->scanBootstrapIcons();
-        });
+        return $this->scanBootstrapIcons();
     }
 
     /**
@@ -108,15 +98,6 @@ class IconService
     public function getComponentName(string $iconName): string
     {
         return "heroicon-{$iconName}";
-    }
-
-    /**
-     * Clear the icons cache
-     */
-    public function clearCache(): void
-    {
-        Cache::forget(self::CACHE_KEY_HEROICONS);
-        Cache::forget(self::CACHE_KEY_BOOTSTRAP);
     }
 
     /**
@@ -254,7 +235,7 @@ class IconService
             $icons[$style][] = [
                 'name' => $iconName,
                 'filename' => $filename,
-                'component' => "bootstrap-{$filename}",
+                'component' => "bi-{$filename}",
                 'searchTerms' => str_replace('-', ' ', $iconName),
             ];
         }

@@ -30,7 +30,7 @@ class IconProperty extends Component
 
     public $selectedStyle = 'outline';
 
-    public $selectedSet = 'heroicons';
+    public $selectedSet = 'all';
 
     protected IconService $iconService;
 
@@ -49,10 +49,8 @@ class IconProperty extends Component
             $this->selectedStyle = $this->propertyStyles[0];
         }
 
-        // Set first available icon set as default
-        if (! empty($this->propertySets)) {
-            $this->selectedSet = $this->propertySets[0];
-        }
+        // Default to 'all' to show icons from all sets
+        $this->selectedSet = 'all';
     }
 
     public function render()
@@ -106,14 +104,23 @@ class IconProperty extends Component
     {
         // Automatically refresh the view when icon set changes
         // Reset selected style to first available style for this icon set
-        $styles = $this->getStylesForSet($this->selectedSet);
-        if (! empty($styles)) {
-            $this->selectedStyle = array_key_first($styles);
+        if ($this->selectedSet !== 'all') {
+            $styles = $this->getStylesForSet($this->selectedSet);
+            if (! empty($styles)) {
+                $this->selectedStyle = array_key_first($styles);
+            }
+        } else {
+            // For "all", reset to first configured style
+            if (! empty($this->propertyStyles)) {
+                $this->selectedStyle = $this->propertyStyles[0];
+            }
         }
     }
 
     private function getFilteredIcons(): array
     {
+        $allIconSets = $this->iconService->getIcons(sets: $this->propertySets ?? ['heroicons']);
+
         // If there's a search query, use the enhanced keyword search
         if (! empty($this->searchQuery)) {
             $searchResults = $this->iconService->searchIcons(
@@ -122,44 +129,73 @@ class IconProperty extends Component
                 sets: $this->propertySets ?? ['heroicons']
             );
 
-            // Filter results to only include the currently selected set and configured styles
             $icons = [];
-            if (isset($searchResults[$this->selectedSet])) {
+
+            if ($this->selectedSet === 'all') {
+                // Combine results from all sets
                 foreach ($this->propertyStyles as $style) {
-                    if (isset($searchResults[$this->selectedSet][$style])) {
-                        $icons[$style] = $searchResults[$this->selectedSet][$style];
-                    } else {
-                        $icons[$style] = [];
+                    $combinedIcons = [];
+                    foreach ($this->propertySets ?? ['heroicons'] as $set) {
+                        if (isset($searchResults[$set][$style])) {
+                            $combinedIcons = array_merge($combinedIcons, $searchResults[$set][$style]);
+                        }
                     }
+                    $icons[$style] = $combinedIcons;
                 }
             } else {
-                // No results for selected set, return empty arrays for all styles
-                foreach ($this->propertyStyles as $style) {
-                    $icons[$style] = [];
+                // Filter results to only include the currently selected set and configured styles
+                if (isset($searchResults[$this->selectedSet])) {
+                    foreach ($this->propertyStyles as $style) {
+                        if (isset($searchResults[$this->selectedSet][$style])) {
+                            $icons[$style] = $searchResults[$this->selectedSet][$style];
+                        } else {
+                            $icons[$style] = [];
+                        }
+                    }
+                } else {
+                    // No results for selected set, return empty arrays for all styles
+                    foreach ($this->propertyStyles as $style) {
+                        $icons[$style] = [];
+                    }
                 }
             }
 
             return $icons;
         }
 
-        // No search query - return all icons for the selected set
-        $allIconSets = $this->iconService->getIcons(sets: $this->propertySets ?? ['heroicons']);
+        // No search query - return all icons
         $icons = [];
 
-        // Get icons for the currently selected set
-        if (! isset($allIconSets[$this->selectedSet])) {
-            return [];
-        }
-
-        $selectedSetIcons = $allIconSets[$this->selectedSet];
-
-        foreach ($this->propertyStyles as $style) {
-            if (! isset($selectedSetIcons[$style])) {
-                $icons[$style] = [];
-                continue;
+        if ($this->selectedSet === 'all') {
+            // Combine icons from all sets
+            foreach ($this->propertyStyles as $style) {
+                $combinedIcons = [];
+                foreach ($this->propertySets ?? ['heroicons'] as $set) {
+                    if (isset($allIconSets[$set][$style])) {
+                        $combinedIcons = array_merge($combinedIcons, $allIconSets[$set][$style]);
+                    }
+                }
+                $icons[$style] = $combinedIcons;
+            }
+        } else {
+            // Get icons for the currently selected set
+            if (! isset($allIconSets[$this->selectedSet])) {
+                foreach ($this->propertyStyles as $style) {
+                    $icons[$style] = [];
+                }
+                return $icons;
             }
 
-            $icons[$style] = $selectedSetIcons[$style];
+            $selectedSetIcons = $allIconSets[$this->selectedSet];
+
+            foreach ($this->propertyStyles as $style) {
+                if (! isset($selectedSetIcons[$style])) {
+                    $icons[$style] = [];
+                    continue;
+                }
+
+                $icons[$style] = $selectedSetIcons[$style];
+            }
         }
 
         return $icons;
@@ -182,6 +218,26 @@ class IconProperty extends Component
 
         $allIconSets = $this->iconService->getIcons(sets: $this->propertySets ?? ['heroicons']);
 
+        // For "all", collect all unique styles from all sets
+        if ($set === 'all') {
+            $allAvailableStyles = [];
+            foreach ($this->propertySets ?? ['heroicons'] as $iconSet) {
+                if (isset($allIconSets[$iconSet])) {
+                    $allAvailableStyles = array_merge($allAvailableStyles, array_keys($allIconSets[$iconSet]));
+                }
+            }
+            $allAvailableStyles = array_unique($allAvailableStyles);
+
+            $styles = [];
+            foreach ($allAvailableStyles as $style) {
+                if (in_array($style, $this->propertyStyles)) {
+                    $styles[$style] = $styleLabels[$style] ?? ucfirst($style);
+                }
+            }
+
+            return $styles;
+        }
+
         if (! isset($allIconSets[$set])) {
             return [];
         }
@@ -201,11 +257,19 @@ class IconProperty extends Component
     private function getAvailableSets(): array
     {
         $setLabels = [
+            'all' => 'All Icons',
             'heroicons' => 'Heroicons',
             'bootstrap' => 'Bootstrap Icons',
         ];
 
         $sets = [];
+
+        // Add "All" option first if there are multiple sets
+        if (count($this->propertySets ?? []) > 1) {
+            $sets['all'] = $setLabels['all'];
+        }
+
+        // Add individual sets
         foreach ($this->propertySets ?? ['heroicons'] as $set) {
             $sets[$set] = $setLabels[$set] ?? ucfirst($set);
         }

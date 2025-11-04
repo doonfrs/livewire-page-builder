@@ -33,6 +33,10 @@
     <!-- Icon Picker Modal -->
     <div x-show="modalOpen"
          x-cloak
+         x-data="{
+             localSelectedStyle: @entangle('selectedStyle'),
+             localSelectedSet: @entangle('selectedSet')
+         }"
          class="modal modal-open"
          @click.self="modalOpen = false; $wire.call('closeModal')">
         <div class="modal-box max-w-4xl max-h-[90vh] p-0" @click.stop>
@@ -57,54 +61,60 @@
                         placeholder="{{ __('Search icons...') }}"
                         class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400" />
 
-                    <!-- Icon Set tabs -->
-                    @if(count($availableSets) > 1)
-                        <div class="mt-3">
-                            <label class="text-xs font-medium text-gray-700 dark:text-gray-300 mb-1 block">{{ __('Icon Set') }}</label>
-                            <div class="flex gap-2">
-                                @foreach($availableSets as $set => $label)
-                                    <button
-                                        type="button"
-                                        wire:click="$set('selectedSet', '{{ $set }}')"
-                                        class="px-3 py-1.5 text-sm font-medium rounded-md transition-colors
-                                            @if($selectedSet === $set)
-                                                bg-green-600 text-white dark:bg-green-700
-                                            @else
-                                                bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600
-                                            @endif">
-                                        {{ $label }}
-                                    </button>
-                                @endforeach
+                    <!-- Filters container -->
+                    <div class="flex items-start justify-between gap-4 mt-3">
+                        <!-- Style tabs (left) -->
+                        @if(count($availableStyles) > 1)
+                            <div class="flex-1">
+                                <label class="text-xs font-medium text-gray-700 dark:text-gray-300 mb-1 block">{{ __('Style') }}</label>
+                                <div class="flex flex-wrap gap-2">
+                                    @foreach($availableStyles as $style => $label)
+                                        <button
+                                            type="button"
+                                            @click="localSelectedStyle = '{{ $style }}'; $wire.set('selectedStyle', '{{ $style }}')"
+                                            :class="{
+                                                'bg-blue-600 text-white dark:bg-blue-700': localSelectedStyle === '{{ $style }}',
+                                                'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600': localSelectedStyle !== '{{ $style }}'
+                                            }"
+                                            class="px-3 py-1.5 text-sm font-medium rounded-md transition-colors">
+                                            {{ $label }}
+                                        </button>
+                                    @endforeach
+                                </div>
                             </div>
-                        </div>
-                    @endif
+                        @endif
 
-                    <!-- Style tabs -->
-                    @if(count($availableStyles) > 1)
-                        <div class="flex gap-2 mt-3">
-                            @foreach($availableStyles as $style => $label)
-                                <button
-                                    type="button"
-                                    wire:click="$set('selectedStyle', '{{ $style }}')"
-                                    class="px-3 py-1.5 text-sm font-medium rounded-md transition-colors
-                                        @if($selectedStyle === $style)
-                                            bg-blue-600 text-white dark:bg-blue-700
-                                        @else
-                                            bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600
-                                        @endif">
-                                    {{ $label }}
-                                </button>
-                            @endforeach
-                        </div>
-                    @endif
+                        <!-- Icon Set tabs (right) -->
+                        @if(count($availableSets) >= 1)
+                            <div class="flex-shrink-0">
+                                <label class="text-xs font-medium text-gray-700 dark:text-gray-300 mb-1 block">{{ __('Icon Set') }}</label>
+                                <div class="flex gap-2">
+                                    @foreach($availableSets as $set => $label)
+                                        <button
+                                            type="button"
+                                            @click="localSelectedSet = '{{ $set }}'; $wire.set('selectedSet', '{{ $set }}')"
+                                            :class="{
+                                                'bg-green-600 text-white dark:bg-green-700': localSelectedSet === '{{ $set }}',
+                                                'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600': localSelectedSet !== '{{ $set }}'
+                                            }"
+                                            class="px-3 py-1.5 text-sm font-medium rounded-md transition-colors">
+                                            {{ $label }}
+                                        </button>
+                                    @endforeach
+                                </div>
+                            </div>
+                        @endif
+                    </div>
                 </div>
 
                 <!-- Modal Body - Icons Grid -->
                 <div class="p-4 overflow-y-auto relative" style="max-height: calc(90vh - 200px); min-height: 400px;">
                     <!-- Loading State -->
-                    <div wire:loading class="absolute inset-0 flex flex-col items-center justify-center bg-white/90 dark:bg-gray-800/90 z-10">
-                        <div class="inline-block w-12 h-12 border-4 border-base-300 border-t-transparent rounded-full animate-spin mb-4"></div>
-                        <p class="text-gray-500 dark:text-gray-400">{{ __('Loading icons...') }}</p>
+                    <div wire:loading.delay wire:target="searchQuery,selectedStyle,selectedSet" class="absolute inset-0 flex items-center justify-center bg-white/90 dark:bg-gray-800/90 z-10">
+                        <div class="flex flex-col items-center mt-8">
+                            <div class="inline-block w-12 h-12 border-4 border-base-300 border-t-transparent rounded-full animate-spin mb-4"></div>
+                            <p class="text-gray-500 dark:text-gray-400">{{ __('Loading icons...') }}</p>
+                        </div>
                     </div>
 
                     <!-- Icons Grid -->
@@ -115,7 +125,7 @@
                                     @foreach($icons[$selectedStyle] as $icon)
                                         <button
                                             type="button"
-                                            wire:click="selectIcon('{{ $icon['component'] }}')"
+                                            @click="modalOpen = false; $wire.call('selectIcon', '{{ $icon['component'] }}')"
                                             title="{{ $icon['name'] }}"
                                             class="flex flex-col items-center justify-center p-3 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-blue-50 hover:border-blue-500 dark:hover:bg-gray-700 dark:hover:border-blue-500 transition-all group
                                                 @if($currentValue === $icon['component'])
