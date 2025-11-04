@@ -3,8 +3,8 @@
 namespace Trinavo\LivewirePageBuilder\Http\Livewire\BlockProperties;
 
 use Livewire\Component;
-use Trinavo\LivewirePageBuilder\Services\IconService;
 use Trinavo\LivewirePageBuilder\Services\IconKeywords;
+use Trinavo\LivewirePageBuilder\Services\IconService;
 
 class IconProperty extends Component
 {
@@ -32,11 +32,17 @@ class IconProperty extends Component
 
     public $selectedSet = 'all';
 
+    public $currentPage = 1;
+
+    public $perPage = 60;
+
     protected IconService $iconService;
 
     protected IconKeywords $iconKeywords;
 
     private ?array $cachedIconSets = null;
+
+    private ?int $totalIcons = null;
 
     public function boot(IconService $iconService, IconKeywords $iconKeywords)
     {
@@ -66,12 +72,29 @@ class IconProperty extends Component
 
     public function render()
     {
-        $icons = $this->getFilteredIcons();
+        // Only load icons when modal is open to avoid slowing down initial render
+        $icons = [];
+        $availableStyles = [];
+        $availableSets = [];
+        $totalPages = 0;
+        $showing = ['from' => 0, 'to' => 0, 'total' => 0];
+
+        if ($this->showModal) {
+            $result = $this->getFilteredIcons();
+            $icons = $result['icons'];
+            $totalPages = $result['totalPages'];
+            $showing = $result['showing'];
+            $availableStyles = $this->getAvailableStyles();
+            $availableSets = $this->getAvailableSets();
+        }
 
         return view('page-builder::livewire.builder.block-properties.icon-property', [
             'icons' => $icons,
-            'availableStyles' => $this->getAvailableStyles(),
-            'availableSets' => $this->getAvailableSets(),
+            'availableStyles' => $availableStyles,
+            'availableSets' => $availableSets,
+            'currentPage' => $this->currentPage,
+            'totalPages' => $totalPages,
+            'showing' => $showing,
         ]);
     }
 
@@ -99,21 +122,26 @@ class IconProperty extends Component
     {
         $this->showModal = false;
         $this->searchQuery = '';
+        $this->currentPage = 1;
     }
 
     public function updatedSearchQuery()
     {
-        // Automatically refresh the view when search query changes
+        // Reset to first page when search changes
+        $this->currentPage = 1;
     }
 
     public function updatedSelectedStyle()
     {
-        // Automatically refresh the view when style changes
+        // Reset to first page when style changes
+        $this->currentPage = 1;
     }
 
     public function updatedSelectedSet()
     {
-        // Automatically refresh the view when icon set changes
+        // Reset to first page when icon set changes
+        $this->currentPage = 1;
+
         // Reset selected style to first available style for this icon set
         if ($this->selectedSet !== 'all') {
             $styles = $this->getStylesForSet($this->selectedSet);
@@ -128,10 +156,62 @@ class IconProperty extends Component
         }
     }
 
+    public function nextPage()
+    {
+        $this->currentPage++;
+    }
+
+    public function previousPage()
+    {
+        if ($this->currentPage > 1) {
+            $this->currentPage--;
+        }
+    }
+
+    public function goToPage($page)
+    {
+        $this->currentPage = max(1, (int) $page);
+    }
+
     private function getFilteredIcons(): array
     {
         $allIconSets = $this->getAllIconSets();
+        $allIconsForStyle = $this->getAllIconsForStyle($allIconSets);
 
+        // Get icons for the selected style
+        $iconsForCurrentStyle = $allIconsForStyle[$this->selectedStyle] ?? [];
+        $total = count($iconsForCurrentStyle);
+
+        // Calculate pagination
+        $totalPages = $total > 0 ? (int) ceil($total / $this->perPage) : 0;
+        $offset = ($this->currentPage - 1) * $this->perPage;
+
+        // Ensure current page doesn't exceed total pages
+        if ($this->currentPage > $totalPages && $totalPages > 0) {
+            $this->currentPage = $totalPages;
+            $offset = ($this->currentPage - 1) * $this->perPage;
+        }
+
+        // Slice for current page
+        $paginatedIcons = array_slice($iconsForCurrentStyle, $offset, $this->perPage);
+
+        // Calculate showing info
+        $from = $total > 0 ? $offset + 1 : 0;
+        $to = min($offset + $this->perPage, $total);
+
+        return [
+            'icons' => [$this->selectedStyle => $paginatedIcons],
+            'totalPages' => $totalPages,
+            'showing' => [
+                'from' => $from,
+                'to' => $to,
+                'total' => $total,
+            ],
+        ];
+    }
+
+    private function getAllIconsForStyle(array $allIconSets): array
+    {
         // If there's a search query, use the enhanced keyword search
         if (! empty($this->searchQuery)) {
             $searchResults = $this->iconService->searchIcons(
@@ -144,11 +224,26 @@ class IconProperty extends Component
 
             if ($this->selectedSet === 'all') {
                 // Combine results from all sets
+                // When "All" is selected, we need to intelligently map styles between icon sets
+                $styleMapping = [
+                    'outline' => ['outline', 'regular'], // Heroicons outline ≈ Bootstrap regular
+                    'solid' => ['solid', 'fill'],         // Heroicons solid ≈ Bootstrap fill
+                    'mini' => ['mini', 'regular'],        // Heroicons mini ≈ Bootstrap regular
+                    'regular' => ['regular', 'outline'],  // Bootstrap regular ≈ Heroicons outline
+                    'fill' => ['fill', 'solid'],          // Bootstrap fill ≈ Heroicons solid
+                ];
+
                 foreach ($this->propertyStyles as $style) {
                     $combinedIcons = [];
+                    $stylesToCheck = $styleMapping[$style] ?? [$style];
+
                     foreach ($this->propertySets ?? ['heroicons'] as $set) {
-                        if (isset($searchResults[$set][$style])) {
-                            $combinedIcons = array_merge($combinedIcons, $searchResults[$set][$style]);
+                        // Check the selected style first, then fallback to similar styles
+                        foreach ($stylesToCheck as $checkStyle) {
+                            if (isset($searchResults[$set][$checkStyle])) {
+                                $combinedIcons = array_merge($combinedIcons, $searchResults[$set][$checkStyle]);
+                                break; // Found icons in this set, no need to check other styles
+                            }
                         }
                     }
                     $icons[$style] = $combinedIcons;
@@ -179,11 +274,26 @@ class IconProperty extends Component
 
         if ($this->selectedSet === 'all') {
             // Combine icons from all sets
+            // When "All" is selected, we need to intelligently map styles between icon sets
+            $styleMapping = [
+                'outline' => ['outline', 'regular'], // Heroicons outline ≈ Bootstrap regular
+                'solid' => ['solid', 'fill'],         // Heroicons solid ≈ Bootstrap fill
+                'mini' => ['mini', 'regular'],        // Heroicons mini ≈ Bootstrap regular
+                'regular' => ['regular', 'outline'],  // Bootstrap regular ≈ Heroicons outline
+                'fill' => ['fill', 'solid'],          // Bootstrap fill ≈ Heroicons solid
+            ];
+
             foreach ($this->propertyStyles as $style) {
                 $combinedIcons = [];
+                $stylesToCheck = $styleMapping[$style] ?? [$style];
+
                 foreach ($this->propertySets ?? ['heroicons'] as $set) {
-                    if (isset($allIconSets[$set][$style])) {
-                        $combinedIcons = array_merge($combinedIcons, $allIconSets[$set][$style]);
+                    // Check the selected style first, then fallback to similar styles
+                    foreach ($stylesToCheck as $checkStyle) {
+                        if (isset($allIconSets[$set][$checkStyle])) {
+                            $combinedIcons = array_merge($combinedIcons, $allIconSets[$set][$checkStyle]);
+                            break; // Found icons in this set, no need to check other styles
+                        }
                     }
                 }
                 $icons[$style] = $combinedIcons;
@@ -194,6 +304,7 @@ class IconProperty extends Component
                 foreach ($this->propertyStyles as $style) {
                     $icons[$style] = [];
                 }
+
                 return $icons;
             }
 
@@ -202,6 +313,7 @@ class IconProperty extends Component
             foreach ($this->propertyStyles as $style) {
                 if (! isset($selectedSetIcons[$style])) {
                     $icons[$style] = [];
+
                     continue;
                 }
 

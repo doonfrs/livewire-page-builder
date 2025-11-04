@@ -268,5 +268,19 @@
     "Search icons...": "ابحث عن الأيقونات...",
     "Outline": "محدد",
     "Solid": "ممتلئ",
-    "Mini": "صغير"
+    "Mini": "صغير",
+    "Regular": "عادي",
+    "Fill": "مملوء",
+    "All Icons": "جميع الأيقونات",
+    "Icon Set": "مجموعة الأيقونات",
+    "Style": "النمط",
+    "No icons found": "لم يتم العثور على أيقونات",
+    "Heroicons": "Heroicons",
+    "Bootstrap Icons": "Bootstrap Icons",
+    "Showing": "عرض",
+    "to": "إلى",
+    "of": "من",
+    "icons": "أيقونات",
+    "Previous": "السابق",
+    "Next": "التالي"
 }

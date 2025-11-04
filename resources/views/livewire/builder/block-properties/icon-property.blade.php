@@ -39,9 +39,9 @@
          }"
          class="modal modal-open"
          @click.self="modalOpen = false; $wire.call('closeModal')">
-        <div class="modal-box max-w-4xl max-h-[90vh] p-0" @click.stop>
+        <div class="modal-box max-w-4xl max-h-[90vh] p-0 flex flex-col" @click.stop>
                 <!-- Modal Header -->
-                <div class="sticky top-0 z-10 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 p-4">
+                <div class="flex-shrink-0 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 p-4">
                     <div class="flex items-center justify-between mb-3">
                         <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">
                             {{ __('Select Icon') }}
@@ -108,17 +108,17 @@
                 </div>
 
                 <!-- Modal Body - Icons Grid -->
-                <div class="p-4 overflow-y-auto relative" style="max-height: calc(90vh - 200px); min-height: 400px;">
+                <div class="flex-1 p-4 overflow-y-auto relative" style="min-height: 400px;">
                     <!-- Loading State -->
-                    <div wire:loading.delay wire:target="searchQuery,selectedStyle,selectedSet" class="absolute inset-0 flex items-center justify-center bg-white/90 dark:bg-gray-800/90 z-10">
-                        <div class="flex flex-col items-center mt-8">
+                    <div wire:loading.delay wire:target="searchQuery,selectedStyle,selectedSet,nextPage,previousPage" class="absolute inset-0 flex items-center justify-center bg-white/90 dark:bg-gray-800/90 z-10">
+                        <div class="flex flex-col items-center">
                             <div class="inline-block w-12 h-12 border-4 border-base-300 border-t-transparent rounded-full animate-spin mb-4"></div>
                             <p class="text-gray-500 dark:text-gray-400">{{ __('Loading icons...') }}</p>
                         </div>
                     </div>
 
                     <!-- Icons Grid -->
-                    <div wire:loading.remove>
+                    <div wire:loading.class="invisible" wire:target="searchQuery,selectedStyle,selectedSet,nextPage,previousPage">
                         @if($selectedStyle && isset($icons[$selectedStyle]))
                             @if(count($icons[$selectedStyle]) > 0)
                                 <div class="grid grid-cols-6 gap-2">
@@ -150,8 +150,48 @@
                     </div>
                 </div>
 
+                <!-- Pagination Controls -->
+                @if($showModal && $totalPages > 1)
+                    <div class="flex-shrink-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 px-4 py-3">
+                        <div class="flex items-center justify-between">
+                            <!-- Showing info -->
+                            <div class="text-sm text-gray-700 dark:text-gray-300">
+                                {{ __('Showing') }} <span class="font-medium">{{ $showing['from'] }}</span> {{ __('to') }} <span class="font-medium">{{ $showing['to'] }}</span> {{ __('of') }} <span class="font-medium">{{ $showing['total'] }}</span> {{ __('icons') }}
+                            </div>
+
+                            <!-- Page controls -->
+                            <div class="flex items-center gap-2">
+                                <!-- Previous button -->
+                                <button
+                                    type="button"
+                                    wire:click="previousPage"
+                                    @if($currentPage === 1) disabled @endif
+                                    class="inline-flex items-center px-3 py-1.5 text-sm font-medium rounded-md text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600 dark:disabled:hover:bg-gray-700">
+                                    <x-heroicon-o-chevron-left class="w-4 h-4 mr-1" />
+                                    {{ __('Previous') }}
+                                </button>
+
+                                <!-- Page indicator -->
+                                <span class="text-sm text-gray-700 dark:text-gray-300">
+                                    {{ __('Page') }} <span class="font-medium">{{ $currentPage }}</span> {{ __('of') }} <span class="font-medium">{{ $totalPages }}</span>
+                                </span>
+
+                                <!-- Next button -->
+                                <button
+                                    type="button"
+                                    wire:click="nextPage"
+                                    @if($currentPage === $totalPages) disabled @endif
+                                    class="inline-flex items-center px-3 py-1.5 text-sm font-medium rounded-md text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600 dark:disabled:hover:bg-gray-700">
+                                    {{ __('Next') }}
+                                    <x-heroicon-o-chevron-right class="w-4 h-4 ml-1" />
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                @endif
+
                 <!-- Modal Footer -->
-                <div class="sticky bottom-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 p-4">
+                <div class="flex-shrink-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 p-4">
                     <button
                         type="button"
                         @click="modalOpen = false; $wire.call('closeModal')"
