@@ -105,7 +105,7 @@ class SafeClassGenerator
     {
         $type = $options['type'] ?? 'all';
         $min = (int) ($options['min'] ?? 1);
-        $max = (int) ($options['max'] ?? 500);
+        $max = (int) ($options['max'] ?? 700);
         $breakpoints = explode(',', $options['breakpoints'] ?? '3xl,5xl');
         $outputDir = $options['output'] ?? __DIR__.'/../resources/views/dev';
 
