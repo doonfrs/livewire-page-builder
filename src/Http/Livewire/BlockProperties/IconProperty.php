@@ -36,10 +36,21 @@ class IconProperty extends Component
 
     protected IconKeywords $iconKeywords;
 
+    private ?array $cachedIconSets = null;
+
     public function boot(IconService $iconService, IconKeywords $iconKeywords)
     {
         $this->iconService = $iconService;
         $this->iconKeywords = $iconKeywords;
+    }
+
+    private function getAllIconSets(): array
+    {
+        if ($this->cachedIconSets === null) {
+            $this->cachedIconSets = $this->iconService->getIcons(sets: $this->propertySets ?? ['heroicons']);
+        }
+
+        return $this->cachedIconSets;
     }
 
     public function mount()
@@ -119,7 +130,7 @@ class IconProperty extends Component
 
     private function getFilteredIcons(): array
     {
-        $allIconSets = $this->iconService->getIcons(sets: $this->propertySets ?? ['heroicons']);
+        $allIconSets = $this->getAllIconSets();
 
         // If there's a search query, use the enhanced keyword search
         if (! empty($this->searchQuery)) {
@@ -216,7 +227,7 @@ class IconProperty extends Component
             'fill' => 'Fill',
         ];
 
-        $allIconSets = $this->iconService->getIcons(sets: $this->propertySets ?? ['heroicons']);
+        $allIconSets = $this->getAllIconSets();
 
         // For "all", collect all unique styles from all sets
         if ($set === 'all') {
