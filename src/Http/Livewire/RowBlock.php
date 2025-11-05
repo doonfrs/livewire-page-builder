@@ -93,12 +93,16 @@ class RowBlock extends Block
         $this->blocks = $this->blocks ?? [];
 
         // Synchronize isNested between component property and properties array
-        // Component property takes precedence (passed by BuilderBlock)
+        // IMPORTANT: Component property (passed via @livewire) takes precedence over database value
+        // This allows BuilderBlock and row-view.blade.php to override isNested at render time
         if ($this->isNested) {
+            // If isNested was explicitly passed as true, always use it
             $this->properties['isNested'] = true;
-        } elseif (isset($this->properties['isNested'])) {
-            $this->isNested = $this->properties['isNested'];
+        } elseif (isset($this->properties['isNested']) && $this->properties['isNested']) {
+            // If not passed but exists in properties and is true, sync it
+            $this->isNested = true;
         }
+        // Note: If isNested is false in both places, that's correct (top-level row)
 
         $this->cssClasses = $this->makeClasses();
         $this->inlineStyles = $this->makeInlineStyles();
