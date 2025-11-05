@@ -27,6 +27,11 @@
 <body class="h-screen flex flex-col bg-gray-100">
     {{ $slot }}
     @livewireScripts
+
+    @if (app()->environment('local', 'development'))
+        {{-- Include safe classes for Tailwind JIT compiler --}}
+        @include('page-builder::dev.safe-classes-transforms')
+    @endif
 </body>
 
 </html>
