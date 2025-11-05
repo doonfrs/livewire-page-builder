@@ -36,6 +36,7 @@
                         'blocks' => $block['blocks'],
                         'rowId' => $blockId,
                         'properties' => $block['properties'],
+                        'isNested' => true,
                         'editMode' => false,
                     ],
                     key($blockId)

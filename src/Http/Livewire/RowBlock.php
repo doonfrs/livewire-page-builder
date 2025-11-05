@@ -91,6 +91,15 @@ class RowBlock extends Block
         }
 
         $this->blocks = $this->blocks ?? [];
+
+        // Synchronize isNested between component property and properties array
+        // Component property takes precedence (passed by BuilderBlock)
+        if ($this->isNested) {
+            $this->properties['isNested'] = true;
+        } elseif (isset($this->properties['isNested'])) {
+            $this->isNested = $this->properties['isNested'];
+        }
+
         $this->cssClasses = $this->makeClasses();
         $this->inlineStyles = $this->makeInlineStyles();
 
@@ -128,6 +137,9 @@ class RowBlock extends Block
 
         // Special handling for nested rows
         if ($blockClass === \Trinavo\LivewirePageBuilder\Http\Livewire\RowBlock::class) {
+            // Ensure isNested is set to true for nested rows
+            $properties['isNested'] = true;
+
             $block = [
                 'alias' => $blockAlias,
                 'properties' => $properties,
