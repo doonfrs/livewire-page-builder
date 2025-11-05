@@ -72,6 +72,9 @@ class PageBuilderRender
     {
         $pageBuilderService = app(PageBuilderService::class);
 
+        // Ensure editMode is false for frontend rendering
+        $block['properties']['editMode'] = false;
+
         $block['cssClasses'] = $pageBuilderService->getCssClassesFromProperties($block['properties']);
         $block['inlineStyles'] = $pageBuilderService->getInlineStylesFromProperties($block['properties']);
         $block['dataAttributes'] = $pageBuilderService->getDataAttributesFromProperties($block['properties']);

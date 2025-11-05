@@ -42,6 +42,7 @@ class Spacer extends Block
                 ".__('Spacer').'
             </div>';
         } else {
+
             return "<div class='w-full {$heightClasses}'></div>";
         }
     }
