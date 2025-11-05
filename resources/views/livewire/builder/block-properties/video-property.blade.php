@@ -34,16 +34,32 @@
                 type="file"
                 id="file-{{ $propertyName }}"
                 class="hidden"
-                accept="video/mp4"
-                wire:model="uploadedVideo"
-                wire:change.debounce.500ms="uploadVideo()" />
+                accept="video/mp4,video/webm,video/ogg"
+                wire:model.live="uploadedVideo" />
             <button
                 type="button"
-                class="w-full inline-flex justify-center items-center px-3 py-1.5 text-xs font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:bg-blue-700 dark:hover:bg-blue-800 dark:focus:ring-offset-gray-800"
+                class="w-full inline-flex justify-center items-center px-3 py-1.5 text-xs font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:bg-blue-700 dark:hover:bg-blue-800 dark:focus:ring-offset-gray-800 disabled:opacity-50 disabled:cursor-not-allowed"
+                wire:loading.attr="disabled"
+                wire:target="uploadedVideo"
                 x-on:click="document.getElementById('file-{{ $propertyName }}').click()">
                 <x-heroicon-o-arrow-up-tray class="w-4 h-4 mr-1" />
-                {{ __('Upload Video') }}
+                <span wire:loading.remove wire:target="uploadedVideo">{{ __('Upload Video') }}</span>
+                <span wire:loading wire:target="uploadedVideo">{{ __('Uploading...') }}</span>
             </button>
         </div>
+
+        <!-- Upload progress indicator -->
+        <div wire:loading wire:target="uploadedVideo" class="mt-2">
+            <div class="w-full bg-gray-200 rounded-full h-1.5 dark:bg-gray-700">
+                <div class="bg-blue-600 h-1.5 rounded-full animate-pulse" style="width: 100%"></div>
+            </div>
+        </div>
+
+        <!-- Validation errors -->
+        @error('uploadedVideo')
+            <div class="mt-2 text-xs text-red-600 dark:text-red-400">
+                {{ $message }}
+            </div>
+        @enderror
     </div>
 </div>

@@ -27,16 +27,55 @@ class VideoProperty extends Component
         return view('page-builder::livewire.builder.block-properties.video-property');
     }
 
+    /**
+     * Automatically called when uploadedVideo property is updated
+     */
+    public function updatedUploadedVideo()
+    {
+        \Log::info('VideoProperty::updatedUploadedVideo hook triggered');
+        $this->uploadVideo();
+    }
+
     public function uploadVideo()
     {
-        $this->validate([
-            'uploadedVideo' => 'required|file|mimetypes:video/mp4|max:5120', // 5MB = 5120KB
+        \Log::info('VideoProperty::uploadVideo called', [
+            'propertyName' => $this->propertyName,
+            'rowId' => $this->rowId,
+            'blockId' => $this->blockId,
+            'uploadedVideo' => $this->uploadedVideo ? 'Present' : 'NULL',
         ]);
+
+        // Validate that uploadedVideo exists before processing
+        if (! $this->uploadedVideo) {
+            \Log::warning('VideoProperty::uploadVideo - uploadedVideo is null, returning early');
+            return;
+        }
+
+        \Log::info('VideoProperty::uploadVideo - Starting validation');
+
+        $this->validate([
+            'uploadedVideo' => 'required|file|mimetypes:video/mp4,video/webm,video/ogg|max:51200', // max 50MB
+        ]);
+
+        \Log::info('VideoProperty::uploadVideo - Validation passed, storing file');
 
         $path = $this->uploadedVideo->store(path: 'page-builder', options: 'public');
         $url = Storage::url(path: $path);
+
+        \Log::info('VideoProperty::uploadVideo - File stored', [
+            'path' => $path,
+            'url' => $url,
+        ]);
+
         $this->currentValue = $url;
         $this->dispatch(event: 'updateBlockProperty', rowId: $this->rowId, blockId: $this->blockId, propertyName: $this->propertyName, value: $url);
+
+        \Log::info('VideoProperty::uploadVideo - Dispatched updateBlockProperty event', [
+            'url' => $url,
+        ]);
+
+        // Reset uploadedVideo after processing
+        $this->reset('uploadedVideo');
     }
 
     public function updateVideoUrl()
