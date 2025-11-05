@@ -408,9 +408,7 @@ class PageBuilderService
 
         // Vertical alignment - allow customization instead of hardcoded centering
         $contentAlign = $properties['contentAlign'] ?? 'content-center';
-        $classes[] = $contentAlign;
-
-        // Add position property
+        $classes[] = $contentAlign;        // Add position property
         $position = $properties['position'] ?? null;
         if ($position) {
             $classes[] = $position;
@@ -438,6 +436,11 @@ class PageBuilderService
         $widthClasses = $this->getWidthCssClassesFromProperties($properties, isRow: $isRow);
         if (count($widthClasses) > 0) {
             $classString .= ' '.implode(' ', $widthClasses);
+        }
+
+        $transformClasses = $this->getTransformCssClassesFromProperties($properties);
+        if (trim($transformClasses) !== '') {
+            $classString .= ' '.$transformClasses;
         }
 
         return $classString;
@@ -898,5 +901,163 @@ class PageBuilderService
 
         // Return as-is (might be a custom format)
         return $value;
+    }
+
+    /**
+     * Get transform CSS classes from properties
+     */
+    public function getTransformCssClassesFromProperties(array $properties): string
+    {
+        $classes = [];
+
+        // Rotate
+        $mobileRotate = $properties['mobileRotate'] ?? 0;
+        $tabletRotate = $properties['tabletRotate'] ?? 0;
+        $desktopRotate = $properties['desktopRotate'] ?? 0;
+
+        // Scale
+        $mobileScale = $properties['mobileScale'] ?? 1;
+        $tabletScale = $properties['tabletScale'] ?? 1;
+        $desktopScale = $properties['desktopScale'] ?? 1;
+
+        // Translate X
+        $mobileTranslateX = $properties['mobileTranslateX'] ?? 0;
+        $tabletTranslateX = $properties['tabletTranslateX'] ?? 0;
+        $desktopTranslateX = $properties['desktopTranslateX'] ?? 0;
+
+        // Translate Y
+        $mobileTranslateY = $properties['mobileTranslateY'] ?? 0;
+        $tabletTranslateY = $properties['tabletTranslateY'] ?? 0;
+        $desktopTranslateY = $properties['desktopTranslateY'] ?? 0;
+
+        // Skew X
+        $mobileSkewX = $properties['mobileSkewX'] ?? 0;
+        $tabletSkewX = $properties['tabletSkewX'] ?? 0;
+        $desktopSkewX = $properties['desktopSkewX'] ?? 0;
+
+        // Skew Y
+        $mobileSkewY = $properties['mobileSkewY'] ?? 0;
+        $tabletSkewY = $properties['tabletSkewY'] ?? 0;
+        $desktopSkewY = $properties['desktopSkewY'] ?? 0;
+
+        // Add rotate classes (mobile first)
+        if ($mobileRotate != 0) {
+            $classes[] = $this->formatTransformValue(value: $mobileRotate, prefix: 'rotate');
+        }
+        if ($tabletRotate != $mobileRotate) {
+            $classes[] = '@3xl:'.$this->formatTransformValue(value: $tabletRotate, prefix: 'rotate');
+        }
+        if ($desktopRotate != $tabletRotate) {
+            $classes[] = '@5xl:'.$this->formatTransformValue(value: $desktopRotate, prefix: 'rotate');
+        }
+
+        // Add scale classes
+        if ($mobileScale != 1) {
+            $classes[] = $this->formatTransformValue(value: $mobileScale, prefix: 'scale', multiplier: 100);
+        }
+        if ($tabletScale != $mobileScale) {
+            $classes[] = '@3xl:'.$this->formatTransformValue(value: $tabletScale, prefix: 'scale', multiplier: 100);
+        }
+        if ($desktopScale != $tabletScale) {
+            $classes[] = '@5xl:'.$this->formatTransformValue(value: $desktopScale, prefix: 'scale', multiplier: 100);
+        }
+
+        // Add translate-x classes
+        if ($mobileTranslateX != 0) {
+            $classes[] = $this->formatTransformValue(value: $mobileTranslateX, prefix: 'translate-x');
+        }
+        if ($tabletTranslateX != $mobileTranslateX) {
+            $classes[] = '@3xl:'.$this->formatTransformValue(value: $tabletTranslateX, prefix: 'translate-x');
+        }
+        if ($desktopTranslateX != $tabletTranslateX) {
+            $classes[] = '@5xl:'.$this->formatTransformValue(value: $desktopTranslateX, prefix: 'translate-x');
+        }
+
+        // Add translate-y classes
+        if ($mobileTranslateY != 0) {
+            $classes[] = $this->formatTransformValue(value: $mobileTranslateY, prefix: 'translate-y');
+        }
+        if ($tabletTranslateY != $mobileTranslateY) {
+            $classes[] = '@3xl:'.$this->formatTransformValue(value: $tabletTranslateY, prefix: 'translate-y');
+        }
+        if ($desktopTranslateY != $tabletTranslateY) {
+            $classes[] = '@5xl:'.$this->formatTransformValue(value: $desktopTranslateY, prefix: 'translate-y');
+        }
+
+        // Add skew-x classes
+        if ($mobileSkewX != 0) {
+            $classes[] = $this->formatTransformValue(value: $mobileSkewX, prefix: 'skew-x');
+        }
+        if ($tabletSkewX != $mobileSkewX) {
+            $classes[] = '@3xl:'.$this->formatTransformValue(value: $tabletSkewX, prefix: 'skew-x');
+        }
+        if ($desktopSkewX != $tabletSkewX) {
+            $classes[] = '@5xl:'.$this->formatTransformValue(value: $desktopSkewX, prefix: 'skew-x');
+        }
+
+        // Add skew-y classes
+        if ($mobileSkewY != 0) {
+            $classes[] = $this->formatTransformValue(value: $mobileSkewY, prefix: 'skew-y');
+        }
+        if ($tabletSkewY != $mobileSkewY) {
+            $classes[] = '@3xl:'.$this->formatTransformValue(value: $tabletSkewY, prefix: 'skew-y');
+        }
+        if ($desktopSkewY != $tabletSkewY) {
+            $classes[] = '@5xl:'.$this->formatTransformValue(value: $desktopSkewY, prefix: 'skew-y');
+        }
+
+        return implode(' ', $classes);
+    }
+
+    /**
+     * Format transform value to Tailwind class
+     */
+    protected function formatTransformValue(float|int $value, string $prefix, ?int $multiplier = null): string
+    {
+        // Handle zero value
+        if ($value == 0) {
+            return $prefix.'-0';
+        }
+
+        // Apply multiplier if provided (for scale: 1.5 becomes 150)
+        if ($multiplier !== null) {
+            $value = $value * $multiplier;
+        }
+
+        // Handle negative values
+        $isNegative = $value < 0;
+        $absValue = abs($value);
+
+        // For scale, check common values (50, 75, 90, 95, 100, 105, 110, 125, 150)
+        if ($prefix === 'scale') {
+            $commonScales = [0, 50, 75, 90, 95, 100, 105, 110, 125, 150];
+            if (in_array($absValue, $commonScales)) {
+                return $prefix.'-'.$absValue;
+            }
+
+            // Use arbitrary value for custom scale
+            return $prefix.'-['.$absValue.']';
+        }
+
+        // For rotate and skew, common angles: 0, 1, 2, 3, 6, 12, 45, 90, 180
+        if (in_array($prefix, ['rotate', 'skew-x', 'skew-y'])) {
+            $commonAngles = [0, 1, 2, 3, 6, 12, 45, 90, 180];
+            if (in_array($absValue, $commonAngles)) {
+                return ($isNegative ? '-' : '').$prefix.'-'.$absValue;
+            }
+
+            // Use arbitrary value for custom angle
+            return ($isNegative ? '-' : '').$prefix.'-['.$absValue.'deg]';
+        }
+
+        // For translate, check if it's a common spacing value (0.5rem increments)
+        // Common translate values: 0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 16, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56, 60, 64, 72, 80, 96
+        $commonTranslate = [0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 16, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56, 60, 64, 72, 80, 96];
+        if (in_array($absValue, $commonTranslate)) {
+            return ($isNegative ? '-' : '').$prefix.'-'.$absValue;
+        }
+
+        // Use arbitrary value with px unit for custom translate
+        return ($isNegative ? '-' : '').$prefix.'-['.$absValue.'px]';
     }
 }

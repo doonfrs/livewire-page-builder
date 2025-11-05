@@ -115,6 +115,48 @@ abstract class Block extends Component
 
     public $zIndex = null;
 
+    // Transform properties - Rotate (degrees)
+    public $mobileRotate = 0;
+
+    public $tabletRotate = 0;
+
+    public $desktopRotate = 0;
+
+    // Transform properties - Scale (factor, e.g., 1.0 = 100%, 1.5 = 150%)
+    public $mobileScale = 1;
+
+    public $tabletScale = 1;
+
+    public $desktopScale = 1;
+
+    // Transform properties - Translate X (pixels or rem)
+    public $mobileTranslateX = 0;
+
+    public $tabletTranslateX = 0;
+
+    public $desktopTranslateX = 0;
+
+    // Transform properties - Translate Y (pixels or rem)
+    public $mobileTranslateY = 0;
+
+    public $tabletTranslateY = 0;
+
+    public $desktopTranslateY = 0;
+
+    // Transform properties - Skew X (degrees)
+    public $mobileSkewX = 0;
+
+    public $tabletSkewX = 0;
+
+    public $desktopSkewX = 0;
+
+    // Transform properties - Skew Y (degrees)
+    public $mobileSkewY = 0;
+
+    public $tabletSkewY = 0;
+
+    public $desktopSkewY = 0;
+
     // Border properties
     public $borderWidth = null;
 
@@ -206,7 +248,8 @@ abstract class Block extends Component
             $this->getBoxShadowProperties(),
             $this->getBackdropFilterProperties(),
             $this->getFilterProperties(),
-            $this->getLayoutProperties()
+            $this->getLayoutProperties(),
+            $this->getTransformProperties()
         );
     }
 
@@ -509,6 +552,56 @@ abstract class Block extends Component
                 'z-50' => '50',
             ], defaultValue: $this->zIndex))
                 ->setGroup('layout', 'Layout', 3, 'heroicon-o-rectangle-group'),
+        ];
+    }
+
+    /**
+     * Get transform properties (rotate, scale, translate, skew)
+     */
+    protected function getTransformProperties(): array
+    {
+        return [
+            (new TextProperty('mobileRotate', 'Mobile', numeric: true, defaultValue: $this->mobileRotate))
+                ->setGroup('rotate', 'Rotate (deg)', 3, 'heroicon-o-arrow-path'),
+            (new TextProperty('tabletRotate', 'Tablet', numeric: true, defaultValue: $this->tabletRotate))
+                ->setGroup('rotate', 'Rotate (deg)', 3, 'heroicon-o-arrow-path'),
+            (new TextProperty('desktopRotate', 'Desktop', numeric: true, defaultValue: $this->desktopRotate))
+                ->setGroup('rotate', 'Rotate (deg)', 3, 'heroicon-o-arrow-path'),
+
+            (new TextProperty('mobileScale', 'Mobile', numeric: true, defaultValue: $this->mobileScale))
+                ->setGroup('scale', 'Scale', 3, 'heroicon-o-arrows-pointing-out'),
+            (new TextProperty('tabletScale', 'Tablet', numeric: true, defaultValue: $this->tabletScale))
+                ->setGroup('scale', 'Scale', 3, 'heroicon-o-arrows-pointing-out'),
+            (new TextProperty('desktopScale', 'Desktop', numeric: true, defaultValue: $this->desktopScale))
+                ->setGroup('scale', 'Scale', 3, 'heroicon-o-arrows-pointing-out'),
+
+            (new TextProperty('mobileTranslateX', 'Mobile', numeric: true, defaultValue: $this->mobileTranslateX))
+                ->setGroup('translateX', 'Translate X (px)', 3, 'heroicon-o-arrows-right-left'),
+            (new TextProperty('tabletTranslateX', 'Tablet', numeric: true, defaultValue: $this->tabletTranslateX))
+                ->setGroup('translateX', 'Translate X (px)', 3, 'heroicon-o-arrows-right-left'),
+            (new TextProperty('desktopTranslateX', 'Desktop', numeric: true, defaultValue: $this->desktopTranslateX))
+                ->setGroup('translateX', 'Translate X (px)', 3, 'heroicon-o-arrows-right-left'),
+
+            (new TextProperty('mobileTranslateY', 'Mobile', numeric: true, defaultValue: $this->mobileTranslateY))
+                ->setGroup('translateY', 'Translate Y (px)', 3, 'heroicon-o-arrows-up-down'),
+            (new TextProperty('tabletTranslateY', 'Tablet', numeric: true, defaultValue: $this->tabletTranslateY))
+                ->setGroup('translateY', 'Translate Y (px)', 3, 'heroicon-o-arrows-up-down'),
+            (new TextProperty('desktopTranslateY', 'Desktop', numeric: true, defaultValue: $this->desktopTranslateY))
+                ->setGroup('translateY', 'Translate Y (px)', 3, 'heroicon-o-arrows-up-down'),
+
+            (new TextProperty('mobileSkewX', 'Mobile', numeric: true, defaultValue: $this->mobileSkewX))
+                ->setGroup('skewX', 'Skew X (deg)', 3, 'heroicon-o-forward'),
+            (new TextProperty('tabletSkewX', 'Tablet', numeric: true, defaultValue: $this->tabletSkewX))
+                ->setGroup('skewX', 'Skew X (deg)', 3, 'heroicon-o-forward'),
+            (new TextProperty('desktopSkewX', 'Desktop', numeric: true, defaultValue: $this->desktopSkewX))
+                ->setGroup('skewX', 'Skew X (deg)', 3, 'heroicon-o-forward'),
+
+            (new TextProperty('mobileSkewY', 'Mobile', numeric: true, defaultValue: $this->mobileSkewY))
+                ->setGroup('skewY', 'Skew Y (deg)', 3, 'heroicon-o-backward'),
+            (new TextProperty('tabletSkewY', 'Tablet', numeric: true, defaultValue: $this->tabletSkewY))
+                ->setGroup('skewY', 'Skew Y (deg)', 3, 'heroicon-o-backward'),
+            (new TextProperty('desktopSkewY', 'Desktop', numeric: true, defaultValue: $this->desktopSkewY))
+                ->setGroup('skewY', 'Skew Y (deg)', 3, 'heroicon-o-backward'),
         ];
     }
 
