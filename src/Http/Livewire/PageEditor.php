@@ -1474,14 +1474,42 @@ class PageEditor extends Component
                     $nestedRowProperties = $data['properties'] ?? [];
                     $nestedRowAlias = $data['blockAlias'] ?? 'page-builder-trinavo-livewire-page-builder-http-livewire-row-block';
 
-                    // Check if target row exists
-                    if (isset($this->rows[$targetRowId])) {
+                    // Check if target row exists as a top-level row OR as a nested row
+                    $isTopLevelRow = isset($this->rows[$targetRowId]);
+
+                    Log::info('Checking if target row is nested', [
+                        'targetRowId' => $targetRowId,
+                        'isTopLevelRow' => $isTopLevelRow,
+                        'totalTopLevelRows' => count($this->rows),
+                        'topLevelRowIds' => array_keys($this->rows),
+                    ]);
+
+                    $foundParentRowId = null;
+                    if (! $isTopLevelRow) {
+                        $foundParentRowId = $this->findBlockInNestedRows(rows: $this->rows, targetBlockId: $targetRowId);
+                        Log::info('Search result for nested row', [
+                            'targetRowId' => $targetRowId,
+                            'foundParentRowId' => $foundParentRowId,
+                        ]);
+                    }
+
+                    $isNestedRow = ! $isTopLevelRow && $foundParentRowId !== null;
+
+                    Log::info('Final determination', [
+                        'isTopLevelRow' => $isTopLevelRow,
+                        'isNestedRow' => $isNestedRow,
+                        'foundParentRowId' => $foundParentRowId,
+                    ]);
+
+                    if ($isTopLevelRow || $isNestedRow) {
                         // Dispatch block-added event - RowBlock will handle adding it to its blocks array
                         Log::info('Dispatching block-added for paste inside', [
                             'rowId' => $targetRowId,
                             'blockId' => $blockId,
                             'blockAlias' => $nestedRowAlias,
                             'blocksCount' => count($blocks),
+                            'isTopLevelRow' => $isTopLevelRow,
+                            'isNestedRow' => $isNestedRow,
                         ]);
 
                         $this->dispatch(
@@ -1498,6 +1526,7 @@ class PageEditor extends Component
                         Log::info('RowBlock paste inside dispatched', [
                             'targetRowId' => $targetRowId,
                             'newBlockId' => $blockId,
+                            'isNested' => $isNestedRow,
                         ]);
 
                         // Dispatch event for scroll and selection
@@ -1511,7 +1540,7 @@ class PageEditor extends Component
 
                         return;
                     } else {
-                        Log::warning('Target row not found for inside paste', [
+                        Log::warning('Target row not found for inside paste (neither top-level nor nested)', [
                             'targetRowId' => $targetRowId,
                         ]);
 
@@ -2061,17 +2090,44 @@ class PageEditor extends Component
      * Recursively search for a block ID in nested RowBlocks
      * Returns the parent row ID (which could be a nested RowBlock ID)
      */
-    private function findBlockInNestedRows(array $rows, string $targetBlockId): ?string
+    private function findBlockInNestedRows(array $rows, string $targetBlockId, int $depth = 0): ?string
     {
+        $indent = str_repeat('  ', $depth);
+        Log::info("{$indent}findBlockInNestedRows: Searching at depth {$depth}", [
+            'targetBlockId' => $targetBlockId,
+            'rowKeys' => array_keys($rows),
+            'depth' => $depth,
+        ]);
+
         foreach ($rows as $rowId => $row) {
+            Log::info("{$indent}Checking row: {$rowId}", [
+                'hasBlocks' => isset($row['blocks']),
+                'blocksCount' => isset($row['blocks']) ? count($row['blocks']) : 0,
+            ]);
+
             if (! isset($row['blocks'])) {
                 continue;
             }
 
             foreach ($row['blocks'] as $blockId => $block) {
+                Log::info("{$indent}  Checking block: {$blockId}", [
+                    'isTarget' => $blockId === $targetBlockId,
+                    'hasNestedBlocks' => isset($block['blocks']),
+                ]);
+
+                // IMPORTANT: Check if THIS blockId is the target we're looking for
+                if ($blockId === $targetBlockId) {
+                    Log::info("{$indent}  ✅ FOUND! blockId matches targetBlockId", [
+                        'blockId' => $blockId,
+                        'parentRowId' => $rowId,
+                    ]);
+
+                    return $rowId; // Return the parent row ID
+                }
+
                 // Check if this block contains the target
                 if (isset($block['blocks'][$targetBlockId])) {
-                    Log::info('Found block in nested RowBlock', [
+                    Log::info("{$indent}  ✅ Found target in block's nested blocks", [
                         'nestedRowBlockId' => $blockId,
                         'targetBlockId' => $targetBlockId,
                     ]);
@@ -2081,13 +2137,18 @@ class PageEditor extends Component
 
                 // If this block is a RowBlock with nested blocks, search recursively
                 if (isset($block['blocks']) && is_array($block['blocks'])) {
-                    $nestedResult = $this->findBlockInNestedRows([$blockId => $block], $targetBlockId);
+                    Log::info("{$indent}  Recursing into block {$blockId}");
+                    $nestedResult = $this->findBlockInNestedRows([$blockId => $block], targetBlockId: $targetBlockId, depth: $depth + 1);
                     if ($nestedResult) {
+                        Log::info("{$indent}  ✅ Found in recursive search");
+
                         return $nestedResult;
                     }
                 }
             }
         }
+
+        Log::info("{$indent}❌ Target not found at depth {$depth}");
 
         return null;
     }
