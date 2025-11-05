@@ -111,7 +111,7 @@ class IconKeywords
     {
         $possiblePaths = [
             storage_path('app/icon_keywords.json'),
-            dirname(__DIR__, 2) . '/storage/app/icon_keywords.json',
+            dirname(__DIR__, 2).'/storage/app/icon_keywords.json',
             base_path('storage/app/icon_keywords.json'),
         ];
 

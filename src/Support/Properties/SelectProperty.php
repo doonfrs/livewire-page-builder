@@ -37,10 +37,20 @@ class SelectProperty extends BlockProperty
     }
 
     /**
+     * Set the options for this select property
+     */
+    public function options(array $options): static
+    {
+        $this->options = $options;
+
+        return $this;
+    }
+
+    /**
      * Create a new instance of this property
      */
     public static function make(string $name, ?string $label = null, array $options = [], $defaultValue = null): static
     {
-        return new self($name, $label, $options, $defaultValue);
+        return new static($name, $label, $options, $defaultValue);
     }
 }

@@ -48,6 +48,7 @@ class ImageProperty extends Component
         // Validate that uploadedImage exists before processing
         if (! $this->uploadedImage) {
             \Log::warning('ImageProperty::uploadImage - uploadedImage is null, returning early');
+
             return;
         }
 

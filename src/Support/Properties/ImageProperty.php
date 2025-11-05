@@ -34,8 +34,8 @@ class ImageProperty extends BlockProperty
     /**
      * Create a new instance of this property
      */
-    public static function make(string $name, ?string $label = null, $defaultValue = null): self
+    public static function make(string $name, ?string $label = null, $defaultValue = null): static
     {
-        return new self($name, $label, $defaultValue);
+        return new static($name, $label, $defaultValue);
     }
 }

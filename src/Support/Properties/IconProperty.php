@@ -43,6 +43,26 @@ class IconProperty extends BlockProperty
     }
 
     /**
+     * Set the icon styles
+     */
+    public function styles(array $styles): static
+    {
+        $this->styles = $styles;
+
+        return $this;
+    }
+
+    /**
+     * Set the icon sets
+     */
+    public function sets(array $sets): static
+    {
+        $this->sets = $sets;
+
+        return $this;
+    }
+
+    /**
      * Create a new instance of this property
      */
     public static function make(
@@ -52,7 +72,7 @@ class IconProperty extends BlockProperty
         ?array $sets = null,
         $defaultValue = null
     ): static {
-        return new self(
+        return new static(
             name: $name,
             label: $label,
             styles: $styles,

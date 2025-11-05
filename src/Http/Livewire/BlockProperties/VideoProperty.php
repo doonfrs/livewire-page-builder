@@ -48,6 +48,7 @@ class VideoProperty extends Component
         // Validate that uploadedVideo exists before processing
         if (! $this->uploadedVideo) {
             \Log::warning('VideoProperty::uploadVideo - uploadedVideo is null, returning early');
+
             return;
         }
 

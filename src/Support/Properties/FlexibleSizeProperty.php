@@ -57,6 +57,6 @@ class FlexibleSizeProperty extends BlockProperty
         string $unit = 'px',
         $defaultValue = null
     ): static {
-        return new self($name, $label, $classes, $allowCustom, $unit, $defaultValue);
+        return new static($name, $label, $classes, $allowCustom, $unit, $defaultValue);
     }
 }

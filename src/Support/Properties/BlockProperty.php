@@ -31,7 +31,7 @@ abstract class BlockProperty
     /**
      * Set the property group information
      */
-    public function setGroup(?string $group, ?string $groupLabel = null, ?int $columns = 1, ?string $groupIcon = null): self
+    public function setGroup(?string $group, ?string $groupLabel = null, ?int $columns = 1, ?string $groupIcon = null): static
     {
         $this->group = $group;
         $this->groupLabel = $groupLabel ?? ucfirst($group);
@@ -44,9 +44,19 @@ abstract class BlockProperty
     /**
      * Set the label for this property
      */
-    public function label(string $label): self
+    public function label(string $label): static
     {
         $this->label = $label;
+
+        return $this;
+    }
+
+    /**
+     * Set the default value for this property
+     */
+    public function default($value): static
+    {
+        $this->defaultValue = $value;
 
         return $this;
     }

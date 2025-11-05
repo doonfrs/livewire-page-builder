@@ -117,6 +117,6 @@ class ResponsiveSpacingProperty extends BlockProperty
      */
     public static function make(string $name, ?string $label = null, array $defaultValues = []): static
     {
-        return new self($name, $label, $defaultValues);
+        return new static($name, $label, $defaultValues);
     }
 }

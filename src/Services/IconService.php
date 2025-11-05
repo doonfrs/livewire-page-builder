@@ -6,7 +6,6 @@ use Illuminate\Support\Facades\File;
 
 class IconService
 {
-
     /**
      * Get all available icons from specified sets
      */
@@ -108,7 +107,7 @@ class IconService
         // Try multiple possible paths for better compatibility with test environments
         $possiblePaths = [
             base_path('vendor/blade-ui-kit/blade-heroicons/resources/svg'),
-            realpath(dirname(__DIR__, 2) . '/../vendor/blade-ui-kit/blade-heroicons/resources/svg'),
+            realpath(dirname(__DIR__, 2).'/../vendor/blade-ui-kit/blade-heroicons/resources/svg'),
         ];
 
         $heroiconsPath = null;
@@ -192,7 +191,7 @@ class IconService
         // Try multiple possible paths for better compatibility with test environments
         $possiblePaths = [
             base_path('vendor/davidhsianturi/blade-bootstrap-icons/resources/svg'),
-            realpath(dirname(__DIR__, 2) . '/../vendor/davidhsianturi/blade-bootstrap-icons/resources/svg'),
+            realpath(dirname(__DIR__, 2).'/../vendor/davidhsianturi/blade-bootstrap-icons/resources/svg'),
         ];
 
         $bootstrapIconsPath = null;

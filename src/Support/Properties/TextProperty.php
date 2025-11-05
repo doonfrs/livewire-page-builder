@@ -47,10 +47,51 @@ class TextProperty extends BlockProperty
     }
 
     /**
+     * Set the numeric flag
+     */
+    public function numeric(bool $numeric = true): static
+    {
+        $this->numeric = $numeric;
+
+        return $this;
+    }
+
+    /**
+     * Set the minimum value
+     */
+    public function min(?int $min): static
+    {
+        $this->min = $min;
+
+        return $this;
+    }
+
+    /**
+     * Set the maximum value
+     */
+    public function max(?int $max): static
+    {
+        $this->max = $max;
+
+        return $this;
+    }
+
+    /**
+     * Set min and max at the same time
+     */
+    public function range(?int $min, ?int $max): static
+    {
+        $this->min = $min;
+        $this->max = $max;
+
+        return $this;
+    }
+
+    /**
      * Create a new instance of this property
      */
-    public static function make(string $name, ?string $label = null, bool $numeric = false, $defaultValue = null, $min = null, $max = null): self
+    public static function make(string $name, ?string $label = null, bool $numeric = false, $defaultValue = null, $min = null, $max = null): static
     {
-        return new self($name, $label, $numeric, $defaultValue, $min, $max);
+        return new static($name, $label, $numeric, $defaultValue, $min, $max);
     }
 }

@@ -66,7 +66,7 @@ class RichTextProperty extends BlockProperty
     /**
      * Enable or disable multilingual support for this property
      */
-    public function multilingual(bool $value = true): self
+    public function multilingual(bool $value = true): static
     {
         $this->multilingual = $value;
 
@@ -99,8 +99,8 @@ class RichTextProperty extends BlockProperty
     /**
      * Create a new instance of this property
      */
-    public static function make(string $name, ?string $label = null, $defaultValue = null, bool $multilingual = true): self
+    public static function make(string $name, ?string $label = null, $defaultValue = null, bool $multilingual = true): static
     {
-        return new self($name, $label, $defaultValue, $multilingual);
+        return new static($name, $label, $defaultValue, $multilingual);
     }
 }
