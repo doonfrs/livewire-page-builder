@@ -70,6 +70,9 @@
                                 @elseif($property['type'] === 'image')
                                     <livewire:block-properties.image-property :property-name="$property['name']" :property-label="$property['label']"
                                         :current-value="$properties[$property['name']] ?? ''" :row-id="$rowId" :block-id="$blockId" :key="'image-property-' . $key" />
+                                @elseif($property['type'] === 'video')
+                                    <livewire:block-properties.video-property :property-name="$property['name']" :property-label="$property['label']"
+                                        :current-value="$properties[$property['name']] ?? ''" :row-id="$rowId" :block-id="$blockId" :key="'video-property-' . $key" />
                                 @elseif($property['type'] === 'color')
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700 mb-1 dark:text-gray-300">

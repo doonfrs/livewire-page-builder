@@ -12,6 +12,7 @@ use Trinavo\LivewirePageBuilder\Http\Livewire\BlockProperties\ColorPicker;
 use Trinavo\LivewirePageBuilder\Http\Livewire\BlockProperties\FlexibleSizeProperty;
 use Trinavo\LivewirePageBuilder\Http\Livewire\BlockProperties\IconProperty as IconPropertyComponent;
 use Trinavo\LivewirePageBuilder\Http\Livewire\BlockProperties\ImageProperty;
+use Trinavo\LivewirePageBuilder\Http\Livewire\BlockProperties\VideoProperty;
 use Trinavo\LivewirePageBuilder\Http\Livewire\BlockProperties\ResponsiveSpacingProperty as ResponsiveSpacingPropertyComponent;
 use Trinavo\LivewirePageBuilder\Http\Livewire\BlockProperties\RichTextProperty;
 use Trinavo\LivewirePageBuilder\Http\Livewire\BlockProperties\SelectProperty;
@@ -184,6 +185,7 @@ class PageBuilderServiceProvider extends ServiceProvider
         Livewire::component('block-properties.icon-property', IconPropertyComponent::class);
         Livewire::component('block-properties.responsive-spacing-property', ResponsiveSpacingPropertyComponent::class);
         Livewire::component('block-properties.image-property', ImageProperty::class);
+        Livewire::component('block-properties.video-property', VideoProperty::class);
         Livewire::component('block-properties.select-property', SelectProperty::class);
         Livewire::component('block-properties.richtext-property', RichTextProperty::class);
         Livewire::component('language-switcher', \Trinavo\LivewirePageBuilder\Http\Livewire\LanguageSwitcher::class);
