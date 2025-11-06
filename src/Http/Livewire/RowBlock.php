@@ -213,27 +213,57 @@ class RowBlock extends Block
     public function addBlockToNestedRow($rowId, $blockAlias, $blockPageName = null, $beforeBlockId = null, $afterBlockId = null, $replaceBlockId = null, $properties = null, $blocks = null)
     {
         if ($rowId === $this->rowId) {
-            // Handle replace operation - delete FIRST, then add
+            // Handle replace operation atomically (replace in-place without intermediate state)
             if ($replaceBlockId) {
-                // Find the next block after the one we're replacing
-                $blockIds = array_keys($this->blocks);
-                $replaceIndex = array_search($replaceBlockId, $blockIds);
+                $blockId = (string) \Illuminate\Support\Str::uuid();
 
-                // Set position for new block
-                if ($replaceIndex !== false && isset($blockIds[$replaceIndex + 1])) {
-                    // There's a block after, insert before it
-                    $beforeBlockId = $blockIds[$replaceIndex + 1];
+                // Build the new block data
+                if ($blockAlias === 'row-block') {
+                    $block = [
+                        'alias' => $blockAlias,
+                        'properties' => $properties ?? [],
+                        'blocks' => $blocks ?? [],
+                    ];
+                } elseif ($blockPageName) {
+                    $block = [
+                        'alias' => $blockAlias,
+                        'properties' => array_merge($properties ?? [], [
+                            'blockPageName' => $blockPageName,
+                        ]),
+                    ];
                 } else {
-                    // No block after, will add at end
-                    $beforeBlockId = null;
-                    $afterBlockId = null;
+                    $block = [
+                        'alias' => $blockAlias,
+                        'properties' => $properties ?? [],
+                    ];
+
+                    if ($blocks !== null) {
+                        $block['blocks'] = $blocks;
+                    }
                 }
 
-                // Delete the old block FIRST
-                unset($this->blocks[$replaceBlockId]);
+                // Replace in-place by rebuilding the blocks array
+                $newBlocks = [];
+                foreach ($this->blocks as $id => $existingBlock) {
+                    if ($id === $replaceBlockId) {
+                        // Replace with new block at same position
+                        $newBlocks[$blockId] = $block;
+                    } else {
+                        $newBlocks[$id] = $existingBlock;
+                    }
+                }
+                $this->blocks = $newBlocks;
+
+                // Sync changes back to parent
+                $this->dispatch('sync-nested-row-data',
+                    nestedRowId: $this->rowId,
+                    blocks: $this->blocks
+                );
+
+                return;
             }
 
-            // Now add the new block (this will sync automatically)
+            // Normal add operation (not a replace)
             $this->addBlockToThisRow(
                 blockAlias: $blockAlias,
                 blockPageName: $blockPageName,
