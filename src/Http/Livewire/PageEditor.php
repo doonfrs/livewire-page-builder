@@ -2245,6 +2245,12 @@ class PageEditor extends Component
             }
 
             $blockInstance = app($blockClass);
+
+            // For BuilderPageBlock, set the blockPageName property before getting the label
+            if ($blockClass === \Trinavo\LivewirePageBuilder\Http\Livewire\BuilderPageBlock::class) {
+                $blockInstance->blockPageName = $block['properties']['blockPageName'] ?? null;
+            }
+
             $label = $blockInstance->getPageBuilderLabel();
             $icon = $blockInstance->getPageBuilderIcon() ?? 'heroicon-o-cube';
 
@@ -2535,7 +2541,23 @@ class PageEditor extends Component
                 continue;
             }
 
+            // Log block data for BuilderPageBlock
+            if ($block['alias'] === 'builder-page-block') {
+                Log::info('getBlocksWithNesting - BuilderPageBlock data', [
+                    'blockId' => $blockId,
+                    'alias' => $block['alias'],
+                    'properties' => $block['properties'] ?? 'NO PROPERTIES',
+                    'blockPageName_in_properties' => $block['properties']['blockPageName'] ?? 'NOT SET',
+                ]);
+            }
+
             $blockInstance = app($blockClass);
+
+            // For BuilderPageBlock, set the blockPageName property before getting the label
+            if ($blockClass === \Trinavo\LivewirePageBuilder\Http\Livewire\BuilderPageBlock::class) {
+                $blockInstance->blockPageName = $block['properties']['blockPageName'] ?? null;
+            }
+
             $label = $blockInstance->getPageBuilderLabel();
             $icon = $blockInstance->getPageBuilderIcon() ?? 'heroicon-o-cube';
 

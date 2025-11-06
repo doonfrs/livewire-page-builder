@@ -61,6 +61,8 @@ class BuilderPageBlock extends Block
             }
         }
 
-        return __(Str::headline($this->blockPageName));
+        $fallbackLabel = Str::headline($this->blockPageName);
+
+        return __($fallbackLabel);
     }
 }
