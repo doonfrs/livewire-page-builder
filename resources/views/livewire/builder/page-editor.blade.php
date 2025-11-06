@@ -20,11 +20,11 @@
                     this.pasteDataType = null;
                     return;
                 }
-    
+
                 try {
                     // First try to parse as JSON
                     const data = JSON.parse(text);
-    
+
                     // Check if it's our expected format with type property
                     if (data && typeof data === 'object') {
                         if (data.type === 'Block' || data.type === 'RowBlock') {
@@ -34,7 +34,7 @@
                             return;
                         }
                     }
-    
+
                     this.canPaste = false;
                     this.pasteDataType = null;
                 } catch (e) {
@@ -269,7 +269,7 @@
     "
         x-init="() => {
             // Don't check clipboard on load - only check on user interaction
-        
+
             // Wait for DOM content to be fully loaded
             document.addEventListener('DOMContentLoaded', () => {
                 // Wait for all components and images to be loaded
@@ -278,18 +278,18 @@
                         loading = false;
                     }, );
                 });
-        
+
                 // If window.load takes too long, still hide the loader after a maximum time
                 setTimeout(() => {
                     loading = false;
                 }, 2000);
             });
-        
+
             // Also listen for Livewire page loads
             window.addEventListener('livewire:navigating', () => {
                 loading = true;
             });
-        
+
             window.addEventListener('livewire:navigated', () => {
                 setTimeout(() => {
                     loading = false;
@@ -464,13 +464,9 @@
                 </div>
 
                 <!-- Canvas Background Color Picker -->
-                <input
-                    type="color"
-                    id="canvas-bg-color"
-                    x-model="canvasBgColor"
+                <input type="color" id="canvas-bg-color" x-model="canvasBgColor"
                     class="w-10 h-10 rounded cursor-pointer border border-gray-300 dark:border-gray-600"
-                    title="{{ __('Change canvas background color') }}"
-                />
+                    title="{{ __('Change canvas background color') }}" />
 
                 <!-- Language Switcher -->
                 <livewire:language-switcher />
@@ -592,7 +588,8 @@
 
                                         <div
                                             class="h-16 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 rounded border border-gray-200 dark:border-gray-600 flex items-center justify-center">
-                                            <x-heroicon-o-paint-brush class="w-6 h-6 text-gray-400 dark:text-gray-500" />
+                                            <x-heroicon-o-paint-brush
+                                                class="w-6 h-6 text-gray-400 dark:text-gray-500" />
                                         </div>
 
                                         <button
@@ -603,7 +600,8 @@
                                     </div>
                                 @empty
                                     <div class="col-span-full text-center py-8">
-                                        <x-heroicon-o-paint-brush class="w-12 h-12 text-gray-400 dark:text-gray-500 mx-auto" />
+                                        <x-heroicon-o-paint-brush
+                                            class="w-12 h-12 text-gray-400 dark:text-gray-500 mx-auto" />
                                         <h4 class="mt-2 text-lg font-medium text-gray-900 dark:text-white">
                                             {{ __('No themes available') }}</h4>
                                         <p class="text-gray-600 dark:text-gray-400">
@@ -646,11 +644,12 @@
             </aside>
 
             <!-- Main Section (Scrollable) -->
-            <main class="flex-1 pt-10 pb-50 pr-0 overflow-auto min-h-0 w-[80%]" :style="`background-color: ${canvasBgColor}`">
+            <main class="flex-1 pt-10 pb-50 pr-0 overflow-auto min-h-0 w-[80%]"
+                :style="`background-color: ${canvasBgColor}`">
                 <div class="mx-auto @container"
                     :class="{
                         'w-[375px]': deviceMode === 'mobile',
-                        'w-[768px]': deviceMode === 'tablet',
+                        'w-[767px]': deviceMode === 'tablet',
                         'w-full': deviceMode === 'desktop',
                     }"
                     style="font-size:0">
