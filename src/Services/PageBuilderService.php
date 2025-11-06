@@ -116,19 +116,37 @@ class PageBuilderService
             $classes[] = "flex flex-{$flex}";
         }
 
-        // Add vertical alignment to the flex container
-        $contentAlign = $properties['contentAlign'] ?? 'content-center';
-        if ($flex && $flex !== 'none') {  // Only add vertical alignment when flex is active
-            // Map content-* classes to appropriate flexbox alignment classes
-            $alignmentMap = [
-                'content-start' => 'justify-start',
-                'content-center' => 'justify-center',
-                'content-end' => 'justify-end',
-                'content-stretch' => 'justify-stretch',
-            ];
+        // Add flex-wrap property
+        $flexWrap = $properties['flexWrap'] ?? '';
+        if ($flexWrap && $flexWrap !== '' && $flex && $flex !== 'none') {
+            $classes[] = "flex-{$flexWrap}";
+        }
 
-            $justifyClass = $alignmentMap[$contentAlign] ?? 'justify-center';
-            $classes[] = $justifyClass;
+        // Add justify-content property (takes precedence over old contentAlign mapping)
+        $justifyContent = $properties['justifyContent'] ?? '';
+        if ($justifyContent && $justifyContent !== '' && $flex && $flex !== 'none') {
+            $classes[] = $justifyContent;
+        } else {
+            // Fallback to old contentAlign for backward compatibility
+            $contentAlign = $properties['contentAlign'] ?? 'content-center';
+            if ($flex && $flex !== 'none') {  // Only add vertical alignment when flex is active
+                // Map content-* classes to appropriate flexbox alignment classes
+                $alignmentMap = [
+                    'content-start' => 'justify-start',
+                    'content-center' => 'justify-center',
+                    'content-end' => 'justify-end',
+                    'content-stretch' => 'justify-stretch',
+                ];
+
+                $justifyClass = $alignmentMap[$contentAlign] ?? 'justify-center';
+                $classes[] = $justifyClass;
+            }
+        }
+
+        // Add align-items property
+        $alignItems = $properties['alignItems'] ?? '';
+        if ($alignItems && $alignItems !== '' && $flex && $flex !== 'none') {
+            $classes[] = $alignItems;
         }
 
         // Add overflow-x property
