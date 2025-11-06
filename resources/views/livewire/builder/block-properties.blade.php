@@ -108,6 +108,20 @@
                                     @endphp
                                     <livewire:block-properties.responsive-spacing-property :property="$property"
                                         :values="$currentValues" :row-id="$rowId" :block-id="$blockId" :key="'responsive-spacing-property-' . $key" />
+                                @elseif($property['type'] === 'custom')
+                                    @php
+                                        $componentName = $property['component'] ?? null;
+                                    @endphp
+                                    @if($componentName)
+                                        <livewire:is :component="$componentName"
+                                            :property-name="$property['name']"
+                                            :property-label="$property['label']"
+                                            :property-config="$property['config'] ?? []"
+                                            :current-value="$properties[$property['name']] ?? $property['defaultValue'] ?? null"
+                                            :row-id="$rowId"
+                                            :block-id="$blockId"
+                                            :key="'custom-property-' . $key" />
+                                    @endif
                                 @else
                                     <div>
                                         <label
