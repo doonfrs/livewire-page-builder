@@ -35,7 +35,7 @@
                         )
                     </div>
                 @else
-                    <div style="font-size:initial" class="h-full w-full">
+                    <div style="font-size:initial" class="h-full w-full content-center">
                         @livewire($block['alias'], $block['properties'], key($blockId))
                     </div>
                 @endif
