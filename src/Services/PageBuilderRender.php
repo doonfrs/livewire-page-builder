@@ -87,12 +87,6 @@ class PageBuilderRender
             ]);
         }
 
-        \Illuminate\Support\Facades\Log::info('PageBuilderRender::prepareBlock called', [
-            'alias' => $block['alias'],
-            'hasBlocks' => isset($block['blocks']),
-            'blocksCount' => isset($block['blocks']) ? count($block['blocks']) : 0,
-        ]);
-
         if ($block['alias'] == 'builder-page-block') {
             // For page blocks, we need to consider the theme context
             $blockPageName = $block['properties']['blockPageName'] ?? null;
