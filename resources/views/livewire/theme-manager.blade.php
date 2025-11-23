@@ -22,6 +22,16 @@
                     {!! $customHeaderHtml !!}
                 @endif
 
+                <!-- Template Gallery Button -->
+                @if (!empty($templateGalleryUrl))
+                    <a href="{{ $templateGalleryUrl }}"
+                        class="inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-sm font-medium rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 focus:ring-2 focus:ring-pink-200 transition"
+                        title="{{ __('Browse Template Gallery') }}">
+                        <x-heroicon-o-rectangle-stack class="w-5 h-5 mr-1" />
+                        <span class="hidden sm:inline">{{ __('Templates') }}</span>
+                    </a>
+                @endif
+
                 <button wire:click="openImportModal"
                     class="inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-sm font-medium rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 focus:ring-2 focus:ring-pink-200 transition">
                     <x-heroicon-o-arrow-up-tray class="w-5 h-5 mr-1 ml-1" />
@@ -55,7 +65,8 @@
                                         <div class="flex-shrink-0">
                                             <div
                                                 class="w-12 h-12 bg-pink-100 dark:bg-pink-900 rounded-full flex items-center justify-center">
-                                                <x-heroicon-o-paint-brush class="w-6 h-6 text-pink-600 dark:text-pink-400" />
+                                                <x-heroicon-o-paint-brush
+                                                    class="w-6 h-6 text-pink-600 dark:text-pink-400" />
                                             </div>
                                         </div>
                                         <div>
@@ -121,7 +132,8 @@
                                         <div
                                             class="h-24 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 rounded-lg flex items-center justify-center border border-gray-200 dark:border-gray-600">
                                             <div class="text-center">
-                                                <x-heroicon-o-eye class="w-8 h-8 text-gray-400 dark:text-gray-500 mx-auto" />
+                                                <x-heroicon-o-eye
+                                                    class="w-8 h-8 text-gray-400 dark:text-gray-500 mx-auto" />
                                                 <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
                                                     {{ __('Preview') }}</p>
                                             </div>
@@ -184,17 +196,32 @@
                                 <!-- Empty State -->
                                 <div class="col-span-full">
                                     <div class="text-center py-12">
-                                        <x-heroicon-o-paint-brush class="w-16 h-16 text-gray-400 dark:text-gray-500 mx-auto" />
+                                        <x-heroicon-o-paint-brush
+                                            class="w-16 h-16 text-gray-400 dark:text-gray-500 mx-auto" />
                                         <h3 class="mt-4 text-lg font-medium text-gray-900 dark:text-white">
                                             {{ __('No themes yet') }}
                                         </h3>
                                         <p class="mt-2 text-gray-600 dark:text-gray-400">
-                                            {{ __('Get started by creating your first theme.') }}</p>
-                                        <button wire:click="openCreateModal"
-                                            class="mt-4 inline-flex items-center px-4 py-2 bg-pink-600 hover:bg-pink-700 text-white text-sm font-medium rounded-lg focus:ring-2 focus:ring-pink-200 transition-all duration-150">
-                                            <x-heroicon-o-plus class="w-5 h-5 mr-2" />
-                                            {{ __('Create Theme') }}
-                                        </button>
+                                            @if (empty($templateGalleryUrl))
+                                                {{ __('Get started by creating your first theme.') }}
+                                            @endif
+                                        </p>
+
+                                        @if (!empty($templateGalleryUrl))
+                                            <!-- Template Gallery Button -->
+                                            <a href="{{ $templateGalleryUrl }}"
+                                                class="mt-6 inline-flex items-center px-6 py-3 bg-pink-600 hover:bg-pink-700 text-white text-base font-semibold rounded-lg shadow-lg hover:shadow-xl focus:ring-4 focus:ring-pink-200 transition-all duration-150">
+                                                <x-heroicon-o-rectangle-stack class="w-6 h-6 mr-2" />
+                                                {{ __('Browse Template Gallery') }}
+                                            </a>
+                                        @else
+                                            <!-- Create Theme Button (fallback if no gallery URL) -->
+                                            <button wire:click="openCreateModal"
+                                                class="mt-4 inline-flex items-center px-4 py-2 bg-pink-600 hover:bg-pink-700 text-white text-sm font-medium rounded-lg focus:ring-2 focus:ring-pink-200 transition-all duration-150">
+                                                <x-heroicon-o-plus class="w-5 h-5 mr-2" />
+                                                {{ __('Create Theme') }}
+                                            </button>
+                                        @endif
                                     </div>
                                 </div>
                             @endforelse
@@ -408,7 +435,8 @@
                                             class="mt-3 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md">
                                             <div class="flex">
                                                 <div class="flex-shrink-0">
-                                                    <x-heroicon-o-exclamation-triangle class="h-5 w-5 text-red-400 dark:text-red-300" />
+                                                    <x-heroicon-o-exclamation-triangle
+                                                        class="h-5 w-5 text-red-400 dark:text-red-300" />
                                                 </div>
                                                 <div class="ml-3">
                                                     <p class="text-sm text-red-700 dark:text-red-300">
@@ -605,7 +633,8 @@
                                 :class="document.documentElement.dir === 'rtl' ? 'sm:flex-row-reverse' : ''">
                                 <div
                                     class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-green-100 dark:bg-green-900/30 sm:mx-0 sm:h-10 sm:w-10">
-                                    <x-heroicon-o-document-duplicate class="h-6 w-6 text-green-600 dark:text-green-400" />
+                                    <x-heroicon-o-document-duplicate
+                                        class="h-6 w-6 text-green-600 dark:text-green-400" />
                                 </div>
                                 <div class="mt-3 text-center w-full"
                                     :class="document.documentElement.dir === 'rtl' ? 'sm:mt-0 sm:mr-4 sm:text-right' :
