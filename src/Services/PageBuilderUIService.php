@@ -17,6 +17,11 @@ class PageBuilderUIService
     private string|Closure $customThemeManagerHeaderHtml = '';
 
     /**
+     * Template gallery URL to be used in theme manager
+     */
+    private string|Closure $templateGalleryUrl = '';
+
+    /**
      * Set custom HTML to be rendered in the page editor header
      *
      * @param  string|Closure  $html  The HTML to render in the header (or a closure that returns HTML)
@@ -69,12 +74,39 @@ class PageBuilderUIService
     }
 
     /**
+     * Set the template gallery URL
+     *
+     * @param  string|Closure  $url  The URL to the template gallery (or a closure that returns the URL)
+     */
+    public function setTemplateGalleryUrl(string|Closure $url): self
+    {
+        $this->templateGalleryUrl = $url;
+
+        return $this;
+    }
+
+    /**
+     * Get the template gallery URL
+     *
+     * @return string The template gallery URL
+     */
+    public function getTemplateGalleryUrl(): string
+    {
+        if ($this->templateGalleryUrl instanceof Closure) {
+            return ($this->templateGalleryUrl)();
+        }
+
+        return $this->templateGalleryUrl;
+    }
+
+    /**
      * Clear all custom UI settings
      */
     public function clear(): self
     {
         $this->customHeaderHtml = '';
         $this->customThemeManagerHeaderHtml = '';
+        $this->templateGalleryUrl = '';
 
         return $this;
     }

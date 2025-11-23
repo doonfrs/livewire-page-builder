@@ -546,12 +546,18 @@ class ThemeManager extends Component
 
     public function render()
     {
+        $uiService = app(\Trinavo\LivewirePageBuilder\Services\PageBuilderUIService::class);
+
         // Get custom header HTML from UI service
-        $customHeaderHtml = app(\Trinavo\LivewirePageBuilder\Services\PageBuilderUIService::class)->getCustomThemeManagerHeaderHtml();
+        $customHeaderHtml = $uiService->getCustomThemeManagerHeaderHtml();
+
+        // Get template gallery URL from UI service
+        $templateGalleryUrl = $uiService->getTemplateGalleryUrl();
 
         return view('page-builder::livewire.theme-manager', [
             'selectedTheme' => $this->selectedTheme,
             'customHeaderHtml' => $customHeaderHtml,
+            'templateGalleryUrl' => $templateGalleryUrl,
         ])->layout('page-builder::layouts.app');
     }
 }
