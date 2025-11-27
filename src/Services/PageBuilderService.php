@@ -461,6 +461,11 @@ class PageBuilderService
             $classString .= ' '.$transformClasses;
         }
 
+        $fontSizeClasses = $this->getFontSizeCssClassesFromProperties($properties);
+        if (trim($fontSizeClasses) !== '') {
+            $classString .= ' '.$fontSizeClasses;
+        }
+
         return $classString;
     }
 
@@ -590,6 +595,32 @@ class PageBuilderService
 
         if ($desktopMinHeight && $desktopMinHeight !== $tabletMinHeight) {
             $classes[] = '@5xl:'.$this->formatSizeValue($desktopMinHeight, 'min-h');
+        }
+
+        return implode(' ', $classes);
+    }
+
+    /**
+     * Get font size CSS classes from properties
+     */
+    public function getFontSizeCssClassesFromProperties(array $properties): string
+    {
+        $mobileFontSize = $properties['mobileFontSize'] ?? null;
+        $tabletFontSize = $properties['tabletFontSize'] ?? null;
+        $desktopFontSize = $properties['desktopFontSize'] ?? null;
+
+        $classes = [];
+
+        if ($mobileFontSize) {
+            $classes[] = $mobileFontSize;
+        }
+
+        if ($tabletFontSize && $tabletFontSize !== $mobileFontSize) {
+            $classes[] = '@3xl:'.$tabletFontSize;
+        }
+
+        if ($desktopFontSize && $desktopFontSize !== $tabletFontSize) {
+            $classes[] = '@5xl:'.$desktopFontSize;
         }
 
         return implode(' ', $classes);

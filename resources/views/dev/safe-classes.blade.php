@@ -32,11 +32,9 @@
     <div class="@3xl:min-h-0 @3xl:min-h-px @3xl:min-h-1 @3xl:min-h-2 @3xl:min-h-4 @3xl:min-h-8 @3xl:min-h-12 @3xl:min-h-16 @3xl:min-h-24 @3xl:min-h-32 @3xl:min-h-48 @3xl:min-h-64 @3xl:min-h-80 @3xl:min-h-96 @3xl:min-h-1/2 @3xl:min-h-1/3 @3xl:min-h-2/3 @3xl:min-h-1/4 @3xl:min-h-3/4 @3xl:min-h-1/5 @3xl:min-h-2/5 @3xl:min-h-3/5 @3xl:min-h-4/5 @3xl:min-h-full @3xl:min-h-screen"></div>
     <div class="@5xl:min-h-0 @5xl:min-h-px @5xl:min-h-1 @5xl:min-h-2 @5xl:min-h-4 @5xl:min-h-8 @5xl:min-h-12 @5xl:min-h-16 @5xl:min-h-24 @5xl:min-h-32 @5xl:min-h-48 @5xl:min-h-64 @5xl:min-h-80 @5xl:min-h-96 @5xl:min-h-1/2 @5xl:min-h-1/3 @5xl:min-h-2/3 @5xl:min-h-1/4 @5xl:min-h-3/4 @5xl:min-h-1/5 @5xl:min-h-2/5 @5xl:min-h-3/5 @5xl:min-h-4/5 @5xl:min-h-full @5xl:min-h-screen"></div>
 
-    <div class="flex flex-row flex-row-reverse flex-col flex-col-reverse"></div>
-    <div class="@md:flex @md:flex-row @md:flex-row-reverse @md:flex-col @md:flex-col-reverse"></div>
-    <div class="@lg:flex @lg:flex-row @lg:flex-row-reverse @lg:flex-col @lg:flex-col-reverse"></div>
-    <div class="@3xl:flex @3xl:flex-row @3xl:flex-row-reverse @3xl:flex-col @3xl:flex-col-reverse"></div>
-    <div class="@5xl:flex @5xl:flex-row @5xl:flex-row-reverse @5xl:flex-col @5xl:flex-col-reverse"></div>
+    <div class="flex flex-row flex-col"></div>
+    <div class="@md:flex @md:flex-row @md:flex-col"></div>
+    <div class="@lg:flex @lg:flex-row @lg:flex-col"></div>
 
     <div class="gap-0 gap-1 gap-2 gap-3 gap-4 gap-5 gap-6 gap-7 gap-8 gap-9 gap-10 gap-11 gap-12 gap-13 gap-14 gap-15 gap-16 gap-17 gap-18 gap-19 gap-20 gap-21 gap-22 gap-23 gap-24 gap-25 gap-26 gap-27 gap-28 gap-29 gap-30 gap-31 gap-32 gap-33 gap-34 gap-35 gap-36 gap-37 gap-38 gap-39 gap-40"></div>
     <div class="@3xl:gap-0 @3xl:gap-1 @3xl:gap-2 @3xl:gap-3 @3xl:gap-4 @3xl:gap-5 @3xl:gap-6 @3xl:gap-7 @3xl:gap-8 @3xl:gap-9 @3xl:gap-10 @3xl:gap-11 @3xl:gap-12 @3xl:gap-13 @3xl:gap-14 @3xl:gap-15 @3xl:gap-16 @3xl:gap-17 @3xl:gap-18 @3xl:gap-19 @3xl:gap-20 @3xl:gap-21 @3xl:gap-22 @3xl:gap-23 @3xl:gap-24 @3xl:gap-25 @3xl:gap-26 @3xl:gap-27 @3xl:gap-28 @3xl:gap-29 @3xl:gap-30 @3xl:gap-31 @3xl:gap-32 @3xl:gap-33 @3xl:gap-34 @3xl:gap-35 @3xl:gap-36 @3xl:gap-37 @3xl:gap-38 @3xl:gap-39 @3xl:gap-40"></div>
@@ -102,5 +100,10 @@
     {{-- Padding classes generated separately --}}
 
     {{-- Margin classes generated separately --}}
+
+    {{-- Font size utilities --}}
+    <div class="text-xs text-sm text-base text-lg text-xl text-2xl text-3xl text-4xl text-5xl text-6xl text-7xl text-8xl text-9xl"></div>
+    <div class="@3xl:text-xs @3xl:text-sm @3xl:text-base @3xl:text-lg @3xl:text-xl @3xl:text-2xl @3xl:text-3xl @3xl:text-4xl @3xl:text-5xl @3xl:text-6xl @3xl:text-7xl @3xl:text-8xl @3xl:text-9xl"></div>
+    <div class="@5xl:text-xs @5xl:text-sm @5xl:text-base @5xl:text-lg @5xl:text-xl @5xl:text-2xl @5xl:text-3xl @5xl:text-4xl @5xl:text-5xl @5xl:text-6xl @5xl:text-7xl @5xl:text-8xl @5xl:text-9xl"></div>
 
 </div>

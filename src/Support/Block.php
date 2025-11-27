@@ -110,6 +110,13 @@ abstract class Block extends Component
 
     public $textAlign = null;
 
+    // Font size properties
+    public $mobileFontSize = null;
+
+    public $tabletFontSize = null;
+
+    public $desktopFontSize = null;
+
     // Position properties
     public $position = null;
 
@@ -241,6 +248,7 @@ abstract class Block extends Component
             $this->getVisibilityProperties(),
             $this->getSpacingProperties(),
             $this->getStyleProperties(),
+            $this->getTypographyProperties(),
             $this->getTextProperties(),
             $this->getThemeProperties(),
             $this->getBackgroundImageProperties(),
@@ -621,6 +629,23 @@ abstract class Block extends Component
                 'text-end' => 'End',
             ], defaultValue: $this->textAlign))
                 ->setGroup('text', 'Text', 1, 'heroicon-o-language'),
+        ];
+    }
+
+    /**
+     * Get typography properties (font size)
+     */
+    protected function getTypographyProperties(): array
+    {
+        $fontSizes = $this->getFontSizeList();
+
+        return [
+            (new SelectProperty(name: 'mobileFontSize', label: 'Mobile', options: $fontSizes, defaultValue: $this->mobileFontSize))
+                ->setGroup(group: 'font', groupLabel: 'Font', columns: 3, groupIcon: 'heroicon-o-bars-3-bottom-left'),
+            (new SelectProperty(name: 'tabletFontSize', label: 'Tablet', options: $fontSizes, defaultValue: $this->tabletFontSize))
+                ->setGroup(group: 'font', groupLabel: 'Font', columns: 3, groupIcon: 'heroicon-o-bars-3-bottom-left'),
+            (new SelectProperty(name: 'desktopFontSize', label: 'Desktop', options: $fontSizes, defaultValue: $this->desktopFontSize))
+                ->setGroup(group: 'font', groupLabel: 'Font', columns: 3, groupIcon: 'heroicon-o-bars-3-bottom-left'),
         ];
     }
 
@@ -1015,6 +1040,26 @@ abstract class Block extends Component
             'drop-shadow-lg' => 'Large',
             'drop-shadow-xl' => 'Extra Large',
             'drop-shadow-2xl' => '2X Large',
+        ];
+    }
+
+    public function getFontSizeList(): array
+    {
+        return [
+            '' => 'Default',
+            'text-xs' => 'Extra Small',
+            'text-sm' => 'Small',
+            'text-base' => 'Base',
+            'text-lg' => 'Large',
+            'text-xl' => 'Extra Large',
+            'text-2xl' => '2XL',
+            'text-3xl' => '3XL',
+            'text-4xl' => '4XL',
+            'text-5xl' => '5XL',
+            'text-6xl' => '6XL',
+            'text-7xl' => '7XL',
+            'text-8xl' => '8XL',
+            'text-9xl' => '9XL',
         ];
     }
 
