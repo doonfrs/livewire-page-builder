@@ -35,7 +35,12 @@
                         )
                     </div>
                 @else
-                    <div class="h-full w-full content-center">
+                    @php
+                        $hasFontSize = !empty($block['properties']['mobileFontSize'] ?? null)
+                            || !empty($block['properties']['tabletFontSize'] ?? null)
+                            || !empty($block['properties']['desktopFontSize'] ?? null);
+                    @endphp
+                    <div @if(!$hasFontSize) style="font-size:initial" @endif class="h-full w-full content-center">
                         @livewire($block['alias'], $block['properties'], key($blockId))
                     </div>
                 @endif
