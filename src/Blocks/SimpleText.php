@@ -40,7 +40,7 @@ class SimpleText extends Block
             // Convert newlines to <br> tags for display
             $content = nl2br($content);
 
-            return '<div>'.$content.'</div>';
+            return '<span>'.$content.'</span>';
         } else {
             // In view mode, parse variables to replace with actual values
             $content = VariablesParser::parse($content);
@@ -48,7 +48,7 @@ class SimpleText extends Block
             // Convert newlines to <br> tags for display
             $content = nl2br($content);
 
-            return '<div>'.$content.'</div>';
+            return '<span>'.$content.'</span>';
         }
     }
 }

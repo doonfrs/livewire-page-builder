@@ -22,8 +22,7 @@
     }
 }"
     class="block-row border relative transition-all duration-300 ease-in-out group {{ $cssClasses }}"
-    style="{{ $inlineStyles }} font-size:initial"
-    {!! $dataAttributes !!}
+    style="{{ $inlineStyles }} font-size:initial" {!! $dataAttributes !!}
     :class="selected ? 'border-pink-500' : 'border-gray-300'"
     x-on:row-selected.window="selected = $event.detail.rowId == '{{ $rowId }}'"
     x-on:block-selected.window="selected = false">
@@ -97,14 +96,17 @@
                 <!-- Duplicate Row Button -->
                 <button wire:click="duplicateRow()" @click="open = false"
                     class="flex items-center w-full px-3 py-2 text-left text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700 border-b border-gray-50 dark:border-gray-700 cursor-pointer"
-                    wire:loading.class="opacity-50 cursor-wait"
-                    wire:loading.attr="disabled"
-                    wire:target="duplicateRow"
+                    wire:loading.class="opacity-50 cursor-wait" wire:loading.attr="disabled" wire:target="duplicateRow"
                     title="{{ __('Duplicate Row') }}">
-                    <x-heroicon-o-document-duplicate class="w-4 h-4 ms-0 me-3" wire:loading.remove wire:target="duplicateRow" />
-                    <svg wire:loading wire:target="duplicateRow" class="animate-spin w-4 h-4 ms-0 me-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    <x-heroicon-o-document-duplicate class="w-4 h-4 ms-0 me-3" wire:loading.remove
+                        wire:target="duplicateRow" />
+                    <svg wire:loading wire:target="duplicateRow" class="animate-spin w-4 h-4 ms-0 me-3"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                            stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                        </path>
                     </svg>
                     <span>{{ __('Duplicate') }}</span>
                 </button>
@@ -112,8 +114,7 @@
                 <!-- Paste Row -->
                 @if ($isNested)
                     <!-- Nested Row: Show Before/After/Inside options -->
-                    <div
-                        class="flex items-center w-full px-3 py-2 text-gray-700 dark:text-gray-300 border-b border-gray-50 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
+                    <div class="flex items-center w-full px-3 py-2 text-gray-700 dark:text-gray-300 border-b border-gray-50 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
                         @click="
                             console.log('Nested Row Paste INSIDE clicked for row {{ $rowId }}');
                             navigator.clipboard.readText().then(text => {
@@ -148,8 +149,7 @@
                             <span>{{ __('Paste') }}</span>
                         </div>
                         <div class="flex space-x-2 rtl:space-x-reverse">
-                            <button
-                                x-show="clipboardHasRow"
+                            <button x-show="clipboardHasRow"
                                 @click.stop="
                                     console.log('Nested Row Paste BEFORE clicked for row {{ $rowId }}');
                                     navigator.clipboard.readText().then(text => {
@@ -219,8 +219,7 @@
                                 <x-heroicon-o-arrow-right-on-rectangle class="w-3 h-3 inline-block" />
                                 {{ __('Inside') }}
                             </button>
-                            <button
-                                x-show="clipboardHasRow"
+                            <button x-show="clipboardHasRow"
                                 @click.stop="
                                     console.log('Nested Row Paste AFTER clicked for row {{ $rowId }}');
                                     navigator.clipboard.readText().then(text => {
@@ -259,8 +258,7 @@
                     </div>
                 @else
                     <!-- Root Row: Show Before/After/Inside options -->
-                    <div
-                        class="flex items-center w-full px-3 py-2 text-gray-700 dark:text-gray-300 border-b border-gray-50 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
+                    <div class="flex items-center w-full px-3 py-2 text-gray-700 dark:text-gray-300 border-b border-gray-50 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
                         @click="
                             console.log('Root Row Paste INSIDE clicked for row {{ $rowId }}');
                             navigator.clipboard.readText().then(text => {
@@ -295,8 +293,7 @@
                             <span>{{ __('Paste') }}</span>
                         </div>
                         <div class="flex space-x-2 rtl:space-x-reverse">
-                            <button
-                                x-show="clipboardHasRow"
+                            <button x-show="clipboardHasRow"
                                 @click.stop="
                                     console.log('Root Row Paste BEFORE clicked for row {{ $rowId }}');
                                     navigator.clipboard.readText().then(text => {
@@ -366,8 +363,7 @@
                                 <x-heroicon-o-arrow-right-on-rectangle class="w-3 h-3 inline-block" />
                                 {{ __('Inside') }}
                             </button>
-                            <button
-                                x-show="clipboardHasRow"
+                            <button x-show="clipboardHasRow"
                                 @click.stop="
                                     console.log('Root Row Paste AFTER clicked for row {{ $rowId }}');
                                     navigator.clipboard.readText().then(text => {
@@ -407,8 +403,7 @@
                 @endif
 
                 <!-- Move Row (combined Up/Down) -->
-                <div
-                    class="flex items-center w-full px-3 py-2 text-gray-700 dark:text-gray-300 border-b border-gray-50 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
+                <div class="flex items-center w-full px-3 py-2 text-gray-700 dark:text-gray-300 border-b border-gray-50 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
                     wire:click="moveRowDown()" @click="open = false">
                     <div class="flex items-center flex-1">
                         <x-heroicon-o-arrows-right-left class="w-4 h-4 ms-0 me-3" />
@@ -431,8 +426,7 @@
                 </div>
 
                 <!-- Add Row (combined Before/After) -->
-                <div
-                    class="flex items-center w-full px-3 py-2 text-gray-700 dark:text-gray-300 border-b border-gray-50 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
+                <div class="flex items-center w-full px-3 py-2 text-gray-700 dark:text-gray-300 border-b border-gray-50 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
                     wire:click="$dispatch('addRow', {afterRowId: '{{ $rowId }}'})" @click="open = false">
                     <div class="flex items-center flex-1">
                         <x-heroicon-o-plus class="w-4 h-4 ms-0 me-3 text-gray-500 dark:text-gray-400" />

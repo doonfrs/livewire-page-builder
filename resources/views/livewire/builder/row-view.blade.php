@@ -45,7 +45,9 @@
                 {{-- For regular blocks, render them directly without builder wrapper --}}
                 <div class="{{ app(\Trinavo\LivewirePageBuilder\Services\PageBuilderService::class)->getCssClassesFromProperties($block['properties'] ?? [], false) }}"
                     style="{{ app(\Trinavo\LivewirePageBuilder\Services\PageBuilderService::class)->getInlineStylesFromProperties($block['properties'] ?? []) }}"
-                    {!! app(\Trinavo\LivewirePageBuilder\Services\PageBuilderService::class)->getDataAttributesFromProperties($block['properties'] ?? []) !!}>
+                    {!! app(\Trinavo\LivewirePageBuilder\Services\PageBuilderService::class)->getDataAttributesFromProperties(
+                        $block['properties'] ?? [],
+                    ) !!}>
                     @livewire($block['alias'], $block['properties'] ?? [], key($blockId))
                 </div>
             @endif
