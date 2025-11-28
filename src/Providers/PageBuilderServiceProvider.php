@@ -15,6 +15,7 @@ use Trinavo\LivewirePageBuilder\Http\Livewire\BlockProperties\ImageProperty;
 use Trinavo\LivewirePageBuilder\Http\Livewire\BlockProperties\ResponsiveSpacingProperty as ResponsiveSpacingPropertyComponent;
 use Trinavo\LivewirePageBuilder\Http\Livewire\BlockProperties\RichTextProperty;
 use Trinavo\LivewirePageBuilder\Http\Livewire\BlockProperties\SelectProperty;
+use Trinavo\LivewirePageBuilder\Http\Livewire\BlockProperties\SimpleTextProperty;
 use Trinavo\LivewirePageBuilder\Http\Livewire\BlockProperties\VideoProperty;
 use Trinavo\LivewirePageBuilder\Http\Livewire\BuilderBlock;
 use Trinavo\LivewirePageBuilder\Http\Livewire\BuilderPageBlock;
@@ -188,6 +189,7 @@ class PageBuilderServiceProvider extends ServiceProvider
         Livewire::component('block-properties.video-property', VideoProperty::class);
         Livewire::component('block-properties.select-property', SelectProperty::class);
         Livewire::component('block-properties.richtext-property', RichTextProperty::class);
+        Livewire::component('block-properties.simpletext-property', SimpleTextProperty::class);
         Livewire::component('language-switcher', \Trinavo\LivewirePageBuilder\Http\Livewire\LanguageSwitcher::class);
         Livewire::component('page-builder.preview-bar', PreviewBar::class);
     }

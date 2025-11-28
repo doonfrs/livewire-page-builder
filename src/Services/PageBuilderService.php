@@ -6,6 +6,7 @@ use Illuminate\Support\Str;
 use Livewire\Livewire;
 use Trinavo\LivewirePageBuilder\Blocks\IconBlock;
 use Trinavo\LivewirePageBuilder\Blocks\RichText;
+use Trinavo\LivewirePageBuilder\Blocks\SimpleText;
 use Trinavo\LivewirePageBuilder\Blocks\Spacer;
 use Trinavo\LivewirePageBuilder\Http\Livewire\BuilderPageBlock;
 use Trinavo\LivewirePageBuilder\Http\Livewire\RowBlock;
@@ -53,6 +54,7 @@ class PageBuilderService
         $blocks = config('page-builder.blocks', []);
         $blocks[] = Spacer::class;
         $blocks[] = RichText::class;
+        $blocks[] = SimpleText::class;
         $blocks[] = IconBlock::class;
         $blocks[] = RowBlock::class;
 
