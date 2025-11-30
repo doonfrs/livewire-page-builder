@@ -33,13 +33,13 @@ class VideoProperty extends Component
      */
     public function updatedUploadedVideo()
     {
-        Log::info('VideoProperty::updatedUploadedVideo hook triggered');
+        Log::debug('VideoProperty::updatedUploadedVideo hook triggered');
         $this->uploadVideo();
     }
 
     public function uploadVideo()
     {
-        Log::info('VideoProperty::uploadVideo called', [
+        Log::debug('VideoProperty::uploadVideo called', [
             'propertyName' => $this->propertyName,
             'rowId' => $this->rowId,
             'blockId' => $this->blockId,
@@ -53,18 +53,18 @@ class VideoProperty extends Component
             return;
         }
 
-        Log::info('VideoProperty::uploadVideo - Starting validation');
+        Log::debug('VideoProperty::uploadVideo - Starting validation');
 
         $this->validate([
             'uploadedVideo' => 'required|file|mimetypes:video/mp4,video/webm,video/ogg|max:51200', // max 50MB
         ]);
 
-        Log::info('VideoProperty::uploadVideo - Validation passed, storing file');
+        Log::debug('VideoProperty::uploadVideo - Validation passed, storing file');
 
         $path = $this->uploadedVideo->store(path: 'page-builder', options: 'public');
         $url = Storage::url(path: $path);
 
-        Log::info('VideoProperty::uploadVideo - File stored', [
+        Log::debug('VideoProperty::uploadVideo - File stored', [
             'path' => $path,
             'url' => $url,
         ]);
@@ -72,7 +72,7 @@ class VideoProperty extends Component
         $this->currentValue = $url;
         $this->dispatch(event: 'updateBlockProperty', rowId: $this->rowId, blockId: $this->blockId, propertyName: $this->propertyName, value: $url);
 
-        Log::info('VideoProperty::uploadVideo - Dispatched updateBlockProperty event', [
+        Log::debug('VideoProperty::uploadVideo - Dispatched updateBlockProperty event', [
             'url' => $url,
         ]);
 

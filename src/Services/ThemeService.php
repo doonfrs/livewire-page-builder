@@ -60,7 +60,7 @@ class ThemeService
             return ! empty($page['components']);
         }));
 
-        Log::info('Theme export completed', [
+        Log::debug('Theme export completed', [
             'theme_name' => $themeWithPages->name,
             'total_pages' => $totalPages,
             'pages_with_components' => $pagesWithComponents,
@@ -114,7 +114,7 @@ class ThemeService
                 return null;
             }
 
-            Log::info('Encrypted theme exported to file', [
+            Log::debug('Encrypted theme exported to file', [
                 'file_path' => $filePath,
                 'algorithm' => $this->encryptionService->getEncryptionAlgorithm(),
             ]);
@@ -134,7 +134,7 @@ class ThemeService
             return null;
         }
 
-        Log::info('Theme exported to file', ['file_path' => $filePath]);
+        Log::debug('Theme exported to file', ['file_path' => $filePath]);
 
         return $filePath;
     }
@@ -188,7 +188,7 @@ class ThemeService
             return null;
         }
 
-        Log::info('Encrypted theme exported to file', [
+        Log::debug('Encrypted theme exported to file', [
             'file_path' => $filePath,
             'algorithm' => $this->encryptionService->getEncryptionAlgorithm(),
         ]);
@@ -284,7 +284,7 @@ class ThemeService
             }
 
             // Log the components data for debugging
-            Log::info('Importing page', [
+            Log::debug('Importing page', [
                 'page_key' => $pageData['key'],
                 'has_components' => ! empty($components),
                 'components_count' => count($components),
@@ -299,7 +299,7 @@ class ThemeService
         }
 
         // Log summary
-        Log::info('Theme import completed', [
+        Log::debug('Theme import completed', [
             'theme_name' => $theme->name,
             'total_pages' => $importedPagesCount,
             'pages_with_components' => $pagesWithComponents,
@@ -356,7 +356,7 @@ class ThemeService
 
         // Check if the file is encrypted
         if ($this->encryptionService->isEncrypted($content)) {
-            Log::info('Detected encrypted theme file, attempting decryption');
+            Log::debug('Detected encrypted theme file, attempting decryption');
 
             try {
                 return $this->importEncryptedTheme($content, $overwriteExisting);
@@ -440,7 +440,7 @@ class ThemeService
             $clonedPagesCount++;
         }
 
-        Log::info('Theme cloned successfully', [
+        Log::debug('Theme cloned successfully', [
             'original_theme' => $themeModel->name,
             'cloned_theme' => $newName,
             'pages_cloned' => $clonedPagesCount,

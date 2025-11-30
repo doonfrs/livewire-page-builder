@@ -138,7 +138,7 @@ class FlexibleSizeProperty extends Component
 
     protected function updateValue($newValue)
     {
-        Log::info('FlexibleSizeProperty::updateValue called', [
+        Log::debug('FlexibleSizeProperty::updateValue called', [
             'property' => $this->property['name'] ?? 'unknown',
             'oldValue' => $this->value,
             'newValue' => $newValue,
@@ -150,7 +150,7 @@ class FlexibleSizeProperty extends Component
 
         $this->value = $newValue;
 
-        Log::info('FlexibleSizeProperty dispatching updateBlockProperty event', [
+        Log::debug('FlexibleSizeProperty dispatching updateBlockProperty event', [
             'property' => $this->property['name'] ?? 'unknown',
             'value' => $newValue,
             'rowId' => $this->rowId,

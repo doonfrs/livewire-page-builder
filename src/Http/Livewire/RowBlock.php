@@ -50,7 +50,7 @@ class RowBlock extends Block
 
     public function mount()
     {
-        Log::info('RowBlock::mount called', [
+        Log::debug('RowBlock::mount called', [
             'rowId' => $this->rowId,
             'hasProperties' => ! empty($this->properties),
             'propertiesCount' => $this->properties ? count($this->properties) : 0,
@@ -63,7 +63,7 @@ class RowBlock extends Block
         // Ensure properties are properly initialized with saved values or defaults
         $defaultProperties = $this->getPropertyValues();
 
-        Log::info('RowBlock property initialization', [
+        Log::debug('RowBlock property initialization', [
             'rowId' => $this->rowId,
             'defaultPropertiesCount' => count($defaultProperties),
             'passedPropertiesCount' => $this->properties ? count($this->properties) : 0,
@@ -75,7 +75,7 @@ class RowBlock extends Block
             $beforeMerge = $this->properties;
             $this->properties = array_merge($defaultProperties, $this->properties);
 
-            Log::info('RowBlock properties merged', [
+            Log::debug('RowBlock properties merged', [
                 'rowId' => $this->rowId,
                 'beforeMerge' => json_encode($beforeMerge, JSON_PRETTY_PRINT),
                 'afterMerge' => json_encode($this->properties, JSON_PRETTY_PRINT),
@@ -84,7 +84,7 @@ class RowBlock extends Block
         } else {
             $this->properties = $defaultProperties;
 
-            Log::info('RowBlock properties set to defaults', [
+            Log::debug('RowBlock properties set to defaults', [
                 'rowId' => $this->rowId,
                 'defaultPropertiesCount' => count($this->properties),
             ]);
@@ -107,7 +107,7 @@ class RowBlock extends Block
         $this->cssClasses = $this->makeClasses();
         $this->inlineStyles = $this->makeInlineStyles();
 
-        Log::info('RowBlock::mount completed', [
+        Log::debug('RowBlock::mount completed', [
             'rowId' => $this->rowId,
             'finalPropertiesCount' => count($this->properties),
             'finalBlocksCount' => count($this->blocks),
@@ -366,7 +366,7 @@ class RowBlock extends Block
     #[On('block-added')]
     public function blockAdded($rowId, $blockId, $blockAlias, $properties, $beforeBlockId = null, $afterBlockId = null, $blocks = null)
     {
-        Log::info('🎯 RowBlock::blockAdded called', [
+        Log::debug('🎯 RowBlock::blockAdded called', [
             'targetRowId' => $rowId,
             'thisRowId' => $this->rowId,
             'blockId' => $blockId,
@@ -378,12 +378,12 @@ class RowBlock extends Block
         ]);
 
         if ($rowId != $this->rowId) {
-            Log::info('⏭️ Skipping - not for this row');
+            Log::debug('⏭️ Skipping - not for this row');
 
             return;
         }
 
-        Log::info('✅ Processing block-added for this row');
+        Log::debug('✅ Processing block-added for this row');
 
         // Special handling for nested rows (check if alias contains 'row' or if blocks are provided)
         $isNestedRow = str_contains($blockAlias, 'row') || ! empty($blocks);
@@ -394,7 +394,7 @@ class RowBlock extends Block
                 'properties' => $properties,
                 'blocks' => $blocks, // Use provided blocks for nested row
             ];
-            Log::info('✅ Created nested row block with nested blocks', [
+            Log::debug('✅ Created nested row block with nested blocks', [
                 'alias' => $blockAlias,
                 'blocksCount' => count($block['blocks']),
             ]);
@@ -404,7 +404,7 @@ class RowBlock extends Block
                 'properties' => $properties,
                 'blocks' => [], // New nested row starts with empty blocks
             ];
-            Log::info('✅ Created empty nested row block', [
+            Log::debug('✅ Created empty nested row block', [
                 'alias' => $blockAlias,
             ]);
         } else {
@@ -412,13 +412,13 @@ class RowBlock extends Block
                 'alias' => $blockAlias,
                 'properties' => $properties,
             ];
-            Log::info('✅ Created regular block', [
+            Log::debug('✅ Created regular block', [
                 'alias' => $blockAlias,
             ]);
         }
 
         if ($beforeBlockId) {
-            Log::info('📍 Inserting BEFORE block', ['beforeBlockId' => $beforeBlockId]);
+            Log::debug('📍 Inserting BEFORE block', ['beforeBlockId' => $beforeBlockId]);
             $blockIds = array_keys($this->blocks);
             $position = array_search($beforeBlockId, $blockIds);
 
@@ -432,10 +432,10 @@ class RowBlock extends Block
             }
             $this->blocks = $newBlocks;
         } elseif ($afterBlockId) {
-            Log::info('📍 Inserting AFTER block', ['afterBlockId' => $afterBlockId]);
+            Log::debug('📍 Inserting AFTER block', ['afterBlockId' => $afterBlockId]);
             $blockIds = array_keys($this->blocks);
             $position = array_search($afterBlockId, $blockIds);
-            Log::info('📊 Position found', ['position' => $position, 'totalBlocks' => count($blockIds)]);
+            Log::debug('📊 Position found', ['position' => $position, 'totalBlocks' => count($blockIds)]);
 
             // Create new array in the correct order
             $newBlocks = [];
@@ -446,19 +446,19 @@ class RowBlock extends Block
                 }
             }
             $this->blocks = $newBlocks;
-            Log::info('✅ Block added after position', ['newBlockCount' => count($this->blocks)]);
+            Log::debug('✅ Block added after position', ['newBlockCount' => count($this->blocks)]);
         } else {
-            Log::info('📍 Appending block to end');
+            Log::debug('📍 Appending block to end');
             $this->blocks[$blockId] = $block;
         }
 
-        Log::info('🏁 RowBlock::blockAdded completed', [
+        Log::debug('🏁 RowBlock::blockAdded completed', [
             'totalBlocks' => count($this->blocks),
             'blockIds' => array_keys($this->blocks),
         ]);
 
         // Sync changes back to parent PageEditor structure
-        Log::info('🔄 Syncing blocks back to PageEditor');
+        Log::debug('🔄 Syncing blocks back to PageEditor');
         $this->dispatch('sync-nested-row-data',
             nestedRowId: $this->rowId,
             blocks: $this->blocks
@@ -466,7 +466,7 @@ class RowBlock extends Block
 
         // The component will auto-render because $this->blocks changed
         // But we need to wait longer on the frontend for Livewire to finish rendering
-        Log::info('✅ RowBlock will re-render automatically with new blocks');
+        Log::debug('✅ RowBlock will re-render automatically with new blocks');
     }
 
     #[On('deleteBlock')]
@@ -514,7 +514,7 @@ class RowBlock extends Block
     #[On('moveBlockUp')]
     public function moveBlockUp($blockId)
     {
-        Log::info('RowBlock::moveBlockUp called', [
+        Log::debug('RowBlock::moveBlockUp called', [
             'blockId' => $blockId,
             'rowId' => $this->rowId,
             'totalBlocks' => count($this->blocks),
@@ -524,7 +524,7 @@ class RowBlock extends Block
         $blockIds = array_keys($this->blocks);
         $currentIndex = array_search($blockId, $blockIds);
 
-        Log::info('Block movement analysis in RowBlock', [
+        Log::debug('Block movement analysis in RowBlock', [
             'currentIndex' => $currentIndex,
             'canMoveUp' => $currentIndex > 0,
         ]);
@@ -537,7 +537,7 @@ class RowBlock extends Block
 
             $this->blocks = collect($newOrder)->mapWithKeys(fn ($id) => [$id => $this->blocks[$id]])->toArray();
 
-            Log::info('Block moved up successfully in RowBlock', [
+            Log::debug('Block moved up successfully in RowBlock', [
                 'blockId' => $blockId,
                 'rowId' => $this->rowId,
                 'newOrder' => array_keys($this->blocks),
@@ -549,7 +549,7 @@ class RowBlock extends Block
                 'blockOrder' => array_keys($this->blocks),
             ])->to('page-editor');
         } else {
-            Log::info('Block cannot be moved up in RowBlock - already at top or not found', [
+            Log::debug('Block cannot be moved up in RowBlock - already at top or not found', [
                 'blockId' => $blockId,
                 'rowId' => $this->rowId,
             ]);
@@ -559,7 +559,7 @@ class RowBlock extends Block
     #[On('moveBlockDown')]
     public function moveBlockDown($blockId)
     {
-        Log::info('RowBlock::moveBlockDown called', [
+        Log::debug('RowBlock::moveBlockDown called', [
             'blockId' => $blockId,
             'rowId' => $this->rowId,
             'totalBlocks' => count($this->blocks),
@@ -570,7 +570,7 @@ class RowBlock extends Block
         $currentIndex = array_search($blockId, $blockIds);
         $lastIndex = count($blockIds) - 1;
 
-        Log::info('Block movement analysis in RowBlock', [
+        Log::debug('Block movement analysis in RowBlock', [
             'currentIndex' => $currentIndex,
             'lastIndex' => $lastIndex,
             'canMoveDown' => $currentIndex !== false && $currentIndex < $lastIndex,
@@ -584,7 +584,7 @@ class RowBlock extends Block
 
             $this->blocks = collect($newOrder)->mapWithKeys(fn ($id) => [$id => $this->blocks[$id]])->toArray();
 
-            Log::info('Block moved down successfully in RowBlock', [
+            Log::debug('Block moved down successfully in RowBlock', [
                 'blockId' => $blockId,
                 'rowId' => $this->rowId,
                 'newOrder' => array_keys($this->blocks),
@@ -596,7 +596,7 @@ class RowBlock extends Block
                 'blockOrder' => array_keys($this->blocks),
             ])->to('page-editor');
         } else {
-            Log::info('Block cannot be moved down in RowBlock - already at bottom or not found', [
+            Log::debug('Block cannot be moved down in RowBlock - already at bottom or not found', [
                 'blockId' => $blockId,
                 'rowId' => $this->rowId,
             ]);
@@ -821,7 +821,7 @@ class RowBlock extends Block
     #[On('nested-row-deleted')]
     public function handleNestedRowDeleted($parentRowId, $deletedRowId, $updatedBlocks)
     {
-        Log::info('RowBlock received nested-row-deleted event', [
+        Log::debug('RowBlock received nested-row-deleted event', [
             'thisRowId' => $this->rowId,
             'eventParentRowId' => $parentRowId,
             'deletedRowId' => $deletedRowId,
@@ -832,7 +832,7 @@ class RowBlock extends Block
         if ($parentRowId === $this->rowId) {
             $this->blocks = $updatedBlocks;
 
-            Log::info('RowBlock updated after nested row deletion', [
+            Log::debug('RowBlock updated after nested row deletion', [
                 'parentRowId' => $parentRowId,
                 'deletedRowId' => $deletedRowId,
                 'remainingBlocksCount' => count($this->blocks),
@@ -845,7 +845,7 @@ class RowBlock extends Block
 
     public function refreshBlocks($updatedBlocks)
     {
-        Log::info('RowBlock refreshBlocks called via JavaScript', [
+        Log::debug('RowBlock refreshBlocks called via JavaScript', [
             'rowId' => $this->rowId,
             'newBlocksCount' => count($updatedBlocks),
             'updatedBlocks' => $updatedBlocks,
@@ -862,7 +862,7 @@ class RowBlock extends Block
      */
     public function duplicateRow()
     {
-        Log::info('RowBlock::duplicateRow called', [
+        Log::debug('RowBlock::duplicateRow called', [
             'rowId' => $this->rowId,
             'blocksCount' => count($this->blocks),
             'isNested' => $this->isNested,
@@ -878,7 +878,7 @@ class RowBlock extends Block
         // Dispatch event to PageEditor to handle the duplication
         $this->dispatch('duplicateRow', data: $data);
 
-        Log::info('RowBlock duplicate event dispatched', [
+        Log::debug('RowBlock duplicate event dispatched', [
             'rowId' => $this->rowId,
         ]);
     }

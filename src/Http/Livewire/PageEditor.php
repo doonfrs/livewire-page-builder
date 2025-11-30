@@ -80,7 +80,7 @@ class PageEditor extends Component
             'theme_id' => $this->themeId,
         ]);
 
-        Log::info('PageEditor page loaded', [
+        Log::debug('PageEditor page loaded', [
             'pageId' => $this->page->id,
             'pageKey' => $this->page->key,
             'themeId' => $this->page->theme_id,
@@ -92,7 +92,7 @@ class PageEditor extends Component
 
         $this->rows = $this->page->components ? $this->page->components : [];
 
-        Log::info('PageEditor rows initialized', [
+        Log::debug('PageEditor rows initialized', [
             'pageId' => $this->page->id,
             'rowsCount' => count($this->rows),
             'rowIds' => array_keys($this->rows),
@@ -103,7 +103,7 @@ class PageEditor extends Component
     #[On('save-page')]
     public function savePage()
     {
-        Log::info('PageEditor::savePage called', [
+        Log::debug('PageEditor::savePage called', [
             'pageKey' => $this->pageKey,
             'themeId' => $this->themeId,
             'pageExists' => isset($this->page) && $this->page,
@@ -115,7 +115,7 @@ class PageEditor extends Component
         if (! isset($this->page) || ! $this->page) {
             // If page doesn't exist but we have the required data, create it
             if ($this->pageKey && $this->themeId) {
-                Log::info('Creating new page', [
+                Log::debug('Creating new page', [
                     'pageKey' => $this->pageKey,
                     'themeId' => $this->themeId,
                 ]);
@@ -125,7 +125,7 @@ class PageEditor extends Component
                     'theme_id' => $this->themeId,
                 ]);
 
-                Log::info('Page created/found', [
+                Log::debug('Page created/found', [
                     'pageId' => $this->page->id,
                     'pageKey' => $this->page->key,
                 ]);
@@ -141,7 +141,7 @@ class PageEditor extends Component
         }
 
         // Log detailed structure before saving
-        Log::info('Saving page components', [
+        Log::debug('Saving page components', [
             'pageId' => $this->page->id,
             'pageKey' => $this->page->key,
             'componentStructure' => $this->getDetailedComponentStructure(),
@@ -151,7 +151,7 @@ class PageEditor extends Component
         $this->page->components = $this->rows;
         $this->page->saveOrFail();
 
-        Log::info('Page saved successfully', [
+        Log::debug('Page saved successfully', [
             'pageId' => $this->page->id,
             'pageKey' => $this->page->key,
             'savedComponentsCount' => count($this->page->components),
@@ -418,7 +418,7 @@ class PageEditor extends Component
     #[On('sync-nested-row-data')]
     public function syncNestedRowData($nestedRowId, $blocks)
     {
-        Log::info('PageEditor syncNestedRowData called', [
+        Log::debug('PageEditor syncNestedRowData called', [
             'nestedRowId' => $nestedRowId,
             'blocksCount' => count($blocks),
             'blocksData' => $blocks,
@@ -427,7 +427,7 @@ class PageEditor extends Component
         // Find the nested row in the structure and update its blocks
         $result = $this->updateNestedRowBlocks($this->rows, $nestedRowId, $blocks);
 
-        Log::info('PageEditor syncNestedRowData result', [
+        Log::debug('PageEditor syncNestedRowData result', [
             'nestedRowId' => $nestedRowId,
             'updateSuccess' => $result,
             'currentRowsStructure' => $this->rows,
@@ -437,7 +437,7 @@ class PageEditor extends Component
     private function updateNestedRowBlocks(&$structure, $nestedRowId, $blocks, $depth = 0)
     {
         $indent = str_repeat('  ', $depth);
-        Log::info("{$indent}updateNestedRowBlocks called", [
+        Log::debug("{$indent}updateNestedRowBlocks called", [
             'targetNestedRowId' => $nestedRowId,
             'depth' => $depth,
             'structureKeys' => array_keys($structure),
@@ -445,13 +445,13 @@ class PageEditor extends Component
         ]);
 
         foreach ($structure as $rowId => $row) {
-            Log::info("{$indent}Checking row: {$rowId}");
+            Log::debug("{$indent}Checking row: {$rowId}");
 
             // Check if this rowId is the target we want to update
             if ($rowId === $nestedRowId) {
-                Log::info("{$indent}FOUND TARGET ROW AS KEY! Updating blocks for row {$nestedRowId}");
+                Log::debug("{$indent}FOUND TARGET ROW AS KEY! Updating blocks for row {$nestedRowId}");
                 $structure[$rowId]['blocks'] = $blocks;
-                Log::info("{$indent}Updated blocks for target row {$nestedRowId}", [
+                Log::debug("{$indent}Updated blocks for target row {$nestedRowId}", [
                     'newBlocksCount' => count($blocks),
                     'newBlocks' => $blocks,
                 ]);
@@ -460,13 +460,13 @@ class PageEditor extends Component
             }
 
             if (isset($row['blocks'])) {
-                Log::info("{$indent}Row {$rowId} has blocks, checking ".count($row['blocks']).' blocks');
+                Log::debug("{$indent}Row {$rowId} has blocks, checking ".count($row['blocks']).' blocks');
                 foreach ($row['blocks'] as $blockId => $block) {
-                    Log::info("{$indent}  Checking block: {$blockId}");
+                    Log::debug("{$indent}  Checking block: {$blockId}");
 
                     // Check if this block is the nested row we're looking for
                     if ($blockId === $nestedRowId) {
-                        Log::info("{$indent}  FOUND TARGET ROW AS BLOCK! Updating blocks for nested row {$nestedRowId}");
+                        Log::debug("{$indent}  FOUND TARGET ROW AS BLOCK! Updating blocks for nested row {$nestedRowId}");
                         $structure[$rowId]['blocks'][$blockId]['blocks'] = $blocks;
 
                         return true;
@@ -474,7 +474,7 @@ class PageEditor extends Component
 
                     // If this block has nested blocks, recursively search
                     if (isset($block['blocks'])) {
-                        Log::info("{$indent}  Block {$blockId} has nested blocks, recursing");
+                        Log::debug("{$indent}  Block {$blockId} has nested blocks, recursing");
                         $nestedBlocks = &$structure[$rowId]['blocks'][$blockId]['blocks'];
                         if ($this->updateNestedRowBlocks($nestedBlocks, $nestedRowId, $blocks, $depth + 1)) {
                             return true;
@@ -484,7 +484,7 @@ class PageEditor extends Component
             }
         }
 
-        Log::info("{$indent}updateNestedRowBlocks: Target {$nestedRowId} not found at depth {$depth}");
+        Log::debug("{$indent}updateNestedRowBlocks: Target {$nestedRowId} not found at depth {$depth}");
 
         return false;
     }
@@ -492,7 +492,7 @@ class PageEditor extends Component
     private function updateNestedRowProperty(&$structure, $nestedRowId, $propertyName, $value, $depth = 0)
     {
         $indent = str_repeat('  ', $depth);
-        Log::info("{$indent}updateNestedRowProperty called", [
+        Log::debug("{$indent}updateNestedRowProperty called", [
             'targetNestedRowId' => $nestedRowId,
             'propertyName' => $propertyName,
             'value' => $value,
@@ -501,13 +501,13 @@ class PageEditor extends Component
         ]);
 
         foreach ($structure as $rowId => $row) {
-            Log::info("{$indent}Checking row: {$rowId}");
+            Log::debug("{$indent}Checking row: {$rowId}");
 
             // Check if this rowId is the target we want to update
             if ($rowId === $nestedRowId) {
-                Log::info("{$indent}FOUND TARGET ROW AS KEY! Updating property for row {$nestedRowId}");
+                Log::debug("{$indent}FOUND TARGET ROW AS KEY! Updating property for row {$nestedRowId}");
                 $structure[$rowId]['properties'][$propertyName] = $value;
-                Log::info("{$indent}Updated property for target row {$nestedRowId}", [
+                Log::debug("{$indent}Updated property for target row {$nestedRowId}", [
                     'propertyName' => $propertyName,
                     'newValue' => $value,
                 ]);
@@ -516,15 +516,15 @@ class PageEditor extends Component
             }
 
             if (isset($row['blocks'])) {
-                Log::info("{$indent}Row {$rowId} has blocks, checking ".count($row['blocks']).' blocks');
+                Log::debug("{$indent}Row {$rowId} has blocks, checking ".count($row['blocks']).' blocks');
                 foreach ($row['blocks'] as $blockId => $block) {
-                    Log::info("{$indent}  Checking block: {$blockId}");
+                    Log::debug("{$indent}  Checking block: {$blockId}");
 
                     // Check if this block is the nested row we're looking for
                     if ($blockId === $nestedRowId) {
-                        Log::info("{$indent}  FOUND TARGET ROW AS BLOCK! Updating property for nested row {$nestedRowId}");
+                        Log::debug("{$indent}  FOUND TARGET ROW AS BLOCK! Updating property for nested row {$nestedRowId}");
                         $structure[$rowId]['blocks'][$blockId]['properties'][$propertyName] = $value;
-                        Log::info("{$indent}  Updated property for nested row {$nestedRowId}", [
+                        Log::debug("{$indent}  Updated property for nested row {$nestedRowId}", [
                             'parentRowId' => $rowId,
                             'propertyName' => $propertyName,
                             'newValue' => $value,
@@ -535,7 +535,7 @@ class PageEditor extends Component
 
                     // If this block has nested blocks, recursively search
                     if (isset($block['blocks'])) {
-                        Log::info("{$indent}  Block {$blockId} has nested blocks, recursing");
+                        Log::debug("{$indent}  Block {$blockId} has nested blocks, recursing");
                         $nestedBlocks = &$structure[$rowId]['blocks'][$blockId]['blocks'];
                         if ($this->updateNestedRowProperty($nestedBlocks, $nestedRowId, $propertyName, $value, $depth + 1)) {
                             return true;
@@ -545,7 +545,7 @@ class PageEditor extends Component
             }
         }
 
-        Log::info("{$indent}updateNestedRowProperty: Target {$nestedRowId} not found at depth {$depth}");
+        Log::debug("{$indent}updateNestedRowProperty: Target {$nestedRowId} not found at depth {$depth}");
 
         return false;
     }
@@ -553,7 +553,7 @@ class PageEditor extends Component
     #[On('updateBlockProperty')]
     public function updateBlockProperty($rowId, $blockId, $propertyName, $value)
     {
-        Log::info('PageEditor::updateBlockProperty called', [
+        Log::debug('PageEditor::updateBlockProperty called', [
             'rowId' => $rowId,
             'blockId' => $blockId,
             'propertyName' => $propertyName,
@@ -563,7 +563,7 @@ class PageEditor extends Component
 
         if ($rowId && ! $blockId) {
             // Updating row properties - handle both top-level and nested rows
-            Log::info('Updating row property', [
+            Log::debug('Updating row property', [
                 'rowId' => $rowId,
                 'propertyName' => $propertyName,
                 'value' => $value,
@@ -573,7 +573,7 @@ class PageEditor extends Component
             if (isset($this->rows[$rowId])) {
                 // Top-level row
                 $this->rows[$rowId]['properties'][$propertyName] = $value;
-                Log::info('Top-level row property updated successfully', [
+                Log::debug('Top-level row property updated successfully', [
                     'rowId' => $rowId,
                     'propertyName' => $propertyName,
                     'value' => $value,
@@ -588,7 +588,7 @@ class PageEditor extends Component
             }
         } else {
             // Updating block properties
-            Log::info('Updating block property', [
+            Log::debug('Updating block property', [
                 'rowId' => $rowId,
                 'blockId' => $blockId,
                 'propertyName' => $propertyName,
@@ -597,7 +597,7 @@ class PageEditor extends Component
 
             if ($rowId && $blockId) {
                 // If both rowId and blockId are provided, ensure the block is actually in that row
-                Log::info('Checking specific row for block', [
+                Log::debug('Checking specific row for block', [
                     'rowId' => $rowId,
                     'blockId' => $blockId,
                     'rowExists' => isset($this->rows[$rowId]),
@@ -608,7 +608,7 @@ class PageEditor extends Component
                     $oldValue = $this->rows[$rowId]['blocks'][$blockId]['properties'][$propertyName] ?? 'not_set';
                     $this->rows[$rowId]['blocks'][$blockId]['properties'][$propertyName] = $value;
 
-                    Log::info('Block property updated successfully', [
+                    Log::debug('Block property updated successfully', [
                         'rowId' => $rowId,
                         'blockId' => $blockId,
                         'propertyName' => $propertyName,
@@ -626,7 +626,7 @@ class PageEditor extends Component
                 }
             } else {
                 // Fallback: search all rows for the block (maintain backward compatibility)
-                Log::info('Searching all rows for block', ['blockId' => $blockId]);
+                Log::debug('Searching all rows for block', ['blockId' => $blockId]);
 
                 $found = false;
                 foreach ($this->rows as $rId => $row) {
@@ -634,7 +634,7 @@ class PageEditor extends Component
                         $oldValue = $this->rows[$rId]['blocks'][$blockId]['properties'][$propertyName] ?? 'not_set';
                         $this->rows[$rId]['blocks'][$blockId]['properties'][$propertyName] = $value;
 
-                        Log::info('Block property updated via fallback search', [
+                        Log::debug('Block property updated via fallback search', [
                             'foundInRowId' => $rId,
                             'blockId' => $blockId,
                             'propertyName' => $propertyName,
@@ -658,7 +658,7 @@ class PageEditor extends Component
             }
         }
         // Check if auto-save is needed after block movement
-        Log::info('Block movement completed, checking if auto-save is needed');
+        Log::debug('Block movement completed, checking if auto-save is needed');
     }
 
     private function getAllBlockIds(): array
@@ -682,7 +682,7 @@ class PageEditor extends Component
     #[On('moveRowUp')]
     public function moveRowUp($rowId)
     {
-        Log::info('PageEditor::moveRowUp called', [
+        Log::debug('PageEditor::moveRowUp called', [
             'rowId' => $rowId,
             'totalRows' => count($this->rows),
             'currentOrder' => array_keys($this->rows),
@@ -691,7 +691,7 @@ class PageEditor extends Component
         $rowIds = array_keys($this->rows);
         $currentIndex = array_search($rowId, $rowIds);
 
-        Log::info('Row movement analysis', [
+        Log::debug('Row movement analysis', [
             'currentIndex' => $currentIndex,
             'canMoveUp' => $currentIndex > 0,
         ]);
@@ -704,19 +704,19 @@ class PageEditor extends Component
 
             $this->rows = collect($newOrder)->mapWithKeys(fn ($id) => [$id => $this->rows[$id]])->toArray();
 
-            Log::info('Row moved up successfully', [
+            Log::debug('Row moved up successfully', [
                 'rowId' => $rowId,
                 'newOrder' => array_keys($this->rows),
             ]);
         } else {
-            Log::info('Row cannot be moved up - already at top or not found', ['rowId' => $rowId]);
+            Log::debug('Row cannot be moved up - already at top or not found', ['rowId' => $rowId]);
         }
     }
 
     #[On('moveRowDown')]
     public function moveRowDown($rowId)
     {
-        Log::info('PageEditor::moveRowDown called', [
+        Log::debug('PageEditor::moveRowDown called', [
             'rowId' => $rowId,
             'totalRows' => count($this->rows),
             'currentOrder' => array_keys($this->rows),
@@ -725,7 +725,7 @@ class PageEditor extends Component
         $rowIds = array_keys($this->rows);
         $currentIndex = array_search($rowId, $rowIds);
 
-        Log::info('Row movement analysis', [
+        Log::debug('Row movement analysis', [
             'currentIndex' => $currentIndex,
             'canMoveDown' => $currentIndex < count($this->rows) - 1,
         ]);
@@ -738,19 +738,19 @@ class PageEditor extends Component
 
             $this->rows = collect($newOrder)->mapWithKeys(fn ($id) => [$id => $this->rows[$id]])->toArray();
 
-            Log::info('Row moved down successfully', [
+            Log::debug('Row moved down successfully', [
                 'rowId' => $rowId,
                 'newOrder' => array_keys($this->rows),
             ]);
         } else {
-            Log::info('Row cannot be moved down - already at bottom or not found', ['rowId' => $rowId]);
+            Log::debug('Row cannot be moved down - already at bottom or not found', ['rowId' => $rowId]);
         }
     }
 
     #[On('moveBlockUp')]
     public function moveBlockUp($blockId)
     {
-        Log::info('PageEditor::moveBlockUp called', [
+        Log::debug('PageEditor::moveBlockUp called', [
             'blockId' => $blockId,
             'totalRows' => count($this->rows),
         ]);
@@ -758,7 +758,7 @@ class PageEditor extends Component
         // Only handle top-level blocks, let RowBlock handle nested blocks
         foreach ($this->rows as $rowId => $row) {
             if (isset($row['blocks'][$blockId])) {
-                Log::info('Block found in top-level row - PageEditor will handle movement', [
+                Log::debug('Block found in top-level row - PageEditor will handle movement', [
                     'blockId' => $blockId,
                     'rowId' => $rowId,
                     'blocksInRow' => array_keys($row['blocks']),
@@ -767,7 +767,7 @@ class PageEditor extends Component
                 $blockIds = array_keys($row['blocks']);
                 $currentIndex = array_search($blockId, $blockIds);
 
-                Log::info('Block movement analysis', [
+                Log::debug('Block movement analysis', [
                     'currentIndex' => $currentIndex,
                     'canMoveUp' => $currentIndex > 0,
                 ]);
@@ -780,13 +780,13 @@ class PageEditor extends Component
 
                     $this->rows[$rowId]['blocks'] = collect($newOrder)->mapWithKeys(fn ($id) => [$id => $row['blocks'][$id]])->toArray();
 
-                    Log::info('Block moved up successfully in top-level row', [
+                    Log::debug('Block moved up successfully in top-level row', [
                         'blockId' => $blockId,
                         'rowId' => $rowId,
                         'newOrder' => array_keys($this->rows[$rowId]['blocks']),
                     ]);
                 } else {
-                    Log::info('Block cannot be moved up - already at top', [
+                    Log::debug('Block cannot be moved up - already at top', [
                         'blockId' => $blockId,
                         'rowId' => $rowId,
                     ]);
@@ -796,7 +796,7 @@ class PageEditor extends Component
             }
         }
 
-        Log::info('Block not found in top-level rows - RowBlock will handle nested movement', [
+        Log::debug('Block not found in top-level rows - RowBlock will handle nested movement', [
             'blockId' => $blockId,
         ]);
     }
@@ -804,7 +804,7 @@ class PageEditor extends Component
     #[On('moveBlockDown')]
     public function moveBlockDown($blockId)
     {
-        Log::info('PageEditor::moveBlockDown called', [
+        Log::debug('PageEditor::moveBlockDown called', [
             'blockId' => $blockId,
             'totalRows' => count($this->rows),
         ]);
@@ -812,7 +812,7 @@ class PageEditor extends Component
         // Only handle top-level blocks, let RowBlock handle nested blocks
         foreach ($this->rows as $rowId => $row) {
             if (isset($row['blocks'][$blockId])) {
-                Log::info('Block found in top-level row - PageEditor will handle movement', [
+                Log::debug('Block found in top-level row - PageEditor will handle movement', [
                     'blockId' => $blockId,
                     'rowId' => $rowId,
                     'blocksInRow' => array_keys($row['blocks']),
@@ -821,7 +821,7 @@ class PageEditor extends Component
                 $blockIds = array_keys($row['blocks']);
                 $currentIndex = array_search($blockId, $blockIds);
 
-                Log::info('Block movement analysis', [
+                Log::debug('Block movement analysis', [
                     'currentIndex' => $currentIndex,
                     'totalBlocks' => count($row['blocks']),
                     'canMoveDown' => $currentIndex < count($row['blocks']) - 1,
@@ -835,13 +835,13 @@ class PageEditor extends Component
 
                     $this->rows[$rowId]['blocks'] = collect($newOrder)->mapWithKeys(fn ($id) => [$id => $row['blocks'][$id]])->toArray();
 
-                    Log::info('Block moved down successfully in top-level row', [
+                    Log::debug('Block moved down successfully in top-level row', [
                         'blockId' => $blockId,
                         'rowId' => $rowId,
                         'newOrder' => array_keys($this->rows[$rowId]['blocks']),
                     ]);
                 } else {
-                    Log::info('Block cannot be moved down - already at bottom', [
+                    Log::debug('Block cannot be moved down - already at bottom', [
                         'blockId' => $blockId,
                         'rowId' => $rowId,
                     ]);
@@ -851,7 +851,7 @@ class PageEditor extends Component
             }
         }
 
-        Log::info('Block not found in top-level rows - RowBlock will handle nested movement', [
+        Log::debug('Block not found in top-level rows - RowBlock will handle nested movement', [
             'blockId' => $blockId,
         ]);
     }
@@ -862,7 +862,7 @@ class PageEditor extends Component
         $rowId = $data['rowId'];
         $blockOrder = $data['blockOrder'];
 
-        Log::info('PageEditor::syncBlockOrder called', [
+        Log::debug('PageEditor::syncBlockOrder called', [
             'rowId' => $rowId,
             'newBlockOrder' => $blockOrder,
         ]);
@@ -888,7 +888,7 @@ class PageEditor extends Component
 
                 $row['blocks'] = $reorderedBlocks;
 
-                Log::info('PageEditor block order synced successfully', [
+                Log::debug('PageEditor block order synced successfully', [
                     'rowId' => $targetRowId,
                     'syncedOrder' => array_keys($row['blocks']),
                 ]);
@@ -915,7 +915,7 @@ class PageEditor extends Component
     #[On('deleteRow')]
     public function deleteRow($rowId)
     {
-        Log::info('PageEditor::deleteRow called', [
+        Log::debug('PageEditor::deleteRow called', [
             'rowId' => $rowId,
             'totalTopLevelRows' => count($this->rows),
             'topLevelRowIds' => array_keys($this->rows),
@@ -924,20 +924,20 @@ class PageEditor extends Component
         // First check if it's a top-level row
         if (isset($this->rows[$rowId])) {
             unset($this->rows[$rowId]);
-            Log::info('Top-level row deleted successfully', ['rowId' => $rowId]);
+            Log::debug('Top-level row deleted successfully', ['rowId' => $rowId]);
 
             return;
         }
 
         // If not found as top-level row, search recursively for nested rows
-        Log::info('Searching for nested row', [
+        Log::debug('Searching for nested row', [
             'targetRowId' => $rowId,
             'searchingInStructure' => array_keys($this->rows),
         ]);
 
         $result = $this->deleteNestedRowWithParent($this->rows, $rowId);
         if ($result) {
-            Log::info('Nested row deleted successfully', [
+            Log::debug('Nested row deleted successfully', [
                 'deletedNestedRowId' => $rowId,
                 'parentRowId' => $result['parentRowId'],
             ]);
@@ -961,7 +961,7 @@ class PageEditor extends Component
     private function deleteNestedRowWithParent(&$structure, $rowId, $parentRowId = null, $depth = 0)
     {
         $indent = str_repeat('  ', $depth);
-        Log::info("{$indent}deleteNestedRowWithParent: Searching at depth {$depth}", [
+        Log::debug("{$indent}deleteNestedRowWithParent: Searching at depth {$depth}", [
             'targetRowId' => $rowId,
             'currentLevelKeys' => array_keys($structure),
             'parentRowId' => $parentRowId,
@@ -969,14 +969,14 @@ class PageEditor extends Component
         ]);
 
         foreach ($structure as $currentRowId => &$row) {
-            Log::info("{$indent}Checking row/block: {$currentRowId}", [
+            Log::debug("{$indent}Checking row/block: {$currentRowId}", [
                 'hasBlocks' => isset($row['blocks']),
                 'blocksCount' => isset($row['blocks']) ? count($row['blocks']) : 0,
             ]);
 
             // Check if this currentRowId is the target we want to delete
             if ($currentRowId === $rowId) {
-                Log::info("{$indent}FOUND TARGET ROW AS KEY! Deleting row {$currentRowId} (parent: {$parentRowId})");
+                Log::debug("{$indent}FOUND TARGET ROW AS KEY! Deleting row {$currentRowId} (parent: {$parentRowId})");
                 unset($structure[$currentRowId]);
 
                 return [
@@ -986,18 +986,18 @@ class PageEditor extends Component
             }
 
             if (isset($row['blocks'])) {
-                Log::info("{$indent}  Row has blocks, iterating through ".count($row['blocks']).' blocks');
+                Log::debug("{$indent}  Row has blocks, iterating through ".count($row['blocks']).' blocks');
                 foreach ($row['blocks'] as $blockId => &$block) {
-                    Log::info("{$indent}  Checking block: {$blockId}", [
+                    Log::debug("{$indent}  Checking block: {$blockId}", [
                         'isTargetRow' => $blockId === $rowId,
                         'hasNestedBlocks' => isset($block['blocks']),
                         'alias' => $block['alias'] ?? 'unknown',
                     ]);
 
                     // Check if this block is the row we want to delete
-                    Log::info("{$indent}  Comparing blockId '{$blockId}' with target '{$rowId}' - Match: ".($blockId === $rowId ? 'YES' : 'NO'));
+                    Log::debug("{$indent}  Comparing blockId '{$blockId}' with target '{$rowId}' - Match: ".($blockId === $rowId ? 'YES' : 'NO'));
                     if ($blockId === $rowId) {
-                        Log::info("{$indent}  FOUND TARGET ROW! Deleting block {$blockId} from parent {$currentRowId}");
+                        Log::debug("{$indent}  FOUND TARGET ROW! Deleting block {$blockId} from parent {$currentRowId}");
                         unset($structure[$currentRowId]['blocks'][$blockId]);
 
                         return [
@@ -1008,8 +1008,8 @@ class PageEditor extends Component
 
                     // If this block has nested blocks, search recursively
                     if (isset($block['blocks'])) {
-                        Log::info("{$indent}  Recursing into block {$blockId} with ".count($block['blocks']).' nested blocks');
-                        Log::info("{$indent}  Recursive structure keys: ".json_encode(array_keys($block['blocks'])));
+                        Log::debug("{$indent}  Recursing into block {$blockId} with ".count($block['blocks']).' nested blocks');
+                        Log::debug("{$indent}  Recursive structure keys: ".json_encode(array_keys($block['blocks'])));
                         $result = $this->deleteNestedRowWithParent($block['blocks'], $rowId, $blockId, $depth + 1);
                         if ($result) {
                             return $result;
@@ -1019,7 +1019,7 @@ class PageEditor extends Component
             }
         }
 
-        Log::info("{$indent}deleteNestedRowWithParent: Target not found at depth {$depth}");
+        Log::debug("{$indent}deleteNestedRowWithParent: Target not found at depth {$depth}");
 
         return false;
     }
@@ -1030,26 +1030,26 @@ class PageEditor extends Component
     private function deleteNestedRow(&$structure, $rowId, $depth = 0)
     {
         $indent = str_repeat('  ', $depth);
-        Log::info("{$indent}deleteNestedRow: Searching at depth {$depth}", [
+        Log::debug("{$indent}deleteNestedRow: Searching at depth {$depth}", [
             'targetRowId' => $rowId,
             'currentLevelKeys' => array_keys($structure),
             'depth' => $depth,
         ]);
 
         foreach ($structure as $currentRowId => &$row) {
-            Log::info("{$indent}Checking row/block: {$currentRowId}", [
+            Log::debug("{$indent}Checking row/block: {$currentRowId}", [
                 'hasBlocks' => isset($row['blocks']),
                 'blocksCount' => isset($row['blocks']) ? count($row['blocks']) : 0,
             ]);
 
             // Check if this currentRowId is the target we want to delete
             if ($currentRowId === $rowId) {
-                Log::info("{$indent}FOUND TARGET ROW! Deleting row {$currentRowId}");
+                Log::debug("{$indent}FOUND TARGET ROW! Deleting row {$currentRowId}");
                 unset($structure[$currentRowId]);
 
                 // For this case, we need to find the parent to dispatch the event
                 // This should be handled by the calling context
-                Log::info('Target row deleted successfully from structure', [
+                Log::debug('Target row deleted successfully from structure', [
                     'deletedRowId' => $rowId,
                 ]);
 
@@ -1057,18 +1057,18 @@ class PageEditor extends Component
             }
 
             if (isset($row['blocks'])) {
-                Log::info("{$indent}  Row has blocks, iterating through ".count($row['blocks']).' blocks');
+                Log::debug("{$indent}  Row has blocks, iterating through ".count($row['blocks']).' blocks');
                 foreach ($row['blocks'] as $blockId => &$block) {
-                    Log::info("{$indent}  Checking block: {$blockId}", [
+                    Log::debug("{$indent}  Checking block: {$blockId}", [
                         'isTargetRow' => $blockId === $rowId,
                         'hasNestedBlocks' => isset($block['blocks']),
                         'alias' => $block['alias'] ?? 'unknown',
                     ]);
 
                     // Check if this block is the row we want to delete
-                    Log::info("{$indent}  Comparing blockId '{$blockId}' with target '{$rowId}' - Match: ".($blockId === $rowId ? 'YES' : 'NO'));
+                    Log::debug("{$indent}  Comparing blockId '{$blockId}' with target '{$rowId}' - Match: ".($blockId === $rowId ? 'YES' : 'NO'));
                     if ($blockId === $rowId) {
-                        Log::info("{$indent}  FOUND TARGET ROW! Deleting block {$blockId} from parent {$currentRowId}");
+                        Log::debug("{$indent}  FOUND TARGET ROW! Deleting block {$blockId} from parent {$currentRowId}");
                         unset($structure[$currentRowId]['blocks'][$blockId]);
 
                         // Notify the parent RowBlock component to update its blocks
@@ -1078,7 +1078,7 @@ class PageEditor extends Component
                             updatedBlocks: $structure[$currentRowId]['blocks']
                         );
 
-                        Log::info('PageEditor nested row deletion completed - dispatched nested-row-deleted event', [
+                        Log::debug('PageEditor nested row deletion completed - dispatched nested-row-deleted event', [
                             'parentRowId' => $currentRowId,
                             'deletedRowId' => $rowId,
                             'remainingBlocksCount' => count($structure[$currentRowId]['blocks']),
@@ -1089,7 +1089,7 @@ class PageEditor extends Component
 
                     // If this block has nested blocks, search recursively
                     if (isset($block['blocks'])) {
-                        Log::info("{$indent}  Recursing into block {$blockId} with ".count($block['blocks']).' nested blocks');
+                        Log::debug("{$indent}  Recursing into block {$blockId} with ".count($block['blocks']).' nested blocks');
                         if ($this->deleteNestedRow($block['blocks'], $rowId, $depth + 1)) {
                             return true;
                         }
@@ -1098,7 +1098,7 @@ class PageEditor extends Component
             }
         }
 
-        Log::info("{$indent}deleteNestedRow: Target not found at depth {$depth}");
+        Log::debug("{$indent}deleteNestedRow: Target not found at depth {$depth}");
 
         return false;
     }
@@ -1132,7 +1132,7 @@ class PageEditor extends Component
             return;
         }
 
-        Log::info('PageEditor::duplicateBlock called', [
+        Log::debug('PageEditor::duplicateBlock called', [
             'blockId' => $blockId,
             'blockAlias' => $blockAlias,
             'rowId' => $rowId,
@@ -1146,25 +1146,25 @@ class PageEditor extends Component
         if ($rowId && isset($this->rows[$rowId]['blocks'][$blockId])) {
             $foundRowId = $rowId;
             $foundBlock = $this->rows[$rowId]['blocks'][$blockId];
-            Log::info('✅ Block found in top-level row', ['rowId' => $rowId]);
+            Log::debug('✅ Block found in top-level row', ['rowId' => $rowId]);
         } else {
             // Search top-level rows
             foreach ($this->rows as $rId => $row) {
                 if (isset($row['blocks'][$blockId])) {
                     $foundRowId = $rId;
                     $foundBlock = $row['blocks'][$blockId];
-                    Log::info('✅ Block found in top-level search', ['rowId' => $rId]);
+                    Log::debug('✅ Block found in top-level search', ['rowId' => $rId]);
                     break;
                 }
             }
 
             // If not found in top-level, search nested rows
             if (! $foundRowId) {
-                Log::info('🔍 Searching in nested rows for block', ['blockId' => $blockId]);
+                Log::debug('🔍 Searching in nested rows for block', ['blockId' => $blockId]);
                 $foundRowId = $this->findBlockInNestedRows($this->rows, $blockId);
 
                 if ($foundRowId) {
-                    Log::info('✅ Block found in nested row', ['nestedRowId' => $foundRowId]);
+                    Log::debug('✅ Block found in nested row', ['nestedRowId' => $foundRowId]);
                     // Get the block data from the nested row
                     $foundBlock = $this->getBlockFromNestedRow($this->rows, $foundRowId, $blockId);
                 }
@@ -1200,13 +1200,13 @@ class PageEditor extends Component
             $newBlock['blocks'] = $this->regenerateBlockIds($foundBlock['blocks']);
         }
 
-        Log::info('Block duplicated - preparing to dispatch events', [
+        Log::debug('Block duplicated - preparing to dispatch events', [
             'originalBlockId' => $blockId,
             'newBlockId' => $newBlockId,
             'rowId' => $foundRowId,
         ]);
 
-        Log::info('🔄 Dispatching block-added event', [
+        Log::debug('🔄 Dispatching block-added event', [
             'rowId' => $foundRowId,
             'blockId' => $newBlockId,
             'blockAlias' => $newBlock['alias'],
@@ -1215,7 +1215,7 @@ class PageEditor extends Component
             'propertiesCount' => count($newBlock['properties']),
         ]);
 
-        Log::info('🔍 Current rows structure', [
+        Log::debug('🔍 Current rows structure', [
             'rowIds' => array_keys($this->rows),
             'targetRowExists' => isset($this->rows[$foundRowId]),
             'targetRowBlockCount' => isset($this->rows[$foundRowId]) ? count($this->rows[$foundRowId]['blocks']) : 0,
@@ -1225,7 +1225,7 @@ class PageEditor extends Component
         // RowBlock will add the block to its local state and sync back via sync-nested-row-data
 
         // Dispatch 'block-added' event - RowBlock will handle adding it to its blocks array
-        Log::info('⚡ About to dispatch block-added event...');
+        Log::debug('⚡ About to dispatch block-added event...');
         $this->dispatch(
             'block-added',
             rowId: $foundRowId,
@@ -1235,9 +1235,9 @@ class PageEditor extends Component
             beforeBlockId: null,
             afterBlockId: $blockId  // Insert after the original block
         );
-        Log::info('⚡ Dispatch completed');
+        Log::debug('⚡ Dispatch completed');
 
-        Log::info('📢 Dispatching block-duplicated event', [
+        Log::debug('📢 Dispatching block-duplicated event', [
             'blockId' => $newBlockId,
         ]);
 
@@ -1247,7 +1247,7 @@ class PageEditor extends Component
             blockId: $newBlockId
         );
 
-        Log::info('🔔 Dispatching notify event');
+        Log::debug('🔔 Dispatching notify event');
 
         // Success notification
         $this->dispatch(
@@ -1256,7 +1256,7 @@ class PageEditor extends Component
             type: 'success'
         );
 
-        Log::info('✅ All duplicate events dispatched successfully');
+        Log::debug('✅ All duplicate events dispatched successfully');
     }
 
     /**
@@ -1281,7 +1281,7 @@ class PageEditor extends Component
             return;
         }
 
-        Log::info('PageEditor::duplicateRow called', [
+        Log::debug('PageEditor::duplicateRow called', [
             'rowId' => $rowId,
             'isNested' => $isNested,
             'blocksCount' => count($blocks),
@@ -1291,7 +1291,7 @@ class PageEditor extends Component
         // Check if this is a top-level row or nested row
         if (isset($this->rows[$rowId])) {
             // This is a top-level row
-            Log::info('✅ Duplicating top-level row', ['rowId' => $rowId]);
+            Log::debug('✅ Duplicating top-level row', ['rowId' => $rowId]);
 
             $originalRow = $this->rows[$rowId];
 
@@ -1304,7 +1304,7 @@ class PageEditor extends Component
                 'blocks' => $this->regenerateBlockIds($originalRow['blocks'] ?? []),
             ];
 
-            Log::info('Created new row clone', [
+            Log::debug('Created new row clone', [
                 'originalRowId' => $rowId,
                 'newRowId' => $newRowId,
                 'newBlocksCount' => count($newRow['blocks']),
@@ -1326,7 +1326,7 @@ class PageEditor extends Component
 
                 $this->rows = $newRows;
 
-                Log::info('✅ Top-level row duplicated successfully', [
+                Log::debug('✅ Top-level row duplicated successfully', [
                     'originalRowId' => $rowId,
                     'newRowId' => $newRowId,
                     'insertedAt' => $insertPosition,
@@ -1346,7 +1346,7 @@ class PageEditor extends Component
             }
         } else {
             // This is a nested row (RowBlock) - find its parent
-            Log::info('🔍 Searching for nested row parent', ['nestedRowId' => $rowId]);
+            Log::debug('🔍 Searching for nested row parent', ['nestedRowId' => $rowId]);
 
             $parentRowId = null;
             foreach ($this->rows as $rId => $row) {
@@ -1357,7 +1357,7 @@ class PageEditor extends Component
             }
 
             if ($parentRowId) {
-                Log::info('✅ Found parent row for nested row', [
+                Log::debug('✅ Found parent row for nested row', [
                     'nestedRowId' => $rowId,
                     'parentRowId' => $parentRowId,
                 ]);
@@ -1373,7 +1373,7 @@ class PageEditor extends Component
                     'blocks' => $this->regenerateBlockIds($originalNestedRow['blocks'] ?? []),
                 ];
 
-                Log::info('Created nested row clone', [
+                Log::debug('Created nested row clone', [
                     'originalNestedRowId' => $rowId,
                     'newBlockId' => $newBlockId,
                     'newNestedBlocksCount' => count($newNestedRow['blocks']),
@@ -1381,7 +1381,7 @@ class PageEditor extends Component
 
                 // DON'T modify $this->rows directly - let RowBlock handle it via block-added event
                 // Dispatch 'block-added' event - parent RowBlock will handle adding it to its blocks array
-                Log::info('⚡ Dispatching block-added event for nested row duplication');
+                Log::debug('⚡ Dispatching block-added event for nested row duplication');
                 $this->dispatch(
                     'block-added',
                     rowId: $parentRowId,
@@ -1393,7 +1393,7 @@ class PageEditor extends Component
                     afterBlockId: $rowId  // Insert after the original nested row
                 );
 
-                Log::info('📢 Dispatching row-duplicated event for nested row', [
+                Log::debug('📢 Dispatching row-duplicated event for nested row', [
                     'blockId' => $newBlockId,
                 ]);
 
@@ -1429,7 +1429,7 @@ class PageEditor extends Component
         $targetBlockId = null,
         $position = 'after')
     {
-        Log::info('PageEditor::pasteFromClipboard called', [
+        Log::debug('PageEditor::pasteFromClipboard called', [
             'targetRowId' => $targetRowId,
             'targetBlockId' => $targetBlockId,
             'position' => $position,
@@ -1439,7 +1439,7 @@ class PageEditor extends Component
         try {
             $data = json_decode($clipboardData, true);
 
-            Log::info('Clipboard data decoded', [
+            Log::debug('Clipboard data decoded', [
                 'hasData' => ! empty($data),
                 'type' => $data['type'] ?? 'null',
                 'dataKeys' => $data ? array_keys($data) : [],
@@ -1453,7 +1453,7 @@ class PageEditor extends Component
 
             // Handle Row paste
             if ($data['type'] === 'RowBlock') {
-                Log::info('Pasting RowBlock', [
+                Log::debug('Pasting RowBlock', [
                     'targetRowId' => $targetRowId,
                     'targetBlockId' => $targetBlockId,
                     'position' => $position,
@@ -1461,7 +1461,7 @@ class PageEditor extends Component
 
                 // Handle "inside" position - paste as a nested block within the target row
                 if ($position === 'inside' && $targetRowId) {
-                    Log::info('Pasting RowBlock INSIDE target row', [
+                    Log::debug('Pasting RowBlock INSIDE target row', [
                         'targetRowId' => $targetRowId,
                     ]);
 
@@ -1477,7 +1477,7 @@ class PageEditor extends Component
                     // Check if target row exists as a top-level row OR as a nested row
                     $isTopLevelRow = isset($this->rows[$targetRowId]);
 
-                    Log::info('Checking if target row is nested', [
+                    Log::debug('Checking if target row is nested', [
                         'targetRowId' => $targetRowId,
                         'isTopLevelRow' => $isTopLevelRow,
                         'totalTopLevelRows' => count($this->rows),
@@ -1487,7 +1487,7 @@ class PageEditor extends Component
                     $foundParentRowId = null;
                     if (! $isTopLevelRow) {
                         $foundParentRowId = $this->findBlockInNestedRows(rows: $this->rows, targetBlockId: $targetRowId);
-                        Log::info('Search result for nested row', [
+                        Log::debug('Search result for nested row', [
                             'targetRowId' => $targetRowId,
                             'foundParentRowId' => $foundParentRowId,
                         ]);
@@ -1495,7 +1495,7 @@ class PageEditor extends Component
 
                     $isNestedRow = ! $isTopLevelRow && $foundParentRowId !== null;
 
-                    Log::info('Final determination', [
+                    Log::debug('Final determination', [
                         'isTopLevelRow' => $isTopLevelRow,
                         'isNestedRow' => $isNestedRow,
                         'foundParentRowId' => $foundParentRowId,
@@ -1503,7 +1503,7 @@ class PageEditor extends Component
 
                     if ($isTopLevelRow || $isNestedRow) {
                         // Dispatch block-added event - RowBlock will handle adding it to its blocks array
-                        Log::info('Dispatching block-added for paste inside', [
+                        Log::debug('Dispatching block-added for paste inside', [
                             'rowId' => $targetRowId,
                             'blockId' => $blockId,
                             'blockAlias' => $nestedRowAlias,
@@ -1523,7 +1523,7 @@ class PageEditor extends Component
                             afterBlockId: null
                         );
 
-                        Log::info('RowBlock paste inside dispatched', [
+                        Log::debug('RowBlock paste inside dispatched', [
                             'targetRowId' => $targetRowId,
                             'newBlockId' => $blockId,
                             'isNested' => $isNestedRow,
@@ -1556,7 +1556,7 @@ class PageEditor extends Component
 
                 // Handle before/after paste to nested rows - paste as sibling nested row block
                 if ($isNestedRow && ($position === 'before' || $position === 'after')) {
-                    Log::info('Pasting RowBlock as sibling to nested row', [
+                    Log::debug('Pasting RowBlock as sibling to nested row', [
                         'nestedRowId' => $targetRowId,
                         'position' => $position,
                     ]);
@@ -1599,7 +1599,7 @@ class PageEditor extends Component
                             $afterBlockId = $targetBlockId;
                         }
 
-                        Log::info('Dispatching block-added for nested row paste', [
+                        Log::debug('Dispatching block-added for nested row paste', [
                             'parentRowId' => $parentRowId,
                             'blockId' => $blockId,
                             'beforeBlockId' => $beforeBlockId,
@@ -1618,7 +1618,7 @@ class PageEditor extends Component
                             afterBlockId: $afterBlockId
                         );
 
-                        Log::info('RowBlock paste dispatched as sibling to nested row', [
+                        Log::debug('RowBlock paste dispatched as sibling to nested row', [
                             'parentRowId' => $parentRowId,
                             'newBlockId' => $blockId,
                             'position' => $position,
@@ -1708,7 +1708,7 @@ class PageEditor extends Component
                     properties: $row['properties']
                 );
 
-                Log::info('Row pasted successfully', [
+                Log::debug('Row pasted successfully', [
                     'newRowId' => $rowId,
                     'position' => $position,
                     'afterRowId' => $afterRowId ?? 'null',
@@ -1726,7 +1726,7 @@ class PageEditor extends Component
             }
             // Handle Block paste
             elseif ($data['type'] === 'Block') {
-                Log::info('Pasting Block', [
+                Log::debug('Pasting Block', [
                     'blockAlias' => $data['blockAlias'] ?? 'unknown',
                     'targetRowId' => $targetRowId,
                     'targetBlockId' => $targetBlockId,
@@ -1775,7 +1775,7 @@ class PageEditor extends Component
                     $isNestedRow = true;
                 }
 
-                Log::info('Parent row found for block paste', [
+                Log::debug('Parent row found for block paste', [
                     'parentRowId' => $parentRowId ?? 'null',
                     'targetBlockId' => $targetBlockId,
                     'isNestedRow' => $isNestedRow,
@@ -1785,7 +1785,7 @@ class PageEditor extends Component
                 // Handle special case: pasting to a nested row with before/after position
                 // In this case, we need to paste as a sibling in the parent row, not inside the nested row
                 if ($isNestedRow && ($position === 'before' || $position === 'after') && ! $targetBlockId) {
-                    Log::info('Pasting Block as sibling to nested row (outside)', [
+                    Log::debug('Pasting Block as sibling to nested row (outside)', [
                         'nestedRowId' => $parentRowId,
                         'position' => $position,
                     ]);
@@ -1805,7 +1805,7 @@ class PageEditor extends Component
                         $parentRowId = $actualParentRowId;
                         $isNestedRow = false;
 
-                        Log::info('Found parent row for nested row', [
+                        Log::debug('Found parent row for nested row', [
                             'actualParentRowId' => $actualParentRowId,
                             'nestedRowBlockId' => $targetBlockId,
                         ]);
@@ -1815,7 +1815,7 @@ class PageEditor extends Component
                 if ($parentRowId) {
                     if ($isNestedRow && $position === 'inside') {
                         // Parent is a nested RowBlock and position is 'inside' - add block inside the nested row
-                        Log::info('Dispatching add-block-to-nested-row event for paste inside', [
+                        Log::debug('Dispatching add-block-to-nested-row event for paste inside', [
                             'rowId' => $parentRowId,
                             'blockAlias' => $data['blockAlias'],
                             'position' => 'inside',
@@ -1854,7 +1854,7 @@ class PageEditor extends Component
                         // DON'T modify $this->rows directly - let RowBlock handle it via block-added event
                         // RowBlock will add the block to its local state and sync back via sync-nested-row-data
 
-                        Log::info('Dispatching block-added for paste', [
+                        Log::debug('Dispatching block-added for paste', [
                             'isNestedRow' => $isNestedRow,
                             'parentRowId' => $parentRowId,
                             'blockId' => $blockId,
@@ -1898,7 +1898,7 @@ class PageEditor extends Component
                             properties: $block['properties']
                         );
 
-                        Log::info('Block pasted successfully to top-level row', [
+                        Log::debug('Block pasted successfully to top-level row', [
                             'newBlockId' => $blockId,
                             'parentRowId' => $parentRowId,
                             'position' => $position,
@@ -1951,7 +1951,7 @@ class PageEditor extends Component
         string $position = 'after',
         int $depth = 0
     ): bool {
-        Log::info('addBlockToNestedRowInStructure searching', [
+        Log::debug('addBlockToNestedRowInStructure searching', [
             'targetRowBlockId' => $targetRowBlockId,
             'depth' => $depth,
             'rowsCount' => count($rows),
@@ -1959,7 +1959,7 @@ class PageEditor extends Component
         ]);
 
         foreach ($rows as $rowId => &$row) {
-            Log::info('Checking row/block', [
+            Log::debug('Checking row/block', [
                 'id' => $rowId,
                 'hasBlocks' => isset($row['blocks']),
                 'blocksCount' => isset($row['blocks']) ? count($row['blocks']) : 0,
@@ -1970,7 +1970,7 @@ class PageEditor extends Component
             }
 
             foreach ($row['blocks'] as $blockId => &$block) {
-                Log::info('Checking nested block', [
+                Log::debug('Checking nested block', [
                     'blockId' => $blockId,
                     'isTarget' => $blockId === $targetRowBlockId,
                     'hasNestedBlocks' => isset($block['blocks']),
@@ -1978,7 +1978,7 @@ class PageEditor extends Component
 
                 // Check if this is the target RowBlock
                 if ($blockId === $targetRowBlockId && isset($block['blocks'])) {
-                    Log::info('Found target RowBlock, adding block', [
+                    Log::debug('Found target RowBlock, adding block', [
                         'targetRowBlockId' => $targetRowBlockId,
                         'newBlockId' => $newBlockId,
                         'targetBlockId' => $targetBlockId,
@@ -2001,7 +2001,7 @@ class PageEditor extends Component
 
                             $block['blocks'] = $before + [$newBlockId => $newBlock] + $after;
 
-                            Log::info('Block inserted at position', [
+                            Log::debug('Block inserted at position', [
                                 'targetIndex' => $targetIndex,
                                 'insertIndex' => $insertIndex,
                                 'totalBlocks' => count($block['blocks']),
@@ -2020,7 +2020,7 @@ class PageEditor extends Component
 
                 // If this block has nested blocks, search recursively
                 if (isset($block['blocks']) && is_array($block['blocks'])) {
-                    Log::info('Recursing into nested block', [
+                    Log::debug('Recursing into nested block', [
                         'blockId' => $blockId,
                         'nestedBlocksCount' => count($block['blocks']),
                         'nestedBlockKeys' => array_keys($block['blocks']),
@@ -2031,7 +2031,7 @@ class PageEditor extends Component
                     // We need to search within this block's nested blocks
                     foreach ($block['blocks'] as $nestedBlockId => &$nestedBlock) {
                         if ($nestedBlockId === $targetRowBlockId && isset($nestedBlock['blocks'])) {
-                            Log::info('Found target in immediate nested blocks', [
+                            Log::debug('Found target in immediate nested blocks', [
                                 'targetRowBlockId' => $targetRowBlockId,
                                 'depth' => $depth + 1,
                             ]);
@@ -2078,7 +2078,7 @@ class PageEditor extends Component
             }
         }
 
-        Log::info('Target RowBlock not found at this level', [
+        Log::debug('Target RowBlock not found at this level', [
             'targetRowBlockId' => $targetRowBlockId,
             'depth' => $depth,
         ]);
@@ -2093,14 +2093,14 @@ class PageEditor extends Component
     private function findBlockInNestedRows(array $rows, string $targetBlockId, int $depth = 0): ?string
     {
         $indent = str_repeat('  ', $depth);
-        Log::info("{$indent}findBlockInNestedRows: Searching at depth {$depth}", [
+        Log::debug("{$indent}findBlockInNestedRows: Searching at depth {$depth}", [
             'targetBlockId' => $targetBlockId,
             'rowKeys' => array_keys($rows),
             'depth' => $depth,
         ]);
 
         foreach ($rows as $rowId => $row) {
-            Log::info("{$indent}Checking row: {$rowId}", [
+            Log::debug("{$indent}Checking row: {$rowId}", [
                 'hasBlocks' => isset($row['blocks']),
                 'blocksCount' => isset($row['blocks']) ? count($row['blocks']) : 0,
             ]);
@@ -2110,14 +2110,14 @@ class PageEditor extends Component
             }
 
             foreach ($row['blocks'] as $blockId => $block) {
-                Log::info("{$indent}  Checking block: {$blockId}", [
+                Log::debug("{$indent}  Checking block: {$blockId}", [
                     'isTarget' => $blockId === $targetBlockId,
                     'hasNestedBlocks' => isset($block['blocks']),
                 ]);
 
                 // IMPORTANT: Check if THIS blockId is the target we're looking for
                 if ($blockId === $targetBlockId) {
-                    Log::info("{$indent}  ✅ FOUND! blockId matches targetBlockId", [
+                    Log::debug("{$indent}  ✅ FOUND! blockId matches targetBlockId", [
                         'blockId' => $blockId,
                         'parentRowId' => $rowId,
                     ]);
@@ -2127,7 +2127,7 @@ class PageEditor extends Component
 
                 // Check if this block contains the target
                 if (isset($block['blocks'][$targetBlockId])) {
-                    Log::info("{$indent}  ✅ Found target in block's nested blocks", [
+                    Log::debug("{$indent}  ✅ Found target in block's nested blocks", [
                         'nestedRowBlockId' => $blockId,
                         'targetBlockId' => $targetBlockId,
                     ]);
@@ -2137,10 +2137,10 @@ class PageEditor extends Component
 
                 // If this block is a RowBlock with nested blocks, search recursively
                 if (isset($block['blocks']) && is_array($block['blocks'])) {
-                    Log::info("{$indent}  Recursing into block {$blockId}");
+                    Log::debug("{$indent}  Recursing into block {$blockId}");
                     $nestedResult = $this->findBlockInNestedRows([$blockId => $block], targetBlockId: $targetBlockId, depth: $depth + 1);
                     if ($nestedResult) {
-                        Log::info("{$indent}  ✅ Found in recursive search");
+                        Log::debug("{$indent}  ✅ Found in recursive search");
 
                         return $nestedResult;
                     }
@@ -2148,7 +2148,7 @@ class PageEditor extends Component
             }
         }
 
-        Log::info("{$indent}❌ Target not found at depth {$depth}");
+        Log::debug("{$indent}❌ Target not found at depth {$depth}");
 
         return null;
     }
@@ -2167,7 +2167,7 @@ class PageEditor extends Component
             foreach ($row['blocks'] as $blockId => $block) {
                 // Check if this is the parent row we're looking for
                 if ($blockId === $parentRowId && isset($block['blocks'][$targetBlockId])) {
-                    Log::info('✅ Retrieved block from nested row', [
+                    Log::debug('✅ Retrieved block from nested row', [
                         'parentRowId' => $parentRowId,
                         'targetBlockId' => $targetBlockId,
                     ]);
@@ -2543,7 +2543,7 @@ class PageEditor extends Component
 
             // Log block data for BuilderPageBlock
             if ($block['alias'] === 'builder-page-block') {
-                Log::info('getBlocksWithNesting - BuilderPageBlock data', [
+                Log::debug('getBlocksWithNesting - BuilderPageBlock data', [
                     'blockId' => $blockId,
                     'alias' => $block['alias'],
                     'properties' => $block['properties'] ?? 'NO PROPERTIES',
@@ -2570,7 +2570,7 @@ class PageEditor extends Component
 
             // If this block is a RowBlock (nested row), add its nested blocks
             if ($blockClass === \Trinavo\LivewirePageBuilder\Http\Livewire\RowBlock::class && isset($block['blocks'])) {
-                Log::info('Found nested row with blocks:', [
+                Log::debug('Found nested row with blocks:', [
                     'blockId' => $blockId,
                     'nestedBlocks' => $block['blocks'],
                 ]);

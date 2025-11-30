@@ -33,13 +33,13 @@ class ImageProperty extends Component
      */
     public function updatedUploadedImage()
     {
-        Log::info('ImageProperty::updatedUploadedImage hook triggered');
+        Log::debug('ImageProperty::updatedUploadedImage hook triggered');
         $this->uploadImage();
     }
 
     public function uploadImage()
     {
-        Log::info('ImageProperty::uploadImage called', [
+        Log::debug('ImageProperty::uploadImage called', [
             'propertyName' => $this->propertyName,
             'rowId' => $this->rowId,
             'blockId' => $this->blockId,
@@ -53,14 +53,14 @@ class ImageProperty extends Component
             return;
         }
 
-        Log::info('ImageProperty::uploadImage - Starting validation');
+        Log::debug('ImageProperty::uploadImage - Starting validation');
 
         try {
             $this->validate([
                 'uploadedImage' => 'image|max:10240', // max 10MB
             ]);
 
-            Log::info('ImageProperty::uploadImage - Validation passed, storing file');
+            Log::debug('ImageProperty::uploadImage - Validation passed, storing file');
         } catch (\Illuminate\Validation\ValidationException $e) {
             Log::error('ImageProperty::uploadImage - Validation failed', [
                 'errors' => $e->errors(),
@@ -78,7 +78,7 @@ class ImageProperty extends Component
         $path = $this->uploadedImage->store('page-builder', 'public');
         $url = Storage::url($path);
 
-        Log::info('ImageProperty::uploadImage - File stored', [
+        Log::debug('ImageProperty::uploadImage - File stored', [
             'path' => $path,
             'url' => $url,
         ]);
@@ -86,7 +86,7 @@ class ImageProperty extends Component
         $this->currentValue = $url;
         $this->dispatch('updateBlockProperty', $this->rowId, $this->blockId, $this->propertyName, $url);
 
-        Log::info('ImageProperty::uploadImage - Dispatched updateBlockProperty event', [
+        Log::debug('ImageProperty::uploadImage - Dispatched updateBlockProperty event', [
             'url' => $url,
         ]);
 

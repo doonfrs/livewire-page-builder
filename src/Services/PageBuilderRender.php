@@ -109,7 +109,7 @@ class PageBuilderRender
 
         // Handle nested blocks for row-block components
         if (isset($block['blocks']) && is_array($block['blocks']) && count($block['blocks']) > 0) {
-            \Illuminate\Support\Facades\Log::info('PageBuilderRender::prepareBlock processing nested blocks', [
+            \Illuminate\Support\Facades\Log::debug('PageBuilderRender::prepareBlock processing nested blocks', [
                 'alias' => $block['alias'],
                 'nestedBlocksCount' => count($block['blocks']),
                 'nestedBlocks' => $block['blocks'],
