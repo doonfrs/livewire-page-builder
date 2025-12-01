@@ -224,20 +224,20 @@ class PageBuilderService
         $desktopPaddingLeft = $properties['desktopPaddingLeft'] ?? 0;
 
         // Device-specific margin
-        $mobileMarginTop = $properties['mobileMarginTop'] ?? 0;
-        $mobileMarginRight = $properties['mobileMarginRight'] ?? 0;
-        $mobileMarginBottom = $properties['mobileMarginBottom'] ?? 0;
-        $mobileMarginLeft = $properties['mobileMarginLeft'] ?? 0;
+        $mobileMarginTop = (int) ($properties['mobileMarginTop'] ?? 0);
+        $mobileMarginRight = (int) ($properties['mobileMarginRight'] ?? 0);
+        $mobileMarginBottom = (int) ($properties['mobileMarginBottom'] ?? 0);
+        $mobileMarginLeft = (int) ($properties['mobileMarginLeft'] ?? 0);
 
-        $tabletMarginTop = $properties['tabletMarginTop'] ?? 0;
-        $tabletMarginRight = $properties['tabletMarginRight'] ?? 0;
-        $tabletMarginBottom = $properties['tabletMarginBottom'] ?? 0;
-        $tabletMarginLeft = $properties['tabletMarginLeft'] ?? 0;
+        $tabletMarginTop = (int) ($properties['tabletMarginTop'] ?? 0);
+        $tabletMarginRight = (int) ($properties['tabletMarginRight'] ?? 0);
+        $tabletMarginBottom = (int) ($properties['tabletMarginBottom'] ?? 0);
+        $tabletMarginLeft = (int) ($properties['tabletMarginLeft'] ?? 0);
 
-        $desktopMarginTop = $properties['desktopMarginTop'] ?? 0;
-        $desktopMarginRight = $properties['desktopMarginRight'] ?? 0;
-        $desktopMarginBottom = $properties['desktopMarginBottom'] ?? 0;
-        $desktopMarginLeft = $properties['desktopMarginLeft'] ?? 0;
+        $desktopMarginTop = (int) ($properties['desktopMarginTop'] ?? 0);
+        $desktopMarginRight = (int) ($properties['desktopMarginRight'] ?? 0);
+        $desktopMarginBottom = (int) ($properties['desktopMarginBottom'] ?? 0);
+        $desktopMarginLeft = (int) ($properties['desktopMarginLeft'] ?? 0);
 
         $selfCentered = $properties['selfCentered'] ?? false;
         $textColor = $properties['textColor'] ?? null;
