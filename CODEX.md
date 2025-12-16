@@ -27,6 +27,29 @@ overflow-ellipsis text-ellipsis
 decoration-slice box-decoration-slice
 decoration-clone box-decoration-clone
 
+### Dynamic @container
+- we use dynamic https://tailwindcss.com/docs/responsive-design#container-queries 
+- we use https://tailwindcss.com/docs/responsive-design#container-size-reference
+Container size reference
+```
+Variant	Minimum width	CSS
+@3xs	16rem (256px)	@container (width >= 16rem) { … }
+@2xs	18rem (288px)	@container (width >= 18rem) { … }
+@xs	20rem (320px)	@container (width >= 20rem) { … }
+@sm	24rem (384px)	@container (width >= 24rem) { … }
+@md	28rem (448px)	@container (width >= 28rem) { … }
+@lg	32rem (512px)	@container (width >= 32rem) { … }
+@xl	36rem (576px)	@container (width >= 36rem) { … }
+@2xl	42rem (672px)	@container (width >= 42rem) { … }
+@3xl	48rem (768px)	@container (width >= 48rem) { … }
+@4xl	56rem (896px)	@container (width >= 56rem) { … }
+@5xl	64rem (1024px)	@container (width >= 64rem) { … }
+@6xl	72rem (1152px)	@container (width >= 72rem) { … }
+@7xl	80rem (1280px)	@container (width >= 80rem) { … }
+```
+
+- We are using tailwind 4, please make sure to not to use deprecated classes / code <https://tailwindcss.com/docs/upgrade-guide#removed-deprecated-utilities> and if you encounter an old code, upgrade it
+
 ## Framework
 
 - We are using laravel 12
