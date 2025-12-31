@@ -1111,6 +1111,11 @@ abstract class Block extends Component
     {
         $color = $this->$propertyName ?? null;
 
+        // Ensure color is a string before passing to parseColor (defensive against malformed client data)
+        if (! is_string($color) && $color !== null) {
+            $color = null;
+        }
+
         return $this->parseColor($color, $defaultClass);
     }
 }
