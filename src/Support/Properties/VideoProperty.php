@@ -36,6 +36,7 @@ class VideoProperty extends BlockProperty
      */
     public static function make(string $name, ?string $label = null, $defaultValue = null): static
     {
+        // @phpstan-ignore new.static
         return new static($name, $label, $defaultValue);
     }
 }

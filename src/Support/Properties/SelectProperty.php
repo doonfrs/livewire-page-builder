@@ -51,6 +51,7 @@ class SelectProperty extends BlockProperty
      */
     public static function make(string $name, ?string $label = null, array $options = [], $defaultValue = null): static
     {
+        // @phpstan-ignore new.static
         return new static($name, $label, $options, $defaultValue);
     }
 }

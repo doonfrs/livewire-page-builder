@@ -117,6 +117,7 @@ class ResponsiveSpacingProperty extends BlockProperty
      */
     public static function make(string $name, ?string $label = null, array $defaultValues = []): static
     {
+        // @phpstan-ignore new.static
         return new static($name, $label, $defaultValues);
     }
 }

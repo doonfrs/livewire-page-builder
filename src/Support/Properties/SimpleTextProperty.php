@@ -101,6 +101,7 @@ class SimpleTextProperty extends BlockProperty
      */
     public static function make(string $name, ?string $label = null, $defaultValue = null, bool $multilingual = true): static
     {
+        // @phpstan-ignore new.static
         return new static($name, $label, $defaultValue, $multilingual);
     }
 }

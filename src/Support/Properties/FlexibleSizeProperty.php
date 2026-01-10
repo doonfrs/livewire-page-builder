@@ -57,6 +57,7 @@ class FlexibleSizeProperty extends BlockProperty
         string $unit = 'px',
         $defaultValue = null
     ): static {
+        // @phpstan-ignore new.static
         return new static($name, $label, $classes, $allowCustom, $unit, $defaultValue);
     }
 }

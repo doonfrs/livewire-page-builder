@@ -72,6 +72,7 @@ class CustomProperty extends BlockProperty
         ?array $config = null,
         $defaultValue = null
     ): static {
+        // @phpstan-ignore new.static
         return new static(
             name: $name,
             label: $label,

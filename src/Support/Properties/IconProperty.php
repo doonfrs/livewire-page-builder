@@ -72,6 +72,7 @@ class IconProperty extends BlockProperty
         ?array $sets = null,
         $defaultValue = null
     ): static {
+        // @phpstan-ignore new.static
         return new static(
             name: $name,
             label: $label,

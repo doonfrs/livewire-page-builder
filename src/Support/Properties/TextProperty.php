@@ -92,6 +92,7 @@ class TextProperty extends BlockProperty
      */
     public static function make(string $name, ?string $label = null, bool $numeric = false, $defaultValue = null, $min = null, $max = null): static
     {
+        // @phpstan-ignore new.static
         return new static($name, $label, $numeric, $defaultValue, $min, $max);
     }
 }
