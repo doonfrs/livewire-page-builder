@@ -647,7 +647,7 @@
                     class="inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
                     :class="document.documentElement.dir === 'rtl' ? 'text-right' : 'text-left'"
                     @click.outside="showImportFileModal = false; $wire.set('importFile', null)">
-                    <form wire:submit="importThemePages">
+                    <form wire:submit="parseImportFile">
                         <div class="bg-white dark:bg-gray-800 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                             <div class="sm:flex sm:items-start"
                                 :class="document.documentElement.dir === 'rtl' ? 'sm:flex-row-reverse' : ''">
@@ -664,7 +664,7 @@
                                     </h3>
                                     <div class="mt-4">
                                         <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">
-                                            {{ __('Select a theme file to import. All pages from the file will replace the current theme\'s pages.') }}
+                                            {{ __('Select a theme file to import.') }}
                                         </p>
                                         <div>
                                             <label for="importFile"
@@ -688,13 +688,13 @@
                                 wire:loading.class="opacity-50 cursor-not-allowed"
                                 class="inline-flex items-center justify-center rounded-md border border-transparent shadow-sm px-8 py-2 bg-blue-600 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-blue-600"
                                 :class="document.documentElement.dir === 'rtl' ? 'sm:mr-3' : 'sm:ml-3'">
-                                <span wire:loading.remove wire:target="importThemePages" class="flex items-center">
+                                <span wire:loading.remove wire:target="parseImportFile" class="flex items-center">
                                     <x-heroicon-o-arrow-up-tray class="w-4 h-4 mr-2" />
-                                    {{ __('Import') }}
+                                    {{ __('Continue') }}
                                 </span>
-                                <span wire:loading wire:target="importThemePages" class="flex items-center">
+                                <span wire:loading wire:target="parseImportFile" class="flex items-center">
                                     <x-heroicon-o-arrow-path class="w-4 h-4 mr-2 animate-spin" />
-                                    {{ __('Importing...') }}
+                                    {{ __('Loading...') }}
                                 </span>
                             </button>
                             <button type="button"
@@ -708,6 +708,149 @@
                 </div>
             </div>
         </div>
+
+        <!-- Page Selection Modal for Import -->
+        @if ($showPageSelectionModal)
+            <div class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog"
+                aria-modal="true">
+                <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+                    <div class="fixed inset-0 bg-gray-500/75 transition-opacity" aria-hidden="true"></div>
+                    <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+
+                    <div class="inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
+                        :class="document.documentElement.dir === 'rtl' ? 'text-right' : 'text-left'">
+                        <div class="bg-white dark:bg-gray-800 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                            <div class="sm:flex sm:items-start"
+                                :class="document.documentElement.dir === 'rtl' ? 'sm:flex-row-reverse' : ''">
+                                <div
+                                    class="mx-auto shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 dark:bg-blue-900/30 sm:mx-0 sm:h-10 sm:w-10">
+                                    <x-heroicon-o-document-duplicate
+                                        class="h-6 w-6 text-blue-600 dark:text-blue-400" />
+                                </div>
+                                <div class="mt-3 text-center w-full"
+                                    :class="document.documentElement.dir === 'rtl' ? 'sm:mt-0 sm:mr-4 sm:text-right' :
+                                        'sm:mt-0 sm:ml-4 sm:text-left'">
+                                    <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white"
+                                        id="modal-title">
+                                        {{ __('Select Pages to Import') }}
+                                    </h3>
+                                    <div class="mt-4">
+                                        <!-- Import Mode Selection -->
+                                        <div class="space-y-3 mb-4">
+                                            <label class="flex items-center cursor-pointer">
+                                                <input type="radio" wire:model.live="importMode" value="all"
+                                                    class="h-4 w-4 text-blue-600 border-gray-300 dark:border-gray-600 focus:ring-blue-500 dark:bg-gray-700">
+                                                <span
+                                                    class="ml-2 text-sm text-gray-700 dark:text-gray-300 rtl:mr-2 rtl:ml-0">
+                                                    {{ __('Import All Pages') }}
+                                                    <span class="text-gray-500 dark:text-gray-400">
+                                                        ({{ count($importedPagesData) }}
+                                                        {{ __('pages') }})
+                                                    </span>
+                                                </span>
+                                            </label>
+                                            <label class="flex items-center cursor-pointer">
+                                                <input type="radio" wire:model.live="importMode" value="selected"
+                                                    class="h-4 w-4 text-blue-600 border-gray-300 dark:border-gray-600 focus:ring-blue-500 dark:bg-gray-700">
+                                                <span
+                                                    class="ml-2 text-sm text-gray-700 dark:text-gray-300 rtl:mr-2 rtl:ml-0">
+                                                    {{ __('Select Specific Pages') }}
+                                                </span>
+                                            </label>
+                                        </div>
+
+                                        <!-- Page Selection List (only shown when importMode is 'selected') -->
+                                        @if ($importMode === 'selected')
+                                            <div
+                                                class="border border-gray-200 dark:border-gray-600 rounded-lg max-h-64 overflow-y-auto">
+                                                <!-- Select All / Deselect All -->
+                                                <div
+                                                    class="sticky top-0 bg-gray-50 dark:bg-gray-700 px-3 py-2 border-b border-gray-200 dark:border-gray-600 flex gap-2">
+                                                    <button type="button" wire:click="selectAllPages"
+                                                        class="text-xs text-blue-600 dark:text-blue-400 hover:underline">
+                                                        {{ __('Select All') }}
+                                                    </button>
+                                                    <span class="text-gray-300 dark:text-gray-500">|</span>
+                                                    <button type="button" wire:click="deselectAllPages"
+                                                        class="text-xs text-blue-600 dark:text-blue-400 hover:underline">
+                                                        {{ __('Deselect All') }}
+                                                    </button>
+                                                </div>
+                                                <!-- Pages List -->
+                                                <div class="divide-y divide-gray-200 dark:divide-gray-600">
+                                                    @foreach ($importedPagesData as $pageData)
+                                                        <label
+                                                            class="flex items-center px-3 py-2 hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer">
+                                                            <input type="checkbox"
+                                                                wire:click="togglePageSelection('{{ $pageData['key'] }}')"
+                                                                @checked(in_array($pageData['key'], $selectedPageKeys))
+                                                                class="h-4 w-4 text-blue-600 border-gray-300 dark:border-gray-600 rounded focus:ring-blue-500 dark:bg-gray-700">
+                                                            <span
+                                                                class="ml-2 text-sm text-gray-700 dark:text-gray-300 rtl:mr-2 rtl:ml-0">
+                                                                {{ $pageData['key'] }}
+                                                            </span>
+                                                        </label>
+                                                    @endforeach
+                                                </div>
+                                            </div>
+                                            @if (empty($selectedPageKeys))
+                                                <p class="text-xs text-red-500 mt-2">
+                                                    {{ __('No pages selected') }}
+                                                </p>
+                                            @endif
+                                        @endif
+
+                                        <!-- Warning Message -->
+                                        <div
+                                            class="mt-4 p-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
+                                            <div class="flex">
+                                                <x-heroicon-o-exclamation-triangle
+                                                    class="h-5 w-5 text-yellow-400 shrink-0" />
+                                                <div class="ml-3 rtl:mr-3 rtl:ml-0">
+                                                    <p class="text-sm text-yellow-700 dark:text-yellow-300">
+                                                        @if ($importMode === 'all')
+                                                            {{ __('This will replace ALL pages in the current theme.') }}
+                                                        @else
+                                                            {{ __('Selected pages will be replaced in the current theme.') }}
+                                                        @endif
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-gray-50 dark:bg-gray-700 px-4 py-3 sm:px-6 sm:flex"
+                            :class="document.documentElement.dir === 'rtl' ? 'sm:flex-row' : 'sm:flex-row-reverse'">
+                            <button type="button" wire:click="importThemePages" wire:loading.attr="disabled"
+                                wire:loading.class="opacity-50 cursor-not-allowed"
+                                @if ($importMode === 'selected' && empty($selectedPageKeys)) disabled @endif
+                                class="inline-flex items-center justify-center rounded-md border border-transparent shadow-sm px-8 py-2 bg-blue-600 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-blue-600"
+                                :class="document.documentElement.dir === 'rtl' ? 'sm:mr-3' : 'sm:ml-3'">
+                                <span wire:loading.remove wire:target="importThemePages" class="flex items-center">
+                                    <x-heroicon-o-arrow-up-tray class="w-4 h-4 mr-2 rtl:ml-2 rtl:mr-0" />
+                                    @if ($importMode === 'all')
+                                        {{ __('Import All Pages') }}
+                                    @else
+                                        {{ __('Import :count Pages', ['count' => count($selectedPageKeys)]) }}
+                                    @endif
+                                </span>
+                                <span wire:loading wire:target="importThemePages" class="flex items-center">
+                                    <x-heroicon-o-arrow-path class="w-4 h-4 mr-2 animate-spin rtl:ml-2 rtl:mr-0" />
+                                    {{ __('Importing...') }}
+                                </span>
+                            </button>
+                            <button type="button" wire:click="closePageSelectionModal"
+                                class="mt-3 inline-flex justify-center rounded-md border border-gray-300 dark:border-gray-600 shadow-sm px-4 py-2 bg-white dark:bg-gray-800 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0"
+                                :class="document.documentElement.dir === 'rtl' ? 'sm:mr-3' : 'sm:ml-3'">
+                                {{ __('Cancel') }}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endif
 
         <!-- Theme Selector Modal -->
         @if ($showThemeSelector)

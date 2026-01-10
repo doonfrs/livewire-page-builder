@@ -23,6 +23,18 @@ class PageEditor extends Component
     /** @var \Livewire\Features\SupportFileUploads\TemporaryUploadedFile|null */
     public $importFile = null;
 
+    /** @var array Parsed pages data from import file */
+    public array $importedPagesData = [];
+
+    /** @var array Selected page keys to import */
+    public array $selectedPageKeys = [];
+
+    /** @var string Import mode: 'all' or 'selected' */
+    public string $importMode = 'all';
+
+    /** @var bool Show page selection modal */
+    public bool $showPageSelectionModal = false;
+
     public $availableBlocks = [];
 
     public bool $showBlockModal = false;
@@ -383,7 +395,7 @@ class PageEditor extends Component
         $filter = strtolower($this->blockFilter);
 
         return array_values(array_filter($this->availableBlocks, function ($block) use ($filter) {
-            return str_contains(strtolower($block['label']), $filter);
+            return Str::contains(strtolower($block['label']), $filter);
         }));
     }
 
@@ -2255,9 +2267,9 @@ class PageEditor extends Component
     }
 
     /**
-     * Import theme pages from file, replacing all pages in the current theme
+     * Parse import file and show page selection modal
      */
-    public function importThemePages(): void
+    public function parseImportFile(): void
     {
         $this->validate([
             'importFile' => 'required|file|max:10240', // 10MB max
@@ -2300,8 +2312,119 @@ class PageEditor extends Component
                 throw new \Exception(__('Invalid theme file format: missing pages.'));
             }
 
-            // Replace pages in the current theme using ThemeService
-            $importedCount = $themeService->replacePagesInTheme($this->currentTheme, $data['pages']);
+            // Store parsed pages data
+            $this->importedPagesData = $data['pages'];
+
+            // Select all pages by default
+            $this->selectedPageKeys = array_map(fn ($page) => $page['key'], $data['pages']);
+
+            // Default to importing all pages
+            $this->importMode = 'all';
+
+            // Close file modal and show page selection modal
+            $this->dispatch('close-import-modal');
+            $this->showPageSelectionModal = true;
+
+        } catch (\Exception $e) {
+            report($e);
+            $this->dispatch('notify',
+                message: $e->getMessage(),
+                type: 'error'
+            );
+        }
+    }
+
+    /**
+     * Toggle a page selection for import
+     */
+    public function togglePageSelection(string $pageKey): void
+    {
+        if (in_array($pageKey, $this->selectedPageKeys)) {
+            $this->selectedPageKeys = array_values(array_filter(
+                $this->selectedPageKeys,
+                fn ($key) => $key !== $pageKey
+            ));
+        } else {
+            $this->selectedPageKeys[] = $pageKey;
+        }
+    }
+
+    /**
+     * Select all pages for import
+     */
+    public function selectAllPages(): void
+    {
+        $this->selectedPageKeys = array_map(fn ($page) => $page['key'], $this->importedPagesData);
+    }
+
+    /**
+     * Deselect all pages for import
+     */
+    public function deselectAllPages(): void
+    {
+        $this->selectedPageKeys = [];
+    }
+
+    /**
+     * Close page selection modal and reset state
+     */
+    public function closePageSelectionModal(): void
+    {
+        $this->showPageSelectionModal = false;
+        $this->importedPagesData = [];
+        $this->selectedPageKeys = [];
+        $this->importMode = 'all';
+        $this->importFile = null;
+    }
+
+    /**
+     * Import theme pages, replacing all or selected pages in the current theme
+     */
+    public function importThemePages(): void
+    {
+        if (empty($this->importedPagesData)) {
+            $this->dispatch('notify',
+                message: __('No pages to import'),
+                type: 'error'
+            );
+
+            return;
+        }
+
+        if (! $this->themeId || ! $this->currentTheme) {
+            $this->dispatch('notify',
+                message: __('No theme selected'),
+                type: 'error'
+            );
+
+            return;
+        }
+
+        // Validate selection when in selective mode
+        if ($this->importMode === 'selected' && empty($this->selectedPageKeys)) {
+            $this->dispatch('notify',
+                message: __('No pages selected'),
+                type: 'error'
+            );
+
+            return;
+        }
+
+        try {
+            $themeService = app(ThemeService::class);
+
+            // Replace pages based on import mode
+            if ($this->importMode === 'all') {
+                // Replace all pages in the theme
+                $importedCount = $themeService->replacePagesInTheme($this->currentTheme, $this->importedPagesData);
+            } else {
+                // Replace only selected pages
+                $importedCount = $themeService->replaceSelectedPagesInTheme(
+                    $this->currentTheme,
+                    $this->importedPagesData,
+                    $this->selectedPageKeys
+                );
+            }
 
             // Reload the current page
             $this->page = BuilderPage::where('key', $this->pageKey)
@@ -2314,11 +2437,8 @@ class PageEditor extends Component
                 $this->rows = [];
             }
 
-            // Clear the import file
-            $this->importFile = null;
-
-            // Dispatch event to close modal
-            $this->dispatch('close-import-modal');
+            // Close modal and reset state
+            $this->closePageSelectionModal();
 
             $this->dispatch('notify',
                 message: __('Theme pages imported successfully. :count pages replaced.', ['count' => $importedCount]),
@@ -2352,8 +2472,8 @@ class PageEditor extends Component
         if ($this->blockFilter) {
             $filter = strtolower($this->blockFilter);
             $formattedBlocks = collect($formattedBlocks)->filter(function ($block) use ($filter) {
-                return str_contains(strtolower($block['label']), $filter) ||
-                    str_contains(strtolower($block['alias']), $filter);
+                return Str::contains(strtolower($block['label']), $filter) ||
+                    Str::contains(strtolower($block['alias']), $filter);
             })->values()->toArray();
         }
 

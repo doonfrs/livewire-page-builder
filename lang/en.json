@@ -276,5 +276,18 @@
     "Unable to read the selected file.": "Unable to read the selected file.",
     "Failed to decrypt theme file.": "Failed to decrypt theme file.",
     "Invalid theme file format: missing pages.": "Invalid theme file format: missing pages.",
-    "Theme pages imported successfully. :count pages replaced.": "Theme pages imported successfully. :count pages replaced."
+    "Theme pages imported successfully. :count pages replaced.": "Theme pages imported successfully. :count pages replaced.",
+    "Continue": "Continue",
+    "Loading...": "Loading...",
+    "Select Pages to Import": "Select Pages to Import",
+    "Import All Pages": "Import All Pages",
+    "pages": "pages",
+    "Select Specific Pages": "Select Specific Pages",
+    "Select All": "Select All",
+    "Deselect All": "Deselect All",
+    "No pages selected": "No pages selected",
+    "This will replace ALL pages in the current theme.": "This will replace ALL pages in the current theme.",
+    "Selected pages will be replaced in the current theme.": "Selected pages will be replaced in the current theme.",
+    "Import :count Pages": "Import :count Pages",
+    "No pages to import": "No pages to import"
 }

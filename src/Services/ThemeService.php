@@ -513,6 +513,75 @@ class ThemeService
     }
 
     /**
+     * Replace only selected pages in an existing theme
+     *
+     * This method only deletes and replaces pages with keys matching the provided list.
+     * Other pages in the theme remain untouched.
+     *
+     * @param  Theme  $theme  The theme to update
+     * @param  array  $pagesData  Array of page data to import
+     * @param  array  $pageKeys  Array of page keys to import (only these will be affected)
+     * @return int Number of pages imported
+     */
+    public function replaceSelectedPagesInTheme(Theme $theme, array $pagesData, array $pageKeys): int
+    {
+        // Validate pages structure
+        foreach ($pagesData as $index => $pageData) {
+            if (! isset($pageData['key'])) {
+                throw new \Exception("Invalid page data at index {$index}: missing key");
+            }
+        }
+
+        // Delete only pages with matching keys
+        $deletedCount = $theme->pages()->whereIn('key', $pageKeys)->count();
+        $theme->pages()->whereIn('key', $pageKeys)->delete();
+
+        Log::debug('Deleted selected pages for theme', [
+            'theme_id' => $theme->id,
+            'theme_name' => $theme->name,
+            'selected_keys' => $pageKeys,
+            'deleted_pages_count' => $deletedCount,
+        ]);
+
+        // Import only pages that match the selected keys
+        $importedPagesCount = 0;
+        $pagesWithComponents = 0;
+
+        foreach ($pagesData as $pageData) {
+            // Only import if this page's key is in the selected list
+            if (! in_array($pageData['key'], $pageKeys)) {
+                continue;
+            }
+
+            // Handle backward compatibility: check for both 'components' and 'content' fields
+            $components = $pageData['components'] ?? $pageData['content'] ?? [];
+
+            // Count pages with components
+            if (! empty($components)) {
+                $pagesWithComponents++;
+            }
+
+            $theme->pages()->create([
+                'key' => $pageData['key'],
+                'components' => $components,
+                'is_block' => $pageData['is_block'] ?? false,
+            ]);
+
+            $importedPagesCount++;
+        }
+
+        Log::debug('Selected theme pages replaced successfully', [
+            'theme_id' => $theme->id,
+            'theme_name' => $theme->name,
+            'pages_deleted' => $deletedCount,
+            'pages_imported' => $importedPagesCount,
+            'pages_with_components' => $pagesWithComponents,
+        ]);
+
+        return $importedPagesCount;
+    }
+
+    /**
      * Export a theme to JSON format with automatic encryption if enabled
      *
      * @param  int|Theme  $theme  Theme ID or Theme model instance
