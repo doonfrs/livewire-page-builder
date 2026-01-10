@@ -282,5 +282,19 @@
     "of": "من",
     "icons": "أيقونات",
     "Previous": "السابق",
-    "Next": "التالي"
+    "Next": "التالي",
+    "Theme Actions": "إجراءات المظهر",
+    "Export Theme": "تصدير المظهر",
+    "Import Theme Warning": "تحذير استيراد المظهر",
+    "This will replace ALL pages in the current theme. All existing page content will be permanently deleted. This action cannot be undone.": "سيتم استبدال جميع الصفحات في المظهر الحالي. سيتم حذف جميع محتوى الصفحات الموجودة نهائياً. لا يمكن التراجع عن هذا الإجراء.",
+    "I Understand, Continue": "أفهم، متابعة",
+    "Import Theme Pages": "استيراد صفحات المظهر",
+    "Select a theme file to import. All pages from the file will replace the current theme's pages.": "اختر ملف مظهر للاستيراد. سيتم استبدال جميع صفحات المظهر الحالي بالصفحات من الملف.",
+    "Import": "استيراد",
+    "No theme selected": "لم يتم تحديد مظهر",
+    "Failed to export theme": "فشل تصدير المظهر",
+    "Unable to read the selected file.": "تعذر قراءة الملف المحدد.",
+    "Failed to decrypt theme file.": "فشل فك تشفير ملف المظهر.",
+    "Invalid theme file format: missing pages.": "تنسيق ملف المظهر غير صالح: الصفحات مفقودة.",
+    "Theme pages imported successfully. :count pages replaced.": "تم استيراد صفحات المظهر بنجاح. تم استبدال :count صفحة."
 }

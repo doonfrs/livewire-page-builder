@@ -451,6 +451,68 @@ class ThemeService
     }
 
     /**
+     * Replace all pages in an existing theme with new pages data
+     *
+     * This method deletes all existing pages in the theme and creates new ones
+     * from the provided pages data, keeping the same theme ID.
+     *
+     * @param  Theme  $theme  The theme to update
+     * @param  array  $pagesData  Array of page data to import
+     * @return int Number of pages imported
+     */
+    public function replacePagesInTheme(Theme $theme, array $pagesData): int
+    {
+        // Validate pages structure
+        foreach ($pagesData as $index => $pageData) {
+            if (! isset($pageData['key'])) {
+                throw new \Exception("Invalid page data at index {$index}: missing key");
+            }
+        }
+
+        // Delete all existing pages for this theme
+        $deletedCount = $theme->pages()->count();
+        $theme->pages()->delete();
+
+        Log::debug('Deleted existing pages for theme', [
+            'theme_id' => $theme->id,
+            'theme_name' => $theme->name,
+            'deleted_pages_count' => $deletedCount,
+        ]);
+
+        // Import new pages
+        $importedPagesCount = 0;
+        $pagesWithComponents = 0;
+
+        foreach ($pagesData as $pageData) {
+            // Handle backward compatibility: check for both 'components' and 'content' fields
+            $components = $pageData['components'] ?? $pageData['content'] ?? [];
+
+            // Count pages with components
+            if (! empty($components)) {
+                $pagesWithComponents++;
+            }
+
+            $theme->pages()->create([
+                'key' => $pageData['key'],
+                'components' => $components,
+                'is_block' => $pageData['is_block'] ?? false,
+            ]);
+
+            $importedPagesCount++;
+        }
+
+        Log::debug('Theme pages replaced successfully', [
+            'theme_id' => $theme->id,
+            'theme_name' => $theme->name,
+            'pages_deleted' => $deletedCount,
+            'pages_imported' => $importedPagesCount,
+            'pages_with_components' => $pagesWithComponents,
+        ]);
+
+        return $importedPagesCount;
+    }
+
+    /**
      * Export a theme to JSON format with automatic encryption if enabled
      *
      * @param  int|Theme  $theme  Theme ID or Theme model instance

@@ -6,16 +6,22 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Livewire\Attributes\On;
 use Livewire\Component;
+use Livewire\WithFileUploads;
 use Trinavo\LivewirePageBuilder\Models\BuilderPage;
 use Trinavo\LivewirePageBuilder\Models\Theme;
 use Trinavo\LivewirePageBuilder\Services\PageBuilderService;
+use Trinavo\LivewirePageBuilder\Services\ThemeService;
 use Trinavo\LivewirePageBuilder\Support\ThemeResolver;
 
 class PageEditor extends Component
 {
     use ThemeResolver;
+    use WithFileUploads;
 
     public $rows = [];
+
+    /** @var \Livewire\Features\SupportFileUploads\TemporaryUploadedFile|null */
+    public $importFile = null;
 
     public $availableBlocks = [];
 
@@ -2186,6 +2192,146 @@ class PageEditor extends Component
         }
 
         return null;
+    }
+
+    /**
+     * Export the current theme to a JSON file download
+     */
+    public function exportTheme()
+    {
+        if (! $this->themeId || ! $this->currentTheme) {
+            $this->dispatch('notify',
+                message: __('No theme selected'),
+                type: 'error'
+            );
+
+            return;
+        }
+
+        $themeService = app(ThemeService::class);
+
+        // Check if encryption is enabled
+        if ($themeService->isEncryptionEnabled()) {
+            $encryptedData = $themeService->exportThemeAsEncryptedJson($this->themeId);
+
+            if (! $encryptedData) {
+                $this->dispatch('notify',
+                    message: __('Failed to export theme'),
+                    type: 'error'
+                );
+
+                return;
+            }
+
+            $extension = $themeService->getEncryptionService()->getFileExtension();
+            $fileName = 'theme-'.Str::slug($this->currentTheme->name).'-'.now()->format('Y-m-d-H-i-s').$extension;
+
+            return response()->streamDownload(function () use ($encryptedData) {
+                echo $encryptedData;
+            }, $fileName, [
+                'Content-Type' => 'application/json',
+            ]);
+        }
+
+        // Export without encryption
+        $exportData = $themeService->exportTheme($this->themeId);
+
+        if (! $exportData) {
+            $this->dispatch('notify',
+                message: __('Failed to export theme'),
+                type: 'error'
+            );
+
+            return;
+        }
+
+        $fileName = 'theme-'.Str::slug($this->currentTheme->name).'-'.now()->format('Y-m-d-H-i-s').'.json';
+
+        return response()->streamDownload(function () use ($exportData) {
+            echo json_encode($exportData, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+        }, $fileName, [
+            'Content-Type' => 'application/json',
+        ]);
+    }
+
+    /**
+     * Import theme pages from file, replacing all pages in the current theme
+     */
+    public function importThemePages(): void
+    {
+        $this->validate([
+            'importFile' => 'required|file|max:10240', // 10MB max
+        ]);
+
+        if (! $this->themeId || ! $this->currentTheme) {
+            $this->dispatch('notify',
+                message: __('No theme selected'),
+                type: 'error'
+            );
+
+            return;
+        }
+
+        try {
+            $themeService = app(ThemeService::class);
+
+            // Read and parse the file content
+            $content = file_get_contents($this->importFile->getRealPath());
+
+            if ($content === false) {
+                throw new \Exception(__('Unable to read the selected file.'));
+            }
+
+            // Check if encrypted and decrypt if needed
+            if ($themeService->getEncryptionService()->isEncrypted($content)) {
+                $data = $themeService->getEncryptionService()->decryptThemeData($content);
+                if (! $data) {
+                    throw new \Exception(__('Failed to decrypt theme file.'));
+                }
+            } else {
+                $data = json_decode($content, true);
+                if (json_last_error() !== JSON_ERROR_NONE) {
+                    throw new \Exception(__('Invalid JSON format.'));
+                }
+            }
+
+            // Validate theme data structure
+            if (! isset($data['pages']) || ! is_array($data['pages'])) {
+                throw new \Exception(__('Invalid theme file format: missing pages.'));
+            }
+
+            // Replace pages in the current theme using ThemeService
+            $importedCount = $themeService->replacePagesInTheme($this->currentTheme, $data['pages']);
+
+            // Reload the current page
+            $this->page = BuilderPage::where('key', $this->pageKey)
+                ->where('theme_id', $this->themeId)
+                ->first();
+
+            if ($this->page) {
+                $this->rows = $this->page->components ?? [];
+            } else {
+                $this->rows = [];
+            }
+
+            // Clear the import file
+            $this->importFile = null;
+
+            // Dispatch event to close modal
+            $this->dispatch('close-import-modal');
+
+            $this->dispatch('notify',
+                message: __('Theme pages imported successfully. :count pages replaced.', ['count' => $importedCount]),
+                type: 'success'
+            );
+
+        } catch (\Exception $e) {
+            report($e);
+            $this->dispatch('notify',
+                message: $e->getMessage(),
+                type: 'error'
+            );
+        }
     }
 
     public function render()

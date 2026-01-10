@@ -262,5 +262,19 @@
     "Search icons...": "Search icons...",
     "Outline": "Outline",
     "Solid": "Solid",
-    "Mini": "Mini"
+    "Mini": "Mini",
+    "Theme Actions": "Theme Actions",
+    "Export Theme": "Export Theme",
+    "Import Theme Warning": "Import Theme Warning",
+    "This will replace ALL pages in the current theme. All existing page content will be permanently deleted. This action cannot be undone.": "This will replace ALL pages in the current theme. All existing page content will be permanently deleted. This action cannot be undone.",
+    "I Understand, Continue": "I Understand, Continue",
+    "Import Theme Pages": "Import Theme Pages",
+    "Select a theme file to import. All pages from the file will replace the current theme's pages.": "Select a theme file to import. All pages from the file will replace the current theme's pages.",
+    "Import": "Import",
+    "No theme selected": "No theme selected",
+    "Failed to export theme": "Failed to export theme",
+    "Unable to read the selected file.": "Unable to read the selected file.",
+    "Failed to decrypt theme file.": "Failed to decrypt theme file.",
+    "Invalid theme file format: missing pages.": "Invalid theme file format: missing pages.",
+    "Theme pages imported successfully. :count pages replaced.": "Theme pages imported successfully. :count pages replaced."
 }
