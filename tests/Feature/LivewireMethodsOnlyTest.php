@@ -77,13 +77,15 @@ class LivewireMethodsOnlyTest extends TestCase
     /** @test */
     public function row_block_livewire_methods_work_without_rendering(): void
     {
-        $component = Livewire::test(RowBlock::class);
+        // Pass editMode during mount (not via ->set) since it's a locked property
+        $component = Livewire::test(RowBlock::class, [
+            'rowId' => 'test-row',
+            'blocks' => [],
+            'properties' => ['flex' => 'row'],
+            'editMode' => true,
+        ]);
 
         $component
-            ->set('rowId', 'test-row')
-            ->set('blocks', [])
-            ->set('properties', ['flex' => 'row'])
-            ->set('editMode', true)
             ->call('updateBlockProperty', 'test-row', null, 'flex', 'column')
             ->assertSet('properties', function ($properties) {
                 return $properties['flex'] === 'column';

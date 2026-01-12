@@ -3,6 +3,7 @@
 namespace Trinavo\LivewirePageBuilder\Support;
 
 use Illuminate\Support\Str;
+use Livewire\Attributes\Locked;
 use Livewire\Component;
 use Trinavo\LivewirePageBuilder\Services\PageBuilderService;
 use Trinavo\LivewirePageBuilder\Support\Properties\CheckboxProperty;
@@ -220,6 +221,7 @@ abstract class Block extends Component
     // Theme properties
     public $forceDarkMode = false;
 
+    #[Locked]
     public bool $editMode = false;
 
     /**
