@@ -22,7 +22,7 @@ class RowHeightPropertyRenderingTest extends TestCase
         $cssClasses = $service->getRowCssClassesFromProperties($properties);
 
         $this->assertStringContainsString('h-full', $cssClasses);
-        $this->assertStringNotContainsString('@5xl:', $cssClasses); // No responsive height classes
+        $this->assertStringNotContainsString('@7xl:', $cssClasses); // No responsive height classes
     }
 
     /** @test */
@@ -36,7 +36,7 @@ class RowHeightPropertyRenderingTest extends TestCase
 
         $heightClasses = $service->getHeightCssClassesFromProperties($properties);
 
-        $this->assertEquals('@5xl:h-full', $heightClasses);
+        $this->assertEquals('@7xl:h-full', $heightClasses);
     }
 
     /** @test */
@@ -54,7 +54,7 @@ class RowHeightPropertyRenderingTest extends TestCase
 
         $this->assertStringContainsString('h-[300px]', $heightClasses);
         $this->assertStringContainsString('@3xl:h-[400px]', $heightClasses);
-        $this->assertStringContainsString('@5xl:h-[500px]', $heightClasses);
+        $this->assertStringContainsString('@7xl:h-[500px]', $heightClasses);
     }
 
     /** @test */
@@ -73,7 +73,7 @@ class RowHeightPropertyRenderingTest extends TestCase
 
         $this->assertStringContainsString('h-64', $heightClasses);
         $this->assertStringContainsString('@3xl:h-[400px]', $heightClasses);
-        $this->assertStringContainsString('@5xl:h-full', $heightClasses);
+        $this->assertStringContainsString('@7xl:h-full', $heightClasses);
         $this->assertStringContainsString('min-h-screen', $heightClasses);
     }
 

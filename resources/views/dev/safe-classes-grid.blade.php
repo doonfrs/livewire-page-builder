@@ -10,5 +10,5 @@
 {{-- @3xl responsive grid classes --}}
 <div class="@3xl:col-span-1 @3xl:col-span-2 @3xl:col-span-3 @3xl:col-span-4 @3xl:col-span-5 @3xl:col-span-6 @3xl:col-span-7 @3xl:col-span-8 @3xl:col-span-9 @3xl:col-span-10 @3xl:col-span-11 @3xl:col-span-12 @3xl:col-span-13 @3xl:col-span-14 @3xl:col-span-15 @3xl:col-span-16 @3xl:col-span-17 @3xl:col-span-18 @3xl:col-span-19 @3xl:col-span-20"></div>
 
-{{-- @5xl responsive grid classes --}}
-<div class="@5xl:col-span-1 @5xl:col-span-2 @5xl:col-span-3 @5xl:col-span-4 @5xl:col-span-5 @5xl:col-span-6 @5xl:col-span-7 @5xl:col-span-8 @5xl:col-span-9 @5xl:col-span-10 @5xl:col-span-11 @5xl:col-span-12 @5xl:col-span-13 @5xl:col-span-14 @5xl:col-span-15 @5xl:col-span-16 @5xl:col-span-17 @5xl:col-span-18 @5xl:col-span-19 @5xl:col-span-20"></div>
+{{-- @7xl responsive grid classes --}}
+<div class="@7xl:col-span-1 @7xl:col-span-2 @7xl:col-span-3 @7xl:col-span-4 @7xl:col-span-5 @7xl:col-span-6 @7xl:col-span-7 @7xl:col-span-8 @7xl:col-span-9 @7xl:col-span-10 @7xl:col-span-11 @7xl:col-span-12 @7xl:col-span-13 @7xl:col-span-14 @7xl:col-span-15 @7xl:col-span-16 @7xl:col-span-17 @7xl:col-span-18 @7xl:col-span-19 @7xl:col-span-20"></div>

@@ -7,5 +7,5 @@
 {{-- @3xl responsive flex classes --}}
 <div class="@3xl:flex @3xl:flex-row @3xl:flex-col"></div>
 
-{{-- @5xl responsive flex classes --}}
-<div class="@5xl:flex @5xl:flex-row @5xl:flex-col"></div>
+{{-- @7xl responsive flex classes --}}
+<div class="@7xl:flex @7xl:flex-row @7xl:flex-col"></div>

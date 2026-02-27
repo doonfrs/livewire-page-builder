@@ -138,7 +138,7 @@ class RowContentAlignmentTest extends TestCase
         $this->assertStringContainsString('flex flex-col', $cssClasses);
         // Should include width classes
         $this->assertStringContainsString('w-full', $cssClasses);
-        $this->assertStringContainsString('@5xl:w-1/2', $cssClasses);
+        $this->assertStringContainsString('@7xl:w-1/2', $cssClasses);
         // Should include overflow
         $this->assertStringContainsString('overflow-x-hidden', $cssClasses);
     }

@@ -34,7 +34,7 @@ class TopLevelRowWidthTest extends TestCase
             'Top-level row should contain mobile width class');
         $this->assertStringContainsString('@3xl:w-1/2', $cssClasses,
             'Top-level row should contain tablet width class');
-        $this->assertStringContainsString('@5xl:w-2xs', $cssClasses,
+        $this->assertStringContainsString('@7xl:w-2xs', $cssClasses,
             'Top-level row should contain desktop width class');
     }
 
@@ -61,7 +61,7 @@ class TopLevelRowWidthTest extends TestCase
 
         $this->assertStringNotContainsString('@3xl:w-1/2', $cssClasses,
             'Nested row should NOT contain tablet width class');
-        $this->assertStringNotContainsString('@5xl:w-2xs', $cssClasses,
+        $this->assertStringNotContainsString('@7xl:w-2xs', $cssClasses,
             'Nested row should NOT contain desktop width class');
 
         // But should still contain other properties like centering
@@ -88,7 +88,7 @@ class TopLevelRowWidthTest extends TestCase
         $component->call('updateBlockProperty', 'test-row-id', null, 'desktopWidth', 'w-2xs');
 
         // Should now have the updated desktop width in responsive format
-        $this->assertStringContainsString('@5xl:w-2xs', $component->get('cssClasses'));
+        $this->assertStringContainsString('@7xl:w-2xs', $component->get('cssClasses'));
         // Mobile width should still be w-full (as that's the default mobile width)
         $this->assertStringContainsString('w-full', $component->get('cssClasses'));
     }

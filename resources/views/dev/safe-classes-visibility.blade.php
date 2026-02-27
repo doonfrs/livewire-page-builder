@@ -40,8 +40,8 @@
 {{-- 3xl responsive visibility classes --}}
 <div class="3xl:block 3xl:hidden 3xl:inline-block"></div>
 
-{{-- @5xl responsive visibility classes --}}
-<div class="@5xl:block @5xl:hidden @5xl:inline-block"></div>
+{{-- @7xl responsive visibility classes --}}
+<div class="@7xl:block @7xl:hidden @7xl:inline-block"></div>
 
-{{-- 5xl responsive visibility classes --}}
-<div class="5xl:block 5xl:hidden 5xl:inline-block"></div>
+{{-- 7xl responsive visibility classes --}}
+<div class="7xl:block 7xl:hidden 7xl:inline-block"></div>

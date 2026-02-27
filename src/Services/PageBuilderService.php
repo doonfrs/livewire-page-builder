@@ -181,7 +181,7 @@ class PageBuilderService
         }
 
         if ($contentWidthDesktop !== $contentWidthTablet) {
-            $classes[] = '@5xl:'.$contentWidthDesktop;
+            $classes[] = '@7xl:'.$contentWidthDesktop;
         }
 
         if ($mobileGap) {
@@ -193,7 +193,7 @@ class PageBuilderService
         }
 
         if ($desktopGap) {
-            $classes[] = "@5xl:gap-$desktopGap";
+            $classes[] = "@7xl:gap-$desktopGap";
         }
 
         $classes[] = 'h-full';
@@ -248,17 +248,17 @@ class PageBuilderService
         if ($hiddenMobile && $hiddenTablet && $hiddenDesktop) {
             $classes[] = 'hidden';
         } elseif ($hiddenMobile && $hiddenTablet) {
-            $classes[] = 'hidden @5xl:block';
+            $classes[] = 'hidden @7xl:block';
         } elseif ($hiddenMobile && $hiddenDesktop) {
-            $classes[] = 'hidden @xl:block @5xl:hidden';
+            $classes[] = 'hidden @3xl:block @7xl:hidden';
         } elseif ($hiddenTablet && $hiddenDesktop) {
-            $classes[] = 'block @xl:hidden';
+            $classes[] = 'block @3xl:hidden';
         } elseif ($hiddenMobile) {
-            $classes[] = 'hidden @xl:block';
+            $classes[] = 'hidden @3xl:block';
         } elseif ($hiddenTablet) {
-            $classes[] = 'block @xl:hidden @5xl:block';
+            $classes[] = 'block @3xl:hidden @7xl:block';
         } elseif ($hiddenDesktop) {
-            $classes[] = 'block @5xl:hidden';
+            $classes[] = 'block @7xl:hidden';
         } else {
             if ($selfCentered) {
                 $classes[] = 'block';
@@ -311,23 +311,23 @@ class PageBuilderService
         // Desktop padding (only if different from tablet)
         if ($desktopPaddingTop != $tabletPaddingTop) {
             $classes[] = $desktopPaddingTop > 0
-                ? "@5xl:pt-$desktopPaddingTop"
-                : '@5xl:pt-0';
+                ? "@7xl:pt-$desktopPaddingTop"
+                : '@7xl:pt-0';
         }
         if ($desktopPaddingRight != $tabletPaddingRight) {
             $classes[] = $desktopPaddingRight > 0
-                ? "@5xl:pr-$desktopPaddingRight"
-                : '@5xl:pr-0';
+                ? "@7xl:pr-$desktopPaddingRight"
+                : '@7xl:pr-0';
         }
         if ($desktopPaddingBottom != $tabletPaddingBottom) {
             $classes[] = $desktopPaddingBottom > 0
-                ? "@5xl:pb-$desktopPaddingBottom"
-                : '@5xl:pb-0';
+                ? "@7xl:pb-$desktopPaddingBottom"
+                : '@7xl:pb-0';
         }
         if ($desktopPaddingLeft != $tabletPaddingLeft) {
             $classes[] = $desktopPaddingLeft > 0
-                ? "@5xl:pl-$desktopPaddingLeft"
-                : '@5xl:pl-0';
+                ? "@7xl:pl-$desktopPaddingLeft"
+                : '@7xl:pl-0';
         }
 
         // Add responsive margin classes
@@ -370,23 +370,23 @@ class PageBuilderService
         // Desktop margin (only if different from tablet)
         if ($desktopMarginTop != $tabletMarginTop) {
             $classes[] = $desktopMarginTop === 0
-                ? '@5xl:mt-0'
-                : ($desktopMarginTop < 0 ? '@5xl:-mt-'.abs($desktopMarginTop) : "@5xl:mt-$desktopMarginTop");
+                ? '@7xl:mt-0'
+                : ($desktopMarginTop < 0 ? '@7xl:-mt-'.abs($desktopMarginTop) : "@7xl:mt-$desktopMarginTop");
         }
         if ($desktopMarginRight != $tabletMarginRight) {
             $classes[] = $desktopMarginRight === 0
-                ? '@5xl:mr-0'
-                : ($desktopMarginRight < 0 ? '@5xl:-mr-'.abs($desktopMarginRight) : "@5xl:mr-$desktopMarginRight");
+                ? '@7xl:mr-0'
+                : ($desktopMarginRight < 0 ? '@7xl:-mr-'.abs($desktopMarginRight) : "@7xl:mr-$desktopMarginRight");
         }
         if ($desktopMarginBottom != $tabletMarginBottom) {
             $classes[] = $desktopMarginBottom === 0
-                ? '@5xl:mb-0'
-                : ($desktopMarginBottom < 0 ? '@5xl:-mb-'.abs($desktopMarginBottom) : "@5xl:mb-$desktopMarginBottom");
+                ? '@7xl:mb-0'
+                : ($desktopMarginBottom < 0 ? '@7xl:-mb-'.abs($desktopMarginBottom) : "@7xl:mb-$desktopMarginBottom");
         }
         if ($desktopMarginLeft != $tabletMarginLeft) {
             $classes[] = $desktopMarginLeft === 0
-                ? '@5xl:ml-0'
-                : ($desktopMarginLeft < 0 ? '@5xl:-ml-'.abs($desktopMarginLeft) : "@5xl:ml-$desktopMarginLeft");
+                ? '@7xl:ml-0'
+                : ($desktopMarginLeft < 0 ? '@7xl:-ml-'.abs($desktopMarginLeft) : "@7xl:ml-$desktopMarginLeft");
         }
 
         if ($textColor) {
@@ -488,7 +488,7 @@ class PageBuilderService
         }
 
         if ($desktopWidth !== $tabletWidth) {
-            $classes[] = '@5xl:'.$this->formatSizeValue($desktopWidth, 'w');
+            $classes[] = '@7xl:'.$this->formatSizeValue($desktopWidth, 'w');
         }
 
         return $classes;
@@ -583,7 +583,7 @@ class PageBuilderService
         }
 
         if ($desktopHeight && $desktopHeight !== $tabletHeight) {
-            $classes[] = '@5xl:'.$this->formatSizeValue($desktopHeight, 'h');
+            $classes[] = '@7xl:'.$this->formatSizeValue($desktopHeight, 'h');
         }
 
         // Handle min-height values
@@ -596,7 +596,7 @@ class PageBuilderService
         }
 
         if ($desktopMinHeight && $desktopMinHeight !== $tabletMinHeight) {
-            $classes[] = '@5xl:'.$this->formatSizeValue($desktopMinHeight, 'min-h');
+            $classes[] = '@7xl:'.$this->formatSizeValue($desktopMinHeight, 'min-h');
         }
 
         return implode(' ', $classes);
@@ -622,7 +622,7 @@ class PageBuilderService
         }
 
         if ($desktopFontSize && $desktopFontSize !== $tabletFontSize) {
-            $classes[] = '@5xl:'.$desktopFontSize;
+            $classes[] = '@7xl:'.$desktopFontSize;
         }
 
         return implode(' ', $classes);
@@ -999,7 +999,7 @@ class PageBuilderService
             $classes[] = '@3xl:'.$this->formatTransformValue(value: $tabletRotate, prefix: 'rotate');
         }
         if ($desktopRotate != $tabletRotate) {
-            $classes[] = '@5xl:'.$this->formatTransformValue(value: $desktopRotate, prefix: 'rotate');
+            $classes[] = '@7xl:'.$this->formatTransformValue(value: $desktopRotate, prefix: 'rotate');
         }
 
         // Add scale classes
@@ -1010,7 +1010,7 @@ class PageBuilderService
             $classes[] = '@3xl:'.$this->formatTransformValue(value: $tabletScale, prefix: 'scale', multiplier: 100);
         }
         if ($desktopScale != $tabletScale) {
-            $classes[] = '@5xl:'.$this->formatTransformValue(value: $desktopScale, prefix: 'scale', multiplier: 100);
+            $classes[] = '@7xl:'.$this->formatTransformValue(value: $desktopScale, prefix: 'scale', multiplier: 100);
         }
 
         // Add translate-x classes
@@ -1021,7 +1021,7 @@ class PageBuilderService
             $classes[] = '@3xl:'.$this->formatTransformValue(value: $tabletTranslateX, prefix: 'translate-x');
         }
         if ($desktopTranslateX != $tabletTranslateX) {
-            $classes[] = '@5xl:'.$this->formatTransformValue(value: $desktopTranslateX, prefix: 'translate-x');
+            $classes[] = '@7xl:'.$this->formatTransformValue(value: $desktopTranslateX, prefix: 'translate-x');
         }
 
         // Add translate-y classes
@@ -1032,7 +1032,7 @@ class PageBuilderService
             $classes[] = '@3xl:'.$this->formatTransformValue(value: $tabletTranslateY, prefix: 'translate-y');
         }
         if ($desktopTranslateY != $tabletTranslateY) {
-            $classes[] = '@5xl:'.$this->formatTransformValue(value: $desktopTranslateY, prefix: 'translate-y');
+            $classes[] = '@7xl:'.$this->formatTransformValue(value: $desktopTranslateY, prefix: 'translate-y');
         }
 
         // Add skew-x classes
@@ -1043,7 +1043,7 @@ class PageBuilderService
             $classes[] = '@3xl:'.$this->formatTransformValue(value: $tabletSkewX, prefix: 'skew-x');
         }
         if ($desktopSkewX != $tabletSkewX) {
-            $classes[] = '@5xl:'.$this->formatTransformValue(value: $desktopSkewX, prefix: 'skew-x');
+            $classes[] = '@7xl:'.$this->formatTransformValue(value: $desktopSkewX, prefix: 'skew-x');
         }
 
         // Add skew-y classes
@@ -1054,7 +1054,7 @@ class PageBuilderService
             $classes[] = '@3xl:'.$this->formatTransformValue(value: $tabletSkewY, prefix: 'skew-y');
         }
         if ($desktopSkewY != $tabletSkewY) {
-            $classes[] = '@5xl:'.$this->formatTransformValue(value: $desktopSkewY, prefix: 'skew-y');
+            $classes[] = '@7xl:'.$this->formatTransformValue(value: $desktopSkewY, prefix: 'skew-y');
         }
 
         return implode(' ', $classes);

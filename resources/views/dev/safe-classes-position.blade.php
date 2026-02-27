@@ -40,11 +40,11 @@
 {{-- 4xl responsive position classes --}}
 <div class="4xl:static 4xl:relative 4xl:absolute 4xl:fixed 4xl:sticky"></div>
 
-{{-- @5xl responsive position classes --}}
-<div class="@5xl:static @5xl:relative @5xl:absolute @5xl:fixed @5xl:sticky"></div>
+{{-- @7xl responsive position classes --}}
+<div class="@7xl:static @7xl:relative @7xl:absolute @7xl:fixed @7xl:sticky"></div>
 
-{{-- 5xl responsive position classes --}}
-<div class="5xl:static 5xl:relative 5xl:absolute 5xl:fixed 5xl:sticky"></div>
+{{-- 7xl responsive position classes --}}
+<div class="7xl:static 7xl:relative 7xl:absolute 7xl:fixed 7xl:sticky"></div>
 
 {{-- @3xl responsive position classes --}}
 <div class="@3xl:static @3xl:relative @3xl:absolute @3xl:fixed @3xl:sticky"></div>
@@ -52,8 +52,8 @@
 {{-- 3xl responsive position classes --}}
 <div class="3xl:static 3xl:relative 3xl:absolute 3xl:fixed 3xl:sticky"></div>
 
-{{-- @5xl responsive position classes --}}
-<div class="@5xl:static @5xl:relative @5xl:absolute @5xl:fixed @5xl:sticky"></div>
+{{-- @7xl responsive position classes --}}
+<div class="@7xl:static @7xl:relative @7xl:absolute @7xl:fixed @7xl:sticky"></div>
 
-{{-- 5xl responsive position classes --}}
-<div class="5xl:static 5xl:relative 5xl:absolute 5xl:fixed 5xl:sticky"></div>
+{{-- 7xl responsive position classes --}}
+<div class="7xl:static 7xl:relative 7xl:absolute 7xl:fixed 7xl:sticky"></div>

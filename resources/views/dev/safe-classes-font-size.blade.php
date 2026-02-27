@@ -8,8 +8,8 @@
     <!-- @3xl responsive font size classes -->
     <div class="@3xl:text-xs @3xl:text-sm @3xl:text-base @3xl:text-lg @3xl:text-xl @3xl:text-2xl @3xl:text-3xl @3xl:text-4xl @3xl:text-5xl @3xl:text-6xl @3xl:text-7xl @3xl:text-8xl @3xl:text-9xl"></div>
 
-    <!-- @5xl responsive font size classes -->
-    <div class="@5xl:text-xs @5xl:text-sm @5xl:text-base @5xl:text-lg @5xl:text-xl @5xl:text-2xl @5xl:text-3xl @5xl:text-4xl @5xl:text-5xl @5xl:text-6xl @5xl:text-7xl @5xl:text-8xl @5xl:text-9xl"></div>
+    <!-- @7xl responsive font size classes -->
+    <div class="@7xl:text-xs @7xl:text-sm @7xl:text-base @7xl:text-lg @7xl:text-xl @7xl:text-2xl @7xl:text-3xl @7xl:text-4xl @7xl:text-5xl @7xl:text-6xl @7xl:text-7xl @7xl:text-8xl @7xl:text-9xl"></div>
 
     <!-- sm responsive font size classes -->
     <div class="sm:text-xs sm:text-sm sm:text-base sm:text-lg sm:text-xl sm:text-2xl sm:text-3xl sm:text-4xl sm:text-5xl sm:text-6xl sm:text-7xl sm:text-8xl sm:text-9xl"></div>

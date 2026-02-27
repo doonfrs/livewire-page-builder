@@ -205,7 +205,7 @@ class TransformPropertyTest extends TestCase
         ]);
 
         $this->assertStringContainsString('@3xl:rotate-45', $classes);
-        $this->assertStringContainsString('@5xl:rotate-90', $classes);
+        $this->assertStringContainsString('@7xl:rotate-90', $classes);
     }
 
     /** @test */
@@ -220,7 +220,7 @@ class TransformPropertyTest extends TestCase
         // 1.1 = 110 which is a common scale in Tailwind but might be arbitrary
         $this->assertStringContainsString('@3xl:scale-', $classes);
         $this->assertStringContainsString('110', $classes);
-        $this->assertStringContainsString('@5xl:scale-150', $classes);
+        $this->assertStringContainsString('@7xl:scale-150', $classes);
     }
 
     /** @test */
@@ -233,7 +233,7 @@ class TransformPropertyTest extends TestCase
         ]);
 
         $this->assertStringContainsString('@3xl:translate-x-10', $classes);
-        $this->assertStringContainsString('@5xl:translate-x-20', $classes);
+        $this->assertStringContainsString('@7xl:translate-x-20', $classes);
     }
 
     /** @test */
@@ -247,7 +247,7 @@ class TransformPropertyTest extends TestCase
 
         $this->assertStringContainsString('translate-y-5', $classes);
         $this->assertStringContainsString('@3xl:translate-y-0', $classes);
-        $this->assertStringContainsString('@5xl:translate-y-10', $classes);
+        $this->assertStringContainsString('@7xl:translate-y-10', $classes);
     }
 
     /** @test */
@@ -262,7 +262,7 @@ class TransformPropertyTest extends TestCase
         // Should only have one rotate class, not responsive versions
         $this->assertStringContainsString('rotate-45', $classes);
         $this->assertStringNotContainsString('@3xl:rotate-45', $classes);
-        $this->assertStringNotContainsString('@5xl:rotate-45', $classes);
+        $this->assertStringNotContainsString('@7xl:rotate-45', $classes);
     }
 
     /** @test */
@@ -350,16 +350,16 @@ class TransformPropertyTest extends TestCase
 
         // Rotate: mobile = 0, tablet = 45, desktop = 45 (same as tablet)
         $this->assertStringContainsString('@3xl:rotate-45', $classes);
-        $this->assertStringNotContainsString('@5xl:rotate', $classes);
+        $this->assertStringNotContainsString('@7xl:rotate', $classes);
 
         // Scale: mobile = 1, tablet = 1.2, desktop = 1.5
         $this->assertStringContainsString('@3xl:scale-[120]', $classes);
-        $this->assertStringContainsString('@5xl:scale-150', $classes);
+        $this->assertStringContainsString('@7xl:scale-150', $classes);
 
         // TranslateX: mobile = -10, tablet = 0, desktop = 10
         $this->assertStringContainsString('-translate-x-10', $classes);
         $this->assertStringContainsString('@3xl:translate-x-0', $classes);
-        $this->assertStringContainsString('@5xl:translate-x-10', $classes);
+        $this->assertStringContainsString('@7xl:translate-x-10', $classes);
     }
 
     /** @test */

@@ -104,7 +104,7 @@ class ResponsiveSpacingPropertyTest extends TestCase
         ]);
 
         $this->assertStringContainsString('@3xl:mt-20', $classes);
-        $this->assertStringContainsString('@5xl:mt-0', $classes);
+        $this->assertStringContainsString('@7xl:mt-0', $classes);
     }
 
     /** @test */
@@ -120,7 +120,7 @@ class ResponsiveSpacingPropertyTest extends TestCase
 
         $this->assertStringContainsString('pt-12', $classes);
         $this->assertStringContainsString('@3xl:pt-0', $classes);
-        $this->assertStringNotContainsString('@5xl:pt-0', $classes);
+        $this->assertStringNotContainsString('@7xl:pt-0', $classes);
     }
 
     private function makeMarginProperty(array $overrides = []): array

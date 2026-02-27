@@ -8,7 +8,7 @@
  *   --type=TYPE       Type of classes to generate (all, height, min-height, width, min-width, padding, margin, grid, gap, flex, visibility, position, overflow, colors, shadows, alignment, transforms, font-size, complete) [default: all]
  *   --min=MIN         Minimum pixel value [default: 1]
  *   --max=MAX         Maximum pixel value [default: 500]
- *   --breakpoints=BP  Comma-separated list of breakpoints [default: xl,3xl,5xl]
+ *   --breakpoints=BP  Comma-separated list of breakpoints [default: 3xl,7xl]
  *   --output=DIR      Output directory [default: resources/views/dev]
  *   --help            Show this help message
  */
@@ -110,7 +110,7 @@ class SafeClassGenerator
         $type = $options['type'] ?? 'all';
         $min = (int) ($options['min'] ?? 1);
         $max = (int) ($options['max'] ?? 700);
-        $breakpoints = explode(',', $options['breakpoints'] ?? '3xl,5xl');
+        $breakpoints = explode(',', $options['breakpoints'] ?? '3xl,7xl');
         $outputDir = $options['output'] ?? __DIR__.'/../resources/views/dev';
 
         // Ensure output directory exists
@@ -504,7 +504,7 @@ class SafeClassGenerator
         $lines[] = '';
 
         // All breakpoint variants
-        $allBreakpoints = array_merge(['md', 'lg', 'xl', '2xl', '3xl', '4xl', '5xl'], $breakpoints);
+        $allBreakpoints = array_merge(['md', 'lg', 'xl', '2xl', '3xl', '4xl', '5xl', '7xl'], $breakpoints);
 
         foreach ($allBreakpoints as $breakpoint) {
             $breakpoint = trim($breakpoint);
@@ -519,7 +519,7 @@ class SafeClassGenerator
             $lines[] = '';
 
             // Standard responsive variants
-            if (in_array($breakpoint, ['md', 'lg', 'xl', '2xl', '3xl', '4xl', '5xl'])) {
+            if (in_array($breakpoint, ['md', 'lg', 'xl', '2xl', '3xl', '4xl', '5xl', '7xl'])) {
                 $lines[] = "{{-- {$breakpoint} responsive position classes --}}";
                 $standardResponsiveClasses = [];
                 foreach ($positionClasses as $posClass) {
@@ -1081,7 +1081,7 @@ class SafeClassGenerator
         $lines[] = '';
 
         // Responsive variants
-        $allBreakpoints = array_merge(['md', 'lg', 'xl', '2xl', '3xl', '4xl', '5xl'], $breakpoints);
+        $allBreakpoints = array_merge(['md', 'lg', 'xl', '2xl', '3xl', '4xl', '5xl', '7xl'], $breakpoints);
         foreach ($allBreakpoints as $breakpoint) {
             $breakpoint = trim($breakpoint);
             $responsiveColSpanClasses = [];
@@ -1179,7 +1179,7 @@ class SafeClassGenerator
         $lines[] = '';
         $lines[] = '    {{-- Responsive visibility --}}';
 
-        $allBreakpoints = ['sm', 'md', 'lg', 'xl', '2xl', '3xl', '4xl', '5xl'];
+        $allBreakpoints = ['sm', 'md', 'lg', 'xl', '2xl', '3xl', '4xl', '5xl', '7xl'];
         $containerQueryClasses = [];
         $standardClasses = [];
 
@@ -1202,7 +1202,7 @@ class SafeClassGenerator
         $positionClasses = ['static', 'relative', 'absolute', 'fixed', 'sticky'];
         $lines[] = '    <div class="'.implode(' ', $positionClasses).'"></div>';
 
-        $allBreakpoints = ['md', 'lg', 'xl', '2xl', '3xl', '4xl', '5xl'];
+        $allBreakpoints = ['md', 'lg', 'xl', '2xl', '3xl', '4xl', '5xl', '7xl'];
         foreach ($allBreakpoints as $breakpoint) {
             $containerQueryClasses = [];
             $standardClasses = [];
@@ -1480,7 +1480,7 @@ function showHelp(): void
     echo "  --type=TYPE       Type of classes to generate (all, height, min-height, width, min-width, padding, margin, grid, gap, flex, visibility, position, overflow, colors, shadows, backdrop-filters, filters, alignment, transforms, font-size, complete) [default: all]\n";
     echo "  --min=MIN         Minimum pixel value [default: 1]\n";
     echo "  --max=MAX         Maximum pixel value [default: 500]\n";
-    echo "  --breakpoints=BP  Comma-separated list of breakpoints [default: 3xl,5xl]\n";
+    echo "  --breakpoints=BP  Comma-separated list of breakpoints [default: 3xl,7xl]\n";
     echo "  --output=DIR      Output directory [default: resources/views/dev]\n";
     echo "  --help            Show this help message\n";
 }

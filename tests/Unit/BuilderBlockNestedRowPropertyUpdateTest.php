@@ -50,7 +50,7 @@ class BuilderBlockNestedRowPropertyUpdateTest extends TestCase
         $updatedCssClasses = $component->get('cssClasses');
         $this->assertStringContainsString('w-2xs', $updatedCssClasses,
             'Updated CSS should contain w-2xs width class');
-        $this->assertStringNotContainsString('@5xl:w-full', $updatedCssClasses,
+        $this->assertStringNotContainsString('@7xl:w-full', $updatedCssClasses,
             'Updated CSS should not contain old w-full desktop width');
 
         // Test 2: Update a non-size property (backgroundColor) - this already worked
@@ -174,7 +174,7 @@ class BuilderBlockNestedRowPropertyUpdateTest extends TestCase
             'BuilderBlock should include mobile width for nested RowBlock');
         $this->assertStringContainsString('@3xl:w-1/2', $cssClasses,
             'BuilderBlock should include tablet width for nested RowBlock');
-        $this->assertStringContainsString('@5xl:w-2xs', $cssClasses,
+        $this->assertStringContainsString('@7xl:w-2xs', $cssClasses,
             'BuilderBlock should include desktop width for nested RowBlock');
 
         // Verify other properties are also included
@@ -225,7 +225,7 @@ class BuilderBlockNestedRowPropertyUpdateTest extends TestCase
 
         // Verify all updates are reflected in CSS
         $finalCssClasses = $component->get('cssClasses');
-        $this->assertStringContainsString('@5xl:w-1/4', $finalCssClasses, 'Desktop width');
+        $this->assertStringContainsString('@7xl:w-1/4', $finalCssClasses, 'Desktop width');
         $this->assertStringContainsString('bg-primary', $finalCssClasses, 'Background color');
         $this->assertStringContainsString('@3xl:w-1/2', $finalCssClasses, 'Tablet width');
         $this->assertStringContainsString('text-white', $finalCssClasses, 'Text color');

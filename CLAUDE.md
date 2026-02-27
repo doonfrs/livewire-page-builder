@@ -44,3 +44,7 @@ decoration-clone box-decoration-clone
 - If we want to use specific arguments and keep some to the default, you may consider using named arguments when calling function as var:val, use it wisely not to over use it for any method call.
 - Always try to use Auth::user instead of auth()->user if possible.
 - Let's add PHPDoc for class variables like /** @var Order $order */ for $order, of course not for built int types.
+
+## Safe classes generation
+
+- Because the views are coming from the database, we use a script to generate safe classes for tailwind, it is here scripts/generate_safe_classes.php

@@ -35,7 +35,7 @@ class BuilderBlockWrapperTest extends TestCase
             'BuilderBlock wrapper should contain mobile width class');
         $this->assertStringContainsString('@3xl:w-1/2', $cssClasses,
             'BuilderBlock wrapper should contain tablet width class');
-        $this->assertStringContainsString('@5xl:w-2xs', $cssClasses,
+        $this->assertStringContainsString('@7xl:w-2xs', $cssClasses,
             'BuilderBlock wrapper should contain desktop width class');
     }
 
@@ -64,7 +64,7 @@ class BuilderBlockWrapperTest extends TestCase
         $this->assertNotNull($cssClasses, 'CSS classes should not be null');
         $this->assertStringContainsString('w-auto', $cssClasses,
             'BuilderBlock wrapper should contain mobile width class for regular blocks');
-        $this->assertStringContainsString('@5xl:w-xl', $cssClasses,
+        $this->assertStringContainsString('@7xl:w-xl', $cssClasses,
             'BuilderBlock wrapper should contain desktop width class for regular blocks');
     }
 

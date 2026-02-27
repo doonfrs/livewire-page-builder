@@ -7,8 +7,8 @@
 {{-- @3xl responsive padding all classes --}}
 <div class="@3xl:p-0 @3xl:p-px @3xl:p-0.5 @3xl:p-1 @3xl:p-1.5 @3xl:p-2 @3xl:p-2.5 @3xl:p-3 @3xl:p-3.5 @3xl:p-4 @3xl:p-5 @3xl:p-6 @3xl:p-7 @3xl:p-8 @3xl:p-9 @3xl:p-10 @3xl:p-11 @3xl:p-12 @3xl:p-13 @3xl:p-14 @3xl:p-15 @3xl:p-16 @3xl:p-17 @3xl:p-18 @3xl:p-19 @3xl:p-20 @3xl:p-21 @3xl:p-22 @3xl:p-23 @3xl:p-24 @3xl:p-25 @3xl:p-26 @3xl:p-27 @3xl:p-28 @3xl:p-29 @3xl:p-30 @3xl:p-31 @3xl:p-32 @3xl:p-33 @3xl:p-34 @3xl:p-35 @3xl:p-36 @3xl:p-37 @3xl:p-38 @3xl:p-39 @3xl:p-40"></div>
 
-{{-- @5xl responsive padding all classes --}}
-<div class="@5xl:p-0 @5xl:p-px @5xl:p-0.5 @5xl:p-1 @5xl:p-1.5 @5xl:p-2 @5xl:p-2.5 @5xl:p-3 @5xl:p-3.5 @5xl:p-4 @5xl:p-5 @5xl:p-6 @5xl:p-7 @5xl:p-8 @5xl:p-9 @5xl:p-10 @5xl:p-11 @5xl:p-12 @5xl:p-13 @5xl:p-14 @5xl:p-15 @5xl:p-16 @5xl:p-17 @5xl:p-18 @5xl:p-19 @5xl:p-20 @5xl:p-21 @5xl:p-22 @5xl:p-23 @5xl:p-24 @5xl:p-25 @5xl:p-26 @5xl:p-27 @5xl:p-28 @5xl:p-29 @5xl:p-30 @5xl:p-31 @5xl:p-32 @5xl:p-33 @5xl:p-34 @5xl:p-35 @5xl:p-36 @5xl:p-37 @5xl:p-38 @5xl:p-39 @5xl:p-40"></div>
+{{-- @7xl responsive padding all classes --}}
+<div class="@7xl:p-0 @7xl:p-px @7xl:p-0.5 @7xl:p-1 @7xl:p-1.5 @7xl:p-2 @7xl:p-2.5 @7xl:p-3 @7xl:p-3.5 @7xl:p-4 @7xl:p-5 @7xl:p-6 @7xl:p-7 @7xl:p-8 @7xl:p-9 @7xl:p-10 @7xl:p-11 @7xl:p-12 @7xl:p-13 @7xl:p-14 @7xl:p-15 @7xl:p-16 @7xl:p-17 @7xl:p-18 @7xl:p-19 @7xl:p-20 @7xl:p-21 @7xl:p-22 @7xl:p-23 @7xl:p-24 @7xl:p-25 @7xl:p-26 @7xl:p-27 @7xl:p-28 @7xl:p-29 @7xl:p-30 @7xl:p-31 @7xl:p-32 @7xl:p-33 @7xl:p-34 @7xl:p-35 @7xl:p-36 @7xl:p-37 @7xl:p-38 @7xl:p-39 @7xl:p-40"></div>
 
 {{-- Padding top classes --}}
 <div class="pt-0 pt-px pt-0.5 pt-1 pt-1.5 pt-2 pt-2.5 pt-3 pt-3.5 pt-4 pt-5 pt-6 pt-7 pt-8 pt-9 pt-10 pt-11 pt-12 pt-13 pt-14 pt-15 pt-16 pt-17 pt-18 pt-19 pt-20 pt-21 pt-22 pt-23 pt-24 pt-25 pt-26 pt-27 pt-28 pt-29 pt-30 pt-31 pt-32 pt-33 pt-34 pt-35 pt-36 pt-37 pt-38 pt-39 pt-40"></div>
@@ -16,8 +16,8 @@
 {{-- @3xl responsive padding top classes --}}
 <div class="@3xl:pt-0 @3xl:pt-px @3xl:pt-0.5 @3xl:pt-1 @3xl:pt-1.5 @3xl:pt-2 @3xl:pt-2.5 @3xl:pt-3 @3xl:pt-3.5 @3xl:pt-4 @3xl:pt-5 @3xl:pt-6 @3xl:pt-7 @3xl:pt-8 @3xl:pt-9 @3xl:pt-10 @3xl:pt-11 @3xl:pt-12 @3xl:pt-13 @3xl:pt-14 @3xl:pt-15 @3xl:pt-16 @3xl:pt-17 @3xl:pt-18 @3xl:pt-19 @3xl:pt-20 @3xl:pt-21 @3xl:pt-22 @3xl:pt-23 @3xl:pt-24 @3xl:pt-25 @3xl:pt-26 @3xl:pt-27 @3xl:pt-28 @3xl:pt-29 @3xl:pt-30 @3xl:pt-31 @3xl:pt-32 @3xl:pt-33 @3xl:pt-34 @3xl:pt-35 @3xl:pt-36 @3xl:pt-37 @3xl:pt-38 @3xl:pt-39 @3xl:pt-40"></div>
 
-{{-- @5xl responsive padding top classes --}}
-<div class="@5xl:pt-0 @5xl:pt-px @5xl:pt-0.5 @5xl:pt-1 @5xl:pt-1.5 @5xl:pt-2 @5xl:pt-2.5 @5xl:pt-3 @5xl:pt-3.5 @5xl:pt-4 @5xl:pt-5 @5xl:pt-6 @5xl:pt-7 @5xl:pt-8 @5xl:pt-9 @5xl:pt-10 @5xl:pt-11 @5xl:pt-12 @5xl:pt-13 @5xl:pt-14 @5xl:pt-15 @5xl:pt-16 @5xl:pt-17 @5xl:pt-18 @5xl:pt-19 @5xl:pt-20 @5xl:pt-21 @5xl:pt-22 @5xl:pt-23 @5xl:pt-24 @5xl:pt-25 @5xl:pt-26 @5xl:pt-27 @5xl:pt-28 @5xl:pt-29 @5xl:pt-30 @5xl:pt-31 @5xl:pt-32 @5xl:pt-33 @5xl:pt-34 @5xl:pt-35 @5xl:pt-36 @5xl:pt-37 @5xl:pt-38 @5xl:pt-39 @5xl:pt-40"></div>
+{{-- @7xl responsive padding top classes --}}
+<div class="@7xl:pt-0 @7xl:pt-px @7xl:pt-0.5 @7xl:pt-1 @7xl:pt-1.5 @7xl:pt-2 @7xl:pt-2.5 @7xl:pt-3 @7xl:pt-3.5 @7xl:pt-4 @7xl:pt-5 @7xl:pt-6 @7xl:pt-7 @7xl:pt-8 @7xl:pt-9 @7xl:pt-10 @7xl:pt-11 @7xl:pt-12 @7xl:pt-13 @7xl:pt-14 @7xl:pt-15 @7xl:pt-16 @7xl:pt-17 @7xl:pt-18 @7xl:pt-19 @7xl:pt-20 @7xl:pt-21 @7xl:pt-22 @7xl:pt-23 @7xl:pt-24 @7xl:pt-25 @7xl:pt-26 @7xl:pt-27 @7xl:pt-28 @7xl:pt-29 @7xl:pt-30 @7xl:pt-31 @7xl:pt-32 @7xl:pt-33 @7xl:pt-34 @7xl:pt-35 @7xl:pt-36 @7xl:pt-37 @7xl:pt-38 @7xl:pt-39 @7xl:pt-40"></div>
 
 {{-- Padding right classes --}}
 <div class="pr-0 pr-px pr-0.5 pr-1 pr-1.5 pr-2 pr-2.5 pr-3 pr-3.5 pr-4 pr-5 pr-6 pr-7 pr-8 pr-9 pr-10 pr-11 pr-12 pr-13 pr-14 pr-15 pr-16 pr-17 pr-18 pr-19 pr-20 pr-21 pr-22 pr-23 pr-24 pr-25 pr-26 pr-27 pr-28 pr-29 pr-30 pr-31 pr-32 pr-33 pr-34 pr-35 pr-36 pr-37 pr-38 pr-39 pr-40"></div>
@@ -25,8 +25,8 @@
 {{-- @3xl responsive padding right classes --}}
 <div class="@3xl:pr-0 @3xl:pr-px @3xl:pr-0.5 @3xl:pr-1 @3xl:pr-1.5 @3xl:pr-2 @3xl:pr-2.5 @3xl:pr-3 @3xl:pr-3.5 @3xl:pr-4 @3xl:pr-5 @3xl:pr-6 @3xl:pr-7 @3xl:pr-8 @3xl:pr-9 @3xl:pr-10 @3xl:pr-11 @3xl:pr-12 @3xl:pr-13 @3xl:pr-14 @3xl:pr-15 @3xl:pr-16 @3xl:pr-17 @3xl:pr-18 @3xl:pr-19 @3xl:pr-20 @3xl:pr-21 @3xl:pr-22 @3xl:pr-23 @3xl:pr-24 @3xl:pr-25 @3xl:pr-26 @3xl:pr-27 @3xl:pr-28 @3xl:pr-29 @3xl:pr-30 @3xl:pr-31 @3xl:pr-32 @3xl:pr-33 @3xl:pr-34 @3xl:pr-35 @3xl:pr-36 @3xl:pr-37 @3xl:pr-38 @3xl:pr-39 @3xl:pr-40"></div>
 
-{{-- @5xl responsive padding right classes --}}
-<div class="@5xl:pr-0 @5xl:pr-px @5xl:pr-0.5 @5xl:pr-1 @5xl:pr-1.5 @5xl:pr-2 @5xl:pr-2.5 @5xl:pr-3 @5xl:pr-3.5 @5xl:pr-4 @5xl:pr-5 @5xl:pr-6 @5xl:pr-7 @5xl:pr-8 @5xl:pr-9 @5xl:pr-10 @5xl:pr-11 @5xl:pr-12 @5xl:pr-13 @5xl:pr-14 @5xl:pr-15 @5xl:pr-16 @5xl:pr-17 @5xl:pr-18 @5xl:pr-19 @5xl:pr-20 @5xl:pr-21 @5xl:pr-22 @5xl:pr-23 @5xl:pr-24 @5xl:pr-25 @5xl:pr-26 @5xl:pr-27 @5xl:pr-28 @5xl:pr-29 @5xl:pr-30 @5xl:pr-31 @5xl:pr-32 @5xl:pr-33 @5xl:pr-34 @5xl:pr-35 @5xl:pr-36 @5xl:pr-37 @5xl:pr-38 @5xl:pr-39 @5xl:pr-40"></div>
+{{-- @7xl responsive padding right classes --}}
+<div class="@7xl:pr-0 @7xl:pr-px @7xl:pr-0.5 @7xl:pr-1 @7xl:pr-1.5 @7xl:pr-2 @7xl:pr-2.5 @7xl:pr-3 @7xl:pr-3.5 @7xl:pr-4 @7xl:pr-5 @7xl:pr-6 @7xl:pr-7 @7xl:pr-8 @7xl:pr-9 @7xl:pr-10 @7xl:pr-11 @7xl:pr-12 @7xl:pr-13 @7xl:pr-14 @7xl:pr-15 @7xl:pr-16 @7xl:pr-17 @7xl:pr-18 @7xl:pr-19 @7xl:pr-20 @7xl:pr-21 @7xl:pr-22 @7xl:pr-23 @7xl:pr-24 @7xl:pr-25 @7xl:pr-26 @7xl:pr-27 @7xl:pr-28 @7xl:pr-29 @7xl:pr-30 @7xl:pr-31 @7xl:pr-32 @7xl:pr-33 @7xl:pr-34 @7xl:pr-35 @7xl:pr-36 @7xl:pr-37 @7xl:pr-38 @7xl:pr-39 @7xl:pr-40"></div>
 
 {{-- Padding bottom classes --}}
 <div class="pb-0 pb-px pb-0.5 pb-1 pb-1.5 pb-2 pb-2.5 pb-3 pb-3.5 pb-4 pb-5 pb-6 pb-7 pb-8 pb-9 pb-10 pb-11 pb-12 pb-13 pb-14 pb-15 pb-16 pb-17 pb-18 pb-19 pb-20 pb-21 pb-22 pb-23 pb-24 pb-25 pb-26 pb-27 pb-28 pb-29 pb-30 pb-31 pb-32 pb-33 pb-34 pb-35 pb-36 pb-37 pb-38 pb-39 pb-40"></div>
@@ -34,8 +34,8 @@
 {{-- @3xl responsive padding bottom classes --}}
 <div class="@3xl:pb-0 @3xl:pb-px @3xl:pb-0.5 @3xl:pb-1 @3xl:pb-1.5 @3xl:pb-2 @3xl:pb-2.5 @3xl:pb-3 @3xl:pb-3.5 @3xl:pb-4 @3xl:pb-5 @3xl:pb-6 @3xl:pb-7 @3xl:pb-8 @3xl:pb-9 @3xl:pb-10 @3xl:pb-11 @3xl:pb-12 @3xl:pb-13 @3xl:pb-14 @3xl:pb-15 @3xl:pb-16 @3xl:pb-17 @3xl:pb-18 @3xl:pb-19 @3xl:pb-20 @3xl:pb-21 @3xl:pb-22 @3xl:pb-23 @3xl:pb-24 @3xl:pb-25 @3xl:pb-26 @3xl:pb-27 @3xl:pb-28 @3xl:pb-29 @3xl:pb-30 @3xl:pb-31 @3xl:pb-32 @3xl:pb-33 @3xl:pb-34 @3xl:pb-35 @3xl:pb-36 @3xl:pb-37 @3xl:pb-38 @3xl:pb-39 @3xl:pb-40"></div>
 
-{{-- @5xl responsive padding bottom classes --}}
-<div class="@5xl:pb-0 @5xl:pb-px @5xl:pb-0.5 @5xl:pb-1 @5xl:pb-1.5 @5xl:pb-2 @5xl:pb-2.5 @5xl:pb-3 @5xl:pb-3.5 @5xl:pb-4 @5xl:pb-5 @5xl:pb-6 @5xl:pb-7 @5xl:pb-8 @5xl:pb-9 @5xl:pb-10 @5xl:pb-11 @5xl:pb-12 @5xl:pb-13 @5xl:pb-14 @5xl:pb-15 @5xl:pb-16 @5xl:pb-17 @5xl:pb-18 @5xl:pb-19 @5xl:pb-20 @5xl:pb-21 @5xl:pb-22 @5xl:pb-23 @5xl:pb-24 @5xl:pb-25 @5xl:pb-26 @5xl:pb-27 @5xl:pb-28 @5xl:pb-29 @5xl:pb-30 @5xl:pb-31 @5xl:pb-32 @5xl:pb-33 @5xl:pb-34 @5xl:pb-35 @5xl:pb-36 @5xl:pb-37 @5xl:pb-38 @5xl:pb-39 @5xl:pb-40"></div>
+{{-- @7xl responsive padding bottom classes --}}
+<div class="@7xl:pb-0 @7xl:pb-px @7xl:pb-0.5 @7xl:pb-1 @7xl:pb-1.5 @7xl:pb-2 @7xl:pb-2.5 @7xl:pb-3 @7xl:pb-3.5 @7xl:pb-4 @7xl:pb-5 @7xl:pb-6 @7xl:pb-7 @7xl:pb-8 @7xl:pb-9 @7xl:pb-10 @7xl:pb-11 @7xl:pb-12 @7xl:pb-13 @7xl:pb-14 @7xl:pb-15 @7xl:pb-16 @7xl:pb-17 @7xl:pb-18 @7xl:pb-19 @7xl:pb-20 @7xl:pb-21 @7xl:pb-22 @7xl:pb-23 @7xl:pb-24 @7xl:pb-25 @7xl:pb-26 @7xl:pb-27 @7xl:pb-28 @7xl:pb-29 @7xl:pb-30 @7xl:pb-31 @7xl:pb-32 @7xl:pb-33 @7xl:pb-34 @7xl:pb-35 @7xl:pb-36 @7xl:pb-37 @7xl:pb-38 @7xl:pb-39 @7xl:pb-40"></div>
 
 {{-- Padding left classes --}}
 <div class="pl-0 pl-px pl-0.5 pl-1 pl-1.5 pl-2 pl-2.5 pl-3 pl-3.5 pl-4 pl-5 pl-6 pl-7 pl-8 pl-9 pl-10 pl-11 pl-12 pl-13 pl-14 pl-15 pl-16 pl-17 pl-18 pl-19 pl-20 pl-21 pl-22 pl-23 pl-24 pl-25 pl-26 pl-27 pl-28 pl-29 pl-30 pl-31 pl-32 pl-33 pl-34 pl-35 pl-36 pl-37 pl-38 pl-39 pl-40"></div>
@@ -43,8 +43,8 @@
 {{-- @3xl responsive padding left classes --}}
 <div class="@3xl:pl-0 @3xl:pl-px @3xl:pl-0.5 @3xl:pl-1 @3xl:pl-1.5 @3xl:pl-2 @3xl:pl-2.5 @3xl:pl-3 @3xl:pl-3.5 @3xl:pl-4 @3xl:pl-5 @3xl:pl-6 @3xl:pl-7 @3xl:pl-8 @3xl:pl-9 @3xl:pl-10 @3xl:pl-11 @3xl:pl-12 @3xl:pl-13 @3xl:pl-14 @3xl:pl-15 @3xl:pl-16 @3xl:pl-17 @3xl:pl-18 @3xl:pl-19 @3xl:pl-20 @3xl:pl-21 @3xl:pl-22 @3xl:pl-23 @3xl:pl-24 @3xl:pl-25 @3xl:pl-26 @3xl:pl-27 @3xl:pl-28 @3xl:pl-29 @3xl:pl-30 @3xl:pl-31 @3xl:pl-32 @3xl:pl-33 @3xl:pl-34 @3xl:pl-35 @3xl:pl-36 @3xl:pl-37 @3xl:pl-38 @3xl:pl-39 @3xl:pl-40"></div>
 
-{{-- @5xl responsive padding left classes --}}
-<div class="@5xl:pl-0 @5xl:pl-px @5xl:pl-0.5 @5xl:pl-1 @5xl:pl-1.5 @5xl:pl-2 @5xl:pl-2.5 @5xl:pl-3 @5xl:pl-3.5 @5xl:pl-4 @5xl:pl-5 @5xl:pl-6 @5xl:pl-7 @5xl:pl-8 @5xl:pl-9 @5xl:pl-10 @5xl:pl-11 @5xl:pl-12 @5xl:pl-13 @5xl:pl-14 @5xl:pl-15 @5xl:pl-16 @5xl:pl-17 @5xl:pl-18 @5xl:pl-19 @5xl:pl-20 @5xl:pl-21 @5xl:pl-22 @5xl:pl-23 @5xl:pl-24 @5xl:pl-25 @5xl:pl-26 @5xl:pl-27 @5xl:pl-28 @5xl:pl-29 @5xl:pl-30 @5xl:pl-31 @5xl:pl-32 @5xl:pl-33 @5xl:pl-34 @5xl:pl-35 @5xl:pl-36 @5xl:pl-37 @5xl:pl-38 @5xl:pl-39 @5xl:pl-40"></div>
+{{-- @7xl responsive padding left classes --}}
+<div class="@7xl:pl-0 @7xl:pl-px @7xl:pl-0.5 @7xl:pl-1 @7xl:pl-1.5 @7xl:pl-2 @7xl:pl-2.5 @7xl:pl-3 @7xl:pl-3.5 @7xl:pl-4 @7xl:pl-5 @7xl:pl-6 @7xl:pl-7 @7xl:pl-8 @7xl:pl-9 @7xl:pl-10 @7xl:pl-11 @7xl:pl-12 @7xl:pl-13 @7xl:pl-14 @7xl:pl-15 @7xl:pl-16 @7xl:pl-17 @7xl:pl-18 @7xl:pl-19 @7xl:pl-20 @7xl:pl-21 @7xl:pl-22 @7xl:pl-23 @7xl:pl-24 @7xl:pl-25 @7xl:pl-26 @7xl:pl-27 @7xl:pl-28 @7xl:pl-29 @7xl:pl-30 @7xl:pl-31 @7xl:pl-32 @7xl:pl-33 @7xl:pl-34 @7xl:pl-35 @7xl:pl-36 @7xl:pl-37 @7xl:pl-38 @7xl:pl-39 @7xl:pl-40"></div>
 
 {{-- Padding horizontal classes --}}
 <div class="px-0 px-px px-0.5 px-1 px-1.5 px-2 px-2.5 px-3 px-3.5 px-4 px-5 px-6 px-7 px-8 px-9 px-10 px-11 px-12 px-13 px-14 px-15 px-16 px-17 px-18 px-19 px-20 px-21 px-22 px-23 px-24 px-25 px-26 px-27 px-28 px-29 px-30 px-31 px-32 px-33 px-34 px-35 px-36 px-37 px-38 px-39 px-40"></div>
@@ -52,8 +52,8 @@
 {{-- @3xl responsive padding horizontal classes --}}
 <div class="@3xl:px-0 @3xl:px-px @3xl:px-0.5 @3xl:px-1 @3xl:px-1.5 @3xl:px-2 @3xl:px-2.5 @3xl:px-3 @3xl:px-3.5 @3xl:px-4 @3xl:px-5 @3xl:px-6 @3xl:px-7 @3xl:px-8 @3xl:px-9 @3xl:px-10 @3xl:px-11 @3xl:px-12 @3xl:px-13 @3xl:px-14 @3xl:px-15 @3xl:px-16 @3xl:px-17 @3xl:px-18 @3xl:px-19 @3xl:px-20 @3xl:px-21 @3xl:px-22 @3xl:px-23 @3xl:px-24 @3xl:px-25 @3xl:px-26 @3xl:px-27 @3xl:px-28 @3xl:px-29 @3xl:px-30 @3xl:px-31 @3xl:px-32 @3xl:px-33 @3xl:px-34 @3xl:px-35 @3xl:px-36 @3xl:px-37 @3xl:px-38 @3xl:px-39 @3xl:px-40"></div>
 
-{{-- @5xl responsive padding horizontal classes --}}
-<div class="@5xl:px-0 @5xl:px-px @5xl:px-0.5 @5xl:px-1 @5xl:px-1.5 @5xl:px-2 @5xl:px-2.5 @5xl:px-3 @5xl:px-3.5 @5xl:px-4 @5xl:px-5 @5xl:px-6 @5xl:px-7 @5xl:px-8 @5xl:px-9 @5xl:px-10 @5xl:px-11 @5xl:px-12 @5xl:px-13 @5xl:px-14 @5xl:px-15 @5xl:px-16 @5xl:px-17 @5xl:px-18 @5xl:px-19 @5xl:px-20 @5xl:px-21 @5xl:px-22 @5xl:px-23 @5xl:px-24 @5xl:px-25 @5xl:px-26 @5xl:px-27 @5xl:px-28 @5xl:px-29 @5xl:px-30 @5xl:px-31 @5xl:px-32 @5xl:px-33 @5xl:px-34 @5xl:px-35 @5xl:px-36 @5xl:px-37 @5xl:px-38 @5xl:px-39 @5xl:px-40"></div>
+{{-- @7xl responsive padding horizontal classes --}}
+<div class="@7xl:px-0 @7xl:px-px @7xl:px-0.5 @7xl:px-1 @7xl:px-1.5 @7xl:px-2 @7xl:px-2.5 @7xl:px-3 @7xl:px-3.5 @7xl:px-4 @7xl:px-5 @7xl:px-6 @7xl:px-7 @7xl:px-8 @7xl:px-9 @7xl:px-10 @7xl:px-11 @7xl:px-12 @7xl:px-13 @7xl:px-14 @7xl:px-15 @7xl:px-16 @7xl:px-17 @7xl:px-18 @7xl:px-19 @7xl:px-20 @7xl:px-21 @7xl:px-22 @7xl:px-23 @7xl:px-24 @7xl:px-25 @7xl:px-26 @7xl:px-27 @7xl:px-28 @7xl:px-29 @7xl:px-30 @7xl:px-31 @7xl:px-32 @7xl:px-33 @7xl:px-34 @7xl:px-35 @7xl:px-36 @7xl:px-37 @7xl:px-38 @7xl:px-39 @7xl:px-40"></div>
 
 {{-- Padding vertical classes --}}
 <div class="py-0 py-px py-0.5 py-1 py-1.5 py-2 py-2.5 py-3 py-3.5 py-4 py-5 py-6 py-7 py-8 py-9 py-10 py-11 py-12 py-13 py-14 py-15 py-16 py-17 py-18 py-19 py-20 py-21 py-22 py-23 py-24 py-25 py-26 py-27 py-28 py-29 py-30 py-31 py-32 py-33 py-34 py-35 py-36 py-37 py-38 py-39 py-40"></div>
@@ -61,5 +61,5 @@
 {{-- @3xl responsive padding vertical classes --}}
 <div class="@3xl:py-0 @3xl:py-px @3xl:py-0.5 @3xl:py-1 @3xl:py-1.5 @3xl:py-2 @3xl:py-2.5 @3xl:py-3 @3xl:py-3.5 @3xl:py-4 @3xl:py-5 @3xl:py-6 @3xl:py-7 @3xl:py-8 @3xl:py-9 @3xl:py-10 @3xl:py-11 @3xl:py-12 @3xl:py-13 @3xl:py-14 @3xl:py-15 @3xl:py-16 @3xl:py-17 @3xl:py-18 @3xl:py-19 @3xl:py-20 @3xl:py-21 @3xl:py-22 @3xl:py-23 @3xl:py-24 @3xl:py-25 @3xl:py-26 @3xl:py-27 @3xl:py-28 @3xl:py-29 @3xl:py-30 @3xl:py-31 @3xl:py-32 @3xl:py-33 @3xl:py-34 @3xl:py-35 @3xl:py-36 @3xl:py-37 @3xl:py-38 @3xl:py-39 @3xl:py-40"></div>
 
-{{-- @5xl responsive padding vertical classes --}}
-<div class="@5xl:py-0 @5xl:py-px @5xl:py-0.5 @5xl:py-1 @5xl:py-1.5 @5xl:py-2 @5xl:py-2.5 @5xl:py-3 @5xl:py-3.5 @5xl:py-4 @5xl:py-5 @5xl:py-6 @5xl:py-7 @5xl:py-8 @5xl:py-9 @5xl:py-10 @5xl:py-11 @5xl:py-12 @5xl:py-13 @5xl:py-14 @5xl:py-15 @5xl:py-16 @5xl:py-17 @5xl:py-18 @5xl:py-19 @5xl:py-20 @5xl:py-21 @5xl:py-22 @5xl:py-23 @5xl:py-24 @5xl:py-25 @5xl:py-26 @5xl:py-27 @5xl:py-28 @5xl:py-29 @5xl:py-30 @5xl:py-31 @5xl:py-32 @5xl:py-33 @5xl:py-34 @5xl:py-35 @5xl:py-36 @5xl:py-37 @5xl:py-38 @5xl:py-39 @5xl:py-40"></div>
+{{-- @7xl responsive padding vertical classes --}}
+<div class="@7xl:py-0 @7xl:py-px @7xl:py-0.5 @7xl:py-1 @7xl:py-1.5 @7xl:py-2 @7xl:py-2.5 @7xl:py-3 @7xl:py-3.5 @7xl:py-4 @7xl:py-5 @7xl:py-6 @7xl:py-7 @7xl:py-8 @7xl:py-9 @7xl:py-10 @7xl:py-11 @7xl:py-12 @7xl:py-13 @7xl:py-14 @7xl:py-15 @7xl:py-16 @7xl:py-17 @7xl:py-18 @7xl:py-19 @7xl:py-20 @7xl:py-21 @7xl:py-22 @7xl:py-23 @7xl:py-24 @7xl:py-25 @7xl:py-26 @7xl:py-27 @7xl:py-28 @7xl:py-29 @7xl:py-30 @7xl:py-31 @7xl:py-32 @7xl:py-33 @7xl:py-34 @7xl:py-35 @7xl:py-36 @7xl:py-37 @7xl:py-38 @7xl:py-39 @7xl:py-40"></div>
