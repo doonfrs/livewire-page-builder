@@ -673,8 +673,9 @@ abstract class Block extends Component
                 continue;
             }
 
-            if ($property->defaultValue !== null) {
-                $propertyValues[$property->name] = $property->defaultValue;
+            $resolvedDefault = $this->resolvePropertyDefault($property);
+            if ($resolvedDefault !== null) {
+                $propertyValues[$property->name] = $resolvedDefault;
             }
         }
         foreach ($this->getPageBuilderProperties() as $property) {
@@ -688,12 +689,32 @@ abstract class Block extends Component
                 continue;
             }
 
-            if ($property->defaultValue !== null) {
-                $propertyValues[$property->name] = $property->defaultValue;
+            $resolvedDefault = $this->resolvePropertyDefault($property);
+            if ($resolvedDefault !== null) {
+                $propertyValues[$property->name] = $resolvedDefault;
             }
         }
 
         return $propertyValues;
+    }
+
+    /**
+     * Resolve the default value for a property, including multilingual properties
+     * that may have localizedValues set but no defaultValue.
+     */
+    private function resolvePropertyDefault($property)
+    {
+        if ($property->defaultValue !== null) {
+            return $property->defaultValue;
+        }
+
+        // For multilingual properties with localizedValues, build the multilingual content structure
+        if (property_exists($property, 'localizedValues') && ! empty($property->localizedValues)) {
+            return app(\Trinavo\LivewirePageBuilder\Services\LocalizationService::class)
+                ->createMultilingualContent($property->localizedValues);
+        }
+
+        return null;
     }
 
     public function getAllProperties(): array

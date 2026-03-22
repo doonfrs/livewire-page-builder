@@ -154,10 +154,21 @@ class BlockProperties extends Component
         }
 
         $this->blockLabel = Str::headline(class_basename($this->blockClass));
+
+        $blockInstance = app($this->blockClass);
+
         $this->blockProperties =
             array_map(function (BlockProperty $property) {
                 return $property->toArray();
-            }, app($this->blockClass)->getAllProperties());
+            }, $blockInstance->getAllProperties());
+
+        // Merge defaults for any missing properties so editors show default values
+        $defaults = $blockInstance->getPropertyValues();
+        foreach ($defaults as $key => $value) {
+            if (! array_key_exists($key, $this->properties)) {
+                $this->properties[$key] = $value;
+            }
+        }
 
         $this->organizeProperties();
     }
