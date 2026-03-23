@@ -968,7 +968,7 @@
                 <div class="mx-auto @container"
                     :class="{
                         'w-[375px]': deviceMode === 'mobile',
-                        'w-[767px]': deviceMode === 'tablet',
+                        'w-[768px]': deviceMode === 'tablet',
                         'w-full': deviceMode === 'desktop',
                     }"
                     style="font-size:0">
