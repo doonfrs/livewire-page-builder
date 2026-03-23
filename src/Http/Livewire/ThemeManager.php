@@ -5,6 +5,7 @@ namespace Trinavo\LivewirePageBuilder\Http\Livewire;
 use Illuminate\Support\Str;
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use Trinavo\LivewirePageBuilder\Events\DefaultThemeSet;
 use Trinavo\LivewirePageBuilder\Models\Setting;
 use Trinavo\LivewirePageBuilder\Models\Theme;
 use Trinavo\LivewirePageBuilder\Services\ThemeService;
@@ -69,7 +70,11 @@ class ThemeManager extends Component
 
     public function loadThemes()
     {
-        $this->themes = Theme::orderBy('name')->get()->toArray();
+        $defaultThemeId = Setting::getDefaultThemeId();
+        $this->themes = Theme::all()
+            ->sortBy(fn ($theme) => $theme->id === $defaultThemeId ? 0 : 1)
+            ->values()
+            ->toArray();
     }
 
     public function loadDefaultTheme()
@@ -198,6 +203,7 @@ class ThemeManager extends Component
 
         try {
             Setting::setDefaultThemeId($this->themeToSetDefault->id);
+            DefaultThemeSet::dispatch($this->themeToSetDefault->id);
             $this->defaultThemeId = $this->themeToSetDefault->id;
 
             $this->dispatch('notify', message: "'{$this->themeToSetDefault->name}' set as default theme", type: 'success');
