@@ -15,6 +15,11 @@ class RichText extends Block
         return __('Rich Text');
     }
 
+    public function getPageBuilderCategory(): string
+    {
+        return __('Content');
+    }
+
     public function getPageBuilderIcon(): string
     {
         return 'heroicon-o-document-text';

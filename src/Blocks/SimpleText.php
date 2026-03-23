@@ -15,6 +15,11 @@ class SimpleText extends Block
         return __('Simple Text');
     }
 
+    public function getPageBuilderCategory(): string
+    {
+        return __('Content');
+    }
+
     public function getPageBuilderIcon(): string
     {
         return 'heroicon-o-bars-3-bottom-left';

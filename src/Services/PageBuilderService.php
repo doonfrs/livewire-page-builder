@@ -25,6 +25,7 @@ class PageBuilderService
                 'alias' => $alias,
                 'label' => $instance->getPageBuilderLabel(),
                 'icon' => $instance->getPageBuilderIcon(),
+                'category' => $instance->getPageBuilderCategory(),
             ];
         }
 

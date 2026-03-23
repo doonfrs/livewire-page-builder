@@ -241,6 +241,14 @@ abstract class Block extends Component
     }
 
     /**
+     * Get the category for the block in the page builder UI.
+     */
+    public function getPageBuilderCategory(): string
+    {
+        return '';
+    }
+
+    /**
      * Get the shared properties for the block in the page builder UI.
      */
     public function getSharedProperties(): array

@@ -29,6 +29,11 @@ class Spacer extends Block
         return __('Spacer');
     }
 
+    public function getPageBuilderCategory(): string
+    {
+        return __('Layout');
+    }
+
     public function getPageBuilderIcon(): string
     {
         return 'heroicon-o-rectangle-stack';

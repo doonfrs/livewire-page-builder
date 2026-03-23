@@ -48,6 +48,11 @@ class RowBlock extends Block
 
     public $isNested = false;
 
+    public function getPageBuilderCategory(): string
+    {
+        return __('Layout');
+    }
+
     public function mount()
     {
         Log::debug('RowBlock::mount called', [

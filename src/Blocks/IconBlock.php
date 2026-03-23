@@ -18,6 +18,11 @@ class IconBlock extends Block
         return __('Icon Block');
     }
 
+    public function getPageBuilderCategory(): string
+    {
+        return __('Content');
+    }
+
     public function getPageBuilderIcon(): string
     {
         return 'heroicon-o-star';

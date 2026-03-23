@@ -2465,17 +2465,9 @@ class PageEditor extends Component
                 'label' => $block['label'],
                 'blockPageName' => $block['blockPageName'] ?? null,
                 'icon' => $iconComponent,
+                'category' => $block['category'] ?? '',
             ];
         })->values()->toArray();
-
-        // Apply filter if needed
-        if ($this->blockFilter) {
-            $filter = strtolower($this->blockFilter);
-            $formattedBlocks = collect($formattedBlocks)->filter(function ($block) use ($filter) {
-                return Str::contains(strtolower($block['label']), $filter) ||
-                    Str::contains(strtolower($block['alias']), $filter);
-            })->values()->toArray();
-        }
 
         // Get all blocks in the page
         $allPageBlocks = $this->getAllPageBlocks();
