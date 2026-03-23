@@ -31,7 +31,7 @@
         return { x, y };
     }
 }"
-    class="{{ $cssClasses }} border transition-all duration-300 ease-in-out" style="{{ $inlineStyles }}"
+    class="{{ $cssClasses }} border transition-all duration-300 ease-in-out" style="font-size:initial; {{ $inlineStyles }}"
     {!! $dataAttributes !!} :class="selected ? 'border-blue-500' : 'border-gray-300'"
     x-on:block-selected.window="selected = $event.detail.blockId == '{{ $blockId }}'"
     x-on:row-selected.window="selected = false"

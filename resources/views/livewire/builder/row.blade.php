@@ -469,7 +469,7 @@
             </div>
         </div>
 
-        <div class="row-blocks pt-10 pb-10 {{ $rowCssClasses }}">
+        <div class="row-blocks pt-10 pb-10 {{ $rowCssClasses }}" style="font-size:0">
             @foreach ($blocks as $blockId => $block)
                 @livewire(
                     'builder-block',
