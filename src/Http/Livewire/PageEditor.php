@@ -61,6 +61,10 @@ class PageEditor extends Component
 
     public bool $showThemeSelector = false;
 
+    public bool $showLayoutsModal = false;
+
+    public array $availableLayouts = [];
+
     public $selfCentered = false;
 
     public BuilderPage $page;
@@ -109,6 +113,8 @@ class PageEditor extends Component
         ]);
 
         $this->rows = $this->page->components ? $this->page->components : [];
+
+        $this->loadLayouts();
 
         Log::debug('PageEditor rows initialized', [
             'pageId' => $this->page->id,
@@ -2629,6 +2635,33 @@ class PageEditor extends Component
         }
 
         return $pagesWithStatus;
+    }
+
+    public function loadLayouts(): void
+    {
+        $locale = session('page_builder_locale', app()->getLocale());
+        $this->availableLayouts = app(PageBuilderService::class)->getAvailableLayouts($locale);
+    }
+
+    public function applyLayout(string $layoutPath): void
+    {
+        if (! file_exists($layoutPath)) {
+            return;
+        }
+
+        $data = json_decode(file_get_contents($layoutPath), true);
+        if (! isset($data['components'])) {
+            return;
+        }
+
+        $this->rows = $this->regenerateComponentIds($data['components']);
+        $this->savePage();
+        $this->showLayoutsModal = false;
+
+        $this->dispatch('notify',
+            message: __('Layout applied successfully'),
+            type: 'success'
+        );
     }
 
     /**

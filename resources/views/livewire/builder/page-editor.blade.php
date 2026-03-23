@@ -422,6 +422,15 @@
                     <x-heroicon-o-document-duplicate class="w-5 h-5" />
                     <span class="hidden sm:inline">{{ __('Copy From') }}</span>
                 </button>
+                <!-- Layouts Button -->
+                @if (!empty($availableLayouts))
+                    <button wire:click="$set('showLayoutsModal', true)"
+                        class="flex items-center gap-1 px-4 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-2 focus:ring-indigo-200 transition-all duration-150 text-sm font-medium"
+                        title="{{ __('Apply a layout template') }}">
+                        <x-heroicon-o-rectangle-stack class="w-5 h-5" />
+                        <span class="hidden sm:inline">{{ __('Layouts') }}</span>
+                    </button>
+                @endif
                 <!-- Preview Button -->
                 <a :href="'/page-builder/page/view/' + @js($pageKey ?? '') + (@js($themeId ?? '') ? '/' +
                     @js($themeId ?? '') : '')"
@@ -541,6 +550,8 @@
             'themeId' => $themeId,
             'modalMode' => 'copy',
         ])
+
+        @include('page-builder::livewire.builder.partials.layouts-modal')
 
         <!-- Copy Confirmation Modal -->
         <div x-show="showCopyConfirmationModal"

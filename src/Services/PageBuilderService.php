@@ -67,6 +67,33 @@ class PageBuilderService
         return config('page-builder.pages', []);
     }
 
+    public function getAvailableLayouts(string $locale = 'en'): array
+    {
+        $layouts = [];
+        foreach (config('page-builder.layouts', []) as $path) {
+            if (! file_exists($path)) {
+                continue;
+            }
+
+            $data = json_decode(file_get_contents($path), true);
+            if (! is_array($data) || ! isset($data['components'])) {
+                continue;
+            }
+
+            $meta = $data['meta'] ?? [];
+            $nameMap = $meta['name'] ?? [];
+            $descMap = $meta['description'] ?? [];
+
+            $layouts[] = [
+                'path' => $path,
+                'name' => $nameMap[$locale] ?? $nameMap['en'] ?? basename($path),
+                'description' => $descMap[$locale] ?? $descMap['en'] ?? '',
+            ];
+        }
+
+        return $layouts;
+    }
+
     public function registerBlocks(): void
     {
         foreach ($this->getConfigBlocks() as $blockClass) {
