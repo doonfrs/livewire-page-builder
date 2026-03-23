@@ -820,7 +820,7 @@ class RowBlock extends Block
 
     public function getPageBuilderIcon(): string
     {
-        return 'heroicon-o-rectangle-group';
+        return 'pb-icon.row';
     }
 
     #[On('nested-row-deleted')]

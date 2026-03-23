@@ -22,7 +22,7 @@ class RichText extends Block
 
     public function getPageBuilderIcon(): string
     {
-        return 'heroicon-o-document-text';
+        return 'pb-icon.rich-text';
     }
 
     public function getPageBuilderProperties(): array

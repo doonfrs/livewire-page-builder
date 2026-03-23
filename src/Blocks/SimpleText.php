@@ -22,7 +22,7 @@ class SimpleText extends Block
 
     public function getPageBuilderIcon(): string
     {
-        return 'heroicon-o-bars-3-bottom-left';
+        return 'pb-icon.simple-text';
     }
 
     public function getPageBuilderProperties(): array

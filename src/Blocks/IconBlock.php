@@ -25,7 +25,7 @@ class IconBlock extends Block
 
     public function getPageBuilderIcon(): string
     {
-        return 'heroicon-o-star';
+        return 'pb-icon.icon-block';
     }
 
     public function getPageBuilderProperties(): array

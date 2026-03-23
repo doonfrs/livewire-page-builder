@@ -36,7 +36,7 @@ class Spacer extends Block
 
     public function getPageBuilderIcon(): string
     {
-        return 'heroicon-o-rectangle-stack';
+        return 'pb-icon.spacer';
     }
 
     public function render()

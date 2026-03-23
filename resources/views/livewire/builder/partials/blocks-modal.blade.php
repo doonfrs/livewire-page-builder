@@ -37,9 +37,9 @@
                 placeholder="{{ __('Search blocks...') }}">
         </div>
 
-        <div class="flex gap-4">
+        <div class="flex gap-4 h-[50vh]">
             <!-- Category sidebar -->
-            <div class="w-40 shrink-0 flex flex-col gap-0.5 h-[45vh] overflow-y-auto pe-1">
+            <div class="w-40 shrink-0 flex flex-col gap-0.5 overflow-y-auto pe-1 h-full">
                 <button
                     @click="selectedCategory = ''"
                     :class="selectedCategory === '' ? 'bg-pink-100 dark:bg-pink-900/30 text-pink-600 dark:text-pink-400 font-semibold' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'"
@@ -57,7 +57,7 @@
             </div>
 
             <!-- Blocks grid -->
-            <div class="flex-1 grid grid-cols-2 sm:grid-cols-3 gap-3 h-[45vh] overflow-y-auto content-start">
+            <div class="flex-1 grid grid-cols-2 sm:grid-cols-3 gap-3 overflow-y-auto content-start h-full">
                 @foreach ($allBlocks as $block)
                     <button
                         x-show="
