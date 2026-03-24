@@ -70,16 +70,38 @@ class RichText extends Block
         return $html;
     }
 
+    protected function getProseColorOverride(): string
+    {
+        $textColor = $this->textColor ?? null;
+        if (empty($textColor)) {
+            return '';
+        }
+
+        // Hex or rgb: override both body color and prose heading variable via inline style
+        if (str_starts_with($textColor, '#') || str_starts_with($textColor, 'rgb')) {
+            return ' style="color:'.$textColor.'; --tw-prose-headings:'.$textColor.'"';
+        }
+
+        // DaisyUI / Tailwind class name: apply text-{color} + prose-headings:text-{color} to cover both body and headings
+        return ' class="prose dark:prose-invert max-w-none text-'.$textColor.' prose-headings:text-'.$textColor.'"';
+    }
+
     public function render()
     {
         // Use the global namespace helper function to get localized content
         $content = \pb_localize_content($this->content);
 
+        $colorOverride = $this->getProseColorOverride();
+        // If a color override adds its own class attribute, skip the default one
+        $proseDiv = $colorOverride && str_starts_with($colorOverride, ' class=')
+            ? '<div'.$colorOverride.'>'
+            : '<div class="prose dark:prose-invert max-w-none"'.$colorOverride.'>';
+
         // In edit mode, don't parse variables to make them editable
         if ($this->editMode) {
             $content = $this->convertQuillClassesToTailwind($content);
 
-            return '<div class="prose dark:prose-invert max-w-none">
+            return $proseDiv.'
                 '.$content.'
             </div>';
         } else {
@@ -87,7 +109,7 @@ class RichText extends Block
             $content = VariablesParser::parse($content);
             $content = $this->convertQuillClassesToTailwind($content);
 
-            return '<div class="prose dark:prose-invert max-w-none">
+            return $proseDiv.'
                 '.$content.'
             </div>';
         }
