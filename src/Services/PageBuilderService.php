@@ -224,6 +224,11 @@ class PageBuilderService
             $classes[] = "@7xl:gap-$desktopGap";
         }
 
+        $contentCentered = $properties['contentCentered'] ?? false;
+        if ($contentCentered) {
+            $classes[] = 'mx-auto';
+        }
+
         $classes[] = 'h-full';
 
         return implode(' ', $classes);

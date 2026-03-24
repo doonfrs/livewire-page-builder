@@ -306,5 +306,11 @@
     "This will replace ALL pages in the current theme.": "سيتم استبدال جميع الصفحات في المظهر الحالي.",
     "Selected pages will be replaced in the current theme.": "سيتم استبدال الصفحات المحددة في المظهر الحالي.",
     "Import :count Pages": "استيراد :count صفحة",
-    "No pages to import": "لا توجد صفحات للاستيراد"
+    "No pages to import": "لا توجد صفحات للاستيراد",
+    "Layouts": "التخطيطات",
+    "Select a layout to replace the current page content.": "اختر تخطيطاً لاستبدال محتوى الصفحة الحالية.",
+    "This will replace all current page content. Are you sure?": "سيتم استبدال جميع محتوى الصفحة الحالية. هل أنت متأكد؟",
+    "Yes, apply layout": "نعم، تطبيق التخطيط",
+    "No layouts available.": "لا توجد تخطيطات متاحة.",
+    "Apply": "تطبيق"
 }

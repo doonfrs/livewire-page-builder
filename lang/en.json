@@ -289,5 +289,11 @@
     "This will replace ALL pages in the current theme.": "This will replace ALL pages in the current theme.",
     "Selected pages will be replaced in the current theme.": "Selected pages will be replaced in the current theme.",
     "Import :count Pages": "Import :count Pages",
-    "No pages to import": "No pages to import"
+    "No pages to import": "No pages to import",
+    "Layouts": "Layouts",
+    "Select a layout to replace the current page content.": "Select a layout to replace the current page content.",
+    "This will replace all current page content. Are you sure?": "This will replace all current page content. Are you sure?",
+    "Yes, apply layout": "Yes, apply layout",
+    "No layouts available.": "No layouts available.",
+    "Apply": "Apply"
 }
