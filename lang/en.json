@@ -295,5 +295,6 @@
     "This will replace all current page content. Are you sure?": "This will replace all current page content. Are you sure?",
     "Yes, apply layout": "Yes, apply layout",
     "No layouts available.": "No layouts available.",
-    "Apply": "Apply"
+    "Apply": "Apply",
+    "':name' set as default theme": "':name' set as default theme"
 }

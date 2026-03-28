@@ -206,7 +206,7 @@ class ThemeManager extends Component
             DefaultThemeSet::dispatch($this->themeToSetDefault->id);
             $this->defaultThemeId = $this->themeToSetDefault->id;
 
-            $this->dispatch('notify', message: "'{$this->themeToSetDefault->name}' set as default theme", type: 'success');
+            $this->dispatch('notify', message: __("':name' set as default theme", ['name' => $this->themeToSetDefault->name]), type: 'success');
 
             $this->closeDefaultModal();
 
