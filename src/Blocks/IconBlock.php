@@ -6,12 +6,15 @@ use BladeUI\Icons\Factory;
 use Trinavo\LivewirePageBuilder\Support\Block;
 use Trinavo\LivewirePageBuilder\Support\Properties\IconProperty;
 use Trinavo\LivewirePageBuilder\Support\Properties\RichTextProperty;
+use Trinavo\LivewirePageBuilder\Support\Properties\SelectProperty;
 
 class IconBlock extends Block
 {
     public $icon = 'heroicon-o-star';
 
     public $label = 'Icon';
+
+    public $cardStyle = 'flat';
 
     public function getPageBuilderLabel(): string
     {
@@ -33,6 +36,10 @@ class IconBlock extends Block
         return [
             IconProperty::make(name: 'icon', label: __('Icon'), styles: ['outline', 'solid', 'mini', 'regular', 'fill'], sets: ['heroicons', 'bootstrap'], defaultValue: 'heroicon-o-star'),
             new RichTextProperty('label', __('Label'), is_array($this->label) ? ($this->label['values'] ?? []) : $this->label),
+            new SelectProperty('cardStyle', __('Card Style'), [
+                'card' => __('Card'),
+                'flat' => __('Flat'),
+            ], $this->cardStyle),
         ];
     }
 
@@ -57,7 +64,13 @@ class IconBlock extends Block
             $labelHtml = '<div class="mt-4 text-lg font-medium">'.$localizedLabel.'</div>';
         }
 
-        return "<div class='flex flex-col items-center justify-center p-8'>
+        $isCard = $this->cardStyle === 'card';
+        $wrapperClasses = 'flex flex-col items-center justify-center p-8';
+        if ($isCard) {
+            $wrapperClasses .= ' card bg-base-100 shadow-sm rounded-sm';
+        }
+
+        return "<div class='{$wrapperClasses}'>
             {$iconHtml}
             {$labelHtml}
         </div>";
