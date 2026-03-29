@@ -98,6 +98,20 @@ abstract class Block extends Component
 
     public $backgroundColor = null;
 
+    // Background gradient properties
+    public $backgroundGradientFrom = null;
+
+    public $backgroundGradientTo = null;
+
+    public $backgroundGradientDirection = 'to-b';
+
+    // Text gradient properties
+    public $textGradientFrom = null;
+
+    public $textGradientTo = null;
+
+    public $textGradientDirection = 'to-r';
+
     // Background image properties
     public $backgroundImage = null;
 
@@ -379,11 +393,38 @@ abstract class Block extends Component
      */
     protected function getStyleProperties(): array
     {
+        $gradientDirections = [
+            'to-t' => 'To Top',
+            'to-tr' => 'To Top Right',
+            'to-r' => 'To Right',
+            'to-br' => 'To Bottom Right',
+            'to-b' => 'To Bottom',
+            'to-bl' => 'To Bottom Left',
+            'to-l' => 'To Left',
+            'to-tl' => 'To Top Left',
+        ];
+
         return [
             (new ColorProperty('textColor', 'Text Color', defaultValue: $this->textColor))
                 ->setGroup('color', 'Color', 2, 'heroicon-o-swatch'),
             (new ColorProperty('backgroundColor', 'Background Color', defaultValue: $this->backgroundColor))
                 ->setGroup('color', 'Color', 2, 'heroicon-o-swatch'),
+
+            // Background gradient
+            (new ColorProperty('backgroundGradientFrom', 'From', defaultValue: $this->backgroundGradientFrom))
+                ->setGroup('bg_gradient', 'Background Gradient', 3, 'heroicon-o-paint-brush'),
+            (new ColorProperty('backgroundGradientTo', 'To', defaultValue: $this->backgroundGradientTo))
+                ->setGroup('bg_gradient', 'Background Gradient', 3, 'heroicon-o-paint-brush'),
+            (new SelectProperty('backgroundGradientDirection', 'Direction', $gradientDirections, defaultValue: $this->backgroundGradientDirection))
+                ->setGroup('bg_gradient', 'Background Gradient', 3, 'heroicon-o-paint-brush'),
+
+            // Text gradient
+            (new ColorProperty('textGradientFrom', 'From', defaultValue: $this->textGradientFrom))
+                ->setGroup('text_gradient', 'Text Gradient', 3, 'heroicon-o-paint-brush'),
+            (new ColorProperty('textGradientTo', 'To', defaultValue: $this->textGradientTo))
+                ->setGroup('text_gradient', 'Text Gradient', 3, 'heroicon-o-paint-brush'),
+            (new SelectProperty('textGradientDirection', 'Direction', $gradientDirections, defaultValue: $this->textGradientDirection))
+                ->setGroup('text_gradient', 'Text Gradient', 3, 'heroicon-o-paint-brush'),
         ];
     }
 

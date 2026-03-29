@@ -5,7 +5,7 @@ namespace Trinavo\LivewirePageBuilder\Blocks;
 use BladeUI\Icons\Factory;
 use Trinavo\LivewirePageBuilder\Support\Block;
 use Trinavo\LivewirePageBuilder\Support\Properties\IconProperty;
-use Trinavo\LivewirePageBuilder\Support\Properties\TextProperty;
+use Trinavo\LivewirePageBuilder\Support\Properties\RichTextProperty;
 
 class IconBlock extends Block
 {
@@ -32,14 +32,13 @@ class IconBlock extends Block
     {
         return [
             IconProperty::make(name: 'icon', label: __('Icon'), styles: ['outline', 'solid', 'mini', 'regular', 'fill'], sets: ['heroicons', 'bootstrap'], defaultValue: 'heroicon-o-star'),
-            TextProperty::make(name: 'label', label: __('Label'), defaultValue: 'Icon'),
+            new RichTextProperty('label', __('Label'), is_array($this->label) ? ($this->label['values'] ?? []) : $this->label),
         ];
     }
 
     public function render()
     {
         $iconHtml = '';
-        $labelHtml = '';
 
         if (! empty($this->icon)) {
             try {
@@ -52,8 +51,10 @@ class IconBlock extends Block
             }
         }
 
-        if (! empty($this->label)) {
-            $labelHtml = '<div class="mt-4 text-lg font-medium">'.e($this->label).'</div>';
+        $localizedLabel = \pb_localize_content($this->label);
+        $labelHtml = '';
+        if (! empty($localizedLabel)) {
+            $labelHtml = '<div class="mt-4 text-lg font-medium">'.$localizedLabel.'</div>';
         }
 
         return "<div class='flex flex-col items-center justify-center p-8'>

@@ -422,14 +422,17 @@ class PageBuilderService
                 : ($desktopMarginLeft < 0 ? '@7xl:-ml-'.abs($desktopMarginLeft) : "@7xl:ml-$desktopMarginLeft");
         }
 
-        if ($textColor) {
+        // Skip text class when text gradient is active (inline style handles it)
+        $hasTextGradient = ! empty($properties['textGradientFrom']) && ! empty($properties['textGradientTo']);
+        if ($textColor && ! $hasTextGradient) {
             if (! str_starts_with($textColor, '#') && ! str_starts_with($textColor, 'rgb')) {
                 $classes[] = "text-$textColor";
             }
         }
 
-        // Add background color classes or inline styles for hex and rgba colors
-        if ($backgroundColor) {
+        // Skip bg class when background gradient is active (inline style handles it)
+        $hasBgGradient = ! empty($properties['backgroundGradientFrom']) && ! empty($properties['backgroundGradientTo']);
+        if ($backgroundColor && ! $hasBgGradient) {
             if (! str_starts_with($backgroundColor, '#') && ! str_starts_with($backgroundColor, 'rgb')) {
                 $classes[] = "bg-$backgroundColor";
             }
@@ -536,18 +539,48 @@ class PageBuilderService
         $backgroundSize = $properties['backgroundSize'] ?? 'cover';
         $backgroundRepeat = $properties['backgroundRepeat'] ?? 'no-repeat';
 
+        // Gradient properties
+        $bgGradientFrom = $properties['backgroundGradientFrom'] ?? null;
+        $bgGradientTo = $properties['backgroundGradientTo'] ?? null;
+        $bgGradientDirection = $properties['backgroundGradientDirection'] ?? 'to-b';
+        $textGradientFrom = $properties['textGradientFrom'] ?? null;
+        $textGradientTo = $properties['textGradientTo'] ?? null;
+        $textGradientDirection = $properties['textGradientDirection'] ?? 'to-r';
+
         $styles = [];
+
+        // Check if background gradient is set (takes precedence over solid backgroundColor)
+        $hasBgGradient = ! empty($bgGradientFrom) && ! empty($bgGradientTo);
+
         // Add text color classes or inline styles for hex and rgba colors
-        if ($textColor) {
+        // Check if text gradient is set (takes precedence over solid textColor)
+        $hasTextGradient = ! empty($textGradientFrom) && ! empty($textGradientTo);
+
+        if ($hasTextGradient) {
+            $fromCss = $this->resolveColorToCss($textGradientFrom);
+            $toCss = $this->resolveColorToCss($textGradientTo);
+            $cssDirection = $this->gradientDirectionToCss($textGradientDirection);
+            $styles[] = "background: linear-gradient($cssDirection, $fromCss, $toCss)";
+            $styles[] = '-webkit-background-clip: text';
+            $styles[] = '-webkit-text-fill-color: transparent';
+            $styles[] = 'background-clip: text';
+        } elseif ($textColor) {
             if (str_starts_with($textColor, '#') || str_starts_with($textColor, 'rgb')) {
                 $styles[] = "color: $textColor";
             }
         }
 
-        // Add background color classes or inline styles for hex and rgba colors
-        if ($backgroundColor) {
-            if (str_starts_with($backgroundColor, '#') || str_starts_with($backgroundColor, 'rgb')) {
-                $styles[] = "background-color: $backgroundColor";
+        if ($hasBgGradient) {
+            $fromCss = $this->resolveColorToCss($bgGradientFrom);
+            $toCss = $this->resolveColorToCss($bgGradientTo);
+            $cssDirection = $this->gradientDirectionToCss($bgGradientDirection);
+            $styles[] = "background: linear-gradient($cssDirection, $fromCss, $toCss)";
+        } else {
+            // Add background color classes or inline styles for hex and rgba colors
+            if ($backgroundColor) {
+                if (str_starts_with($backgroundColor, '#') || str_starts_with($backgroundColor, 'rgb')) {
+                    $styles[] = "background-color: $backgroundColor";
+                }
             }
         }
 
@@ -577,6 +610,67 @@ class PageBuilderService
         }
 
         return $styleString;
+    }
+
+    /**
+     * Resolve a color value to a CSS-usable string.
+     * Hex/rgb values pass through. DaisyUI class names are converted to oklch CSS variable references.
+     */
+    protected function resolveColorToCss(string $color): string
+    {
+        if (str_starts_with($color, '#') || str_starts_with($color, 'rgb')) {
+            return $color;
+        }
+
+        // Map DaisyUI semantic color names to their CSS variable names
+        $daisyUiMap = [
+            'primary' => '--p',
+            'primary-content' => '--pc',
+            'secondary' => '--s',
+            'secondary-content' => '--sc',
+            'accent' => '--a',
+            'accent-content' => '--ac',
+            'neutral' => '--n',
+            'neutral-content' => '--nc',
+            'base-100' => '--b1',
+            'base-200' => '--b2',
+            'base-300' => '--b3',
+            'base-content' => '--bc',
+            'info' => '--in',
+            'info-content' => '--inc',
+            'success' => '--su',
+            'success-content' => '--suc',
+            'warning' => '--wa',
+            'warning-content' => '--wac',
+            'error' => '--er',
+            'error-content' => '--erc',
+        ];
+
+        if (isset($daisyUiMap[$color])) {
+            return 'oklch(var('.$daisyUiMap[$color].'))';
+        }
+
+        // Fallback: return as-is (could be a raw CSS value)
+        return $color;
+    }
+
+    /**
+     * Convert gradient direction shorthand to CSS linear-gradient direction.
+     */
+    protected function gradientDirectionToCss(string $direction): string
+    {
+        $map = [
+            'to-t' => 'to top',
+            'to-tr' => 'to top right',
+            'to-r' => 'to right',
+            'to-br' => 'to bottom right',
+            'to-b' => 'to bottom',
+            'to-bl' => 'to bottom left',
+            'to-l' => 'to left',
+            'to-tl' => 'to top left',
+        ];
+
+        return $map[$direction] ?? 'to bottom';
     }
 
     /**
