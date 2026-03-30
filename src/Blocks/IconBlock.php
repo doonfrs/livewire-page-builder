@@ -4,9 +4,11 @@ namespace Trinavo\LivewirePageBuilder\Blocks;
 
 use BladeUI\Icons\Factory;
 use Trinavo\LivewirePageBuilder\Support\Block;
+use Trinavo\LivewirePageBuilder\Support\Properties\ColorProperty;
 use Trinavo\LivewirePageBuilder\Support\Properties\IconProperty;
 use Trinavo\LivewirePageBuilder\Support\Properties\RichTextProperty;
 use Trinavo\LivewirePageBuilder\Support\Properties\SelectProperty;
+use Trinavo\LivewirePageBuilder\Support\Properties\TextProperty;
 
 class IconBlock extends Block
 {
@@ -15,6 +17,14 @@ class IconBlock extends Block
     public $label = 'Icon';
 
     public $cardStyle = 'flat';
+
+    public $buttonText = null;
+
+    public $buttonUrl = null;
+
+    public $buttonBgColor = null;
+
+    public $buttonTextColor = null;
 
     public function getPageBuilderLabel(): string
     {
@@ -40,6 +50,10 @@ class IconBlock extends Block
                 'card' => __('Card'),
                 'flat' => __('Flat'),
             ], $this->cardStyle),
+            new RichTextProperty('buttonText', __('Button Text'), is_array($this->buttonText) ? ($this->buttonText['values'] ?? []) : $this->buttonText),
+            TextProperty::make(name: 'buttonUrl', label: __('Button URL'), defaultValue: $this->buttonUrl),
+            new ColorProperty('buttonBgColor', __('Button Background'), $this->buttonBgColor),
+            new ColorProperty('buttonTextColor', __('Button Text Color'), $this->buttonTextColor),
         ];
     }
 
@@ -64,6 +78,22 @@ class IconBlock extends Block
             $labelHtml = '<div class="mt-4 text-lg font-medium">'.$localizedLabel.'</div>';
         }
 
+        $localizedButtonText = strip_tags(\pb_localize_content($this->buttonText));
+        $buttonHtml = '';
+        if (! empty($localizedButtonText) && ! empty($this->buttonUrl)) {
+            $url = e($this->buttonUrl);
+            $btnBgColor = $this->parseColorProperty('buttonBgColor');
+            $btnTextColor = $this->parseColorProperty('buttonTextColor');
+            $hasBtnStyle = ! $btnBgColor->isEmpty() || ! $btnTextColor->isEmpty();
+            $btnClasses = 'btn btn-sm mt-3';
+            $btnClasses .= $hasBtnStyle ? ' border-0' : ' btn-outline';
+            $btnClasses .= $btnBgColor->isEmpty() ? '' : ' '.$btnBgColor->toBgClass();
+            $btnClasses .= $btnTextColor->isEmpty() ? '' : ' '.$btnTextColor->toTextClass();
+            $btnStyle = trim($btnBgColor->toInlineStyle('background-color').' '.$btnTextColor->toInlineStyle('color'));
+            $styleAttr = $btnStyle ? " style=\"{$btnStyle}\"" : '';
+            $buttonHtml = '<a href="'.$url.'" class="'.$btnClasses.'"'.$styleAttr.'>'.e($localizedButtonText).'</a>';
+        }
+
         $isCard = $this->cardStyle === 'card';
         $wrapperClasses = 'flex flex-col items-center justify-center p-8';
         if ($isCard) {
@@ -73,6 +103,7 @@ class IconBlock extends Block
         return "<div class='{$wrapperClasses}'>
             {$iconHtml}
             {$labelHtml}
+            {$buttonHtml}
         </div>";
     }
 }
