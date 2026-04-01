@@ -1062,8 +1062,18 @@ class PageBuilderService
      */
     protected function formatSizeValue($value, $prefix): string
     {
-        // If value is null, empty, or not a string, return empty string
-        if (! $value || ! is_string($value)) {
+        // If value is null or empty, return empty string
+        if (! $value && ! is_numeric($value)) {
+            return '';
+        }
+
+        // Convert numeric types to string for consistent handling
+        if (is_numeric($value) && ! is_string($value)) {
+            return $prefix.'-['.$value.'px]';
+        }
+
+        // Non-string, non-numeric values are not supported
+        if (! is_string($value)) {
             return '';
         }
 
