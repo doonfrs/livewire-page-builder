@@ -1062,8 +1062,8 @@ class PageBuilderService
      */
     protected function formatSizeValue($value, $prefix): string
     {
-        // If value is null or empty, return empty string
-        if (! $value) {
+        // If value is null, empty, or not a string, return empty string
+        if (! $value || ! is_string($value)) {
             return '';
         }
 
