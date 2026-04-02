@@ -27,17 +27,27 @@
                 @endif
             @endif
         </label>
-        
-        <!-- Variables Button -->
-        <button 
-            type="button" 
-            x-data="{}" 
-            @click="$dispatch('open-variables-modal')" 
-            class="inline-flex items-center text-xs px-2 py-1 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-600 dark:text-gray-300 rounded-md transition-colors duration-200">
-            <x-heroicon-o-variable class="w-4 h-4 mr-1" />
-            
-            {{ __('Variables') }}
-        </button>
+
+        <div class="flex items-center gap-1">
+            <!-- HTML Toggle Button -->
+            <button
+                type="button"
+                x-data="{}"
+                @click="$dispatch('toggle-html-mode')"
+                class="inline-flex items-center text-xs px-2 py-1 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-600 dark:text-gray-300 rounded-md transition-colors duration-200">
+                <x-heroicon-o-code-bracket class="w-4 h-4" />
+            </button>
+
+            <!-- Variables Button -->
+            <button
+                type="button"
+                x-data="{}"
+                @click="$dispatch('open-variables-modal')"
+                class="inline-flex items-center text-xs px-2 py-1 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-600 dark:text-gray-300 rounded-md transition-colors duration-200">
+                <x-heroicon-o-variable class="w-4 h-4 mr-1" />
+                {{ __('Variables') }}
+            </button>
+        </div>
     </div>
 
     <!-- Variables Modal -->
@@ -156,9 +166,47 @@
         debounceTimer: null,
         currentLocale: @js($currentLocale),
         content: @js($currentValue),
-        contentCache: {}, // Cache to store content for each locale
+        contentCache: {},
         isLocaleChanging: false,
-    
+        htmlMode: false,
+        htmlContent: '',
+        rtlLocales: ['ar', 'he', 'fa', 'ur'],
+
+        isRtl() {
+            return this.rtlLocales.includes(this.currentLocale);
+        },
+
+        applyDirection() {
+            const dir = this.isRtl() ? 'rtl' : 'ltr';
+            this.quill.root.setAttribute('dir', dir);
+            this.quill.root.style.direction = dir;
+            this.quill.root.style.textAlign = dir === 'rtl' ? 'right' : 'left';
+        },
+
+        toggleHtmlMode() {
+            this.htmlMode = !this.htmlMode;
+            if (this.htmlMode) {
+                this.htmlContent = this.quill.root.innerHTML;
+            } else {
+                this.isLocaleChanging = true;
+                this.quill.clipboard.dangerouslyPasteHTML(this.htmlContent);
+                this.contentCache[this.currentLocale] = this.quill.root.innerHTML;
+                this.$nextTick(() => {
+                    this.isLocaleChanging = false;
+                    this.updateLivewireProperty();
+                });
+            }
+        },
+
+        updateHtmlContent(value) {
+            this.htmlContent = value;
+            clearTimeout(this.debounceTimer);
+            this.debounceTimer = setTimeout(() => {
+                this.contentCache[this.currentLocale] = this.htmlContent;
+                this.$wire.set('currentValue', this.htmlContent);
+            }, 500);
+        },
+
         initEditor() {
             // Initialize Quill with appropriate modules
             this.quill = new Quill('#rich-text-editor-{{ $propertyName }}', {
@@ -203,7 +251,8 @@
     
             // Set initial content
             this.quill.root.innerHTML = this.content;
-    
+            this.applyDirection();
+
             // Store initial content in cache
             this.contentCache[this.currentLocale] = this.content;
     
@@ -261,6 +310,7 @@
                     // Update the editor content
                     if (this.quill) {
                         this.quill.root.innerHTML = newContent;
+                        this.applyDirection();
                     }
     
                     // Reset flag after content is updated
@@ -271,7 +321,18 @@
                 });
             });
         }
-    }" x-init="initEditor()">
-        <div id="rich-text-editor-{{ $propertyName }}" class="dark:bg-gray-800 dark:text-white"></div>
+    }" x-init="initEditor()" @toggle-html-mode.window="toggleHtmlMode()">
+        <div x-show="!htmlMode" :dir="isRtl() ? 'rtl' : 'ltr'">
+            <div id="rich-text-editor-{{ $propertyName }}" class="dark:bg-gray-800 dark:text-white"></div>
+        </div>
+        <div x-show="htmlMode" x-cloak>
+            <textarea
+                x-model="htmlContent"
+                @input="updateHtmlContent($event.target.value)"
+                class="w-full min-h-[200px] p-3 font-mono text-sm bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-200 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                dir="ltr"
+                spellcheck="false"
+            ></textarea>
+        </div>
     </div>
 </div>
