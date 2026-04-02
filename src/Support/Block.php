@@ -40,6 +40,8 @@ abstract class Block extends Component
 
     public $hiddenDesktop = false;
 
+    public $lazyLoad = false;
+
     // Padding properties - Desktop
     public $desktopPaddingTop = 0;
 
@@ -281,7 +283,8 @@ abstract class Block extends Component
             $this->getBackdropFilterProperties(),
             $this->getFilterProperties(),
             $this->getLayoutProperties(),
-            $this->getTransformProperties()
+            $this->getTransformProperties(),
+            $this->getPerformanceProperties()
         );
     }
 
@@ -330,6 +333,14 @@ abstract class Block extends Component
                 ->setGroup('hide', 'Hide', 3, 'heroicon-o-eye'),
             (new CheckboxProperty('hiddenDesktop', 'Desktop', defaultValue: $this->hiddenDesktop))
                 ->setGroup('hide', 'Hide', 3, 'heroicon-o-eye'),
+        ];
+    }
+
+    protected function getPerformanceProperties(): array
+    {
+        return [
+            (new CheckboxProperty('lazyLoad', __('Lazy Load'), defaultValue: $this->lazyLoad))
+                ->setGroup('performance', __('Performance'), 1, 'heroicon-o-bolt'),
         ];
     }
 
@@ -1189,5 +1200,14 @@ abstract class Block extends Component
         }
 
         return $this->parseColor($color, $defaultClass);
+    }
+
+    public function placeholder(): string
+    {
+        return <<<'HTML'
+        <div class="w-full animate-pulse">
+            <div class="bg-base-300 rounded-sm h-48 w-full"></div>
+        </div>
+        HTML;
     }
 }

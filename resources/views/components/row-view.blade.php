@@ -41,7 +41,7 @@
                             || !empty($block['properties']['desktopFontSize'] ?? null);
                     @endphp
                     <div @if(!$hasFontSize) style="font-size:initial" @endif class="h-full w-full content-center">
-                        @livewire($block['alias'], $block['properties'], key($blockId))
+                        @livewire($block['alias'], array_merge($block['properties'], !empty($block['properties']['lazyLoad']) ? ['lazy' => true] : []), key($blockId))
                     </div>
                 @endif
             </div>
