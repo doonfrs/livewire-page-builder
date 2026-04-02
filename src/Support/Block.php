@@ -692,11 +692,11 @@ abstract class Block extends Component
 
         return [
             (new SelectProperty(name: 'mobileFontSize', label: 'Mobile', options: $fontSizes, defaultValue: $this->mobileFontSize))
-                ->setGroup(group: 'font', groupLabel: 'Font', columns: 3, groupIcon: 'heroicon-o-bars-3-bottom-left'),
+                ->setGroup(group: 'font', groupLabel: 'Text Size', columns: 3, groupIcon: 'heroicon-o-bars-3-bottom-left'),
             (new SelectProperty(name: 'tabletFontSize', label: 'Tablet', options: $fontSizes, defaultValue: $this->tabletFontSize))
-                ->setGroup(group: 'font', groupLabel: 'Font', columns: 3, groupIcon: 'heroicon-o-bars-3-bottom-left'),
+                ->setGroup(group: 'font', groupLabel: 'Text Size', columns: 3, groupIcon: 'heroicon-o-bars-3-bottom-left'),
             (new SelectProperty(name: 'desktopFontSize', label: 'Desktop', options: $fontSizes, defaultValue: $this->desktopFontSize))
-                ->setGroup(group: 'font', groupLabel: 'Font', columns: 3, groupIcon: 'heroicon-o-bars-3-bottom-left'),
+                ->setGroup(group: 'font', groupLabel: 'Text Size', columns: 3, groupIcon: 'heroicon-o-bars-3-bottom-left'),
         ];
     }
 
