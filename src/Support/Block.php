@@ -40,7 +40,7 @@ abstract class Block extends Component
 
     public $hiddenDesktop = false;
 
-    public $lazyLoad = false;
+    public $lazyLoad = 'disabled';
 
     // Padding properties - Desktop
     public $desktopPaddingTop = 0;
@@ -339,7 +339,11 @@ abstract class Block extends Component
     protected function getPerformanceProperties(): array
     {
         return [
-            (new CheckboxProperty('lazyLoad', __('Lazy Load'), defaultValue: $this->lazyLoad))
+            (new SelectProperty('lazyLoad', __('Lazy Load'), [
+                'disabled' => __('Disabled'),
+                'on' => __('On Scroll'),
+                'on-load' => __('On Load'),
+            ], $this->lazyLoad))
                 ->setGroup('performance', __('Performance'), 1, 'heroicon-o-bolt'),
         ];
     }

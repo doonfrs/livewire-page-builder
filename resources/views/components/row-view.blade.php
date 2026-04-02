@@ -41,7 +41,12 @@
                             || !empty($block['properties']['desktopFontSize'] ?? null);
                     @endphp
                     <div @if(!$hasFontSize) style="font-size:initial" @endif class="h-full w-full content-center">
-                        @livewire($block['alias'], array_merge($block['properties'], !empty($block['properties']['lazyLoad']) ? ['lazy' => true] : []), key($blockId))
+                        @php
+                            $lazyMode = $block['properties']['lazyLoad'] ?? 'disabled';
+                            $isEditMode = $block['properties']['editMode'] ?? false;
+                            $lazyValue = (!$isEditMode && $lazyMode === 'on') ? true : ((!$isEditMode && $lazyMode === 'on-load') ? 'on-load' : null);
+                        @endphp
+                        @livewire($block['alias'], array_merge($block['properties'], $lazyValue !== null ? ['lazy' => $lazyValue] : []), key($blockId))
                     </div>
                 @endif
             </div>
