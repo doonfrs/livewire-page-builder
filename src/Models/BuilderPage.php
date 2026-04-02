@@ -4,6 +4,7 @@ namespace Trinavo\LivewirePageBuilder\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Trinavo\LivewirePageBuilder\Events\BuilderPageSaved;
 
 /**
  * Class BuilderPage
@@ -20,6 +21,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class BuilderPage extends Model
 {
     protected $fillable = ['key', 'components', 'theme_id', 'is_block'];
+
+    protected $dispatchesEvents = [
+        'saved' => BuilderPageSaved::class,
+    ];
 
     protected $casts = [
         'components' => 'json',
