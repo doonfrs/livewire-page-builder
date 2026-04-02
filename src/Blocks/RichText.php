@@ -92,10 +92,28 @@ class RichText extends Block
         $content = \pb_localize_content($this->content);
 
         $colorOverride = $this->getProseColorOverride();
-        // If a color override adds its own class attribute, skip the default one
-        $proseDiv = $colorOverride && str_starts_with($colorOverride, ' class=')
-            ? '<div'.$colorOverride.'>'
-            : '<div class="prose dark:prose-invert max-w-none"'.$colorOverride.'>';
+        $baseClasses = 'prose dark:prose-invert max-w-none';
+
+        // When a custom font size is set, override prose's default font-size
+        // so the outer wrapper's responsive text-* classes can cascade through
+        $hasFontSize = ! empty($this->mobileFontSize) || ! empty($this->tabletFontSize) || ! empty($this->desktopFontSize);
+        $fontSizeStyle = $hasFontSize ? 'font-size:inherit;' : '';
+
+        // If a color override adds its own class attribute, use it; otherwise use base classes
+        if ($colorOverride && str_starts_with($colorOverride, ' class=')) {
+            $proseDiv = '<div'.$colorOverride;
+        } else {
+            $proseDiv = '<div class="'.$baseClasses.'"';
+        }
+
+        // Merge inline styles: color override style + font-size
+        if ($colorOverride && str_starts_with($colorOverride, ' style=')) {
+            $proseDiv = str_replace('style="', 'style="'.$fontSizeStyle.' ', $proseDiv);
+        } elseif ($fontSizeStyle) {
+            $proseDiv .= ' style="'.$fontSizeStyle.'"';
+        }
+
+        $proseDiv .= '>';
 
         // In edit mode, don't parse variables to make them editable
         if ($this->editMode) {
