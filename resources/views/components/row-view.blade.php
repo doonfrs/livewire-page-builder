@@ -44,7 +44,7 @@
                         @php
                             $lazyMode = $block['properties']['lazyLoad'] ?? 'disabled';
                             $isEditMode = $block['properties']['editMode'] ?? false;
-                            $lazyValue = (!$isEditMode && $lazyMode === 'on') ? true : ((!$isEditMode && $lazyMode === 'on-load') ? 'on-load' : null);
+                            $lazyValue = (!$isEditMode && ($lazyMode === 'on' || $lazyMode === true)) ? true : ((!$isEditMode && $lazyMode === 'on-load') ? 'on-load' : null);
                         @endphp
                         @livewire($block['alias'], array_merge($block['properties'], $lazyValue !== null ? ['lazy' => $lazyValue] : []), key($blockId))
                     </div>
