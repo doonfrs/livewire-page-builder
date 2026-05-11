@@ -4,6 +4,7 @@ namespace Trinavo\LivewirePageBuilder\Services;
 
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Log;
+use Trinavo\LivewirePageBuilder\Exceptions\ThemeEncryptionException;
 
 class ThemeEncryptionService
 {
@@ -200,35 +201,28 @@ class ThemeEncryptionService
      */
     public function decryptThemeData(string $encryptedData, ?string $password = null): ?array
     {
-        try {
-            // Parse encrypted theme structure
-            $encryptedTheme = json_decode($encryptedData, true);
+        // Parse encrypted theme structure
+        $encryptedTheme = json_decode($encryptedData, true);
 
-            if (! $encryptedTheme || ! isset($encryptedTheme['encrypted']) || ! $encryptedTheme['encrypted']) {
-                throw new \Exception('Invalid encrypted theme format. The file does not appear to be a properly encrypted theme.');
-            }
-
-            // Use provided password or fallback to configured key
-            $encryptionKey = $password ?: static::$cache['key'];
-
-            if (empty($encryptionKey)) {
-                throw new \Exception('No encryption key provided. Please configure the encryption key in your settings or provide a password.');
-            }
-
-            // Decrypt using the configured algorithm
-            $decryptedData = $this->decryptData($encryptedTheme['data'], $encryptionKey);
-
-            if (! $decryptedData) {
-                throw new \Exception('Failed to decrypt theme data. The encryption key may be incorrect or the file may be corrupted.');
-            }
-
-            return $decryptedData;
-
-        } catch (\Exception $e) {
-            report($e);
-
-            return null;
+        if (! $encryptedTheme || ! isset($encryptedTheme['encrypted']) || ! $encryptedTheme['encrypted']) {
+            throw new ThemeEncryptionException(__('This file appears to be encrypted but has an invalid format. It may be corrupted or created with a different version.'));
         }
+
+        // Use provided password or fallback to configured key
+        $encryptionKey = $password ?: static::$cache['key'];
+
+        if (empty($encryptionKey)) {
+            throw new ThemeEncryptionException(__('This file is encrypted but no encryption key is configured. Please contact your administrator to set up the encryption key.'));
+        }
+
+        // Decrypt using the configured algorithm
+        $decryptedData = $this->decryptData($encryptedTheme['data'], $encryptionKey);
+
+        if (! $decryptedData) {
+            throw new ThemeEncryptionException(__('This file is encrypted but cannot be decrypted. The encryption key may be incorrect or the file may be corrupted.'));
+        }
+
+        return $decryptedData;
     }
 
     /**

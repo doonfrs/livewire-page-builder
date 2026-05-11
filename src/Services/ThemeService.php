@@ -4,6 +4,9 @@ namespace Trinavo\LivewirePageBuilder\Services;
 
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Trinavo\LivewirePageBuilder\Exceptions\InvalidThemeFormatException;
+use Trinavo\LivewirePageBuilder\Exceptions\ThemeEncryptionException;
+use Trinavo\LivewirePageBuilder\Exceptions\ThemeFileException;
 use Trinavo\LivewirePageBuilder\Models\Theme;
 
 class ThemeService
@@ -231,17 +234,17 @@ class ThemeService
     {
         // Validate required fields
         if (! isset($data['name']) || ! isset($data['pages'])) {
-            throw new \Exception('Invalid theme file format: missing required fields');
+            throw new InvalidThemeFormatException(__('The selected file does not appear to be a valid theme file. It is missing required fields (name or pages).'));
         }
 
         // Validate pages structure
         if (! is_array($data['pages'])) {
-            throw new \Exception('Invalid pages format in theme file');
+            throw new InvalidThemeFormatException(__('The selected file contains invalid page data. Please ensure it is a properly formatted theme file.'));
         }
 
         foreach ($data['pages'] as $index => $pageData) {
             if (! isset($pageData['key'])) {
-                throw new \Exception("Invalid page data at index {$index}: missing key");
+                throw new InvalidThemeFormatException(__('The selected file contains invalid page data. Some pages are missing required information.'));
             }
         }
 
@@ -326,10 +329,10 @@ class ThemeService
         if (! $themeData) {
             // Check if the issue is with the encryption key
             if (empty($password) && empty($this->encryptionService->getEncryptionKey())) {
-                throw new \Exception('No encryption key provided. Please configure the encryption key in your settings or provide a password.');
+                throw new ThemeEncryptionException(__('This file is encrypted but no encryption key is configured. Please contact your administrator to set up the encryption key.'));
             }
 
-            throw new \Exception('Failed to decrypt theme data. The encryption key may be incorrect or the file may be corrupted.');
+            throw new ThemeEncryptionException(__('This file is encrypted but cannot be decrypted. The encryption key may be incorrect or the file may be corrupted.'));
         }
 
         // Import the decrypted theme
@@ -346,38 +349,27 @@ class ThemeService
     public function importThemeFromFile(string $filePath, bool $overwriteExisting = false): ?Theme
     {
         if (! file_exists($filePath)) {
-            throw new \Exception("File not found: {$filePath}");
+            throw new ThemeFileException(__('This file could not be found. Please ensure the file exists and try again.'));
         }
 
         $content = file_get_contents($filePath);
         if ($content === false) {
-            throw new \Exception("Failed to read file: {$filePath}");
+            throw new ThemeFileException(__('Unable to read the selected file. Please ensure the file is not corrupted and try again.'));
         }
 
         // Check if the file is encrypted
         if ($this->encryptionService->isEncrypted($content)) {
             Log::debug('Detected encrypted theme file, attempting decryption');
 
-            try {
-                return $this->importEncryptedTheme($content, $overwriteExisting);
-            } catch (\Exception $e) {
-                // Re-throw with more context
-                throw new \Exception('Failed to import encrypted theme: '.$e->getMessage());
-            }
+            return $this->importEncryptedTheme($content, $overwriteExisting);
         }
 
         $data = json_decode($content, true);
         if (! $data) {
-            $jsonError = json_last_error_msg();
-            throw new \Exception("Invalid JSON format: {$jsonError}");
+            throw new InvalidThemeFormatException(__('The selected file does not contain valid JSON data. Please select a valid theme file.'));
         }
 
-        try {
-            return $this->importTheme($data, $overwriteExisting);
-        } catch (\Exception $e) {
-            // Re-throw with more context
-            throw new \Exception('Failed to import theme data: '.$e->getMessage());
-        }
+        return $this->importTheme($data, $overwriteExisting);
     }
 
     /**
@@ -391,12 +383,12 @@ class ThemeService
     public function importThemeFromEncryptedFile(string $filePath, bool $overwriteExisting = false, ?string $password = null): ?Theme
     {
         if (! file_exists($filePath)) {
-            throw new \Exception("File not found: {$filePath}");
+            throw new ThemeFileException(__('This file could not be found. Please ensure the file exists and try again.'));
         }
 
         $content = file_get_contents($filePath);
         if ($content === false) {
-            throw new \Exception("Failed to read file: {$filePath}");
+            throw new ThemeFileException(__('Unable to read the selected file. Please ensure the file is not corrupted and try again.'));
         }
 
         return $this->importEncryptedTheme($content, $overwriteExisting, $password);

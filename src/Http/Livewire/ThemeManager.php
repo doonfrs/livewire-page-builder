@@ -6,6 +6,7 @@ use Illuminate\Support\Str;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Trinavo\LivewirePageBuilder\Events\DefaultThemeSet;
+use Trinavo\LivewirePageBuilder\Exceptions\ThemeImportException;
 use Trinavo\LivewirePageBuilder\Models\Setting;
 use Trinavo\LivewirePageBuilder\Models\Theme;
 use Trinavo\LivewirePageBuilder\Services\ThemeService;
@@ -447,36 +448,10 @@ class ThemeManager extends Component
         ]);
 
         try {
-            // The ThemeService will automatically detect if the file is encrypted
-            // and handle it appropriately - transparent to the user
+            // ThemeService throws typed ThemeImportException subclasses with
+            // user-friendly messages for every known bad-file case. Anything
+            // else is unexpected and must bubble up so it gets logged as a bug.
             $importedTheme = $this->getThemeService()->importThemeFromFile($this->importFile->getRealPath());
-
-            if (! $importedTheme) {
-                // Check if the file content could be read
-                $content = file_get_contents($this->importFile->getRealPath());
-
-                if ($content === false) {
-                    throw new \Exception(__('Unable to read the selected file. Please ensure the file is not corrupted and try again.'));
-                }
-
-                // Check if it's an encrypted file
-                if ($this->getThemeService()->getEncryptionService()->isEncrypted($content)) {
-                    throw new \Exception(__('This file appears to be encrypted but cannot be decrypted. Please ensure you have the correct encryption key configured.'));
-                }
-
-                // Check if it's valid JSON
-                $decoded = json_decode($content, true);
-                if (json_last_error() !== JSON_ERROR_NONE) {
-                    throw new \Exception(__('The selected file does not contain valid JSON data. Please select a valid theme file.'));
-                }
-
-                // Check if it has the required structure
-                if (! isset($decoded['name']) || ! isset($decoded['pages'])) {
-                    throw new \Exception(__('The selected file does not appear to be a valid theme file. It is missing required fields (name or pages).'));
-                }
-
-                throw new \Exception(__('Import failed - the file does not appear to be a valid theme file'));
-            }
 
             $this->loadThemes();
             $this->closeImportModal();
@@ -485,58 +460,9 @@ class ThemeManager extends Component
                 message: __("Theme ':name' imported successfully", ['name' => $importedTheme->name]),
                 type: 'success'
             );
-
-        } catch (\Exception $e) {
-            report($e);
-
-            // Provide user-friendly error messages
-            $errorMessage = $e->getMessage();
-
-            // Check for specific encryption-related errors (handle both prefixed and direct messages)
-            if (str_contains($errorMessage, 'No encryption key provided')) {
-                $errorMessage = __('This file is encrypted but no encryption key is configured. Please contact your administrator to set up the encryption key.');
-            } elseif (str_contains($errorMessage, 'Failed to decrypt')) {
-                $errorMessage = __('This file is encrypted but cannot be decrypted. The encryption key may be incorrect or the file may be corrupted.');
-            } elseif (str_contains($errorMessage, 'Invalid encrypted theme format')) {
-                $errorMessage = __('This file appears to be encrypted but has an invalid format. It may be corrupted or created with a different version.');
-            } elseif (str_contains($errorMessage, 'Invalid JSON format')) {
-                $errorMessage = __('The selected file does not contain valid JSON data. Please select a valid theme file.');
-            } elseif (str_contains($errorMessage, 'File not found')) {
-                $errorMessage = __('This file could not be found. Please ensure the file exists and try again.');
-            } elseif (str_contains($errorMessage, 'Failed to read file')) {
-                $errorMessage = __('Unable to read the selected file. Please ensure the file is not corrupted and try again.');
-            } elseif (str_contains($errorMessage, 'missing required fields')) {
-                $errorMessage = __('The selected file does not appear to be a valid theme file. It is missing required fields (name or pages).');
-            } elseif (str_contains($errorMessage, 'Invalid pages format')) {
-                $errorMessage = __('The selected file contains invalid page data. Please ensure it is a properly formatted theme file.');
-            } elseif (str_contains($errorMessage, 'missing key')) {
-                $errorMessage = __('The selected file contains invalid page data. Some pages are missing required information.');
-            } elseif (str_contains($errorMessage, 'Failed to import encrypted theme')) {
-                // Handle the prefixed error message
-                if (str_contains($errorMessage, 'No encryption key provided')) {
-                    $errorMessage = __('This file is encrypted but no encryption key is configured. Please contact your administrator to set up the encryption key.');
-                } elseif (str_contains($errorMessage, 'Failed to decrypt')) {
-                    $errorMessage = __('This file is encrypted but cannot be decrypted. The encryption key may be incorrect or the file may be corrupted.');
-                } elseif (str_contains($errorMessage, 'Invalid encrypted theme format')) {
-                    $errorMessage = __('This file appears to be encrypted but has an invalid format. It may be corrupted or created with a different version.');
-                } else {
-                    $errorMessage = __('This encrypted file could not be imported. Please check your encryption configuration.');
-                }
-            } elseif (str_contains($errorMessage, 'Failed to import theme data')) {
-                // Handle the prefixed error message for regular theme data
-                if (str_contains($errorMessage, 'Invalid theme file format')) {
-                    $errorMessage = __('The selected file does not appear to be a valid theme file. It is missing required fields (name or pages).');
-                } elseif (str_contains($errorMessage, 'Invalid pages format')) {
-                    $errorMessage = __('The selected file contains invalid page data. Please ensure it is a properly formatted theme file.');
-                } elseif (str_contains($errorMessage, 'missing key')) {
-                    $errorMessage = __('The selected file contains invalid page data. Some pages are missing required information.');
-                } else {
-                    $errorMessage = __('The theme file could not be imported due to data format issues.');
-                }
-            }
-
+        } catch (ThemeImportException $e) {
             $this->dispatch('notify',
-                message: $errorMessage,
+                message: $e->getMessage(),
                 type: 'error'
             );
         } finally {
