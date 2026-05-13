@@ -6,18 +6,15 @@ use Trinavo\LivewirePageBuilder\Http\Livewire\ThemeManager;
 use Trinavo\LivewirePageBuilder\Services\PageBuilderRender;
 
 $base = ['web', 'page-builder-localization'];
-$legacy = config('page-builder.middleware', []);
 
 $editorMiddleware = array_merge(
     $base,
-    config('page-builder.editor_middleware', ['auth']),
-    $legacy
+    config('page-builder.editor_middleware', ['auth'])
 );
 
 $renderMiddleware = array_merge(
     $base,
-    config('page-builder.render_middleware', []),
-    $legacy
+    config('page-builder.render_middleware', [])
 );
 
 Route::prefix('page-builder')->group(function () use ($editorMiddleware, $renderMiddleware) {

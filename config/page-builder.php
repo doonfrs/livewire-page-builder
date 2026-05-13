@@ -10,11 +10,6 @@ return [
     // Defaults to none (pages are publicly viewable). Add ['auth'] for gated pages.
     'render_middleware' => [],
 
-    // Legacy: applied to BOTH editor and render groups, in addition to the
-    // group-specific middleware above. Kept for backward compatibility;
-    // new installs should use editor_middleware / render_middleware instead.
-    'middleware' => [],
-
     // When true (default), inline-style CSS values that don't match the
     // expected color/url/keyword shapes are dropped (with a Log::warning).
     // Set to false if you have legacy property values that fail validation
