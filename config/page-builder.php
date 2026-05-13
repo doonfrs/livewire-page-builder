@@ -44,9 +44,6 @@ return [
         // Default encryption key (should be set in .env for production)
         'key' => env('PAGE_BUILDER_ENCRYPTION_KEY', ''),
 
-        // Encryption algorithm (AES-256-CBC, AES-256-GCM, etc.)
-        'algorithm' => env('PAGE_BUILDER_ENCRYPTION_ALGORITHM', 'AES-256-CBC'),
-
         // File extension for encrypted themes
         'file_extension' => env('PAGE_BUILDER_ENCRYPTION_FILE_EXTENSION', '.tet'),
 

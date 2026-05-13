@@ -14,7 +14,6 @@ class ThemeEncryptionService
     protected static array $cache = [
         'enabled' => false,
         'key' => '',
-        'algorithm' => 'AES-256-CBC',
         'file_extension' => '.encrypted',
         'require_password' => true,
     ];
@@ -37,7 +36,6 @@ class ThemeEncryptionService
     {
         static::$cache['enabled'] = Config::get('page-builder.encryption.enabled', false);
         static::$cache['key'] = Config::get('page-builder.encryption.key', '');
-        static::$cache['algorithm'] = Config::get('page-builder.encryption.algorithm', 'AES-256-CBC');
         static::$cache['file_extension'] = Config::get('page-builder.encryption.file_extension', '.encrypted');
         static::$cache['require_password'] = Config::get('page-builder.encryption.require_password', true);
 
@@ -52,7 +50,6 @@ class ThemeEncryptionService
         static::$cache = [
             'enabled' => false,
             'key' => '',
-            'algorithm' => 'AES-256-CBC',
             'file_extension' => '.encrypted',
             'require_password' => true,
         ];
@@ -76,16 +73,6 @@ class ThemeEncryptionService
     public function setEncryptionKey(string $key): self
     {
         static::$cache['key'] = $key;
-
-        return $this;
-    }
-
-    /**
-     * Set encryption algorithm dynamically
-     */
-    public function setEncryptionAlgorithm(string $algorithm): self
-    {
-        static::$cache['algorithm'] = $algorithm;
 
         return $this;
     }
@@ -123,9 +110,7 @@ class ThemeEncryptionService
      */
     public function isEncryptionConfigured(): bool
     {
-        return static::$cache['enabled'] &&
-               ! empty(static::$cache['key']) &&
-               ! empty(static::$cache['algorithm']);
+        return static::$cache['enabled'] && ! empty(static::$cache['key']);
     }
 
     /**
@@ -134,14 +119,6 @@ class ThemeEncryptionService
     public function getEncryptionKey(): ?string
     {
         return static::$cache['key'] ?: null;
-    }
-
-    /**
-     * Get current encryption algorithm
-     */
-    public function getEncryptionAlgorithm(): string
-    {
-        return static::$cache['algorithm'];
     }
 
     /**
@@ -236,32 +213,40 @@ class ThemeEncryptionService
     }
 
     /**
-     * Encrypt data using the configured algorithm
+     * Encrypt a payload with AES-256-GCM. Output is base64(iv || tag || ciphertext).
+     * The 16-byte GCM tag authenticates the ciphertext + IV so any tampering is
+     * detected on decryption.
      */
     protected function encryptData(array $data, string $key): string
     {
         $jsonData = json_encode($data);
+        $iv = random_bytes(12);
+        $tag = '';
 
-        if (static::$cache['algorithm'] === 'AES-256-GCM') {
-            return $this->encryptAES256GCM($jsonData, $key);
-        } else {
-            return $this->encryptAES256CBC($jsonData, $key);
+        $encrypted = openssl_encrypt($jsonData, 'AES-256-GCM', $key, OPENSSL_RAW_DATA, $iv, $tag);
+
+        if ($encrypted === false) {
+            throw new \Exception('Encryption failed');
         }
+
+        return base64_encode($iv.$tag.$encrypted);
     }
 
     /**
-     * Decrypt data using the configured algorithm
+     * Decrypt an AES-256-GCM payload produced by encryptData(). Returns null
+     * if the ciphertext, IV, or tag is corrupted or the key is wrong.
      */
     protected function decryptData(string $encryptedData, string $key): ?array
     {
         try {
-            if (static::$cache['algorithm'] === 'AES-256-GCM') {
-                $decrypted = $this->decryptAES256GCM($encryptedData, $key);
-            } else {
-                $decrypted = $this->decryptAES256CBC($encryptedData, $key);
-            }
+            $data = base64_decode($encryptedData);
+            $iv = substr($data, 0, 12);
+            $tag = substr($data, 12, 16);
+            $ciphertext = substr($data, 28);
 
-            if (! $decrypted) {
+            $decrypted = openssl_decrypt($ciphertext, 'AES-256-GCM', $key, OPENSSL_RAW_DATA, $iv, $tag);
+
+            if ($decrypted === false) {
                 return null;
             }
 
@@ -272,67 +257,6 @@ class ThemeEncryptionService
 
             return null;
         }
-    }
-
-    /**
-     * Encrypt using AES-256-CBC
-     */
-    protected function encryptAES256CBC(string $data, string $key): string
-    {
-        $iv = random_bytes(16);
-        $encrypted = openssl_encrypt($data, 'AES-256-CBC', $key, OPENSSL_RAW_DATA, $iv);
-
-        if ($encrypted === false) {
-            throw new \Exception('Encryption failed');
-        }
-
-        return base64_encode($iv.$encrypted);
-    }
-
-    /**
-     * Decrypt using AES-256-CBC
-     */
-    protected function decryptAES256CBC(string $encryptedData, string $key): ?string
-    {
-        $data = base64_decode($encryptedData);
-        $iv = substr($data, 0, 16);
-        $encrypted = substr($data, 16);
-
-        $decrypted = openssl_decrypt($encrypted, 'AES-256-CBC', $key, OPENSSL_RAW_DATA, $iv);
-
-        return $decrypted !== false ? $decrypted : null;
-    }
-
-    /**
-     * Encrypt using AES-256-GCM
-     */
-    protected function encryptAES256GCM(string $data, string $key): string
-    {
-        $iv = random_bytes(12);
-        $tag = '';
-
-        $encrypted = openssl_encrypt($data, 'AES-256-GCM', $key, OPENSSL_RAW_DATA, $iv, $tag);
-
-        if ($encrypted === false) {
-            throw new \Exception('Encryption failed');
-        }
-
-        return base64_encode($iv.$tag.$encrypted);
-    }
-
-    /**
-     * Decrypt using AES-256-GCM
-     */
-    protected function decryptAES256GCM(string $encryptedData, string $key): ?string
-    {
-        $data = base64_decode($encryptedData);
-        $iv = substr($data, 0, 12);
-        $tag = substr($data, 12, 16);
-        $encrypted = substr($data, 28);
-
-        $decrypted = openssl_decrypt($encrypted, 'AES-256-GCM', $key, OPENSSL_RAW_DATA, $iv, $tag);
-
-        return $decrypted !== false ? $decrypted : null;
     }
 
     /**

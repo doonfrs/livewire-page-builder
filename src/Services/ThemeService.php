@@ -119,7 +119,6 @@ class ThemeService
 
             Log::debug('Encrypted theme exported to file', [
                 'file_path' => $filePath,
-                'algorithm' => $this->encryptionService->getEncryptionAlgorithm(),
             ]);
 
             return $filePath;
@@ -193,7 +192,6 @@ class ThemeService
 
         Log::debug('Encrypted theme exported to file', [
             'file_path' => $filePath,
-            'algorithm' => $this->encryptionService->getEncryptionAlgorithm(),
         ]);
 
         return $filePath;
