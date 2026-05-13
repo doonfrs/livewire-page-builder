@@ -13,6 +13,9 @@ coverage/
 
 laravel.log
 
+# IDE / editor
+.vscode/
+
 # SSL keys — never commit
 ssl/
 
