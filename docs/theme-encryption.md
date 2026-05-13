@@ -1,507 +1,207 @@
 # Theme Encryption
 
-The Livewire Page Builder package now supports encrypted theme exports and imports, providing an additional layer of security for your themes when sharing or storing them. **The encryption is completely transparent to users - they see the exact same UI and experience, but themes are automatically encrypted when encryption is enabled.**
+The package can encrypt theme exports so that the JSON payload — names, descriptions, page components, the whole tree — is unreadable without the configured key. Encryption is **opt‑in**, transparent (the editor UI is unchanged), and uses **AES‑256‑GCM** exclusively.
 
-## Features
+> ℹ️ Older versions of the package supported AES‑256‑CBC as well. That option has been removed (commit `51ec732`, May 2026). The package now only emits and accepts GCM. Files encrypted with the old CBC pipeline cannot be imported — re‑export them from the original installation before upgrading, or roll back to decrypt them first.
 
-- **Transparent Encryption**: Users never see encryption-related UI - it works automatically in the background
-- **Configurable Encryption**: Enable/disable encryption via configuration
-- **Multiple Algorithms**: Support for AES-256-CBC and AES-256-GCM
-- **Dynamic Configuration**: Set encryption settings programmatically at runtime
-- **Automatic Detection**: Automatically detects encrypted files during import
-- **Secure Key Generation**: Built-in secure encryption key generation
-- **Seamless Experience**: Same export/import buttons, same workflow, automatic encryption
+---
 
-## How It Works
+## How it works
 
-### For Users (Frontend)
+- **Algorithm**: AES‑256‑GCM (authenticated encryption). The 16‑byte GCM tag means tampering with the ciphertext, IV, or tag is detected on decryption — a wrong key, a truncated file, or any modification fails cleanly instead of returning garbage.
+- **Ciphertext layout**: `base64(iv || tag || ciphertext)` where `iv` is 12 bytes and `tag` is 16 bytes.
+- **Envelope**: encrypted exports are wrapped in a small JSON object so the package can auto‑detect them on import:
 
-- **Export**: Click export button → theme is automatically encrypted if enabled
-- **Import**: Upload file → automatically detected and decrypted if encrypted
-- **UI**: No changes to the existing interface
-- **Workflow**: Same export/import process as before
+  ```json
+  {
+      "encrypted":    true,
+      "version":      "1.0",
+      "encrypted_at": "2026-05-14T...",
+      "data":         "<base64 ciphertext>"
+  }
+  ```
 
-### For Developers (Backend)
+  The algorithm is not embedded in the file — the package always uses AES‑256‑GCM.
+- **Detection**: any import that contains `"encrypted": true` is treated as encrypted; everything else is parsed as plain JSON. You don't need to choose between code paths.
 
-- **Configuration**: Set encryption settings in config or programmatically
-- **Automatic**: Encryption happens transparently when `exportTheme()` is called
-- **Detection**: Import automatically detects encrypted vs. regular files
-- **Control**: Full programmatic control over encryption behavior
-
-### Important Notes
-
-- **Encryption setting only affects exports**: When disabled, new themes are exported as plain JSON
-- **Encrypted files can always be imported**: Even when encryption is disabled, encrypted files can still be imported and decrypted
-- **Key requirement**: Decryption still requires the correct encryption key (from config or provided password)
+---
 
 ## Configuration
 
-### Environment Variables
-
-Add these variables to your `.env` file:
+### `.env`
 
 ```env
-# Enable theme encryption
 PAGE_BUILDER_ENCRYPTION_ENABLED=true
-
-# Your encryption key (32-byte base64 encoded)
-PAGE_BUILDER_ENCRYPTION_KEY=your_base64_encoded_32_byte_key_here
-
-# Encryption algorithm (AES-256-CBC or AES-256-GCM)
-PAGE_BUILDER_ENCRYPTION_ALGORITHM=AES-256-CBC
-
-# File extension for encrypted themes
-PAGE_BUILDER_ENCRYPTION_FILE_EXTENSION=.encrypted
-
-# Whether to require password for encrypted themes
+PAGE_BUILDER_ENCRYPTION_KEY=<base64-encoded 32-byte key>
+PAGE_BUILDER_ENCRYPTION_FILE_EXTENSION=.tet
 PAGE_BUILDER_ENCRYPTION_REQUIRE_PASSWORD=true
 ```
 
-### Config File
-
-The encryption settings are also configurable in `config/page-builder.php`:
+### `config/page-builder.php`
 
 ```php
 'encryption' => [
-    'enabled' => env('PAGE_BUILDER_ENCRYPTION_ENABLED', false),
-    'key' => env('PAGE_BUILDER_ENCRYPTION_KEY', ''),
-    'algorithm' => env('PAGE_BUILDER_ENCRYPTION_ALGORITHM', 'AES-256-CBC'),
-    'file_extension' => env('PAGE_BUILDER_ENCRYPTION_FILE_EXTENSION', '.encrypted'),
+    'enabled'          => env('PAGE_BUILDER_ENCRYPTION_ENABLED', false),
+    'key'              => env('PAGE_BUILDER_ENCRYPTION_KEY', ''),
+    'file_extension'   => env('PAGE_BUILDER_ENCRYPTION_FILE_EXTENSION', '.tet'),
     'require_password' => env('PAGE_BUILDER_ENCRYPTION_REQUIRE_PASSWORD', true),
 ],
 ```
 
-## User Experience
+| Key | Purpose |
+|---|---|
+| `enabled` | When `true`, new exports are encrypted. When `false`, exports are plain JSON — but **encrypted files can still be imported** as long as the key is configured. |
+| `key` | Base64‑encoded 32‑byte (256‑bit) key. Generate it once and store it in `.env`. |
+| `file_extension` | Filename suffix applied to encrypted exports (default `.tet`). |
+| `require_password` | When `true`, the UI prompts for an extra per‑export password on import; that password is used *in place of* the configured key. |
 
-### Export Process
+---
 
-1. User clicks "Export Theme" button
-2. If encryption is enabled: theme is automatically encrypted and downloaded with `.encrypted` extension
-3. If encryption is disabled: theme is exported as regular JSON
-4. User sees no difference in the process
+## Generating an encryption key
 
-### Import Process
-
-1. User clicks "Import Theme" button
-2. User selects file (encrypted or regular JSON)
-3. System automatically detects file type and handles accordingly
-4. User sees no difference in the process
-
-### File Input Behavior
-
-The import dialog now accepts any file type:
-
-- **`.json` files**: Regular theme files (no encryption)
-- **`.encrypted` files**: Encrypted theme files (or custom extension from config)
-- **Any other file type**: The system will attempt to read and detect the content
-
-Users can select any file, and the system will automatically:
-
-- Detect if the file is encrypted by checking for `{"encrypted":true,"version":"1.0"` in the content
-- Handle regular JSON files normally
-- Decrypt encrypted files automatically using the configured encryption key
-- Show appropriate error messages for invalid files
-
-**Note**: The file input no longer restricts file types, allowing users to select any file. The system validates the content after selection.
-
-### File Extensions
-
-- **Regular themes**: `.json` extension
-- **Encrypted themes**: `.encrypted` extension (or custom extension from config)
-- **Automatic detection**: Import works with both file types seamlessly
-- **File input**: The import dialog accepts both `.json` and encrypted file extensions
-
-## Generating Encryption Keys
-
-### Using the Service
+A valid key is 32 random bytes, base64‑encoded.
 
 ```php
 use Trinavo\LivewirePageBuilder\Facades\ThemeEncryptionService;
 
-// Generate a secure 32-byte key
 $key = ThemeEncryptionService::generateEncryptionKey();
-
-// Validate a key
-$isValid = ThemeEncryptionService::validateEncryptionKey($key);
 ```
 
-### Using Artisan
+From the terminal:
 
 ```bash
-# Generate a new encryption key
 php artisan tinker
 >>> Trinavo\LivewirePageBuilder\Facades\ThemeEncryptionService::generateEncryptionKey();
 ```
 
-## Basic Usage
+Or without PHP:
 
-### For End Users
-
-**No changes needed!** The encryption works automatically:
-
-1. **Enable encryption** in your configuration
-2. **Users export themes** using the same button
-3. **Themes are automatically encrypted** and downloaded
-4. **Users import themes** using the same button
-5. **System automatically handles** encrypted vs. regular files
-
-### For Developers
-
-#### Using the Service Class
-
-```php
-use Trinavo\LivewirePageBuilder\Services\ThemeService;
-use Trinavo\LivewirePageBuilder\Services\ThemeEncryptionService;
-
-// Get the services
-$themeService = app(ThemeService::class);
-$encryptionService = app(ThemeEncryptionService::class);
-
-// Check if encryption is enabled
-if ($themeService->isEncryptionEnabled()) {
-    // Export will automatically be encrypted
-    $exportData = $themeService->exportThemeAsJson(1);
-    
-    // Import will automatically detect and decrypt
-    $theme = $themeService->importThemeFromFile($filePath);
-}
+```bash
+openssl rand -base64 32
 ```
 
-#### Using the Facades
+To check that an existing key has the right format:
+
+```php
+ThemeEncryptionService::validateEncryptionKey($key);   // bool
+```
+
+A key is valid when it base64‑decodes to exactly 32 bytes.
+
+---
+
+## Export & import behaviour
+
+| Encryption setting | Export | Import |
+|---|---|---|
+| **Enabled** | New exports are AES‑256‑GCM encrypted, saved with the configured extension. | Both encrypted and plain JSON files are accepted. |
+| **Disabled** | New exports are plain JSON, saved with `.json`. | Both encrypted and plain JSON files are accepted (the key must still be configured to decrypt). |
+
+This asymmetry is intentional: turning encryption off for new exports (e.g. while debugging) shouldn't lock you out of old encrypted exports.
+
+The editor's import dialog accepts any file type. Detection happens by inspecting the file contents for the `"encrypted": true` envelope marker, so there's no risk of selecting the wrong format.
+
+---
+
+## Programmatic use
+
+### Default path — let `ThemeService` decide
 
 ```php
 use Trinavo\LivewirePageBuilder\Facades\ThemeService;
-use Trinavo\LivewirePageBuilder\Facades\ThemeEncryptionService;
 
-// Check encryption status
-$isEnabled = ThemeEncryptionService::isEncryptionEnabled();
-
-// Export (automatically encrypted if enabled)
-$exportData = ThemeService::exportThemeAsJson(1);
-
-// Import (automatically detected and handled)
-$theme = ThemeService::importThemeFromFile($filePath);
+$jsonOrCiphertext = ThemeService::exportThemeAsJson(1);   // encrypted if enabled
+$theme            = ThemeService::importThemeFromFile($path);  // auto-detects
 ```
 
-## Dynamic Configuration
+### Force encrypted IO regardless of setting
 
-You can change encryption settings at runtime:
+Useful when you have a global setting of "off" but want to encrypt this particular export:
+
+```php
+$encrypted = ThemeService::exportThemeAsEncryptedJson(1, password: 'extra-password');
+$path      = ThemeService::exportThemeToEncryptedFile(1, directory: null, password: null);
+
+$theme = ThemeService::importEncryptedTheme($encryptedString, overwriteExisting: false, password: null);
+$theme = ThemeService::importThemeFromEncryptedFile($path, overwriteExisting: false, password: null);
+```
+
+When `password` is null the configured key is used; when a string is passed, **that string is used in place of the configured key** for this operation only.
+
+### Directly using `ThemeEncryptionService`
 
 ```php
 use Trinavo\LivewirePageBuilder\Facades\ThemeEncryptionService;
 
-// Enable encryption
+$envelope = ThemeEncryptionService::encryptThemeData($themeArray, password: null);   // returns the JSON envelope as a string
+$data     = ThemeEncryptionService::decryptThemeData($envelopeJson, password: null); // returns the original array
+
+ThemeEncryptionService::isEncrypted($jsonString);    // bool
+```
+
+### Runtime configuration overrides
+
+Every config value has a setter on the service:
+
+```php
 ThemeEncryptionService::setEncryptionEnabled(true);
-
-// Set custom encryption key
-ThemeEncryptionService::setEncryptionKey('your_custom_key');
-
-// Change algorithm
-ThemeEncryptionService::setEncryptionAlgorithm('AES-256-GCM');
-
-// Set custom file extension
+ThemeEncryptionService::setEncryptionKey($key);
 ThemeEncryptionService::setFileExtension('.secure');
-
-// Configure password requirements
 ThemeEncryptionService::setRequirePassword(false);
 
-// Flush cache and reload from config
+// Reset to whatever is in config/ENV
 ThemeEncryptionService::flushCache();
 ```
 
-## Exporting Themes
+Setters are useful in tests or multi‑tenant setups where the key changes per request.
 
-### Automatic Encryption
+---
 
-```php
-use Trinavo\LivewirePageBuilder\Facades\ThemeService;
+## Service API reference
 
-// This will automatically encrypt if encryption is enabled
-$exportData = ThemeService::exportThemeAsJson(1);
+`ThemeEncryptionService` (also available as the `ThemeEncryptionService` facade):
 
-// File extension will automatically be .encrypted if encryption is enabled
-$filePath = ThemeService::exportThemeToFile(1);
-```
+| Method | Purpose |
+|---|---|
+| `isEncryptionEnabled(): bool` | Whether new exports will be encrypted |
+| `isEncryptionConfigured(): bool` | Whether a key is present and decryption can succeed |
+| `setEncryptionEnabled(bool): self` | Toggle encryption for new exports |
+| `setEncryptionKey(string): self` / `getEncryptionKey(): ?string` | Override / read the active key |
+| `setFileExtension(string): self` / `getFileExtension(): string` | Override / read the encrypted file extension |
+| `setRequirePassword(bool): self` / `isPasswordRequired(): bool` | Override / read the password requirement |
+| `encryptThemeData(array, ?string $password = null): ?string` | Produce the encrypted JSON envelope (returns `null` if encryption is disabled) |
+| `decryptThemeData(string, ?string $password = null): ?array` | Parse and decrypt an envelope back to a theme array |
+| `isEncrypted(string): bool` | Quick check on a string payload |
+| `generateEncryptionKey(): string` | New 32‑byte key, base64‑encoded |
+| `validateEncryptionKey(string): bool` | True when the key base64‑decodes to 32 bytes |
+| `loadFromConfig(): self` / `flushCache(): self` | Sync the service's in‑memory cache with config |
 
-### Manual Control (Advanced)
+---
 
-```php
-use Trinavo\LivewirePageBuilder\Facades\ThemeService;
+## Operational guidance
 
-// Force encrypted export
-$encryptedData = ThemeService::exportThemeAsEncryptedJson(1);
+- **Never commit `PAGE_BUILDER_ENCRYPTION_KEY`** to version control. Store it in your secrets manager (Vault, AWS Secrets Manager, Doppler, …).
+- **Use different keys per environment.** A leaked staging key shouldn't put production at risk.
+- **Back up your key.** Without it, encrypted exports become opaque blobs that cannot be recovered — the package keeps no recovery copy.
+- **Rotate keys** by exporting under the old key, importing with the old key configured, then re‑exporting under the new key. Both keys can be in play if you orchestrate the migration through your application code (use `setEncryptionKey()` to swap at runtime).
+- **Auditability.** Encryption metadata (`encrypted`, `version`, `encrypted_at`) is the only thing visible in an encrypted file — useful for sorting / inventorying without decrypting.
 
-// Force encrypted file export
-$filePath = ThemeService::exportThemeToEncryptedFile(1);
-```
+---
 
-## Importing Themes
+## Common errors
 
-### Automatic Detection
+| Symptom | Likely cause |
+|---|---|
+| `"This file is encrypted but no encryption key is configured."` | `PAGE_BUILDER_ENCRYPTION_KEY` is empty. Set it and retry. |
+| `"This file is encrypted but cannot be decrypted."` | Wrong key, file corruption, or modified ciphertext. |
+| `"This file appears to be encrypted but has an invalid format."` | The envelope is malformed (truncated upload, wrong file). |
+| Import silently fails on a `.tet` file | The configured key in this environment differs from the one used to encrypt. Same key, different installs is fine; rotated key is not. |
 
-```php
-use Trinavo\LivewirePageBuilder\Facades\ThemeService;
+Catch `Trinavo\LivewirePageBuilder\Exceptions\ThemeEncryptionException` to handle these programmatically.
 
-// This automatically detects encrypted vs. regular files
-$theme = ThemeService::importThemeFromFile($filePath);
+---
 
-// Works with both .json and .encrypted files
-$theme = ThemeService::importThemeFromFile('theme.json');
-$theme = ThemeService::importThemeFromFile('theme.encrypted');
-```
+## See also
 
-### Manual Control (Advanced)
-
-```php
-use Trinavo\LivewirePageBuilder\Facades\ThemeService;
-
-// Force encrypted import
-$theme = ThemeService::importEncryptedTheme($encryptedData);
-
-// Force encrypted file import
-$theme = ThemeService::importThemeFromEncryptedFile($filePath);
-```
-
-## Encrypted File Format
-
-Encrypted theme files have a secure JSON structure that doesn't reveal encryption details:
-
-```json
-{
-    "encrypted": true,
-    "version": "1.0",
-    "encrypted_at": "2024-01-15T10:30:00.000000Z",
-    "data": "base64_encoded_encrypted_data_here"
-}
-```
-
-**Security Note**: The encryption algorithm is not included in the encrypted file to prevent information disclosure. The system uses the configured algorithm from the configuration for decryption.
-
-## Security Considerations
-
-### Key Management
-
-- **Never commit encryption keys to version control**
-- **Use environment variables for production keys**
-- **Rotate keys regularly**
-- **Use different keys for different environments**
-
-### Password Security
-
-- **Use strong, unique passwords for custom encryption**
-- **Consider using a password manager for key storage**
-- **Implement proper access controls for encrypted themes**
-
-### Algorithm Selection
-
-- **AES-256-CBC**: Good for compatibility, requires proper IV handling
-- **AES-256-GCM**: Better security with authenticated encryption
-
-### Information Disclosure Prevention
-
-- **No algorithm details**: Encrypted files don't reveal which encryption algorithm was used
-- **No system information**: Files don't contain details about the encryption system
-- **Minimal metadata**: Only essential information (encrypted flag, version, timestamp) is stored
-- **Configuration-based**: System uses configured encryption method, not stored algorithm
-- **Clean implementation**: No backward compatibility complexity
-
-## Error Handling
-
-### Common Errors
-
-```php
-try {
-    $theme = ThemeService::importThemeFromFile($filePath);
-} catch (\Exception $e) {
-    // Handle specific error types
-    if (str_contains($e->getMessage(), 'Failed to decrypt')) {
-        // Wrong password or corrupted data
-    } elseif (str_contains($e->getMessage(), 'encryption is not enabled')) {
-        // Encryption not configured
-    }
-}
-```
-
-### Validation
-
-```php
-use Trinavo\LivewirePageBuilder\Facades\ThemeEncryptionService;
-
-// Check if data is encrypted
-if (ThemeEncryptionService::isEncrypted($data)) {
-    // Handle encrypted data
-} else {
-    // Handle regular JSON data
-}
-
-// Validate encryption key
-if (!ThemeEncryptionService::validateEncryptionKey($key)) {
-    throw new \InvalidArgumentException('Invalid encryption key format');
-}
-```
-
-## Performance Considerations
-
-- **Encryption/decryption adds processing overhead**
-- **Large themes may take longer to process**
-- **Consider caching decrypted themes for repeated access**
-- **Use appropriate file size limits for uploads**
-
-## Troubleshooting
-
-### Common Issues
-
-1. **"Encryption not enabled"**
-   - Check `PAGE_BUILDER_ENCRYPTION_ENABLED` in `.env`
-   - Verify encryption key is set
-
-2. **"Failed to decrypt theme data"**
-   - Verify the password/key is correct
-   - Check if the file is actually encrypted
-   - Ensure the encryption algorithm matches
-
-3. **"Invalid encrypted theme format"**
-   - File may be corrupted
-   - Check if it's a valid encrypted theme file
-
-### Debug Mode
-
-Enable logging to debug encryption issues:
-
-```php
-// In your service provider or controller
-Log::debug('Encryption settings', [
-    'enabled' => ThemeEncryptionService::isEncryptionEnabled(),
-    'algorithm' => ThemeEncryptionService::getEncryptionAlgorithm(),
-    'has_key' => !empty(ThemeEncryptionService::getEncryptionKey()),
-]);
-```
-
-## Examples
-
-### Complete Export/Import Workflow
-
-```php
-use Trinavo\LivewirePageBuilder\Facades\ThemeService;
-use Trinavo\LivewirePageBuilder\Facades\ThemeEncryptionService;
-
-// 1. Configure encryption
-ThemeEncryptionService::setEncryptionEnabled(true);
-ThemeEncryptionService::setEncryptionKey('your_secure_key');
-
-// 2. Export theme (automatically encrypted)
-$exportData = ThemeService::exportThemeAsJson(1);
-
-// 3. Store or transmit encrypted data
-file_put_contents('secure_theme.encrypted', $exportData);
-
-// 4. Import encrypted theme (automatically detected and decrypted)
-$importedTheme = ThemeService::importThemeFromFile('secure_theme.encrypted');
-
-echo "Imported theme: " . $importedTheme->name;
-```
-
-### Custom Encryption Service
-
-```php
-class CustomThemeEncryption
-{
-    public function encryptTheme($themeId)
-    {
-        // Custom encryption logic
-        $themeService = app(ThemeService::class);
-        
-        // Will automatically encrypt if enabled
-        return $themeService->exportThemeAsJson($themeId);
-    }
-    
-    public function decryptTheme($filePath)
-    {
-        $themeService = app(ThemeService::class);
-        
-        // Will automatically detect and decrypt
-        return $themeService->importThemeFromFile($filePath);
-    }
-}
-```
-
-## API Reference
-
-### ThemeEncryptionService Methods
-
-| Method | Description | Returns |
-|--------|-------------|---------|
-| `isEncryptionEnabled()` | Check if encryption is enabled | `bool` |
-| `setEncryptionEnabled(bool)` | Enable/disable encryption | `self` |
-| `setEncryptionKey(string)` | Set encryption key | `self` |
-| `getEncryptionKey()` | Get current encryption key | `string` |
-| `setEncryptionAlgorithm(string)` | Set encryption algorithm | `self` |
-| `getEncryptionAlgorithm()` | Get current algorithm | `string` |
-| `setFileExtension(string)` | Set file extension | `self` |
-| `getFileExtension()` | Get current file extension | `string` |
-| `setRequirePassword(bool)` | Set password requirement | `self` |
-| `isPasswordRequired()` | Check password requirement | `bool` |
-| `encryptThemeData(array, ?string)` | Encrypt theme data | `string|null` |
-| `decryptThemeData(string, ?string)` | Decrypt theme data | `array|null` |
-| `isEncrypted(string)` | Check if data is encrypted | `bool` |
-| `generateEncryptionKey()` | Generate secure key | `string` |
-| `validateEncryptionKey(string)` | Validate key format | `bool` |
-
-### ThemeService Encryption Methods
-
-| Method | Description | Returns |
-|--------|-------------|---------|
-| `exportThemeAsJson(int, int)` | Export with auto-encryption | `string|null` |
-| `exportThemeToFile(int, ?string)` | Export to file with auto-encryption | `string|null` |
-| `exportThemeToEncryptedFile(int, ?string, ?string)` | Force encrypted file export | `string|null` |
-| `exportThemeAsEncryptedJson(int, ?string)` | Force encrypted JSON export | `string|null` |
-| `importThemeFromFile(string, bool)` | Import with auto-detection | `Theme|null` |
-| `importEncryptedTheme(string, bool, ?string)` | Force encrypted import | `Theme|null` |
-| `importThemeFromEncryptedFile(string, bool, ?string)` | Force encrypted file import | `Theme|null` |
-| `isEncryptionEnabled()` | Check encryption status | `bool` |
-| `getEncryptionService()` | Get encryption service | `ThemeEncryptionService` |
-
-## Migration from Previous Versions
-
-If you're upgrading from a previous version:
-
-1. **No breaking changes** - existing functionality remains intact
-2. **Encryption is disabled by default** - opt-in feature
-3. **Backward compatible** - regular JSON imports still work
-4. **Gradual adoption** - enable encryption when ready
-5. **UI unchanged** - users see the same interface
-
-## Best Practices
-
-1. **Start with encryption disabled** during development
-2. **Test thoroughly** before enabling in production
-3. **Document your encryption keys** securely
-4. **Implement proper backup strategies** for encrypted themes
-5. **Monitor performance** impact in production
-6. **Regular security audits** of encryption implementation
-7. **Keep encryption transparent** to end users
-8. **Use environment-specific keys** for different deployments
-
-## Export vs Import Behavior
-
-### Export Behavior (Controlled by Encryption Setting)
-
-- **Encryption enabled**: Themes are automatically encrypted when exported
-- **Encryption disabled**: Themes are exported as plain JSON files
-- **File extension**: Automatically changes based on encryption status
-
-### Import Behavior (Always Works)
-
-- **Encrypted files**: Can always be imported and decrypted (regardless of encryption setting)
-- **Plain JSON files**: Can always be imported normally
-- **Key requirement**: Decryption requires the correct encryption key
-- **Automatic detection**: System automatically detects file type and handles accordingly
-
-### Why This Design?
-
-This design allows you to:
-
-- **Disable encryption** for new exports (e.g., during development)
-- **Still import** encrypted files that were created when encryption was enabled
-- **Maintain compatibility** with existing encrypted themes
-- **Control encryption** for new themes without losing access to old ones
+- [Theme Service Usage](theme-service-usage.md) — the `ThemeService` API that wraps this service
+- [Advanced Configuration](advanced-configuration.md) — every `encryption.*` config key in context

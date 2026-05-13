@@ -1,73 +1,91 @@
-# Performance Optimization
+# Performance
 
-The Livewire Page Builder is designed with performance as a key consideration. We follow a dual-mode approach to ensure optimal performance in both editing and production environments.
+The page builder is split into two render pipelines so the editor's interactive overhead never reaches your visitors.
 
-## Architecture Overview
+| Mode | Used by | Mechanism |
+|---|---|---|
+| **Builder** | `/page-builder/editor/...` | Livewire components, full interactivity, drag/drop, property panel |
+| **View** | `/page-builder/page/view/...` and any custom render | A single Blade pass — no Livewire components, no Alpine state, no clipboard polling |
 
-The page builder operates in two distinct modes:
+The view pipeline is what your end users hit. It reads the saved page JSON, generates the CSS classes and inline styles **once** on the server, and outputs plain HTML.
 
-1. **Builder Mode:** Uses Livewire components for interactive editing
-2. **View Mode:** Uses optimized Blade templates for production rendering
+---
 
-### Blade-Based Rendering
+## The view pipeline
 
-The view mode uses Blade templates instead of Livewire components:
+For a public page, the call chain is:
 
-- `resources/views/view-page.blade.php`: Main page rendering template
-- `resources/views/components/row-view.blade.php`: Handles row rendering
-- `resources/views/components/builder-page-block-view.blade.php`: Renders nested page blocks
-
-This approach eliminates the Livewire overhead for end users viewing your site, resulting in:
-
-- Faster page loads
-- Reduced memory usage
-- Lower server processing requirements
-
-### Pre-compiled CSS Classes and Styles
-
-In view mode, all CSS classes and inline styles are pre-generated and directly applied in the Blade templates:
-
-```blade
-<div class="{{ $row['cssClasses'] }}" style="{{ $row['inlineStyles'] }}">
-    <!-- Content here -->
-</div>
+```
+PageBuilderRender::renderPage($pageKey, $themeId)
+    ↓
+PageBuilderRender::parsePage()                    // load BuilderPage, decode components JSON
+    ↓
+PageBuilderRender::prepareRow()  / prepareBlock() // attach pre-computed cssClasses, inlineStyles,
+    ↓                                             //   dataAttributes — no per-request recomputation
+view('page-builder::view-page', [...])            // single Blade render, no Livewire
 ```
 
-This eliminates the need for dynamic class and style calculations at runtime.
+The relevant view files (publishable under `resources/views/vendor/page-builder/` via the `page-builder-views` tag):
 
-### Query Caching
+- `view-page.blade.php` — the top-level public page wrapper
+- `components/row-view.blade.php` — frontend row rendering
+- `components/builder-page-block-view.blade.php` — page‑as‑block rendering
 
-Page data is cached to minimize database queries:
+Each block's `render()` method still runs, but it returns plain Blade output — there's no Livewire root component wrapping it on the public site.
 
-```php
-// Example of caching implementation
-public function getRenderedRows()
-{
-    return cache()->remember('page_rows_' . $this->id, now()->addHours(24), function () {
-        return $this->processRowsForRendering();
-    });
-}
-```
+---
 
-### Optimized DOM Updates
+## What's *not* cached out of the box
 
-We use key attributes and optimize our templates to minimize DOM updates:
+The package does not ship with a built‑in HTTP or query cache for rendered pages. That keeps things simple and correct by default (no surprise stale content), and leaves caching policy to you.
 
-```blade
-<div>
-    @foreach($blocks as $index => $block)
-        <livewire:builder-block :block="$block" :key="$block->id" />
-    @endforeach
-</div>
-```
+Reasonable places to add caching, in order of bang‑for‑buck:
 
-## Best Practices for Custom Blocks
+1. **Page response cache** — wrap your render route in `Cache::remember()` or a route‑level cache middleware. Pages change rarely; this is usually the biggest win.
 
-When creating custom blocks, follow these guidelines for optimal performance:
+   ```php
+   Route::get('/{permalink}', function (string $permalink) {
+       return Cache::remember("page:{$permalink}", now()->addHour(), function () use ($permalink) {
+           return app(PageBuilderRender::class)->renderPage($permalink)->render();
+       });
+   });
+   ```
 
-1. **Minimize Public Properties:** Only expose what's needed for editing
-2. **Use Computed Properties:** Calculate values on-demand instead of storing them
-3. **Optimize Blade Templates:** Keep your templates lean and efficient
-4. **Follow Livewire 3 Practices:** Consult the [Livewire 3 performance documentation](https://livewire.laravel.com/docs/computed-properties#performance-advantage)
+   Invalidate on the `BuilderPageSaved` event so editor changes are reflected immediately:
 
-By following these practices, your page builder implementation will maintain high performance even with complex pages and numerous custom blocks.
+   ```php
+   Event::listen(
+       \Trinavo\LivewirePageBuilder\Events\BuilderPageSaved::class,
+       fn ($event) => Cache::forget("page:{$event->page->key}"),
+   );
+   ```
+
+2. **`PageBuilderRender` result cache** — same idea but inside the render service, if you have many entry points to the same page. The `parsePage()` return value is fully serializable.
+
+3. **Variables** — if a `PageBuilderVariables::register()` callable hits the database on every render, cache the result. Variables are resolved per request, not per page.
+
+---
+
+## Tailwind safe classes
+
+Because page content lives in the database, Tailwind's static scanner can't see every class your editors might emit. Two mitigations are already in place:
+
+- The package's `@source` directive (added by `pagebuilder:install` to your `resources/css/app.css`) makes Tailwind scan **all of the package's** Blade files, so any class the builder UI itself uses is preserved.
+- For classes the builder generates dynamically from property values (responsive widths, spacing scales, gradient stops, …), the package ships `scripts/generate_safe_classes.php`. Run it during your build to produce a safelist that survives `tailwindcss --minify`.
+
+---
+
+## Tips for custom blocks
+
+- **Minimize public properties.** Each `public $foo` is round‑tripped by Livewire on every update in the editor. Keep your editable surface tight.
+- **Compute, don't store.** If a value is derived from other properties, expose it as a Livewire `#[Computed]` getter or a regular method called from your Blade view — don't persist it.
+- **Avoid heavy work in `render()`.** It runs on every preview update and on every public page load. Expensive lookups (DB queries, HTTP calls) should be cached or moved to a `getXxxProperty()` computed.
+- **Use `wire:key` inside loops** in editor Blade templates so Livewire's DOM diff stays cheap. Same advice as the [Livewire 3 performance guide](https://livewire.laravel.com/docs/computed-properties#performance-advantage).
+- **Lazy‑load images.** The base `Block` class already exposes a `lazyLoad` shared property — wire it into your block's `<img loading="...">` attribute.
+
+---
+
+## See also
+
+- [Custom Block Development](custom-block-development.md) — block rendering pipeline in detail
+- [Advanced Configuration](advanced-configuration.md) — publishing views to customize the view pipeline

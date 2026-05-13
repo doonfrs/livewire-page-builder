@@ -1,26 +1,80 @@
 # Custom Block Development
 
-## Creating a Custom Block
+A block is a Livewire 3 component that extends the package's `Block` base class. Once registered in `config/page-builder.php`, it shows up in the editor's block picker and can be dropped into any row.
 
-To create a custom block, extend the provided `Block` base class instead of the default Livewire `Component`:
+This guide covers:
+
+- The `Block` base class and its lifecycle hooks
+- All property types and their constructor signatures
+- Property groups
+- Shared responsive properties that every block gets for free
+- Working with colors via the `ColorData` helper
+- A complete example
+
+---
+
+## 1. The `Block` base class
 
 ```php
-use Trinavo\LivewirePageBuilder\Block;
+namespace App\Livewire\Blocks;
+
+use Trinavo\LivewirePageBuilder\Support\Block;
 
 class HeroBlock extends Block
 {
+    public $title = 'Welcome';
     // ...
+
+    public function render()
+    {
+        return view('livewire.blocks.hero');
+    }
 }
 ```
 
-## Block Metadata
+> ⚠️ The base class lives at **`Trinavo\LivewirePageBuilder\Support\Block`** — not `Trinavo\LivewirePageBuilder\Block`. (Older versions of the README used the wrong namespace.)
 
-- `getPageBuilderIcon()`: Return a Blade icon component for the block selector.
-- `getPageBuilderLabel()`: Return a human-readable label for the block.
+Register the class in `config/page-builder.php`:
 
-## Defining Block Properties
+```php
+'blocks' => [
+    App\Livewire\Blocks\HeroBlock::class,
+],
+```
 
-Implement `getPageBuilderProperties()` to define editable properties for your block. **Return an array of property objects, not arrays:**
+The package will derive a kebab‑case Livewire alias for it (e.g. `page-builder-app-livewire-blocks-hero-block`) and register it with Livewire automatically — you don't need to call `Livewire::component()` yourself.
+
+### Metadata hooks
+
+Override these methods to customise how your block appears in the picker:
+
+| Method | Returns | Used for |
+|---|---|---|
+| `getPageBuilderLabel(): string` | Display name | Block card title |
+| `getPageBuilderCategory(): string` | Category name | Groups blocks in the picker |
+| `getPageBuilderIcon(): string` | Blade icon name (e.g. `heroicon-o-photo`) | Block card icon |
+| `getPageBuilderProperties(): array` | Array of `BlockProperty` objects | The block's edit panel |
+
+### Rendering
+
+Implement Livewire's `render()` method as usual:
+
+```php
+public function render()
+{
+    return view('livewire.blocks.hero', [
+        // pass anything your view needs
+    ]);
+}
+```
+
+The view receives every public property on the component, just like a regular Livewire component.
+
+---
+
+## 2. Defining block properties
+
+`getPageBuilderProperties()` returns an **array of property objects** (not arrays). Each object describes one editable field in the property panel:
 
 ```php
 use Trinavo\LivewirePageBuilder\Support\Properties\TextProperty;
@@ -32,296 +86,409 @@ use Trinavo\LivewirePageBuilder\Support\Properties\SelectProperty;
 public function getPageBuilderProperties(): array
 {
     return [
-        new CheckboxProperty('featured', 'Featured'),
-        new TextProperty('title', 'Title'),
-        new ImageProperty('image', 'Image'),
-        new ColorProperty('accent_color', 'Accent Color'),
-        new SelectProperty('alignment', 'Text Alignment', [
-            'left' => 'Left',
-            'center' => 'Center', 
-            'right' => 'Right'
+        new TextProperty('title', __('Title'), false, $this->title),
+        new CheckboxProperty('featured', __('Featured')),
+        new ImageProperty('image', __('Image')),
+        new ColorProperty('accent', __('Accent color')),
+        new SelectProperty('alignment', __('Alignment'), [
+            'left'   => __('Left'),
+            'center' => __('Center'),
+            'right'  => __('Right'),
         ]),
     ];
 }
 ```
 
-### Property Groups
+Every property name must match a `public` property on the component class — that's where the value is stored and how it gets passed to the view.
 
-You can organize related properties into groups using the `setGroup` method:
+### Property groups
+
+Group related properties together with `setGroup()`. They render as collapsible sections in the property panel:
 
 ```php
-public function getPageBuilderProperties(): array
-{
-    return [
-        (new TextProperty('title', 'Title'))
-            ->setGroup('content', 'Content Settings', 1, 'heroicon-o-document-text'),
-        (new TextProperty('subtitle', 'Subtitle'))
-            ->setGroup('content', 'Content Settings', 1, 'heroicon-o-document-text'),
-        (new ImageProperty('background', 'Background Image'))
-            ->setGroup('appearance', 'Appearance', 2, 'heroicon-o-swatch'),
-        (new CheckboxProperty('dark_overlay', 'Dark Overlay'))
-            ->setGroup('appearance', 'Appearance', 2, 'heroicon-o-swatch'),
-    ];
-}
+return [
+    (new TextProperty('title', __('Title')))
+        ->setGroup('content', __('Content'), 1, 'heroicon-o-document-text'),
+
+    (new TextProperty('subtitle', __('Subtitle')))
+        ->setGroup('content', __('Content'), 1, 'heroicon-o-document-text'),
+
+    (new ImageProperty('background', __('Background')))
+        ->setGroup('appearance', __('Appearance'), 2, 'heroicon-o-swatch'),
+
+    (new CheckboxProperty('overlay', __('Dark overlay')))
+        ->setGroup('appearance', __('Appearance'), 2, 'heroicon-o-swatch'),
+];
 ```
 
-The `setGroup` method accepts four parameters:
+`setGroup($group, $groupLabel = null, $columns = 1, $groupIcon = null)`:
 
-- `group`: The group identifier (string)
-- `groupLabel`: The display name for the group (optional)
-- `columns`: Number of columns to display properties in (default: 1)
-- `groupIcon`: Blade icon name for the group header (optional)
+- `$group` — internal id (string)
+- `$groupLabel` — display name (defaults to ucfirst of `$group`)
+- `$columns` — how many columns the property grid uses inside the group (1 or 2)
+- `$groupIcon` — Blade icon name shown on the group header
 
-#### Default Group Icons
+When `$groupIcon` is omitted, the package falls back to a default icon based on common group names:
 
-If not specified, the following default icons will be used for common group names:
+| Group name | Default icon |
+|---|---|
+| `responsive` | `heroicon-o-device-phone-mobile` |
+| `visibility` | `heroicon-o-eye` |
+| `appearance` | `heroicon-o-swatch` |
+| `content` | `heroicon-o-document-text` |
+| `layout` | `heroicon-o-rectangle-group` |
+| `animation` | `heroicon-o-arrow-path` |
+| anything else | `heroicon-o-tag` |
 
-- `responsive`: heroicon-o-device-phone-mobile
-- `visibility`: heroicon-o-eye
-- `appearance`: heroicon-o-swatch
-- `content`: heroicon-o-document-text
-- `layout`: heroicon-o-rectangle-group
-- `animation`: heroicon-o-arrow-path
-- Others: heroicon-o-tag
+---
 
-### Available Property Types
+## 3. Property type reference
 
-- `TextProperty` — text input with optional parameters:
-  - `numeric` (boolean): Whether the input accepts numbers only
-  - `min` (integer): Minimum value (for numeric inputs)
-  - `max` (integer): Maximum value (for numeric inputs)
-  - `defaultValue`: Default value for the property
+All property classes live in `Trinavo\LivewirePageBuilder\Support\Properties\`. Each class has both a constructor and a static `make()` builder; the table shows the constructor signature (which is what you usually call).
 
-- `RichTextProperty` — rich text editor with formatting options (uses Quill, Trix, or TipTap; stores HTML)
-  - `defaultValue`: Default HTML content for the editor
+### `TextProperty`
 
-- `ImageProperty` — image upload/selector with:
-  - `defaultValue`: Default image URL
+Single‑line text input. Optionally numeric with min/max.
 
-- `CheckboxProperty` — boolean toggle with:
-  - `defaultValue`: Default checked state (true/false)
+```php
+new TextProperty(
+    string $name,
+    ?string $label = null,
+    bool   $numeric = false,
+    mixed  $defaultValue = null,
+    ?int   $min = null,
+    ?int   $max = null,
+)
+```
 
-- `ColorProperty` — color picker with:
-  - `defaultValue`: Default color value
+### `SimpleTextProperty`
 
-- `SelectProperty` — dropdown selector with:
-  - `options` (array): Key-value pairs for dropdown options
-  - `defaultValue`: Default selected option key
+Plain text input that supports multilingual content (one value per content locale, switchable via the editor's language tabs).
 
-You can also create your own property types by extending `BlockProperty`.
+```php
+new SimpleTextProperty(
+    string $name,
+    ?string $label = null,
+    mixed  $defaultValue = null,
+    bool   $multilingual = true,
+)
+```
 
-### Shared Properties
+### `RichTextProperty`
 
-The base `Block` class automatically provides the following shared properties:
+Quill‑based WYSIWYG editor. Output is sanitized and class‑normalized so it plays well with Tailwind. Multilingual by default.
 
-#### Responsive Width Properties
+```php
+new RichTextProperty(
+    string $name,
+    ?string $label = null,
+    mixed  $defaultValue = null,
+    bool   $multilingual = true,
+)
+```
 
-- Mobile, tablet and desktop width settings with options like full width, auto, 1/2, 1/3, etc.
+Pass `false` for the last argument if the field shouldn't have language tabs.
 
-#### Visibility Settings
+### `CheckboxProperty`
 
-- Show/hide options for mobile, tablet, and desktop views
+Boolean toggle.
 
-#### Spacing Properties
+```php
+new CheckboxProperty(
+    string $name,
+    ?string $label = null,
+    mixed  $defaultValue = null,
+)
+```
 
-- Padding (top, right, bottom, left)
-- Margin (top, right, bottom, left)
+### `SelectProperty`
 
-#### Style Properties
+Dropdown. Pass options as `value => label`.
 
-- Text color
-- Background color
+```php
+new SelectProperty(
+    string $name,
+    ?string $label = null,
+    array  $options = [],
+    mixed  $defaultValue = null,
+)
+```
 
-#### Background Image Properties
+### `ColorProperty`
 
-- Image upload
-- Position (center, top, right, bottom, left, etc.)
-- Size (cover, contain, auto, 100%)
-- Repeat (no-repeat, repeat, repeat-x, repeat-y)
+Color picker. Accepts hex, rgb/rgba, hsl/hsla, oklch/oklab, or DaisyUI semantic names (`'primary'`, `'base-200'`, …).
 
-## Working with Colors
+```php
+new ColorProperty(
+    string $name,
+    ?string $label = null,
+    mixed  $defaultValue = null,
+)
+```
 
-The page builder provides a `ColorData` class to handle color values that can be either Tailwind CSS classes or custom CSS colors (hex, rgb, rgba, hsl, hsla).
+See the [Working with colors](#5-working-with-colors) section for how to consume the saved value.
 
-### ColorData Class
+### `ImageProperty`
 
-The `ColorData` class is a value object that parses and provides convenient methods for working with colors in your blocks:
+Image picker / uploader.
+
+```php
+new ImageProperty(
+    string $name,
+    ?string $label = null,
+    mixed  $defaultValue = null,
+)
+```
+
+### `VideoProperty`
+
+Video URL / embed input.
+
+```php
+new VideoProperty(
+    string $name,
+    ?string $label = null,
+    mixed  $defaultValue = null,
+)
+```
+
+### `IconProperty`
+
+Icon picker. Backed by `blade-heroicons` and `blade-bootstrap-icons` by default; pass `$styles` and `$sets` to restrict the choices.
+
+```php
+new IconProperty(
+    string $name,
+    ?string $label = null,
+    ?array $styles = null,   // default: ['outline', 'solid', 'mini', 'regular', 'fill']
+    ?array $sets   = null,   // default: ['heroicons', 'bootstrap']
+    mixed  $defaultValue = null,
+)
+```
+
+Because the constructor has positional `null` defaults, this is one of the cases where named arguments read more cleanly:
+
+```php
+IconProperty::make(name: 'icon', label: __('Icon'), defaultValue: 'heroicon-o-star');
+```
+
+### `FlexibleSizeProperty`
+
+Mobile / tablet / desktop size triplet for width / height‑style values.
+
+```php
+new FlexibleSizeProperty(
+    string $name,
+    ?string $label = null,
+    array  $classes = [],          // preset Tailwind classes the user can pick
+    bool   $allowCustom = true,    // also allow a custom number + unit
+    string $unit = 'px',           // unit when allowCustom is true
+    mixed  $defaultValue = null,
+)
+```
+
+### `ResponsiveSpacingProperty`
+
+A 4‑direction × 3‑breakpoint grid for padding or margin. The component automatically maps to studly‑cased property names — `new ResponsiveSpacingProperty('padding')` writes into `paddingTopMobile`, `paddingTopTablet`, `paddingTopDesktop`, `paddingRightMobile`, etc.
+
+```php
+new ResponsiveSpacingProperty(
+    string $name,
+    ?string $label = null,
+    array  $defaultValues = [],   // keyed by 'top' | 'right' | 'bottom' | 'left'
+)
+```
+
+### `CustomProperty`
+
+Render any Livewire component as a property editor. Use this when the built‑in property types don't fit and you want full control over the UI.
+
+```php
+new CustomProperty(
+    string $name,
+    ?string $label = null,
+    ?string $component = null,    // Livewire component alias to render
+    ?array $config = null,        // extra props passed into your component
+    mixed  $defaultValue = null,
+)
+```
+
+### `BlockProperty`
+
+The abstract base class. Extend it to define entirely new property types. You must implement `getType()` and `toArray()`.
+
+---
+
+## 4. Shared responsive properties
+
+Every block inherits a large set of shared properties from the `Block` base class. You don't declare or render them — they're injected into the property panel automatically and resolved through Tailwind 4 container queries (`@3xl` ≈ tablet, `@7xl` ≈ desktop) so the preview matches the live render.
+
+| Group | What's covered |
+|---|---|
+| **Responsive sizing** | width, height, min‑height — per mobile / tablet / desktop |
+| **Visibility** | hide on mobile / tablet / desktop; lazy‑load flag |
+| **Spacing** | padding & margin top/right/bottom/left — per breakpoint |
+| **Typography** | font size (per breakpoint), font weight, text alignment, line height, letter spacing |
+| **Color** | text color, background color |
+| **Background** | background image (URL, position, size, repeat), gradient (start, end, direction) |
+| **Borders** | width per side, color, style, radius per corner |
+| **Effects** | box shadow (preset + custom: offset x/y, blur, spread, color, inset), filter, backdrop filter |
+| **Transforms** | rotate, scale x/y, translate x/y, skew x/y — per breakpoint |
+| **Layout** | flex direction, justify, align, position, z‑index |
+
+These are merged with your block's own properties on the way into the panel. If your block defines a property with the same name as a shared one, your declaration wins.
+
+---
+
+## 5. Working with colors
+
+`ColorProperty` stores either a Tailwind/DaisyUI class fragment (e.g. `'primary'`, `'base-200'`) or a raw CSS color (e.g. `'#ffffff'`, `'rgba(255, 0, 0, 0.5)'`). The `ColorData` value object on the `Block` base class hides that difference.
+
+### Parsing a color in the component
 
 ```php
 use Trinavo\LivewirePageBuilder\Support\ColorData;
 
-// Parse a color property
-$colorData = $this->parseColorProperty('backgroundColor', 'bg-base-200');
-
-// Or parse a color value directly
-$colorData = $this->parseColor('#ffffff');
-$colorData = $this->parseColor('bg-primary');
-$colorData = $this->parseColor('rgba(255, 0, 0, 0.5)');
-```
-
-### ColorData Methods
-
-The `ColorData` class provides several helper methods:
-
-#### Type Checking Methods
-- `isClass()`: Returns true if the color is a Tailwind class
-- `isCss()`: Returns true if the color is a CSS color (hex, rgb, rgba, hsl, hsla)
-- `isEmpty()`: Returns true if no color is set
-
-#### Basic Class Helpers
-These methods automatically add the appropriate Tailwind prefix and remove any existing prefixes:
-
-- `toBgClass()`: Returns `bg-{color}` for Tailwind classes (e.g., 'primary' → 'bg-primary')
-- `toTextClass()`: Returns `text-{color}` for Tailwind classes (e.g., 'primary' → 'text-primary')
-- `toBorderClass()`: Returns `border-{color}` for Tailwind classes (e.g., 'primary' → 'border-primary')
-- `toDecorationClass()`: Returns `decoration-{color}` for underline colors
-- `toShadowClass()`: Returns `shadow-{color}` for shadow colors
-- `toRingClass()`: Returns `ring-{color}` for ring/outline colors
-
-#### State Modifier Class Helpers
-These methods add both the state prefix (hover:, active:, focus:) and the color type prefix:
-
-- `toHoverBgClass()`: Returns `hover:bg-{color}` (e.g., 'primary' → 'hover:bg-primary')
-- `toHoverTextClass()`: Returns `hover:text-{color}`
-- `toHoverBorderClass()`: Returns `hover:border-{color}`
-- `toActiveBgClass()`: Returns `active:bg-{color}`
-- `toActiveTextClass()`: Returns `active:text-{color}`
-- `toActiveBorderClass()`: Returns `active:border-{color}`
-- `toFocusBgClass()`: Returns `focus:bg-{color}`
-- `toFocusTextClass()`: Returns `focus:text-{color}`
-- `toFocusBorderClass()`: Returns `focus:border-{color}`
-- `toFocusRingClass()`: Returns `focus:ring-{color}`
-
-#### Legacy Methods
-- `toClass()`: Returns the raw color value as-is (no prefix added)
-- `toInlineStyle(string $property)`: Returns inline CSS style property
-- `toStyleAttribute(string $property)`: Returns complete style attribute string
-- `toCssVariable()`: Returns raw value for CSS custom properties
-
-### Example Usage in Component
-
-```php
-class Header extends Block
+public function render()
 {
-    public $backgroundColor = null;
-    public $hoverTextColor = null;
-
-    public function render()
-    {
-        return view('livewire.header', [
-            // No need to include 'bg-' prefix in default - helper methods add it automatically
-            'bgColorData' => $this->parseColorProperty('backgroundColor', 'base-200'),
-            'hoverTextData' => $this->parseColorProperty('hoverTextColor', 'primary'),
-        ]);
-    }
+    return view('livewire.blocks.button', [
+        'bg' => $this->parseColorProperty('bgColor', 'primary'),
+        'tx' => $this->parseColorProperty('textColor'),
+    ]);
 }
 ```
 
-### Example Usage in View
+- `parseColorProperty(string $name, mixed $fallback = null): ColorData` — read from `$this->{$name}` with a fallback
+- `parseColor(mixed $value): ColorData` — parse a raw value directly
+
+### Using `ColorData` in a view
 
 ```blade
-<!-- Basic background color example -->
-<div class="navbar {{ $bgColorData->toBgClass() }}"
-     {!! $bgColorData->toStyleAttribute('background-color') !!}>
-    <!-- Content -->
-</div>
-
-<!-- Hover state example -->
-<a href="#" class="menu-item {{ $hoverTextData->toHoverTextClass() }}">
-    Menu Item
+<a href="{{ $url }}"
+   class="btn {{ $bg->toBgClass() }} {{ $tx->toTextClass() }}"
+   {!! $bg->toStyleAttribute('background-color') !!}
+   {!! $tx->toStyleAttribute('color') !!}>
+    {{ $label }}
 </a>
-
-<!-- Multiple color states -->
-<button class="btn
-    {{ $bgColorData->toBgClass() }}
-    {{ $textColorData->toTextClass() }}
-    {{ $hoverBgData->toHoverBgClass() }}
-    {{ $hoverTextData->toHoverTextClass() }}">
-    Click me
-</button>
-
-<!-- The helper methods handle prefix logic automatically -->
-<!-- 'primary' → 'bg-primary', 'bg-primary' → 'bg-primary' (idempotent) -->
-<!-- '#ffffff' → '' (CSS colors return empty string for class helpers) -->
 ```
 
-### Advanced Example with CSS Variables
+The class helpers add the correct Tailwind prefix when the value is a class fragment, and return an empty string when it's a CSS color (so the inline style takes over).
 
-For hover states and dynamic styling, you can use CSS variables:
+### `ColorData` API
 
-```blade
-@php
-    $hoverColor = $this->parseColorProperty('hoverColor');
-@endphp
+**Type checks** — `isClass()`, `isCss()`, `isEmpty()`
 
-<div @if ($hoverColor->isCss()) style="--hover-color: {{ $hoverColor->value }};" @endif>
-    <button class="btn {{ $hoverColor->toClass() }}">
-        Hover me
-    </button>
-</div>
+**Class helpers** (return e.g. `bg-primary` for class values, `''` for CSS values):
 
-@if ($hoverColor->isCss())
-    <style>
-        .btn:hover {
-            color: var(--hover-color) !important;
-        }
-    </style>
-@endif
-```
+- `toBgClass()`, `toTextClass()`, `toBorderClass()`
+- `toDecorationClass()`, `toShadowClass()`, `toRingClass()`
 
-### Benefits
+**State modifiers** (combine state + type prefix):
 
-- **Type Safety**: Clear separation between Tailwind classes and CSS colors
-- **Cleaner Views**: No need to repeat color type checking logic
-- **Flexibility**: Supports both Tailwind classes and custom colors
-- **Dark Mode**: Tailwind classes automatically adapt to dark mode
+- `toHoverBgClass()`, `toHoverTextClass()`, `toHoverBorderClass()`
+- `toActiveBgClass()`, `toActiveTextClass()`, `toActiveBorderClass()`
+- `toFocusBgClass()`, `toFocusTextClass()`, `toFocusBorderClass()`, `toFocusRingClass()`
 
-## Example: Hero Block
+**Inline style helpers** (return empty for class values):
+
+- `toInlineStyle(string $property)` — returns just `property: value;`
+- `toStyleAttribute(string $property)` — returns ` style="property: value;"`
+
+**Raw access**
+
+- `toClass()` — returns the value as‑is, no prefix added
+- `toCssVariable()` — for use inside `style="--my-var: …"`
+- `->value` — the unparsed value
+
+Using both `toBgClass()` and `toStyleAttribute('background-color')` on the same element is the recommended pattern: whichever matches the stored value will produce output, the other returns empty. The browser sees exactly one of them.
+
+---
+
+## 6. Complete example
 
 ```php
-use Trinavo\LivewirePageBuilder\Block;
-use Trinavo\LivewirePageBuilder\Support\Properties\TextProperty;
-use Trinavo\LivewirePageBuilder\Support\Properties\ImageProperty;
+namespace App\Livewire\Blocks;
+
+use Trinavo\LivewirePageBuilder\Support\Block;
 use Trinavo\LivewirePageBuilder\Support\Properties\CheckboxProperty;
 use Trinavo\LivewirePageBuilder\Support\Properties\ColorProperty;
+use Trinavo\LivewirePageBuilder\Support\Properties\ImageProperty;
+use Trinavo\LivewirePageBuilder\Support\Properties\RichTextProperty;
+use Trinavo\LivewirePageBuilder\Support\Properties\TextProperty;
 
 class HeroBlock extends Block
 {
-    public function getPageBuilderIcon(): string
-    {
-        return 'heroicon-o-photo';
-    }
+    public $title    = 'Welcome';
+    public $subtitle = '';
+    public $image    = null;
+    public $overlay  = true;
+    public $overlayColor = '#000000';
+    public $accent   = 'primary';
 
-    public function getPageBuilderLabel(): string
-    {
-        return 'Hero Section';
-    }
+    public function getPageBuilderLabel(): string    { return __('Hero'); }
+    public function getPageBuilderCategory(): string { return __('Content'); }
+    public function getPageBuilderIcon(): string     { return 'heroicon-o-photo'; }
 
     public function getPageBuilderProperties(): array
     {
         return [
-            (new TextProperty('title', 'Title'))
-                ->setGroup('content', 'Content Settings', 1, 'heroicon-o-document-text'),
-            (new TextProperty('subtitle', 'Subtitle'))
-                ->setGroup('content', 'Content Settings', 1, 'heroicon-o-document-text'),
-            (new ImageProperty('background', 'Background'))
-                ->setGroup('appearance', 'Appearance', 2, 'heroicon-o-swatch'),
-            (new CheckboxProperty('overlay', 'Add Dark Overlay'))
-                ->setGroup('appearance', 'Appearance', 2, 'heroicon-o-swatch'),
-            (new ColorProperty('overlay_color', 'Overlay Color', defaultValue: '#000000'))
-                ->setGroup('appearance', 'Appearance', 2, 'heroicon-o-swatch'),
-            (new CheckboxProperty('center_text', 'Center Text'))
-                ->setGroup('appearance', 'Appearance', 2, 'heroicon-o-swatch'),
+            (new TextProperty('title', __('Title'), false, $this->title))
+                ->setGroup('content', __('Content'), 1, 'heroicon-o-document-text'),
+
+            (new RichTextProperty('subtitle', __('Subtitle'), $this->subtitle, true))
+                ->setGroup('content', __('Content'), 1, 'heroicon-o-document-text'),
+
+            (new ImageProperty('image', __('Background image')))
+                ->setGroup('appearance', __('Appearance'), 2, 'heroicon-o-swatch'),
+
+            (new CheckboxProperty('overlay', __('Dark overlay'), true))
+                ->setGroup('appearance', __('Appearance'), 2, 'heroicon-o-swatch'),
+
+            (new ColorProperty('overlayColor', __('Overlay color'), '#000000'))
+                ->setGroup('appearance', __('Appearance'), 2, 'heroicon-o-swatch'),
+
+            (new ColorProperty('accent', __('Accent color'), 'primary'))
+                ->setGroup('appearance', __('Appearance'), 2, 'heroicon-o-swatch'),
         ];
     }
 
     public function render()
     {
-        return view('blocks.hero');
+        return view('livewire.blocks.hero', [
+            'overlayColor' => $this->parseColorProperty('overlayColor', '#000000'),
+            'accent'       => $this->parseColorProperty('accent', 'primary'),
+        ]);
     }
 }
 ```
 
+And the view (`resources/views/livewire/blocks/hero.blade.php`):
+
+```blade
+<section class="relative">
+    @if ($image)
+        <img src="{{ $image }}" alt="" class="absolute inset-0 w-full h-full object-cover">
+    @endif
+
+    @if ($overlay)
+        <div class="absolute inset-0 {{ $overlayColor->toBgClass() }}"
+             {!! $overlayColor->toStyleAttribute('background-color') !!}></div>
+    @endif
+
+    <div class="relative p-12 text-center">
+        <h1 class="text-4xl font-bold {{ $accent->toTextClass() }}"
+            {!! $accent->toStyleAttribute('color') !!}>
+            {{ $title }}
+        </h1>
+        <div class="mt-4 prose mx-auto">{!! $subtitle !!}</div>
+    </div>
+</section>
+```
+
 ---
 
-See [Extending the Builder](extending-the-builder.md) for advanced block features.
+## See also
+
+- [Variables](variables.md) — `{{var}}` substitution inside text blocks
+- [Multilingual support](multilingual-support.md) — multilingual `RichTextProperty` / `SimpleTextProperty`
+- [Advanced configuration](advanced-configuration.md) — middleware, gates, publishing views

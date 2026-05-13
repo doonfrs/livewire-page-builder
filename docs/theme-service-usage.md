@@ -1,285 +1,232 @@
 # Theme Service Usage
 
-The `ThemeService` provides programmatic access to theme import, export, and cloning functionality. This allows you to integrate theme management directly into your application code.
+`ThemeService` is the programmatic entry point for everything that happens in the **Themes** page of the editor: exporting, importing, cloning, replacing pages inside a theme. Use it from controllers, jobs, Artisan commands, or anywhere you want to manage themes without going through the UI.
 
-## Basic Usage
-
-### Using the Service Class
+It's available as a service binding **and** a facade — pick whichever fits your code style.
 
 ```php
 use Trinavo\LivewirePageBuilder\Services\ThemeService;
-
-// Get the service instance
-$themeService = app(ThemeService::class);
-
-// Or use dependency injection
-public function someMethod(ThemeService $themeService)
-{
-    // Use the service
-}
-```
-
-### Using the Facade
-
-```php
-use Trinavo\LivewirePageBuilder\Facades\ThemeService;
-
-// Direct facade usage
-ThemeService::exportTheme(1);
-```
-
-## Exporting Themes
-
-### Export to Array
-
-```php
-// Export theme by ID
-$exportData = $themeService->exportTheme(1);
-
-// Export theme by model instance
-$theme = Theme::find(1);
-$exportData = $themeService->exportTheme($theme);
-
-if ($exportData) {
-    // $exportData contains:
-    // - name: Theme name
-    // - description: Theme description
-    // - pages: Array of pages with components
-    // - exported_at: Export timestamp
-    // - version: Export version
-}
-```
-
-### Export to File
-
-```php
-// Export to default directory (storage/app/themes)
-$filePath = $themeService->exportThemeToFile(1);
-
-// Export to custom directory
-$filePath = $themeService->exportThemeToFile(1, storage_path('custom/themes'));
-
-if ($filePath) {
-    // File was created successfully
-    // $filePath contains the full path to the exported JSON file
-}
-```
-
-### Export as JSON String
-
-```php
-// Get JSON string with default formatting
-$jsonString = $themeService->exportThemeAsJson(1);
-
-// Get compact JSON string
-$jsonString = $themeService->exportThemeAsJson(1, JSON_UNESCAPED_UNICODE);
-```
-
-## Importing Themes
-
-### Import from Array Data
-
-```php
-$themeData = [
-    'name' => 'My New Theme',
-    'description' => 'A custom theme',
-    'pages' => [
-        [
-            'key' => 'home',
-            'components' => [
-                // Your page components here
-            ],
-            'is_block' => false
-        ]
-    ]
-];
-
-// Import with auto-rename if name exists
-$importedTheme = $themeService->importTheme($themeData);
-
-// Import with overwrite if name exists
-$importedTheme = $themeService->importTheme($themeData, true);
-
-if ($importedTheme) {
-    // Theme imported successfully
-    echo "Imported theme: " . $importedTheme->name;
-}
-```
-
-### Import from File
-
-```php
-// Import from JSON file
-$filePath = storage_path('themes/my-theme.json');
-$importedTheme = $themeService->importThemeFromFile($filePath);
-
-// Import with overwrite
-$importedTheme = $themeService->importThemeFromFile($filePath, true);
-```
-
-## Cloning Themes
-
-```php
-// Clone a theme with a new name
-$clonedTheme = $themeService->cloneTheme(1, 'My Cloned Theme');
-
-if ($clonedTheme) {
-    // Theme cloned successfully
-    echo "Cloned theme: " . $clonedTheme->name;
-}
-```
-
-## Error Handling
-
-All methods return `null` on failure and log errors. You can check for errors:
-
-```php
-$result = $themeService->exportTheme(999); // Non-existent theme
-
-if ($result === null) {
-    // Operation failed, check logs for details
-    Log::error('Theme operation failed');
-}
-```
-
-## Complete Example
-
-Here's a complete example showing how to use the ThemeService in a controller:
-
-```php
-<?php
-
-namespace App\Http\Controllers;
-
-use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
-use Trinavo\LivewirePageBuilder\Services\ThemeService;
+use Trinavo\LivewirePageBuilder\Facades\ThemeService as ThemeServiceFacade;
 use Trinavo\LivewirePageBuilder\Models\Theme;
 
-class ThemeController extends Controller
-{
-    public function __construct(
-        private ThemeService $themeService
-    ) {}
+// Container-resolved
+$service = app(ThemeService::class);
 
-    public function export(Request $request): JsonResponse
-    {
-        $themeId = $request->input('theme_id');
-        
-        $exportData = $this->themeService->exportTheme($themeId);
-        
-        if (!$exportData) {
-            return response()->json(['error' => 'Theme not found'], 404);
-        }
-        
-        return response()->json($exportData);
-    }
+// Dependency injection
+public function __construct(private ThemeService $themes) {}
 
-    public function import(Request $request): JsonResponse
-    {
-        $request->validate([
-            'theme_data' => 'required|array',
-            'overwrite' => 'boolean'
-        ]);
-        
-        $overwrite = $request->boolean('overwrite', false);
-        $themeData = $request->input('theme_data');
-        
-        $importedTheme = $this->themeService->importTheme($themeData, $overwrite);
-        
-        if (!$importedTheme) {
-            return response()->json(['error' => 'Import failed'], 500);
-        }
-        
-        return response()->json([
-            'message' => 'Theme imported successfully',
-            'theme' => $importedTheme
-        ]);
-    }
+// Facade
+ThemeServiceFacade::exportTheme(1);
+```
 
-    public function clone(Request $request): JsonResponse
-    {
-        $request->validate([
-            'theme_id' => 'required|integer',
-            'new_name' => 'required|string|max:255'
-        ]);
-        
-        $themeId = $request->input('theme_id');
-        $newName = $request->input('new_name');
-        
-        $clonedTheme = $this->themeService->cloneTheme($themeId, $newName);
-        
-        if (!$clonedTheme) {
-            return response()->json(['error' => 'Cloning failed'], 500);
-        }
-        
-        return response()->json([
-            'message' => 'Theme cloned successfully',
-            'theme' => $clonedTheme
-        ]);
-    }
+Every method accepts a `Theme` model **or** an integer theme id — pass whichever you have.
+
+---
+
+## Exporting
+
+### To an array
+
+```php
+$data = $service->exportTheme(1);
+
+// $data:
+// [
+//     'name'        => 'Default',
+//     'description' => '...',
+//     'pages'       => [ ['key' => 'home', 'components' => [...], 'is_block' => false, ...], ... ],
+//     'exported_at' => '2026-05-14T...',
+//     'version'     => '1.0',
+// ]
+```
+
+Returns `null` if the theme doesn't exist (and logs a warning).
+
+### To a JSON string
+
+```php
+$json = $service->exportThemeAsJson(1);
+// Pretty-printed JSON by default. If encryption is enabled,
+// returns the encrypted envelope instead.
+
+$compact = $service->exportThemeAsJson(1, JSON_UNESCAPED_UNICODE);
+```
+
+### To a file
+
+```php
+// Saves to storage/app/themes/ by default
+$path = $service->exportThemeToFile(1);
+
+// Save somewhere else
+$path = $service->exportThemeToFile(1, storage_path('exports/themes'));
+```
+
+The output file extension automatically becomes `.json` or the configured encrypted extension (default `.tet`) depending on whether encryption is enabled.
+
+### Forcing an encrypted export
+
+These bypass the "is encryption enabled" check — useful for selectively encrypting a single export regardless of the global setting. They throw if no encryption key is configured.
+
+```php
+$encryptedJson = $service->exportThemeAsEncryptedJson(1, password: 'optional-extra-password');
+$path          = $service->exportThemeToEncryptedFile(1, directory: null, password: null);
+```
+
+---
+
+## Importing
+
+### From a PHP array
+
+```php
+$theme = $service->importTheme([
+    'name'        => 'My New Theme',
+    'description' => 'Imported from somewhere',
+    'pages'       => [
+        ['key' => 'home', 'components' => [/* rows */], 'is_block' => false],
+    ],
+], overwriteExisting: false);
+```
+
+- When `overwriteExisting` is `false` (default), a theme with a clashing name is renamed (`My New Theme (2)` etc.).
+- When `true`, the existing theme's pages are replaced.
+
+Returns the resulting `Theme` model, or `null` on failure.
+
+### From a file
+
+```php
+// Auto-detects encrypted vs. plain JSON
+$theme = $service->importThemeFromFile(storage_path('themes/landing.json'));
+$theme = $service->importThemeFromFile(storage_path('themes/landing.tet'));   // also works
+
+// Overwrite an existing theme with the same name
+$theme = $service->importThemeFromFile($path, overwriteExisting: true);
+```
+
+### Forcing encrypted import (no auto-detection)
+
+```php
+$theme = $service->importEncryptedTheme($encryptedJsonString, overwriteExisting: false, password: null);
+$theme = $service->importThemeFromEncryptedFile($filePath, overwriteExisting: false, password: null);
+```
+
+---
+
+## Cloning
+
+```php
+$copy = $service->cloneTheme(1, 'My Cloned Theme');
+```
+
+Duplicates the theme **and** all its pages. The new theme has an auto‑assigned id. Returns the cloned `Theme` model, or `null` if the source doesn't exist.
+
+---
+
+## Replacing pages inside a theme
+
+Sometimes you want to import a partial set of pages over an existing theme — for example, deploying updated header / footer markup without touching anything else.
+
+```php
+$theme = Theme::find(1);
+
+// Replace every page in $theme with the pages from this data array.
+// Missing pages stay; pages with matching keys are replaced.
+$count = $service->replacePagesInTheme($theme, [
+    ['key' => 'header', 'components' => [/* ... */], 'is_block' => true],
+    ['key' => 'footer', 'components' => [/* ... */], 'is_block' => true],
+]);
+
+// Replace only the listed page keys
+$count = $service->replaceSelectedPagesInTheme($theme, $pagesArray, ['header', 'footer']);
+```
+
+Both return the number of pages that were actually replaced.
+
+---
+
+## Other helpers
+
+| Method | Purpose |
+|---|---|
+| `isEncryptionEnabled(): bool` | Whether `ThemeEncryptionService` will encrypt new exports |
+| `getEncryptionService(): ThemeEncryptionService` | The underlying encryption service (for advanced use) |
+
+---
+
+## Error handling
+
+Methods return `null` on recoverable failure (logged via `Log::warning` / `Log::error`). Encryption failures throw `ThemeEncryptionException`; malformed import data throws `InvalidThemeFormatException`; file I/O issues throw `ThemeFileException`. Catch the parents if you need to differentiate:
+
+```php
+use Trinavo\LivewirePageBuilder\Exceptions\ThemeEncryptionException;
+use Trinavo\LivewirePageBuilder\Exceptions\InvalidThemeFormatException;
+use Trinavo\LivewirePageBuilder\Exceptions\ThemeFileException;
+
+try {
+    $theme = $service->importThemeFromFile($path);
+} catch (ThemeEncryptionException $e) {
+    // wrong key, missing key, tampered ciphertext, etc.
+} catch (InvalidThemeFormatException $e) {
+    // valid JSON but not a theme export
+} catch (ThemeFileException $e) {
+    // file missing / unreadable
 }
 ```
 
-## API Routes Example
+---
+
+## Examples
+
+### Artisan command — export a theme to disk
 
 ```php
-// routes/api.php
-Route::prefix('themes')->group(function () {
-    Route::post('export', [ThemeController::class, 'export']);
-    Route::post('import', [ThemeController::class, 'import']);
-    Route::post('clone', [ThemeController::class, 'clone']);
-});
-```
-
-## Artisan Command Example
-
-You can also create Artisan commands using the ThemeService:
-
-```php
-<?php
-
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Trinavo\LivewirePageBuilder\Services\ThemeService;
 
-class ExportThemeCommand extends Command
+class ExportTheme extends Command
 {
-    protected $signature = 'theme:export {theme_id} {--output=}';
-    protected $description = 'Export a theme to JSON file';
+    protected $signature = 'theme:export {theme_id} {--out=}';
 
-    public function handle(ThemeService $themeService): int
+    public function handle(ThemeService $service): int
     {
-        $themeId = $this->argument('theme_id');
-        $outputPath = $this->option('output');
-        
-        if ($outputPath) {
-            $filePath = $themeService->exportThemeToFile($themeId, dirname($outputPath));
-            $fileName = basename($outputPath);
-            
-            if ($filePath && rename($filePath, $outputPath)) {
-                $this->info("Theme exported to: {$outputPath}");
-                return 0;
-            }
-        } else {
-            $exportData = $themeService->exportTheme($themeId);
-            if ($exportData) {
-                $this->info(json_encode($exportData, JSON_PRETTY_PRINT));
-                return 0;
-            }
+        $path = $service->exportThemeToFile(
+            (int) $this->argument('theme_id'),
+            $this->option('out') ? dirname($this->option('out')) : null,
+        );
+
+        if (! $path) {
+            $this->error('Theme not found or export failed.');
+            return self::FAILURE;
         }
-        
-        $this->error('Failed to export theme');
-        return 1;
+
+        $this->info("Exported to {$path}");
+        return self::SUCCESS;
     }
 }
 ```
 
-## Notes
+### HTTP endpoint — import on upload
 
-- All operations are logged for debugging purposes
-- The service handles both theme IDs and Theme model instances
-- File operations create directories automatically if they don't exist
-- Import operations can handle both `components` and `content` fields for backward compatibility
-- Cloning creates exact copies of themes with all their pages and components
+```php
+public function import(Request $request, ThemeService $service)
+{
+    $file = $request->file('theme')->getRealPath();
+
+    $theme = $service->importThemeFromFile($file, overwriteExisting: $request->boolean('overwrite'));
+
+    abort_unless($theme, 422, 'Import failed');
+
+    return response()->json(['theme_id' => $theme->id]);
+}
+```
+
+---
+
+## See also
+
+- [Theme Encryption](theme-encryption.md) — encryption pipeline, key management
+- [Advanced Configuration](advanced-configuration.md) — the `encryption.*` config keys

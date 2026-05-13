@@ -15,7 +15,7 @@ Any Livewire component can be registered as a block. Any page can be reused as a
 - **Built‑in blocks** — `RichText`, `SimpleText`, `Spacer`, `IconBlock`, plus core `RowBlock` and `BuilderPageBlock` (page‑as‑block)
 - **Rich property catalog** — 13 property types covering text, rich text, color, icon, image, video, select, checkbox, responsive size, responsive spacing, plus a `CustomProperty` for shipping your own UI
 - **Multilingual** — independent **UI locales** and **content locales**, language switcher in the editor, multilingual `RichTextProperty`, dynamic locale registration at runtime
-- **Variables** — `{{variable}}` substitution inside text blocks. Register string or callable variables in config; built‑ins include `app_name`, `app_url`, `year`, `current_datetime`
+- **Variables** — `{variable}` substitution inside text blocks. Register string or callable variables in config; built‑ins include `app_name`, `app_url`, `year`, `current_datetime`
 - **Dark / light mode** — first‑class throughout the editor and the rendered output
 - **Publishable everything** — config, views, translations and assets are all publishable for full customization
 - **MIT licensed**
@@ -264,13 +264,19 @@ Full guide: [docs/multilingual-support.md](docs/multilingual-support.md).
 
 ## 🧬 Variables
 
-Use `{{variable}}` placeholders inside text content and they'll be substituted at render time. Variables can be plain strings or closures:
+Use `{variable}` placeholders inside text content and they'll be substituted at render time. Config‑file variables must be strings (closures aren't serialization‑safe in the config); register callable variables programmatically via the `PageBuilderVariables` facade:
 
 ```php
+// config/page-builder.php
 'variables' => [
     'company_name'  => 'Acme Inc',
-    'support_email' => fn () => config('mail.support'),
+    'support_email' => 'support@example.com',
 ],
+
+// In a service provider boot() method
+use Trinavo\LivewirePageBuilder\Facades\PageBuilderVariables;
+
+PageBuilderVariables::register('user_count', fn () => User::count());
 ```
 
 Built‑in variables registered by the package: `app_name`, `app_url`, `year`, `current_datetime`. Full reference: [docs/variables.md](docs/variables.md).
