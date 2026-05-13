@@ -16,6 +16,16 @@ laravel.log
 # IDE / editor
 .vscode/
 
+# AI assistant rule files (personal, not part of the package)
+.cursor/
+.windsurf/
+.claude/
+.github/copilot-instructions.md
+CLAUDE.md
+CODEX.md
+ai-rules.md
+ai-rules.config.yaml
+
 # SSL keys — never commit
 ssl/
 
