@@ -2,6 +2,7 @@
 
 namespace Trinavo\LivewirePageBuilder\Services;
 
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Livewire\Livewire;
 use Trinavo\LivewirePageBuilder\Blocks\IconBlock;
@@ -565,8 +566,9 @@ class PageBuilderService
             $styles[] = '-webkit-text-fill-color: transparent';
             $styles[] = 'background-clip: text';
         } elseif ($textColor) {
-            if (str_starts_with($textColor, '#') || str_starts_with($textColor, 'rgb')) {
-                $styles[] = "color: $textColor";
+            $sanitized = $this->sanitizeCssColor($textColor);
+            if ($sanitized !== null && (str_starts_with($sanitized, '#') || str_starts_with($sanitized, 'rgb'))) {
+                $styles[] = "color: $sanitized";
             }
         }
 
@@ -576,20 +578,26 @@ class PageBuilderService
             $cssDirection = $this->gradientDirectionToCss($bgGradientDirection);
             $styles[] = "background: linear-gradient($cssDirection, $fromCss, $toCss)";
         } else {
-            // Add background color classes or inline styles for hex and rgba colors
             if ($backgroundColor) {
-                if (str_starts_with($backgroundColor, '#') || str_starts_with($backgroundColor, 'rgb')) {
-                    $styles[] = "background-color: $backgroundColor";
+                $sanitized = $this->sanitizeCssColor($backgroundColor);
+                if ($sanitized !== null && (str_starts_with($sanitized, '#') || str_starts_with($sanitized, 'rgb'))) {
+                    $styles[] = "background-color: $sanitized";
                 }
             }
         }
 
-        // Add background image styles
         if ($backgroundImage) {
-            $styles[] = "background-image: url('$backgroundImage')";
-            $styles[] = "background-position: $backgroundPosition";
-            $styles[] = "background-size: $backgroundSize";
-            $styles[] = "background-repeat: $backgroundRepeat";
+            $safeUrl = $this->sanitizeCssUrl($backgroundImage);
+            if ($safeUrl !== null) {
+                $safePosition = $this->sanitizeCssKeyword($backgroundPosition, 'background-position') ?? 'center';
+                $safeSize = $this->sanitizeCssKeyword($backgroundSize, 'background-size') ?? 'cover';
+                $safeRepeat = $this->sanitizeCssKeyword($backgroundRepeat, 'background-repeat') ?? 'no-repeat';
+
+                $styles[] = "background-image: url('$safeUrl')";
+                $styles[] = "background-position: $safePosition";
+                $styles[] = "background-size: $safeSize";
+                $styles[] = "background-repeat: $safeRepeat";
+            }
         }
 
         // Add border color styles for hex colors
@@ -613,11 +621,89 @@ class PageBuilderService
     }
 
     /**
+     * Validate a user-supplied CSS color value to prevent inline-style CSS injection.
+     * Accepts hex, rgb/rgba/hsl/hsla/oklch/oklab function syntax with numeric args,
+     * and DaisyUI semantic names. Anything else is logged; returns null in strict
+     * mode (the default) or the raw value when `page-builder.strict_css_validation`
+     * is false.
+     */
+    protected function sanitizeCssColor(?string $color): ?string
+    {
+        if ($color === null || $color === '') {
+            return null;
+        }
+        $color = trim($color);
+
+        if (preg_match('/^#(?:[0-9a-f]{3,4}|[0-9a-f]{6}|[0-9a-f]{8})$/i', $color)
+            || preg_match('/^(?:rgb|rgba|hsl|hsla|oklch|oklab)\(\s*[\d\s.,%\/-]+\s*\)$/i', $color)
+            || preg_match('/^[a-z][a-z0-9-]{0,30}$/i', $color)
+        ) {
+            return $color;
+        }
+
+        Log::warning('livewire-page-builder: rejected unsafe CSS color value', [
+            'value' => mb_substr($color, 0, 200),
+        ]);
+
+        return config('page-builder.strict_css_validation', true) ? null : $color;
+    }
+
+    /**
+     * Validate a user-supplied URL for use inside `url('...')`. Rejects anything
+     * containing characters that could break out of the CSS string, and requires
+     * http(s):// or a same-origin path.
+     */
+    protected function sanitizeCssUrl(?string $url): ?string
+    {
+        if ($url === null || $url === '') {
+            return null;
+        }
+        $url = trim($url);
+
+        $invalid = preg_match('/[\'"()\s\\\\;{}]/', $url) === 1
+            || preg_match('#^(?:https?://|//|/)#i', $url) !== 1;
+
+        if ($invalid) {
+            Log::warning('livewire-page-builder: rejected unsafe CSS url value', [
+                'value' => mb_substr($url, 0, 200),
+            ]);
+
+            return config('page-builder.strict_css_validation', true) ? null : $url;
+        }
+
+        return $url;
+    }
+
+    /**
+     * Validate a user-supplied CSS keyword/value (e.g. background-position).
+     * Accepts only alphanumerics, whitespace, %, ., /, and hyphen.
+     */
+    protected function sanitizeCssKeyword(?string $value, string $key): ?string
+    {
+        if ($value === null || $value === '') {
+            return null;
+        }
+        $value = trim($value);
+
+        if (preg_match('#^[a-z0-9 %./-]+$#i', $value)) {
+            return $value;
+        }
+
+        Log::warning("livewire-page-builder: rejected unsafe CSS {$key} value", [
+            'value' => mb_substr($value, 0, 200),
+        ]);
+
+        return config('page-builder.strict_css_validation', true) ? null : $value;
+    }
+
+    /**
      * Resolve a color value to a CSS-usable string.
      * Hex/rgb values pass through. DaisyUI class names are converted to oklch CSS variable references.
      */
     protected function resolveColorToCss(string $color): string
     {
+        $color = $this->sanitizeCssColor($color) ?? 'transparent';
+
         if (str_starts_with($color, '#') || str_starts_with($color, 'rgb')) {
             return $color;
         }

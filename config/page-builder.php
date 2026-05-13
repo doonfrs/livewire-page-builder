@@ -15,6 +15,12 @@ return [
     // new installs should use editor_middleware / render_middleware instead.
     'middleware' => [],
 
+    // When true (default), inline-style CSS values that don't match the
+    // expected color/url/keyword shapes are dropped (with a Log::warning).
+    // Set to false if you have legacy property values that fail validation
+    // and you trust your editors.
+    'strict_css_validation' => true,
+
     // Localization Configuration
     'localization' => [
         // UI locales affect the builder interface (buttons, labels, etc.)
