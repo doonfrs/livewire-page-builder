@@ -78,20 +78,10 @@ class PageBuilderServiceProvider extends ServiceProvider
             __DIR__.'/../../resources/views' => resource_path('views/vendor/page-builder'),
         ], 'page-builder-views');
 
-        // Add asset publishing for Vite build files
-        $this->publishes([
-            __DIR__.'/../../public/build' => public_path('vendor/page-builder/build'),
-        ], 'page-builder-assets');
-
         // Publish translation files
         $this->publishes([
             __DIR__.'/../../lang' => lang_path('vendor/page-builder'),
         ], 'page-builder-translations');
-
-        // Add vite resources
-        $this->publishes([
-            __DIR__.'/../../resources/js' => resource_path('js/vendor/page-builder'),
-        ], 'page-builder-js');
 
         // Register Livewire components
         $this->registerLivewireComponents();

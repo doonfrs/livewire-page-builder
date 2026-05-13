@@ -12,3 +12,13 @@ browser-session-data/
 coverage/
 
 laravel.log
+
+# SSL keys — never commit
+ssl/
+
+# Frontend dev tooling — host app handles this, not the package
+vite.config.js
+package.json
+package-lock.json
+resources/css/
+resources/js/
