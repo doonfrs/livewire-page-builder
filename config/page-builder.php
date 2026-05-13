@@ -1,7 +1,18 @@
 <?php
 
 return [
-    // Middleware to secure the page builder routes (e.g., ['auth', 'can:edit-pages'])
+    // Middleware applied to editor routes: /themes, /editor, /preview/cancel.
+    // Defaults to ['auth'] so the builder is not exposed to anonymous users.
+    // Tighten with a Gate, e.g. ['auth', 'can:edit-pages'].
+    'editor_middleware' => ['auth'],
+
+    // Middleware applied to the public page render route: /page/view.
+    // Defaults to none (pages are publicly viewable). Add ['auth'] for gated pages.
+    'render_middleware' => [],
+
+    // Legacy: applied to BOTH editor and render groups, in addition to the
+    // group-specific middleware above. Kept for backward compatibility;
+    // new installs should use editor_middleware / render_middleware instead.
     'middleware' => [],
 
     // Localization Configuration

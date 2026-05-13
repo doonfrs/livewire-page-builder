@@ -5,53 +5,62 @@ use Trinavo\LivewirePageBuilder\Http\Livewire\PageEditor;
 use Trinavo\LivewirePageBuilder\Http\Livewire\ThemeManager;
 use Trinavo\LivewirePageBuilder\Services\PageBuilderRender;
 
-$middleware = array_merge(
-    ['web', 'page-builder-localization'],
-    config('page-builder.middleware', [])
+$base = ['web', 'page-builder-localization'];
+$legacy = config('page-builder.middleware', []);
+
+$editorMiddleware = array_merge(
+    $base,
+    config('page-builder.editor_middleware', ['auth']),
+    $legacy
 );
 
-Route::middleware($middleware)->prefix('page-builder')->group(function () {
-    // Redirect root page-builder route to themes
-    Route::get('/', function () {
-        return redirect()->route('page-builder.themes');
-    })->name('page-builder.index');
+$renderMiddleware = array_merge(
+    $base,
+    config('page-builder.render_middleware', []),
+    $legacy
+);
 
-    // Theme Management Routes
-    Route::get('/themes', ThemeManager::class)->name('page-builder.themes');
+Route::prefix('page-builder')->group(function () use ($editorMiddleware, $renderMiddleware) {
 
-    // Preview Management Routes
-    Route::get('/preview/cancel', function () {
-        session()->forget('page_builder_preview_theme_id');
-
-        return redirect('/')->with('notify', [
-            'message' => __('Preview mode cancelled'),
-            'type' => 'success',
-        ]);
-    })->name('page-builder.preview.cancel');
-
-    // Page Builder Routes - Updated to use theme IDs
-    Route::get(
-        '/editor/{pageKey}/{themeId?}',
-        PageEditor::class
-    )->name('page-builder.editor');
-
-    Route::get(
-        '/page/view/{pageKey}/{themeId?}',
-        function ($pageKey, $themeId = null) {
-            return app(PageBuilderRender::class)->renderPage($pageKey, $themeId);
-        }
-    )->name('page-builder.page.view');
-
-    // Backward compatibility routes (deprecated)
-    Route::get(
-        '/page/edit/{pageKey}/{pageTheme?}',
-        function ($pageKey, $pageTheme = null) {
-            // If pageTheme is numeric, treat as theme ID, otherwise redirect to theme manager
-            if (is_numeric($pageTheme)) {
-                return redirect()->route('page-builder.editor', ['pageKey' => $pageKey, 'themeId' => $pageTheme]);
-            }
-
+    Route::middleware($editorMiddleware)->group(function () {
+        Route::get('/', function () {
             return redirect()->route('page-builder.themes');
-        }
-    )->name('page-builder.page.edit');
+        })->name('page-builder.index');
+
+        Route::get('/themes', ThemeManager::class)->name('page-builder.themes');
+
+        Route::get('/preview/cancel', function () {
+            session()->forget('page_builder_preview_theme_id');
+
+            return redirect('/')->with('notify', [
+                'message' => __('Preview mode cancelled'),
+                'type' => 'success',
+            ]);
+        })->name('page-builder.preview.cancel');
+
+        Route::get(
+            '/editor/{pageKey}/{themeId?}',
+            PageEditor::class
+        )->name('page-builder.editor');
+
+        Route::get(
+            '/page/edit/{pageKey}/{pageTheme?}',
+            function ($pageKey, $pageTheme = null) {
+                if (is_numeric($pageTheme)) {
+                    return redirect()->route('page-builder.editor', ['pageKey' => $pageKey, 'themeId' => $pageTheme]);
+                }
+
+                return redirect()->route('page-builder.themes');
+            }
+        )->name('page-builder.page.edit');
+    });
+
+    Route::middleware($renderMiddleware)->group(function () {
+        Route::get(
+            '/page/view/{pageKey}/{themeId?}',
+            function ($pageKey, $themeId = null) {
+                return app(PageBuilderRender::class)->renderPage($pageKey, $themeId);
+            }
+        )->name('page-builder.page.view');
+    });
 });
