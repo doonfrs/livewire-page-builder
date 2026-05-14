@@ -63,12 +63,23 @@ class PageBuilderServiceProvider extends ServiceProvider
         // Load translations
         $this->loadTranslationsFrom(__DIR__.'/../../lang', 'page-builder');
 
+        // Make package JSON translations resolvable without the `page-builder::`
+        // namespace, so blocks can call __('Image Block') and fall back to the
+        // package's lang/en.json / ar.json when the consumer hasn't defined them.
+        // Project-level lang/*.json keys still take precedence.
+        $this->app['translator']->addJsonPath(__DIR__.'/../../lang');
+
         // Register blade components with namespace
         $this->loadViewsFrom(__DIR__.'/../../resources/views/components', 'page-builder');
 
         // Register anonymous blade components
         $this->loadViewComponentsAs('page-builder', []);
         Blade::componentNamespace('Trinavo\\LivewirePageBuilder\\View\\Components', 'page-builder');
+
+        // Allow anonymous components like <x-pb-icon.image-block /> to resolve to the
+        // package's resources/views/components directory when the consumer app
+        // hasn't published an override.
+        Blade::anonymousComponentPath(__DIR__.'/../../resources/views/components');
 
         $this->publishes([
             __DIR__.'/../../config/page-builder.php' => config_path('page-builder.php'),

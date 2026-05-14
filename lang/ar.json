@@ -313,5 +313,17 @@
     "Yes, apply layout": "نعم، تطبيق التخطيط",
     "No layouts available.": "لا توجد تخطيطات متاحة.",
     "Apply": "تطبيق",
-    "':name' set as default theme": "تم تعيين ':name' كمظهر افتراضي"
+    "':name' set as default theme": "تم تعيين ':name' كمظهر افتراضي",
+    "Image": "صورة",
+    "Image Block": "كتلة صورة",
+    "Alt Text": "النص البديل",
+    "Link URL": "رابط",
+    "Open in New Tab": "افتح في علامة تبويب جديدة",
+    "Caption": "تعليق",
+    "Object Fit": "ملاءمة الكائن",
+    "Cover": "تغطية",
+    "Contain": "تضمين",
+    "None": "لا يوجد",
+    "Border Radius": "نصف قطر الحواف",
+    "No image selected": "لم يتم اختيار صورة"
 }

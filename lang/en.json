@@ -296,5 +296,18 @@
     "Yes, apply layout": "Yes, apply layout",
     "No layouts available.": "No layouts available.",
     "Apply": "Apply",
-    "':name' set as default theme": "':name' set as default theme"
+    "':name' set as default theme": "':name' set as default theme",
+    "Image": "Image",
+    "Image Block": "Image Block",
+    "Alt Text": "Alt Text",
+    "Link URL": "Link URL",
+    "Open in New Tab": "Open in New Tab",
+    "Caption": "Caption",
+    "Object Fit": "Object Fit",
+    "Cover": "Cover",
+    "Contain": "Contain",
+    "Fill": "Fill",
+    "None": "None",
+    "Border Radius": "Border Radius",
+    "No image selected": "No image selected"
 }
