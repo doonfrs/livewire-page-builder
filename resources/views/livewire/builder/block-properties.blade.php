@@ -16,7 +16,7 @@
     </div>
 
     <!-- Scrollable content (only this area scrolls) -->
-    <div class="flex-1 min-h-0 overflow-y-auto">
+    <div class="flex-1 min-h-0 overflow-y-auto pb-compact">
         <!-- Empty State -->
     @if ($componentMissing)
         @php
@@ -48,14 +48,14 @@
         <div class="divide-y divide-gray-100 dark:divide-gray-800">
             <!-- Property Groups -->
             @foreach ($propertyGroups as $groupName => $group)
-                <div class="p-4 @if ($loop->even) bg-gray-50 dark:bg-gray-800/50 @endif">
+                <div class="px-3 py-4 @if ($loop->even) bg-gray-50 dark:bg-gray-800/50 @endif">
                     <div
-                        class="text-sm font-medium text-gray-500 uppercase tracking-wider mb-3 flex items-center dark:text-gray-400">
+                        class="text-xs font-medium text-gray-500 uppercase tracking-wider mb-2 flex items-center dark:text-gray-400">
                         <x-dynamic-component :component="$group['icon']" class="w-4 h-4 mr-1" />
                         {{ $group['label'] }}
                     </div>
 
-                    <div class="space-y-4 {{ $group['columns'] > 1 ? 'grid grid-cols-' . $group['columns'] . ' gap-3 space-y-0' : '' }}"
+                    <div class="space-y-3 {{ $group['columns'] > 1 ? 'grid grid-cols-' . $group['columns'] . ' gap-2 space-y-0' : '' }}"
                         wire:key="group-{{ $blockId }}-{{ $groupName }}">
                         @foreach ($group['properties'] as $property)
                             @php
@@ -153,4 +153,14 @@
         </div>
     @endif
     </div>
+
+    {{-- Compact panel: smaller fonts across the main view and all property sub-components to gain space --}}
+    <style>
+        .pb-compact label,
+        .pb-compact input,
+        .pb-compact select,
+        .pb-compact textarea {
+            font-size: 0.75rem;
+        }
+    </style>
 </div>
