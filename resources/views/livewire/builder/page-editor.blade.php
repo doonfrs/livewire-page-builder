@@ -15,14 +15,38 @@
         currentSelectedBlockId: null,
         currentSelectedRowId: null,
         propertiesPanelOpen: true,
+        previewScale: 1,
+        previewFitHeight: null,
         isMobile() {
             return window.matchMedia('(max-width: 1023px)').matches;
+        },
+        updatePreviewScale() {
+            const viewport = this.$refs.previewViewport;
+            const canvas = this.$refs.previewCanvas;
+            if (!viewport || !canvas) return;
+            const available = viewport.clientWidth;
+            const designWidth = canvas.offsetWidth; // layout width (unaffected by transform) = container-query width
+            const scale = designWidth > 0 ? Math.min(1, available / designWidth) : 1;
+            this.previewScale = scale;
+            // Collapse the reserved (unscaled) box height to the scaled height so there's no empty scroll area.
+            this.previewFitHeight = scale < 1 ? Math.round(canvas.offsetHeight * scale) : null;
         },
         init() {
             if (this.isMobile()) {
                 this.deviceMode = 'mobile';
                 this.propertiesPanelOpen = false;
             }
+            this.$nextTick(() => {
+                this.updatePreviewScale();
+                const canvas = this.$refs.previewCanvas;
+                if (canvas && window.ResizeObserver) {
+                    this._previewObserver = new ResizeObserver(() => this.updatePreviewScale());
+                    this._previewObserver.observe(canvas);
+                }
+                window.addEventListener('resize', () => this.updatePreviewScale());
+            });
+            this.$watch('deviceMode', () => this.$nextTick(() => this.updatePreviewScale()));
+            this.$watch('propertiesPanelOpen', () => this.$nextTick(() => this.updatePreviewScale()));
         },
         checkClipboard: async function() {
             try {
@@ -1023,17 +1047,27 @@
             <main class="flex-1 pt-10 pb-50 pr-0 overflow-auto min-h-0 w-full"
                 :class="propertiesPanelOpen ? 'lg:w-[80%]' : 'lg:w-full'"
                 :style="`background-color: ${canvasBgColor}`">
-                <div class="mx-auto @container"
-                    :class="{
-                        'w-[375px]': deviceMode === 'mobile',
-                        'w-[768px]': deviceMode === 'tablet',
-                        'w-full': deviceMode === 'desktop',
-                    }"
-                    style="font-size:0">
-                    @foreach ($rows as $rowId => $row)
-                        <livewire:row-block :edit-mode="true" :blocks="$row['blocks']" :rowId="$rowId" :properties="$row['properties'] ?? []"
-                            :key="$rowId" />
-                    @endforeach
+                {{-- Fit-to-width viewport: when the canvas is wider than the screen (e.g. desktop/tablet preview on a phone),
+                     the canvas is scaled down to fit. This wrapper clips and collapses the reserved box so there's no
+                     horizontal scroll and no empty vertical space. transform (not zoom) keeps the @container at its
+                     design width, so blocks still render their desktop/tablet layout. --}}
+                <div x-ref="previewViewport" class="w-full box-border"
+                    :style="previewScale < 1 ? `height: ${previewFitHeight + 40}px; padding-top: 20px; padding-bottom: 20px; overflow: hidden;` : ''">
+                    <div x-ref="previewCanvas" class="mx-auto @container"
+                        :class="{
+                            'w-[375px]': deviceMode === 'mobile',
+                            'w-[768px]': deviceMode === 'tablet',
+                            'w-full min-w-[1280px]': deviceMode === 'desktop',
+                        }"
+                        :style="previewScale < 1
+                            ? `transform: scale(${previewScale}); transform-origin: top ${document.documentElement.dir === 'rtl' ? 'right' : 'left'}; margin-inline: 0;`
+                            : ''"
+                        style="font-size:0">
+                        @foreach ($rows as $rowId => $row)
+                            <livewire:row-block :edit-mode="true" :blocks="$row['blocks']" :rowId="$rowId" :properties="$row['properties'] ?? []"
+                                :key="$rowId" />
+                        @endforeach
+                    </div>
                 </div>
             </main>
         </div>
