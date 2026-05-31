@@ -40,8 +40,12 @@ class ResponsiveSpacingProperty extends BlockProperty
             'name' => $this->name,
             'label' => $this->label,
             'type' => $this->getType(),
-            'devices' => $this->devices,
-            'directions' => $directionLabels,
+            'devices' => array_map(function (array $device) {
+                $device['label'] = __($device['label']);
+
+                return $device;
+            }, $this->devices),
+            'directions' => array_map(fn (string $label) => __($label), $directionLabels),
             'fields' => $this->buildFieldMap($studlyName, $directionLabels),
             'values' => $this->normalizeDefaultValues($directionLabels),
             'group' => $this->group,

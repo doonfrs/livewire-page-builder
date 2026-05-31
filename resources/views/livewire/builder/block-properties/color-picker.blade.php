@@ -124,7 +124,7 @@
                     @foreach ($themeColors as $colorGroup => $colors)
                         <div class="mb-2">
                             <h4 class="text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
-                                {{ ucfirst($colorGroup) }}</h4>
+                                {{ __(ucfirst($colorGroup)) }}</h4>
                             <div class="grid grid-cols-4 gap-1">
                                 @foreach ($colors as $color)
                                     <button wire:click="selectColor('{{ $color }}'); $dispatch('color-selected')"
@@ -145,7 +145,7 @@
                 <div x-show="activeTab === 'tailwind'" class="mb-3">
                     <!-- Gray Colors -->
                     <div class="mb-2">
-                        <h4 class="text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Gray</h4>
+                        <h4 class="text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">{{ __('Gray') }}</h4>
                         <div class="grid grid-cols-5 gap-1">
                             @foreach ($presetColors['gray'] as $color)
                                 <button wire:click="selectColor('{{ $color }}'); $dispatch('color-selected')"
@@ -163,7 +163,7 @@
                     @foreach (['red', 'blue', 'green', 'yellow', 'pink', 'purple', 'indigo'] as $colorGroup)
                         <div class="mb-2">
                             <h4 class="text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
-                                {{ ucfirst($colorGroup) }}</h4>
+                                {{ __(ucfirst($colorGroup)) }}</h4>
                             <div class="grid grid-cols-5 gap-1">
                                 @foreach ($presetColors[$colorGroup] as $color)
                                     <button

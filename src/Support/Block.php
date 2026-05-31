@@ -298,26 +298,26 @@ abstract class Block extends Component
         $minHeights = $this->getPageBuilderMinHeightList();
 
         return [
-            (new FlexibleSizeProperty('mobileWidth', 'Mobile', $widths, allowCustom: true, unit: 'px', defaultValue: $this->mobileWidth))
-                ->setGroup('width', 'Width', 3, 'heroicon-o-device-phone-mobile'),
-            (new FlexibleSizeProperty('tabletWidth', 'Tablet', $widths, allowCustom: true, unit: 'px', defaultValue: $this->tabletWidth))
-                ->setGroup('width', 'Width', 3, 'heroicon-o-device-tablet'),
-            (new FlexibleSizeProperty('desktopWidth', 'Desktop', $widths, allowCustom: true, unit: 'px', defaultValue: $this->desktopWidth))
-                ->setGroup('width', 'Width', 3, 'heroicon-o-computer-desktop'),
+            (new FlexibleSizeProperty('mobileWidth', __('Mobile'), $widths, allowCustom: true, unit: 'px', defaultValue: $this->mobileWidth))
+                ->setGroup('width', __('Width'), 3, 'heroicon-o-device-phone-mobile'),
+            (new FlexibleSizeProperty('tabletWidth', __('Tablet'), $widths, allowCustom: true, unit: 'px', defaultValue: $this->tabletWidth))
+                ->setGroup('width', __('Width'), 3, 'heroicon-o-device-tablet'),
+            (new FlexibleSizeProperty('desktopWidth', __('Desktop'), $widths, allowCustom: true, unit: 'px', defaultValue: $this->desktopWidth))
+                ->setGroup('width', __('Width'), 3, 'heroicon-o-computer-desktop'),
 
-            (new FlexibleSizeProperty('mobileHeight', 'Mobile', $heights, allowCustom: true, unit: 'px', defaultValue: $this->mobileHeight))
-                ->setGroup('height', 'Height', 3, 'heroicon-o-device-phone-mobile'),
-            (new FlexibleSizeProperty('tabletHeight', 'Tablet', $heights, allowCustom: true, unit: 'px', defaultValue: $this->tabletHeight))
-                ->setGroup('height', 'Height', 3, 'heroicon-o-device-tablet'),
-            (new FlexibleSizeProperty('desktopHeight', 'Desktop', $heights, allowCustom: true, unit: 'px', defaultValue: $this->desktopHeight))
-                ->setGroup('height', 'Height', 3, 'heroicon-o-computer-desktop'),
+            (new FlexibleSizeProperty('mobileHeight', __('Mobile'), $heights, allowCustom: true, unit: 'px', defaultValue: $this->mobileHeight))
+                ->setGroup('height', __('Height'), 3, 'heroicon-o-device-phone-mobile'),
+            (new FlexibleSizeProperty('tabletHeight', __('Tablet'), $heights, allowCustom: true, unit: 'px', defaultValue: $this->tabletHeight))
+                ->setGroup('height', __('Height'), 3, 'heroicon-o-device-tablet'),
+            (new FlexibleSizeProperty('desktopHeight', __('Desktop'), $heights, allowCustom: true, unit: 'px', defaultValue: $this->desktopHeight))
+                ->setGroup('height', __('Height'), 3, 'heroicon-o-computer-desktop'),
 
-            (new FlexibleSizeProperty('mobileMinHeight', 'Mobile', $minHeights, allowCustom: true, unit: 'px', defaultValue: $this->mobileMinHeight))
-                ->setGroup('min_height', 'Min Height', 3, 'heroicon-o-device-phone-mobile'),
-            (new FlexibleSizeProperty('tabletMinHeight', 'Tablet', $minHeights, allowCustom: true, unit: 'px', defaultValue: $this->tabletMinHeight))
-                ->setGroup('min_height', 'Min Height', 3, 'heroicon-o-device-tablet'),
-            (new FlexibleSizeProperty('desktopMinHeight', 'Desktop', $minHeights, allowCustom: true, unit: 'px', defaultValue: $this->desktopMinHeight))
-                ->setGroup('min_height', 'Min Height', 3, 'heroicon-o-computer-desktop'),
+            (new FlexibleSizeProperty('mobileMinHeight', __('Mobile'), $minHeights, allowCustom: true, unit: 'px', defaultValue: $this->mobileMinHeight))
+                ->setGroup('min_height', __('Min Height'), 3, 'heroicon-o-device-phone-mobile'),
+            (new FlexibleSizeProperty('tabletMinHeight', __('Tablet'), $minHeights, allowCustom: true, unit: 'px', defaultValue: $this->tabletMinHeight))
+                ->setGroup('min_height', __('Min Height'), 3, 'heroicon-o-device-tablet'),
+            (new FlexibleSizeProperty('desktopMinHeight', __('Desktop'), $minHeights, allowCustom: true, unit: 'px', defaultValue: $this->desktopMinHeight))
+                ->setGroup('min_height', __('Min Height'), 3, 'heroicon-o-computer-desktop'),
         ];
     }
 
@@ -327,12 +327,12 @@ abstract class Block extends Component
     protected function getVisibilityProperties(): array
     {
         return [
-            (new CheckboxProperty('hiddenMobile', 'Mobile', defaultValue: $this->hiddenMobile))
-                ->setGroup('hide', 'Hide', 3, 'heroicon-o-eye'),
-            (new CheckboxProperty('hiddenTablet', 'Tablet', defaultValue: $this->hiddenTablet))
-                ->setGroup('hide', 'Hide', 3, 'heroicon-o-eye'),
-            (new CheckboxProperty('hiddenDesktop', 'Desktop', defaultValue: $this->hiddenDesktop))
-                ->setGroup('hide', 'Hide', 3, 'heroicon-o-eye'),
+            (new CheckboxProperty('hiddenMobile', __('Mobile'), defaultValue: $this->hiddenMobile))
+                ->setGroup('hide', __('Hide'), 3, 'heroicon-o-eye'),
+            (new CheckboxProperty('hiddenTablet', __('Tablet'), defaultValue: $this->hiddenTablet))
+                ->setGroup('hide', __('Hide'), 3, 'heroicon-o-eye'),
+            (new CheckboxProperty('hiddenDesktop', __('Desktop'), defaultValue: $this->hiddenDesktop))
+                ->setGroup('hide', __('Hide'), 3, 'heroicon-o-eye'),
         ];
     }
 
@@ -396,10 +396,10 @@ abstract class Block extends Component
         ];
 
         return [
-            (new ResponsiveSpacingProperty('padding', 'Padding', $paddingValues))
-                ->setGroup('padding', 'Padding', 1, 'heroicon-o-arrows-pointing-out'),
-            (new ResponsiveSpacingProperty('margin', 'Margin', $marginValues))
-                ->setGroup('margin', 'Margin', 1, 'heroicon-o-arrows-right-left'),
+            (new ResponsiveSpacingProperty('padding', __('Padding'), $paddingValues))
+                ->setGroup('padding', __('Padding'), 1, 'heroicon-o-arrows-pointing-out'),
+            (new ResponsiveSpacingProperty('margin', __('Margin'), $marginValues))
+                ->setGroup('margin', __('Margin'), 1, 'heroicon-o-arrows-right-left'),
         ];
     }
 
@@ -409,37 +409,37 @@ abstract class Block extends Component
     protected function getStyleProperties(): array
     {
         $gradientDirections = [
-            'to-t' => 'To Top',
-            'to-tr' => 'To Top Right',
-            'to-r' => 'To Right',
-            'to-br' => 'To Bottom Right',
-            'to-b' => 'To Bottom',
-            'to-bl' => 'To Bottom Left',
-            'to-l' => 'To Left',
-            'to-tl' => 'To Top Left',
+            'to-t' => __('To Top'),
+            'to-tr' => __('To Top Right'),
+            'to-r' => __('To Right'),
+            'to-br' => __('To Bottom Right'),
+            'to-b' => __('To Bottom'),
+            'to-bl' => __('To Bottom Left'),
+            'to-l' => __('To Left'),
+            'to-tl' => __('To Top Left'),
         ];
 
         return [
-            (new ColorProperty('textColor', 'Text Color', defaultValue: $this->textColor))
-                ->setGroup('color', 'Color', 2, 'heroicon-o-swatch'),
-            (new ColorProperty('backgroundColor', 'Background Color', defaultValue: $this->backgroundColor))
-                ->setGroup('color', 'Color', 2, 'heroicon-o-swatch'),
+            (new ColorProperty('textColor', __('Text Color'), defaultValue: $this->textColor))
+                ->setGroup('color', __('Color'), 2, 'heroicon-o-swatch'),
+            (new ColorProperty('backgroundColor', __('Background Color'), defaultValue: $this->backgroundColor))
+                ->setGroup('color', __('Color'), 2, 'heroicon-o-swatch'),
 
             // Background gradient
-            (new ColorProperty('backgroundGradientFrom', 'From', defaultValue: $this->backgroundGradientFrom))
-                ->setGroup('bg_gradient', 'Background Gradient', 3, 'heroicon-o-paint-brush'),
-            (new ColorProperty('backgroundGradientTo', 'To', defaultValue: $this->backgroundGradientTo))
-                ->setGroup('bg_gradient', 'Background Gradient', 3, 'heroicon-o-paint-brush'),
-            (new SelectProperty('backgroundGradientDirection', 'Direction', $gradientDirections, defaultValue: $this->backgroundGradientDirection))
-                ->setGroup('bg_gradient', 'Background Gradient', 3, 'heroicon-o-paint-brush'),
+            (new ColorProperty('backgroundGradientFrom', __('From'), defaultValue: $this->backgroundGradientFrom))
+                ->setGroup('bg_gradient', __('Background Gradient'), 3, 'heroicon-o-paint-brush'),
+            (new ColorProperty('backgroundGradientTo', __('To'), defaultValue: $this->backgroundGradientTo))
+                ->setGroup('bg_gradient', __('Background Gradient'), 3, 'heroicon-o-paint-brush'),
+            (new SelectProperty('backgroundGradientDirection', __('Direction'), $gradientDirections, defaultValue: $this->backgroundGradientDirection))
+                ->setGroup('bg_gradient', __('Background Gradient'), 3, 'heroicon-o-paint-brush'),
 
             // Text gradient
-            (new ColorProperty('textGradientFrom', 'From', defaultValue: $this->textGradientFrom))
-                ->setGroup('text_gradient', 'Text Gradient', 3, 'heroicon-o-paint-brush'),
-            (new ColorProperty('textGradientTo', 'To', defaultValue: $this->textGradientTo))
-                ->setGroup('text_gradient', 'Text Gradient', 3, 'heroicon-o-paint-brush'),
-            (new SelectProperty('textGradientDirection', 'Direction', $gradientDirections, defaultValue: $this->textGradientDirection))
-                ->setGroup('text_gradient', 'Text Gradient', 3, 'heroicon-o-paint-brush'),
+            (new ColorProperty('textGradientFrom', __('From'), defaultValue: $this->textGradientFrom))
+                ->setGroup('text_gradient', __('Text Gradient'), 3, 'heroicon-o-paint-brush'),
+            (new ColorProperty('textGradientTo', __('To'), defaultValue: $this->textGradientTo))
+                ->setGroup('text_gradient', __('Text Gradient'), 3, 'heroicon-o-paint-brush'),
+            (new SelectProperty('textGradientDirection', __('Direction'), $gradientDirections, defaultValue: $this->textGradientDirection))
+                ->setGroup('text_gradient', __('Text Gradient'), 3, 'heroicon-o-paint-brush'),
         ];
     }
 
@@ -449,7 +449,7 @@ abstract class Block extends Component
     protected function getThemeProperties(): array
     {
         return [
-            new CheckboxProperty(name: 'forceDarkMode', label: 'Force Dark Mode', defaultValue: $this->forceDarkMode),
+            new CheckboxProperty(name: 'forceDarkMode', label: __('Force Dark Mode'), defaultValue: $this->forceDarkMode),
         ];
     }
 
@@ -459,34 +459,34 @@ abstract class Block extends Component
     protected function getBackgroundImageProperties(): array
     {
         return [
-            (new ImageProperty('backgroundImage', 'Image', defaultValue: $this->backgroundImage))
-                ->setGroup('background_image', 'Background Image', 1, 'heroicon-o-photo'),
-            (new SelectProperty('backgroundPosition', 'Position', [
-                'center' => 'Center',
-                'top' => 'Top',
-                'right' => 'Right',
-                'bottom' => 'Bottom',
-                'left' => 'Left',
-                'top-left' => 'Top Left',
-                'top-right' => 'Top Right',
-                'bottom-left' => 'Bottom Left',
-                'bottom-right' => 'Bottom Right',
+            (new ImageProperty('backgroundImage', __('Image'), defaultValue: $this->backgroundImage))
+                ->setGroup('background_image', __('Background Image'), 1, 'heroicon-o-photo'),
+            (new SelectProperty('backgroundPosition', __('Position'), [
+                'center' => __('Center'),
+                'top' => __('Top'),
+                'right' => __('Right'),
+                'bottom' => __('Bottom'),
+                'left' => __('Left'),
+                'top-left' => __('Top Left'),
+                'top-right' => __('Top Right'),
+                'bottom-left' => __('Bottom Left'),
+                'bottom-right' => __('Bottom Right'),
             ], defaultValue: $this->backgroundPosition))
-                ->setGroup('backgroundImageOptions', 'Background Image Options', 2, 'heroicon-o-photo'),
-            (new SelectProperty('backgroundSize', 'Size', [
-                'cover' => 'Cover',
-                'contain' => 'Contain',
-                'auto' => 'Auto',
+                ->setGroup('backgroundImageOptions', __('Background Image Options'), 2, 'heroicon-o-photo'),
+            (new SelectProperty('backgroundSize', __('Size'), [
+                'cover' => __('Cover'),
+                'contain' => __('Contain'),
+                'auto' => __('Auto'),
                 '100%' => '100%',
             ], defaultValue: $this->backgroundSize))
-                ->setGroup('backgroundImageOptions', 'Background Image Options', 2, 'heroicon-o-photo'),
-            (new SelectProperty('backgroundRepeat', 'Repeat', [
-                'no-repeat' => 'No Repeat',
-                'repeat' => 'Repeat',
-                'repeat-x' => 'Repeat X',
-                'repeat-y' => 'Repeat Y',
+                ->setGroup('backgroundImageOptions', __('Background Image Options'), 2, 'heroicon-o-photo'),
+            (new SelectProperty('backgroundRepeat', __('Repeat'), [
+                'no-repeat' => __('No Repeat'),
+                'repeat' => __('Repeat'),
+                'repeat-x' => __('Repeat X'),
+                'repeat-y' => __('Repeat Y'),
             ], defaultValue: $this->backgroundRepeat))
-                ->setGroup('backgroundImageOptions', 'Background Image Options', 2, 'heroicon-o-photo'),
+                ->setGroup('backgroundImageOptions', __('Background Image Options'), 2, 'heroicon-o-photo'),
         ];
     }
 
@@ -500,40 +500,40 @@ abstract class Block extends Component
 
         return [
             // Border Width - All sides or individual
-            (new SelectProperty('borderTopWidth', 'Top', $borderWidths, defaultValue: $this->borderTopWidth))
-                ->setGroup('border_width', 'Border Width', 4, 'heroicon-o-square-3-stack-3d'),
-            (new SelectProperty('borderRightWidth', 'Right', $borderWidths, defaultValue: $this->borderRightWidth))
-                ->setGroup('border_width', 'Border Width', 4, 'heroicon-o-square-3-stack-3d'),
-            (new SelectProperty('borderBottomWidth', 'Bottom', $borderWidths, defaultValue: $this->borderBottomWidth))
-                ->setGroup('border_width', 'Border Width', 4, 'heroicon-o-square-3-stack-3d'),
-            (new SelectProperty('borderLeftWidth', 'Left', $borderWidths, defaultValue: $this->borderLeftWidth))
-                ->setGroup('border_width', 'Border Width', 4, 'heroicon-o-square-3-stack-3d'),
-            (new SelectProperty('borderWidth', 'All', $borderWidths, defaultValue: $this->borderWidth))
-                ->setGroup('border_width', 'Border Width', 4, 'heroicon-o-square-3-stack-3d'),
+            (new SelectProperty('borderTopWidth', __('Top'), $borderWidths, defaultValue: $this->borderTopWidth))
+                ->setGroup('border_width', __('Border Width'), 4, 'heroicon-o-square-3-stack-3d'),
+            (new SelectProperty('borderRightWidth', __('Right'), $borderWidths, defaultValue: $this->borderRightWidth))
+                ->setGroup('border_width', __('Border Width'), 4, 'heroicon-o-square-3-stack-3d'),
+            (new SelectProperty('borderBottomWidth', __('Bottom'), $borderWidths, defaultValue: $this->borderBottomWidth))
+                ->setGroup('border_width', __('Border Width'), 4, 'heroicon-o-square-3-stack-3d'),
+            (new SelectProperty('borderLeftWidth', __('Left'), $borderWidths, defaultValue: $this->borderLeftWidth))
+                ->setGroup('border_width', __('Border Width'), 4, 'heroicon-o-square-3-stack-3d'),
+            (new SelectProperty('borderWidth', __('All'), $borderWidths, defaultValue: $this->borderWidth))
+                ->setGroup('border_width', __('Border Width'), 4, 'heroicon-o-square-3-stack-3d'),
 
             // Border Color - All sides or individual
-            (new ColorProperty('borderTopColor', 'Top', defaultValue: $this->borderTopColor))
-                ->setGroup('border_color', 'Border Color', 4, 'heroicon-o-swatch'),
-            (new ColorProperty('borderRightColor', 'Right', defaultValue: $this->borderRightColor))
-                ->setGroup('border_color', 'Border Color', 4, 'heroicon-o-swatch'),
-            (new ColorProperty('borderBottomColor', 'Bottom', defaultValue: $this->borderBottomColor))
-                ->setGroup('border_color', 'Border Color', 4, 'heroicon-o-swatch'),
-            (new ColorProperty('borderLeftColor', 'Left', defaultValue: $this->borderLeftColor))
-                ->setGroup('border_color', 'Border Color', 4, 'heroicon-o-swatch'),
-            (new ColorProperty('borderColor', 'All', defaultValue: $this->borderColor))
-                ->setGroup('border_color', 'Border Color', 4, 'heroicon-o-swatch'),
+            (new ColorProperty('borderTopColor', __('Top'), defaultValue: $this->borderTopColor))
+                ->setGroup('border_color', __('Border Color'), 4, 'heroicon-o-swatch'),
+            (new ColorProperty('borderRightColor', __('Right'), defaultValue: $this->borderRightColor))
+                ->setGroup('border_color', __('Border Color'), 4, 'heroicon-o-swatch'),
+            (new ColorProperty('borderBottomColor', __('Bottom'), defaultValue: $this->borderBottomColor))
+                ->setGroup('border_color', __('Border Color'), 4, 'heroicon-o-swatch'),
+            (new ColorProperty('borderLeftColor', __('Left'), defaultValue: $this->borderLeftColor))
+                ->setGroup('border_color', __('Border Color'), 4, 'heroicon-o-swatch'),
+            (new ColorProperty('borderColor', __('All'), defaultValue: $this->borderColor))
+                ->setGroup('border_color', __('Border Color'), 4, 'heroicon-o-swatch'),
 
             // Border Radius - All corners or individual
-            (new SelectProperty('borderTopLeftRadius', 'Top Left', $borderRadiusOptions, defaultValue: $this->borderTopLeftRadius))
-                ->setGroup('border_radius', 'Border Radius', 4, 'heroicon-o-square-2-stack'),
-            (new SelectProperty('borderTopRightRadius', 'Top Right', $borderRadiusOptions, defaultValue: $this->borderTopRightRadius))
-                ->setGroup('border_radius', 'Border Radius', 4, 'heroicon-o-square-2-stack'),
-            (new SelectProperty('borderBottomRightRadius', 'Bottom Right', $borderRadiusOptions, defaultValue: $this->borderBottomRightRadius))
-                ->setGroup('border_radius', 'Border Radius', 4, 'heroicon-o-square-2-stack'),
-            (new SelectProperty('borderBottomLeftRadius', 'Bottom Left', $borderRadiusOptions, defaultValue: $this->borderBottomLeftRadius))
-                ->setGroup('border_radius', 'Border Radius', 4, 'heroicon-o-square-2-stack'),
-            (new SelectProperty('borderRadius', 'All', $borderRadiusOptions, defaultValue: $this->borderRadius))
-                ->setGroup('border_radius', 'Border Radius', 4, 'heroicon-o-square-2-stack'),
+            (new SelectProperty('borderTopLeftRadius', __('Top Left'), $borderRadiusOptions, defaultValue: $this->borderTopLeftRadius))
+                ->setGroup('border_radius', __('Border Radius'), 4, 'heroicon-o-square-2-stack'),
+            (new SelectProperty('borderTopRightRadius', __('Top Right'), $borderRadiusOptions, defaultValue: $this->borderTopRightRadius))
+                ->setGroup('border_radius', __('Border Radius'), 4, 'heroicon-o-square-2-stack'),
+            (new SelectProperty('borderBottomRightRadius', __('Bottom Right'), $borderRadiusOptions, defaultValue: $this->borderBottomRightRadius))
+                ->setGroup('border_radius', __('Border Radius'), 4, 'heroicon-o-square-2-stack'),
+            (new SelectProperty('borderBottomLeftRadius', __('Bottom Left'), $borderRadiusOptions, defaultValue: $this->borderBottomLeftRadius))
+                ->setGroup('border_radius', __('Border Radius'), 4, 'heroicon-o-square-2-stack'),
+            (new SelectProperty('borderRadius', __('All'), $borderRadiusOptions, defaultValue: $this->borderRadius))
+                ->setGroup('border_radius', __('Border Radius'), 4, 'heroicon-o-square-2-stack'),
 
         ];
     }
@@ -547,22 +547,22 @@ abstract class Block extends Component
 
         return [
             // Shadow Basic Settings (3 items)
-            (new SelectProperty('boxShadow', 'Preset', $boxShadowOptions, defaultValue: $this->boxShadow))
-                ->setGroup('shadow_basic', 'Shadow Basic', 3, 'heroicon-o-sun'),
-            (new ColorProperty('boxShadowColor', 'Color', defaultValue: $this->boxShadowColor))
-                ->setGroup('shadow_basic', 'Shadow Basic', 3, 'heroicon-o-sun'),
-            (new TextProperty('boxShadowBlur', 'Blur', numeric: true, defaultValue: $this->boxShadowBlur, min: 0, max: 100))
-                ->setGroup('shadow_basic', 'Shadow Basic', 3, 'heroicon-o-sun'),
+            (new SelectProperty('boxShadow', __('Preset'), $boxShadowOptions, defaultValue: $this->boxShadow))
+                ->setGroup('shadow_basic', __('Shadow Basic'), 3, 'heroicon-o-sun'),
+            (new ColorProperty('boxShadowColor', __('Color'), defaultValue: $this->boxShadowColor))
+                ->setGroup('shadow_basic', __('Shadow Basic'), 3, 'heroicon-o-sun'),
+            (new TextProperty('boxShadowBlur', __('Blur'), numeric: true, defaultValue: $this->boxShadowBlur, min: 0, max: 100))
+                ->setGroup('shadow_basic', __('Shadow Basic'), 3, 'heroicon-o-sun'),
 
             // Shadow Position (4 items)
-            (new TextProperty('boxShadowOffsetX', 'Offset X', numeric: true, defaultValue: $this->boxShadowOffsetX, min: -50, max: 50))
-                ->setGroup('shadow_position', 'Shadow Position', 4, 'heroicon-o-arrows-pointing-out'),
-            (new TextProperty('boxShadowOffsetY', 'Offset Y', numeric: true, defaultValue: $this->boxShadowOffsetY, min: -50, max: 50))
-                ->setGroup('shadow_position', 'Shadow Position', 4, 'heroicon-o-arrows-pointing-out'),
-            (new TextProperty('boxShadowSpread', 'Spread', numeric: true, defaultValue: $this->boxShadowSpread, min: -50, max: 50))
-                ->setGroup('shadow_position', 'Shadow Position', 4, 'heroicon-o-arrows-pointing-out'),
-            (new CheckboxProperty('boxShadowInset', 'Inset', defaultValue: $this->boxShadowInset))
-                ->setGroup('shadow_position', 'Shadow Position', 4, 'heroicon-o-arrows-pointing-out'),
+            (new TextProperty('boxShadowOffsetX', __('Offset X'), numeric: true, defaultValue: $this->boxShadowOffsetX, min: -50, max: 50))
+                ->setGroup('shadow_position', __('Shadow Position'), 4, 'heroicon-o-arrows-pointing-out'),
+            (new TextProperty('boxShadowOffsetY', __('Offset Y'), numeric: true, defaultValue: $this->boxShadowOffsetY, min: -50, max: 50))
+                ->setGroup('shadow_position', __('Shadow Position'), 4, 'heroicon-o-arrows-pointing-out'),
+            (new TextProperty('boxShadowSpread', __('Spread'), numeric: true, defaultValue: $this->boxShadowSpread, min: -50, max: 50))
+                ->setGroup('shadow_position', __('Shadow Position'), 4, 'heroicon-o-arrows-pointing-out'),
+            (new CheckboxProperty('boxShadowInset', __('Inset'), defaultValue: $this->boxShadowInset))
+                ->setGroup('shadow_position', __('Shadow Position'), 4, 'heroicon-o-arrows-pointing-out'),
         ];
     }
 
@@ -574,8 +574,8 @@ abstract class Block extends Component
         $backdropBlurOptions = $this->getBackdropBlurList();
 
         return [
-            (new SelectProperty('backdropBlur', 'Backdrop Blur', $backdropBlurOptions, defaultValue: $this->backdropBlur))
-                ->setGroup('backdrop_filters', 'Backdrop Filters', 1, 'heroicon-o-sparkles'),
+            (new SelectProperty('backdropBlur', __('Backdrop Blur'), $backdropBlurOptions, defaultValue: $this->backdropBlur))
+                ->setGroup('backdrop_filters', __('Backdrop Filters'), 1, 'heroicon-o-sparkles'),
         ];
     }
 
@@ -588,10 +588,10 @@ abstract class Block extends Component
         $dropShadowOptions = $this->getDropShadowList();
 
         return [
-            (new SelectProperty('blur', 'Blur', $blurOptions, defaultValue: $this->blur))
-                ->setGroup('filters', 'Filters', 2, 'heroicon-o-adjustments-horizontal'),
-            (new SelectProperty('dropShadow', 'Drop Shadow', $dropShadowOptions, defaultValue: $this->dropShadow))
-                ->setGroup('filters', 'Filters', 2, 'heroicon-o-adjustments-horizontal'),
+            (new SelectProperty('blur', __('Blur'), $blurOptions, defaultValue: $this->blur))
+                ->setGroup('filters', __('Filters'), 2, 'heroicon-o-adjustments-horizontal'),
+            (new SelectProperty('dropShadow', __('Drop Shadow'), $dropShadowOptions, defaultValue: $this->dropShadow))
+                ->setGroup('filters', __('Filters'), 2, 'heroicon-o-adjustments-horizontal'),
         ];
     }
 
@@ -601,18 +601,18 @@ abstract class Block extends Component
     protected function getLayoutProperties(): array
     {
         return [
-            (new CheckboxProperty('selfCentered', 'Self Centered', defaultValue: $this->selfCentered))
-                ->setGroup('layout', 'Layout', 3, 'heroicon-o-rectangle-group'),
-            (new SelectProperty('position', 'Position', [
-                '' => 'Static (Default)',
-                'relative' => 'Relative',
-                'absolute' => 'Absolute',
-                'fixed' => 'Fixed',
-                'sticky' => 'Sticky',
+            (new CheckboxProperty('selfCentered', __('Self Centered'), defaultValue: $this->selfCentered))
+                ->setGroup('layout', __('Layout'), 3, 'heroicon-o-rectangle-group'),
+            (new SelectProperty('position', __('Position'), [
+                '' => __('Static (Default)'),
+                'relative' => __('Relative'),
+                'absolute' => __('Absolute'),
+                'fixed' => __('Fixed'),
+                'sticky' => __('Sticky'),
             ], defaultValue: $this->position))
-                ->setGroup('layout', 'Layout', 3, 'heroicon-o-rectangle-group'),
-            (new SelectProperty('zIndex', 'Z-Index', [
-                '' => 'Auto (Default)',
+                ->setGroup('layout', __('Layout'), 3, 'heroicon-o-rectangle-group'),
+            (new SelectProperty('zIndex', __('Z-Index'), [
+                '' => __('Auto (Default)'),
                 '-z-50' => '-50',
                 '-z-40' => '-40',
                 '-z-30' => '-30',
@@ -625,7 +625,7 @@ abstract class Block extends Component
                 'z-40' => '40',
                 'z-50' => '50',
             ], defaultValue: $this->zIndex))
-                ->setGroup('layout', 'Layout', 3, 'heroicon-o-rectangle-group'),
+                ->setGroup('layout', __('Layout'), 3, 'heroicon-o-rectangle-group'),
         ];
     }
 
@@ -635,47 +635,47 @@ abstract class Block extends Component
     protected function getTransformProperties(): array
     {
         return [
-            (new TextProperty('mobileRotate', 'Mobile', numeric: true, defaultValue: $this->mobileRotate))
-                ->setGroup('rotate', 'Rotate (deg)', 3, 'heroicon-o-arrow-path'),
-            (new TextProperty('tabletRotate', 'Tablet', numeric: true, defaultValue: $this->tabletRotate))
-                ->setGroup('rotate', 'Rotate (deg)', 3, 'heroicon-o-arrow-path'),
-            (new TextProperty('desktopRotate', 'Desktop', numeric: true, defaultValue: $this->desktopRotate))
-                ->setGroup('rotate', 'Rotate (deg)', 3, 'heroicon-o-arrow-path'),
+            (new TextProperty('mobileRotate', __('Mobile'), numeric: true, defaultValue: $this->mobileRotate))
+                ->setGroup('rotate', __('Rotate (deg)'), 3, 'heroicon-o-arrow-path'),
+            (new TextProperty('tabletRotate', __('Tablet'), numeric: true, defaultValue: $this->tabletRotate))
+                ->setGroup('rotate', __('Rotate (deg)'), 3, 'heroicon-o-arrow-path'),
+            (new TextProperty('desktopRotate', __('Desktop'), numeric: true, defaultValue: $this->desktopRotate))
+                ->setGroup('rotate', __('Rotate (deg)'), 3, 'heroicon-o-arrow-path'),
 
-            (new TextProperty('mobileScale', 'Mobile', numeric: true, defaultValue: $this->mobileScale))
-                ->setGroup('scale', 'Scale', 3, 'heroicon-o-arrows-pointing-out'),
-            (new TextProperty('tabletScale', 'Tablet', numeric: true, defaultValue: $this->tabletScale))
-                ->setGroup('scale', 'Scale', 3, 'heroicon-o-arrows-pointing-out'),
-            (new TextProperty('desktopScale', 'Desktop', numeric: true, defaultValue: $this->desktopScale))
-                ->setGroup('scale', 'Scale', 3, 'heroicon-o-arrows-pointing-out'),
+            (new TextProperty('mobileScale', __('Mobile'), numeric: true, defaultValue: $this->mobileScale))
+                ->setGroup('scale', __('Scale'), 3, 'heroicon-o-arrows-pointing-out'),
+            (new TextProperty('tabletScale', __('Tablet'), numeric: true, defaultValue: $this->tabletScale))
+                ->setGroup('scale', __('Scale'), 3, 'heroicon-o-arrows-pointing-out'),
+            (new TextProperty('desktopScale', __('Desktop'), numeric: true, defaultValue: $this->desktopScale))
+                ->setGroup('scale', __('Scale'), 3, 'heroicon-o-arrows-pointing-out'),
 
-            (new TextProperty('mobileTranslateX', 'Mobile', numeric: true, defaultValue: $this->mobileTranslateX))
-                ->setGroup('translateX', 'Translate X (px)', 3, 'heroicon-o-arrows-right-left'),
-            (new TextProperty('tabletTranslateX', 'Tablet', numeric: true, defaultValue: $this->tabletTranslateX))
-                ->setGroup('translateX', 'Translate X (px)', 3, 'heroicon-o-arrows-right-left'),
-            (new TextProperty('desktopTranslateX', 'Desktop', numeric: true, defaultValue: $this->desktopTranslateX))
-                ->setGroup('translateX', 'Translate X (px)', 3, 'heroicon-o-arrows-right-left'),
+            (new TextProperty('mobileTranslateX', __('Mobile'), numeric: true, defaultValue: $this->mobileTranslateX))
+                ->setGroup('translateX', __('Translate X (px)'), 3, 'heroicon-o-arrows-right-left'),
+            (new TextProperty('tabletTranslateX', __('Tablet'), numeric: true, defaultValue: $this->tabletTranslateX))
+                ->setGroup('translateX', __('Translate X (px)'), 3, 'heroicon-o-arrows-right-left'),
+            (new TextProperty('desktopTranslateX', __('Desktop'), numeric: true, defaultValue: $this->desktopTranslateX))
+                ->setGroup('translateX', __('Translate X (px)'), 3, 'heroicon-o-arrows-right-left'),
 
-            (new TextProperty('mobileTranslateY', 'Mobile', numeric: true, defaultValue: $this->mobileTranslateY))
-                ->setGroup('translateY', 'Translate Y (px)', 3, 'heroicon-o-arrows-up-down'),
-            (new TextProperty('tabletTranslateY', 'Tablet', numeric: true, defaultValue: $this->tabletTranslateY))
-                ->setGroup('translateY', 'Translate Y (px)', 3, 'heroicon-o-arrows-up-down'),
-            (new TextProperty('desktopTranslateY', 'Desktop', numeric: true, defaultValue: $this->desktopTranslateY))
-                ->setGroup('translateY', 'Translate Y (px)', 3, 'heroicon-o-arrows-up-down'),
+            (new TextProperty('mobileTranslateY', __('Mobile'), numeric: true, defaultValue: $this->mobileTranslateY))
+                ->setGroup('translateY', __('Translate Y (px)'), 3, 'heroicon-o-arrows-up-down'),
+            (new TextProperty('tabletTranslateY', __('Tablet'), numeric: true, defaultValue: $this->tabletTranslateY))
+                ->setGroup('translateY', __('Translate Y (px)'), 3, 'heroicon-o-arrows-up-down'),
+            (new TextProperty('desktopTranslateY', __('Desktop'), numeric: true, defaultValue: $this->desktopTranslateY))
+                ->setGroup('translateY', __('Translate Y (px)'), 3, 'heroicon-o-arrows-up-down'),
 
-            (new TextProperty('mobileSkewX', 'Mobile', numeric: true, defaultValue: $this->mobileSkewX))
-                ->setGroup('skewX', 'Skew X (deg)', 3, 'heroicon-o-forward'),
-            (new TextProperty('tabletSkewX', 'Tablet', numeric: true, defaultValue: $this->tabletSkewX))
-                ->setGroup('skewX', 'Skew X (deg)', 3, 'heroicon-o-forward'),
-            (new TextProperty('desktopSkewX', 'Desktop', numeric: true, defaultValue: $this->desktopSkewX))
-                ->setGroup('skewX', 'Skew X (deg)', 3, 'heroicon-o-forward'),
+            (new TextProperty('mobileSkewX', __('Mobile'), numeric: true, defaultValue: $this->mobileSkewX))
+                ->setGroup('skewX', __('Skew X (deg)'), 3, 'heroicon-o-forward'),
+            (new TextProperty('tabletSkewX', __('Tablet'), numeric: true, defaultValue: $this->tabletSkewX))
+                ->setGroup('skewX', __('Skew X (deg)'), 3, 'heroicon-o-forward'),
+            (new TextProperty('desktopSkewX', __('Desktop'), numeric: true, defaultValue: $this->desktopSkewX))
+                ->setGroup('skewX', __('Skew X (deg)'), 3, 'heroicon-o-forward'),
 
-            (new TextProperty('mobileSkewY', 'Mobile', numeric: true, defaultValue: $this->mobileSkewY))
-                ->setGroup('skewY', 'Skew Y (deg)', 3, 'heroicon-o-backward'),
-            (new TextProperty('tabletSkewY', 'Tablet', numeric: true, defaultValue: $this->tabletSkewY))
-                ->setGroup('skewY', 'Skew Y (deg)', 3, 'heroicon-o-backward'),
-            (new TextProperty('desktopSkewY', 'Desktop', numeric: true, defaultValue: $this->desktopSkewY))
-                ->setGroup('skewY', 'Skew Y (deg)', 3, 'heroicon-o-backward'),
+            (new TextProperty('mobileSkewY', __('Mobile'), numeric: true, defaultValue: $this->mobileSkewY))
+                ->setGroup('skewY', __('Skew Y (deg)'), 3, 'heroicon-o-backward'),
+            (new TextProperty('tabletSkewY', __('Tablet'), numeric: true, defaultValue: $this->tabletSkewY))
+                ->setGroup('skewY', __('Skew Y (deg)'), 3, 'heroicon-o-backward'),
+            (new TextProperty('desktopSkewY', __('Desktop'), numeric: true, defaultValue: $this->desktopSkewY))
+                ->setGroup('skewY', __('Skew Y (deg)'), 3, 'heroicon-o-backward'),
         ];
     }
 
@@ -685,16 +685,16 @@ abstract class Block extends Component
     protected function getTextProperties(): array
     {
         return [
-            (new SelectProperty('textAlign', 'Text Align', [
-                '' => 'Default',
-                'text-left' => 'Left',
-                'text-center' => 'Center',
-                'text-right' => 'Right',
-                'text-justify' => 'Justify',
-                'text-start' => 'Start',
-                'text-end' => 'End',
+            (new SelectProperty('textAlign', __('Text Align'), [
+                '' => __('Default'),
+                'text-left' => __('Left'),
+                'text-center' => __('Center'),
+                'text-right' => __('Right'),
+                'text-justify' => __('Justify'),
+                'text-start' => __('Start'),
+                'text-end' => __('End'),
             ], defaultValue: $this->textAlign))
-                ->setGroup('text', 'Text', 1, 'heroicon-o-language'),
+                ->setGroup('text', __('Text'), 1, 'heroicon-o-language'),
         ];
     }
 
@@ -706,12 +706,12 @@ abstract class Block extends Component
         $fontSizes = $this->getFontSizeList();
 
         return [
-            (new SelectProperty(name: 'mobileFontSize', label: 'Mobile', options: $fontSizes, defaultValue: $this->mobileFontSize))
-                ->setGroup(group: 'font', groupLabel: 'Text Size', columns: 3, groupIcon: 'heroicon-o-bars-3-bottom-left'),
-            (new SelectProperty(name: 'tabletFontSize', label: 'Tablet', options: $fontSizes, defaultValue: $this->tabletFontSize))
-                ->setGroup(group: 'font', groupLabel: 'Text Size', columns: 3, groupIcon: 'heroicon-o-bars-3-bottom-left'),
-            (new SelectProperty(name: 'desktopFontSize', label: 'Desktop', options: $fontSizes, defaultValue: $this->desktopFontSize))
-                ->setGroup(group: 'font', groupLabel: 'Text Size', columns: 3, groupIcon: 'heroicon-o-bars-3-bottom-left'),
+            (new SelectProperty(name: 'mobileFontSize', label: __('Mobile'), options: $fontSizes, defaultValue: $this->mobileFontSize))
+                ->setGroup(group: 'font', groupLabel: __('Text Size'), columns: 3, groupIcon: 'heroicon-o-bars-3-bottom-left'),
+            (new SelectProperty(name: 'tabletFontSize', label: __('Tablet'), options: $fontSizes, defaultValue: $this->tabletFontSize))
+                ->setGroup(group: 'font', groupLabel: __('Text Size'), columns: 3, groupIcon: 'heroicon-o-bars-3-bottom-left'),
+            (new SelectProperty(name: 'desktopFontSize', label: __('Desktop'), options: $fontSizes, defaultValue: $this->desktopFontSize))
+                ->setGroup(group: 'font', groupLabel: __('Text Size'), columns: 3, groupIcon: 'heroicon-o-bars-3-bottom-left'),
         ];
     }
 
@@ -860,12 +860,12 @@ abstract class Block extends Component
     {
         return [
             // Common utilities
-            'w-auto' => 'Auto',
-            'w-full' => 'Full',
-            'w-screen' => 'Screen',
-            'w-fit' => 'Fit Content',
-            'w-min' => 'Min Content',
-            'w-max' => 'Max Content',
+            'w-auto' => __('Auto'),
+            'w-full' => __('Full'),
+            'w-screen' => __('Screen'),
+            'w-fit' => __('Fit Content'),
+            'w-min' => __('Min Content'),
+            'w-max' => __('Max Content'),
 
             // Fractional widths
             'w-1/2' => '1/2',
@@ -885,9 +885,9 @@ abstract class Block extends Component
             'w-11/12' => '11/12',
 
             // Viewport units
-            'w-svw' => 'Small Viewport',
-            'w-lvw' => 'Large Viewport',
-            'w-dvw' => 'Dynamic Viewport',
+            'w-svw' => __('Small Viewport'),
+            'w-lvw' => __('Large Viewport'),
+            'w-dvw' => __('Dynamic Viewport'),
 
             // Container sizes
             'w-3xs' => '3xs (256px)',
@@ -947,12 +947,12 @@ abstract class Block extends Component
     {
         return [
             // Common utilities
-            'h-auto' => 'Auto',
-            'h-full' => 'Full',
-            'h-screen' => 'Screen',
-            'h-fit' => 'Fit Content',
-            'h-min' => 'Min Content',
-            'h-max' => 'Max Content',
+            'h-auto' => __('Auto'),
+            'h-full' => __('Full'),
+            'h-screen' => __('Screen'),
+            'h-fit' => __('Fit Content'),
+            'h-min' => __('Min Content'),
+            'h-max' => __('Max Content'),
 
             // Fractional heights
             'h-1/2' => '1/2',
@@ -968,9 +968,9 @@ abstract class Block extends Component
             'h-5/6' => '5/6',
 
             // Viewport units
-            'h-svh' => 'Small Viewport',
-            'h-lvh' => 'Large Viewport',
-            'h-dvh' => 'Dynamic Viewport',
+            'h-svh' => __('Small Viewport'),
+            'h-lvh' => __('Large Viewport'),
+            'h-dvh' => __('Dynamic Viewport'),
 
             // Rem-based values
             'h-0' => '0px',
@@ -1049,21 +1049,21 @@ abstract class Block extends Component
             'min-h-72' => '18rem',
             'min-h-80' => '20rem',
             'min-h-96' => '24rem',
-            'min-h-fit' => 'Fit Content',
-            'min-h-min' => 'Min Content',
-            'min-h-max' => 'Max Content',
-            'min-h-full' => 'Full',
-            'min-h-screen' => 'Screen',
-            'min-h-svh' => 'Small Viewport',
-            'min-h-lvh' => 'Large Viewport',
-            'min-h-dvh' => 'Dynamic Viewport',
+            'min-h-fit' => __('Fit Content'),
+            'min-h-min' => __('Min Content'),
+            'min-h-max' => __('Max Content'),
+            'min-h-full' => __('Full'),
+            'min-h-screen' => __('Screen'),
+            'min-h-svh' => __('Small Viewport'),
+            'min-h-lvh' => __('Large Viewport'),
+            'min-h-dvh' => __('Dynamic Viewport'),
         ];
     }
 
     public function getBorderWidthList(): array
     {
         return [
-            '' => 'None',
+            '' => __('None'),
             'border-0' => '0px',
             'border' => '1px',
             'border-2' => '2px',
@@ -1075,87 +1075,87 @@ abstract class Block extends Component
     public function getBorderRadiusList(): array
     {
         return [
-            '' => 'None',
-            'rounded-none' => 'None',
-            'rounded-sm' => 'Small',
-            'rounded' => 'Default',
-            'rounded-md' => 'Medium',
-            'rounded-lg' => 'Large',
-            'rounded-xl' => 'Extra Large',
-            'rounded-2xl' => '2X Large',
-            'rounded-3xl' => '3X Large',
-            'rounded-full' => 'Full',
+            '' => __('None'),
+            'rounded-none' => __('None'),
+            'rounded-sm' => __('Small'),
+            'rounded' => __('Default'),
+            'rounded-md' => __('Medium'),
+            'rounded-lg' => __('Large'),
+            'rounded-xl' => __('Extra Large'),
+            'rounded-2xl' => __('2X Large'),
+            'rounded-3xl' => __('3X Large'),
+            'rounded-full' => __('Full'),
         ];
     }
 
     public function getBoxShadowList(): array
     {
         return [
-            '' => 'None',
-            'shadow-sm' => 'Small',
-            'shadow' => 'Default',
-            'shadow-md' => 'Medium',
-            'shadow-lg' => 'Large',
-            'shadow-xl' => 'Extra Large',
-            'shadow-2xl' => '2X Large',
-            'shadow-inner' => 'Inner',
-            'shadow-none' => 'None',
+            '' => __('None'),
+            'shadow-sm' => __('Small'),
+            'shadow' => __('Default'),
+            'shadow-md' => __('Medium'),
+            'shadow-lg' => __('Large'),
+            'shadow-xl' => __('Extra Large'),
+            'shadow-2xl' => __('2X Large'),
+            'shadow-inner' => __('Inner'),
+            'shadow-none' => __('None'),
         ];
     }
 
     public function getBackdropBlurList(): array
     {
         return [
-            '' => 'None',
-            'backdrop-blur-none' => 'None (Explicit)',
-            'backdrop-blur-sm' => 'Small',
-            'backdrop-blur' => 'Default',
-            'backdrop-blur-md' => 'Medium',
-            'backdrop-blur-lg' => 'Large',
-            'backdrop-blur-xl' => 'Extra Large',
-            'backdrop-blur-2xl' => '2X Large',
-            'backdrop-blur-3xl' => '3X Large',
+            '' => __('None'),
+            'backdrop-blur-none' => __('None (Explicit)'),
+            'backdrop-blur-sm' => __('Small'),
+            'backdrop-blur' => __('Default'),
+            'backdrop-blur-md' => __('Medium'),
+            'backdrop-blur-lg' => __('Large'),
+            'backdrop-blur-xl' => __('Extra Large'),
+            'backdrop-blur-2xl' => __('2X Large'),
+            'backdrop-blur-3xl' => __('3X Large'),
         ];
     }
 
     public function getBlurList(): array
     {
         return [
-            '' => 'None',
-            'blur-none' => 'None (Explicit)',
-            'blur-sm' => 'Small',
-            'blur' => 'Default',
-            'blur-md' => 'Medium',
-            'blur-lg' => 'Large',
-            'blur-xl' => 'Extra Large',
-            'blur-2xl' => '2X Large',
-            'blur-3xl' => '3X Large',
+            '' => __('None'),
+            'blur-none' => __('None (Explicit)'),
+            'blur-sm' => __('Small'),
+            'blur' => __('Default'),
+            'blur-md' => __('Medium'),
+            'blur-lg' => __('Large'),
+            'blur-xl' => __('Extra Large'),
+            'blur-2xl' => __('2X Large'),
+            'blur-3xl' => __('3X Large'),
         ];
     }
 
     public function getDropShadowList(): array
     {
         return [
-            '' => 'None',
-            'drop-shadow-none' => 'None (Explicit)',
-            'drop-shadow-sm' => 'Small',
-            'drop-shadow' => 'Default',
-            'drop-shadow-md' => 'Medium',
-            'drop-shadow-lg' => 'Large',
-            'drop-shadow-xl' => 'Extra Large',
-            'drop-shadow-2xl' => '2X Large',
+            '' => __('None'),
+            'drop-shadow-none' => __('None (Explicit)'),
+            'drop-shadow-sm' => __('Small'),
+            'drop-shadow' => __('Default'),
+            'drop-shadow-md' => __('Medium'),
+            'drop-shadow-lg' => __('Large'),
+            'drop-shadow-xl' => __('Extra Large'),
+            'drop-shadow-2xl' => __('2X Large'),
         ];
     }
 
     public function getFontSizeList(): array
     {
         return [
-            '' => 'Default',
-            'text-xs' => 'Extra Small',
-            'text-sm' => 'Small',
-            'text-base' => 'Base',
-            'text-lg' => 'Large',
-            'text-xl' => 'Extra Large',
+            '' => __('Default'),
+            'text-xs' => __('Extra Small'),
+            'text-sm' => __('Small'),
+            'text-base' => __('Base'),
+            'text-lg' => __('Large'),
+            'text-xl' => __('Extra Large'),
             'text-2xl' => '2XL',
             'text-3xl' => '3XL',
             'text-4xl' => '4XL',

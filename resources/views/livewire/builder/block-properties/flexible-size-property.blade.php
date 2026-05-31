@@ -7,12 +7,12 @@
     <div class="tabs tabs-boxed mb-3">
         <button wire:click="$set('mode', 'class')" class="tab {{ $mode === 'class' ? 'tab-active' : '' }}" type="button">
             <x-heroicon-o-squares-2x2 class="w-4 h-4 me-2" />
-            Classes
+            {{ __('Classes') }}
         </button>
         <button wire:click="$set('mode', 'custom')" class="tab {{ $mode === 'custom' ? 'tab-active' : '' }}"
             type="button">
             <x-heroicon-o-pencil-square class="w-4 h-4 me-2" />
-            Custom
+            {{ __('Custom') }}
         </button>
     </div>
 
