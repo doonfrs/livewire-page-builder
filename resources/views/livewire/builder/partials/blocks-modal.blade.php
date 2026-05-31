@@ -22,8 +22,9 @@
             <x-heroicon-o-x-mark class="w-6 h-6" />
         </button>
         <h2 class="text-xl font-bold mb-4 text-gray-800 dark:text-gray-100 flex items-center gap-2">
-            <x-heroicon-o-plus class="w-6 h-6 text-pink-500" />
-            {{ __('Add Block') }}
+            <x-dynamic-component :component="$this->replaceBlockId ? 'heroicon-o-arrow-path' : 'heroicon-o-plus'"
+                class="w-6 h-6 text-pink-500" />
+            {{ $this->replaceBlockId ? __('Replace Block') : __('Add Block') }}
         </h2>
 
         <!-- Search filter -->

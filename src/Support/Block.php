@@ -763,6 +763,23 @@ abstract class Block extends Component
     }
 
     /**
+     * Get the flat list of shared (layout/style) property keys.
+     */
+    public function getSharedPropertyKeys(): array
+    {
+        $keys = [];
+        foreach ($this->getSharedProperties() as $property) {
+            if ($property instanceof ResponsiveSpacingProperty) {
+                $keys = array_merge($keys, array_keys($property->getFieldDefaults()));
+            } else {
+                $keys[] = $property->name;
+            }
+        }
+
+        return $keys;
+    }
+
+    /**
      * Resolve the default value for a property, including multilingual properties
      * that may have localizedValues set but no defaultValue.
      */

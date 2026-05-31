@@ -222,6 +222,22 @@ class RowBlock extends Block
             if ($replaceBlockId) {
                 $blockId = (string) \Illuminate\Support\Str::uuid();
 
+                // Carry over shared layout/style properties (width, height, padding, …)
+                // from the block being replaced, on top of the new block's own defaults.
+                if ($properties === null) {
+                    $oldProperties = $this->blocks[$replaceBlockId]['properties'] ?? [];
+                    $oldProperties = is_array($oldProperties) ? $oldProperties : [];
+
+                    $newBlockClass = app(PageBuilderService::class)->getClassNameFromAlias($blockAlias);
+                    if ($newBlockClass) {
+                        $newBlock = app($newBlockClass);
+                        $defaults = $newBlock->getPropertyValues();
+                        $sharedKeys = $newBlock->getSharedPropertyKeys();
+                        $carriedShared = array_intersect_key($oldProperties, array_flip($sharedKeys));
+                        $properties = array_merge($defaults, $carriedShared);
+                    }
+                }
+
                 // Build the new block data
                 if ($blockAlias === 'row-block') {
                     $block = [
