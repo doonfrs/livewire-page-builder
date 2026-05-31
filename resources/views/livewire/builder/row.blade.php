@@ -4,6 +4,9 @@
     deleteMessage: '',
     deleteAction: null,
     clipboardHasRow: false,
+    pressTimer: null,
+    touchStartX: 0,
+    touchStartY: 0,
     checkClipboard() {
         navigator.clipboard.readText().then(text => {
             if (text) {
@@ -21,15 +24,31 @@
         });
     }
 }"
-    class="block-row border relative transition-all duration-300 ease-in-out group {{ $cssClasses }}"
-    style="{{ $inlineStyles }} font-size:initial" {!! $dataAttributes !!}
+    class="block-row border relative isolate transition-all duration-300 ease-in-out group {{ $cssClasses }}"
+    style="{{ $inlineStyles }} font-size:initial; touch-action:manipulation;" {!! $dataAttributes !!}
     :class="selected ? 'border-pink-500' : 'border-gray-300'"
     x-on:row-selected.window="selected = $event.detail.rowId == '{{ $rowId }}'"
-    x-on:block-selected.window="selected = false">
+    x-on:block-selected.window="selected = false"
+    @touchstart="
+        if ($event.target.closest('.builder-block')) return;
+        if ($event.target.closest('.block-row') !== $el) return;
+        touchStartX = $event.touches[0].clientX;
+        touchStartY = $event.touches[0].clientY;
+        const rid = '{{ $rowId }}';
+        pressTimer = setTimeout(() => { $dispatch('toggle-row-options', { rowId: rid }); }, 500);
+    "
+    @touchmove="
+        if (pressTimer && (Math.abs($event.touches[0].clientX - touchStartX) > 10 || Math.abs($event.touches[0].clientY - touchStartY) > 10)) {
+            clearTimeout(pressTimer);
+            pressTimer = null;
+        }
+    "
+    @touchend="if (pressTimer) { clearTimeout(pressTimer); pressTimer = null; }"
+    @touchcancel="if (pressTimer) { clearTimeout(pressTimer); pressTimer = null; }">
     <div class="block-row-inner {{ $isNested ? 'relative' : '' }} h-full">
         <!-- Row Controls -->
         <div
-            class="row-control absolute top-[-15px] left-1/2 -translate-x-1/2 bg-pink-500 shadow-lg px-1 py-1 rounded-lg flex items-center space-x-1 z-50 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none group-hover:pointer-events-auto">
+            class="row-control absolute top-[-15px] left-1/2 -translate-x-1/2 bg-pink-500 shadow-lg px-1 py-1 rounded-lg flex items-center space-x-1 z-50 opacity-100 pointer-events-auto lg:opacity-0 lg:pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity duration-200">
             <!-- Select Button -->
             <button wire:click="rowSelected()"
                 class="w-7 h-7 flex items-center justify-center text-white hover:bg-pink-600 rounded transition-colors duration-150"

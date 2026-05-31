@@ -1,5 +1,5 @@
 <div>
-    <div class="h-screen flex flex-col bg-gray-100 dark:bg-gray-900" x-data="{
+    <div class="h-screen flex flex-col overflow-x-hidden bg-gray-100 dark:bg-gray-900" x-data="{
         showPagesModal: false,
         showCopyFromModal: false,
         showCopyConfirmationModal: false,
@@ -14,6 +14,16 @@
         pasteDataType: null,
         currentSelectedBlockId: null,
         currentSelectedRowId: null,
+        propertiesPanelOpen: true,
+        isMobile() {
+            return window.matchMedia('(max-width: 1023px)').matches;
+        },
+        init() {
+            if (this.isMobile()) {
+                this.deviceMode = 'mobile';
+                this.propertiesPanelOpen = false;
+            }
+        },
         checkClipboard: async function() {
             try {
                 const text = await navigator.clipboard.readText();
@@ -53,6 +63,7 @@
         }
     }"
         x-on:close-import-modal.window="showImportFileModal = false"
+        x-on:close-properties-panel.window="propertiesPanelOpen = false"
         x-on:row-added.window="setTimeout(() => {
             const el = document.getElementById('row-' + $event.detail.rowId);
             if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -76,6 +87,7 @@
         x-on:block-selected.window="
             currentSelectedBlockId = $event.detail.blockId;
             currentSelectedRowId = null;
+            propertiesPanelOpen = true;
             console.log('Block selected:', currentSelectedBlockId);
         "
         x-on:block-duplicated.window="
@@ -231,6 +243,7 @@
         x-on:row-selected.window="
             currentSelectedRowId = $event.detail.rowId;
             currentSelectedBlockId = null;
+            propertiesPanelOpen = true;
             console.log('Row selected:', currentSelectedRowId);
         "
         x-on:select-block.window="
@@ -322,12 +335,12 @@
 
         <!-- Header Toolbar -->
         <div
-            class="flex items-center justify-between bg-gray-200 dark:bg-gray-800 shadow-md p-3 text-gray-900 dark:text-gray-100 z-30">
+            class="flex items-center justify-between gap-2 bg-gray-200 dark:bg-gray-800 shadow-md p-2 lg:p-3 text-gray-900 dark:text-gray-100 z-30">
 
-            <div class="flex gap-2">
+            <div class="flex gap-1 lg:gap-2">
                 <!-- Theme Selector -->
                 @if ($currentTheme)
-                    <div class="relative" x-data="{ open: false }">
+                    <div class="relative hidden lg:block" x-data="{ open: false }">
                         <button @click="open = !open"
                             class="flex items-center gap-2 px-4 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-2 focus:ring-pink-200 transition-all duration-150 text-sm font-medium">
                             <x-heroicon-o-paint-brush class="w-5 h-5 text-pink-500" />
@@ -395,13 +408,13 @@
                 </button>
                 <!-- List Blocks Button -->
                 <button
-                    class="flex items-center gap-1 px-4 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-2 focus:ring-pink-200 transition-all duration-150 text-sm font-medium"
+                    class="hidden lg:flex items-center gap-1 px-4 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-2 focus:ring-pink-200 transition-all duration-150 text-sm font-medium"
                     wire:click="$dispatch('openPageBlocksModal')" title="{{ __('List Blocks') }}">
                     <x-heroicon-o-list-bullet class="w-5 h-5" />
                 </button>
                 <!-- Pages Button -->
                 <button x-on:click="showPagesModal = true"
-                    class="flex items-center gap-1 px-4 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-2 focus:ring-blue-200 transition-all duration-150 text-sm font-medium"
+                    class="hidden lg:flex items-center gap-1 px-4 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-2 focus:ring-blue-200 transition-all duration-150 text-sm font-medium"
                     title="{{ __('Open Pages') }}">
                     <x-heroicon-o-document-text class="w-5 h-5" />
                     <span class="hidden sm:inline">{{ $this->getCurrentPageLabel() }}</span>
@@ -417,7 +430,7 @@
 
                 <!-- Copy From Button -->
                 <button x-on:click="showCopyFromModal = true"
-                    class="flex items-center gap-1 px-4 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-2 focus:ring-green-200 transition-all duration-150 text-sm font-medium"
+                    class="hidden lg:flex items-center gap-1 px-4 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-2 focus:ring-green-200 transition-all duration-150 text-sm font-medium"
                     title="{{ __('Copy components from another page') }}">
                     <x-heroicon-o-document-duplicate class="w-5 h-5" />
                     <span class="hidden sm:inline">{{ __('Copy From') }}</span>
@@ -425,7 +438,7 @@
                 <!-- Layouts Button -->
                 @if (!empty($availableLayouts))
                     <button wire:click="$set('showLayoutsModal', true)"
-                        class="flex items-center gap-1 px-4 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-2 focus:ring-indigo-200 transition-all duration-150 text-sm font-medium"
+                        class="hidden lg:flex items-center gap-1 px-4 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-2 focus:ring-indigo-200 transition-all duration-150 text-sm font-medium"
                         title="{{ __('Apply a layout template') }}">
                         <x-heroicon-o-rectangle-stack class="w-5 h-5" />
                         <span class="hidden sm:inline">{{ __('Layouts') }}</span>
@@ -435,7 +448,7 @@
                 <a :href="'/page-builder/page/view/' + @js($pageKey ?? '') + (@js($themeId ?? '') ? '/' +
                     @js($themeId ?? '') : '')"
                     target="_blank"
-                    class="flex items-center gap-1 px-4 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-2 focus:ring-blue-200 transition-all duration-150 text-sm font-medium"
+                    class="hidden lg:inline-flex items-center gap-1 px-4 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-2 focus:ring-blue-200 transition-all duration-150 text-sm font-medium"
                     title="{{ __('Preview Page') }}">
                     <x-heroicon-o-eye class="w-5 h-5" />
                 </a>
@@ -452,24 +465,24 @@
                     </span>
                 </button>
             </div>
-            <div class="flex items-center space-x-4">
+            <div class="flex items-center gap-2 lg:gap-4">
                 <div
                     class="flex gap-0 border border-gray-300 dark:border-gray-700 rounded-md overflow-hidden bg-white dark:bg-gray-900">
                     <button :class="deviceMode === 'mobile' ? 'bg-pink-100 dark:bg-pink-900 text-pink-600' : ''"
                         x-on:click="deviceMode = 'mobile'"
-                        class="px-4 py-2 text-sm font-medium flex items-center gap-1 hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-2 focus:ring-pink-200 transition-all duration-150 border-r border-gray-200 dark:border-gray-800 last:border-r-0"
+                        class="px-3 lg:px-4 py-2 text-sm font-medium flex items-center gap-1 hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-2 focus:ring-pink-200 transition-all duration-150 border-r border-gray-200 dark:border-gray-800 last:border-r-0"
                         title="Mobile View">
                         <x-heroicon-o-device-phone-mobile class="w-5 h-5" />
                     </button>
                     <button :class="deviceMode === 'tablet' ? 'bg-pink-100 dark:bg-pink-900 text-pink-600' : ''"
                         x-on:click="deviceMode = 'tablet'"
-                        class="px-4 py-2 text-sm font-medium flex items-center gap-1 hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-2 focus:ring-pink-200 transition-all duration-150 border-r border-gray-200 dark:border-gray-800 last:border-r-0"
+                        class="px-3 lg:px-4 py-2 text-sm font-medium flex items-center gap-1 hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-2 focus:ring-pink-200 transition-all duration-150 border-r border-gray-200 dark:border-gray-800 last:border-r-0"
                         title="Tablet View">
                         <x-heroicon-o-device-tablet class="w-5 h-5" />
                     </button>
                     <button :class="deviceMode === 'desktop' ? 'bg-pink-100 dark:bg-pink-900 text-pink-600' : ''"
                         x-on:click="deviceMode = 'desktop'"
-                        class="px-4 py-2 text-sm font-medium flex items-center gap-1 hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-2 focus:ring-pink-200 transition-all duration-150"
+                        class="px-3 lg:px-4 py-2 text-sm font-medium flex items-center gap-1 hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-2 focus:ring-pink-200 transition-all duration-150"
                         title="Desktop View">
                         <x-heroicon-o-computer-desktop class="w-5 h-5" />
                     </button>
@@ -477,50 +490,85 @@
 
                 <!-- Canvas Background Color Picker -->
                 <input type="color" id="canvas-bg-color" x-model="canvasBgColor"
-                    class="w-10 h-10 rounded cursor-pointer border border-gray-300 dark:border-gray-600"
+                    class="hidden lg:block w-10 h-10 rounded cursor-pointer border border-gray-300 dark:border-gray-600"
                     title="{{ __('Change canvas background color') }}" />
 
                 <!-- Language Switcher -->
-                <livewire:language-switcher />
+                <span class="hidden lg:block">
+                    <livewire:language-switcher />
+                </span>
 
-                <!-- Theme Actions Menu (Kebab) -->
-                @if ($currentTheme)
-                    <div class="relative" x-data="{ open: false }">
-                        <button @click="open = !open"
-                            class="flex items-center justify-center p-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-2 focus:ring-pink-200 transition-all duration-150"
-                            title="{{ __('Theme Actions') }}">
-                            <x-heroicon-o-ellipsis-vertical class="w-5 h-5" />
-                        </button>
+                <!-- Extra Menu (Kebab): overflow tools on mobile + theme actions -->
+                <div class="relative" x-data="{ open: false }">
+                    <button @click="open = !open"
+                        class="{{ $currentTheme ? 'flex' : 'flex lg:hidden' }} items-center justify-center p-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-2 focus:ring-pink-200 transition-all duration-150"
+                        title="{{ __('More') }}">
+                        <x-heroicon-o-ellipsis-vertical class="w-5 h-5" />
+                    </button>
 
-                        <div x-show="open" @click.away="open = false"
-                            x-transition:enter="transition ease-out duration-100"
-                            x-transition:enter-start="transform opacity-0 scale-95"
-                            x-transition:enter-end="transform opacity-100 scale-100"
-                            x-transition:leave="transition ease-in duration-75"
-                            x-transition:leave-start="transform opacity-100 scale-100"
-                            x-transition:leave-end="transform opacity-0 scale-95"
-                            class="absolute z-50 mt-2 w-48 rounded-md bg-white dark:bg-gray-800 shadow-lg ring-1 ring-black/5 focus:outline-none"
-                            :class="document.documentElement.dir === 'rtl' ? 'left-0 origin-top-left' :
-                                'right-0 origin-top-right'">
+                    <div x-show="open" @click.away="open = false"
+                        x-transition:enter="transition ease-out duration-100"
+                        x-transition:enter-start="transform opacity-0 scale-95"
+                        x-transition:enter-end="transform opacity-100 scale-100"
+                        x-transition:leave="transition ease-in duration-75"
+                        x-transition:leave-start="transform opacity-100 scale-100"
+                        x-transition:leave-end="transform opacity-0 scale-95"
+                        class="absolute z-50 mt-2 w-56 rounded-md bg-white dark:bg-gray-800 shadow-lg ring-1 ring-black/5 focus:outline-none"
+                        :class="document.documentElement.dir === 'rtl' ? 'left-0 origin-top-left' :
+                            'right-0 origin-top-right'"
+                        style="display:none;">
 
-                            <div class="py-1">
+                        <!-- Overflow tools (mobile only; these are inline buttons on desktop) -->
+                        <div class="py-1 lg:hidden">
+                            <button wire:click="$dispatch('openPageBlocksModal')" @click="open = false"
+                                class="flex items-center w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                <x-heroicon-o-list-bullet class="w-4 h-4 me-3" /> {{ __('List Blocks') }}
+                            </button>
+                            <button x-on:click="showPagesModal = true; open = false"
+                                class="flex items-center w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                <x-heroicon-o-document-text class="w-4 h-4 me-3" /> {{ __('Open Pages') }}
+                            </button>
+                            <button x-on:click="showCopyFromModal = true; open = false"
+                                class="flex items-center w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                <x-heroicon-o-document-duplicate class="w-4 h-4 me-3" /> {{ __('Copy From') }}
+                            </button>
+                            @if (!empty($availableLayouts))
+                                <button wire:click="$set('showLayoutsModal', true)" @click="open = false"
+                                    class="flex items-center w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                    <x-heroicon-o-rectangle-stack class="w-4 h-4 me-3" /> {{ __('Layouts') }}
+                                </button>
+                            @endif
+                            <a :href="'/page-builder/page/view/' + @js($pageKey ?? '') + (@js($themeId ?? '') ? '/' +
+                                @js($themeId ?? '') : '')"
+                                target="_blank" @click="open = false"
+                                class="flex items-center w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                <x-heroicon-o-eye class="w-4 h-4 me-3" /> {{ __('Preview Page') }}
+                            </a>
+                            <a href="{{ route('page-builder.themes') }}" @click="open = false"
+                                class="flex items-center w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                <x-heroicon-o-paint-brush class="w-4 h-4 me-3" /> {{ __('Manage Themes') }}
+                            </a>
+                        </div>
+
+                        @if ($currentTheme)
+                            <div class="py-1 border-t border-gray-100 dark:border-gray-700 lg:border-t-0">
                                 <!-- Export Theme -->
                                 <button wire:click="exportTheme" @click="open = false"
                                     class="flex items-center w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
-                                    <x-heroicon-o-arrow-down-tray class="w-4 h-4 mr-3" />
+                                    <x-heroicon-o-arrow-down-tray class="w-4 h-4 me-3" />
                                     {{ __('Export Theme') }}
                                 </button>
 
                                 <!-- Import Theme -->
                                 <button @click="showImportConfirmModal = true; open = false"
                                     class="flex items-center w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
-                                    <x-heroicon-o-arrow-up-tray class="w-4 h-4 mr-3" />
+                                    <x-heroicon-o-arrow-up-tray class="w-4 h-4 me-3" />
                                     {{ __('Import Theme') }}
                                 </button>
                             </div>
-                        </div>
+                        @endif
                     </div>
-                @endif
+                </div>
             </div>
         </div>
 
@@ -956,14 +1004,24 @@
         <!-- Main Content and Properties Panel -->
         <div class="flex flex-1 min-h-0">
 
-            <!-- Properties Panel (Fixed/Sticky) -->
-            <aside
-                class="hidden lg:block w-[20%] h-[calc(100vh-56px)] bg-white dark:bg-gray-800 border-l border-gray-200 dark:border-gray-700 shadow-lg overflow-y-auto">
+            <!-- Properties Panel: desktop in-flow sidebar (lg+) via :class; mobile docked bottom sheet (<lg) via x-show. -->
+            <!-- Non-modal: no backdrop, closes only via the X in its header; canvas stays interactive. -->
+            <aside x-show="propertiesPanelOpen || ! isMobile()" :class="propertiesPanelOpen ? '' : 'lg:hidden'"
+                x-transition:enter="transition ease-out duration-200"
+                x-transition:enter-start="translate-y-full lg:translate-y-0" x-transition:enter-end="translate-y-0"
+                x-transition:leave="transition ease-in duration-150" x-transition:leave-start="translate-y-0"
+                x-transition:leave-end="translate-y-full lg:translate-y-0"
+                class="fixed inset-x-0 bottom-0 z-[45] max-h-[45dvh] rounded-t-2xl shadow-2xl flex flex-col
+                       lg:static lg:inset-auto lg:bottom-auto lg:z-auto lg:max-h-none lg:rounded-none lg:shadow-lg
+                       lg:w-[20%] lg:h-[calc(100vh-56px)]
+                       bg-white dark:bg-gray-800 border-t lg:border-t-0 lg:border-s border-gray-200 dark:border-gray-700
+                       overflow-hidden">
                 @livewire('block-properties')
             </aside>
 
             <!-- Main Section (Scrollable) -->
-            <main class="flex-1 pt-10 pb-50 pr-0 overflow-auto min-h-0 w-[80%]"
+            <main class="flex-1 pt-10 pb-50 pr-0 overflow-auto min-h-0 w-full"
+                :class="propertiesPanelOpen ? 'lg:w-[80%]' : 'lg:w-full'"
                 :style="`background-color: ${canvasBgColor}`">
                 <div class="mx-auto @container"
                     :class="{
@@ -984,6 +1042,13 @@
         /* Convert fixed positioning to absolute within the page builder design area */
         .builder-block .fixed {
             position: absolute !important;
+        }
+
+        /* Suppress native long-press callout / text selection so long-press opens the context menu on touch */
+        .builder-block {
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
         }
     </style>
 </div>

@@ -3,13 +3,17 @@
     showContextMenu: false,
     x: 0,
     y: 0,
+    pressTimer: null,
+    longPressed: false,
+    touchStartX: 0,
+    touchStartY: 0,
     showDeleteModal: false,
     deleteMessage: '',
     deleteAction: null,
     calculatePosition(mouseX, mouseY) {
-        const menuWidth = 280;
-        const menuHeight = 500;
         const padding = 10;
+        const menuWidth = Math.min(280, window.innerWidth - 2 * padding);
+        const menuHeight = 500;
 
         let x = mouseX;
         let y = mouseY;
@@ -31,7 +35,7 @@
         return { x, y };
     }
 }"
-    class="{{ $cssClasses }} border transition-all duration-300 ease-in-out" style="{{ empty($properties['mobileFontSize'] ?? null) && empty($properties['tabletFontSize'] ?? null) && empty($properties['desktopFontSize'] ?? null) ? 'font-size:initial;' : '' }} {{ $inlineStyles }}"
+    class="{{ $cssClasses }} border isolate transition-all duration-300 ease-in-out" style="{{ empty($properties['mobileFontSize'] ?? null) && empty($properties['tabletFontSize'] ?? null) && empty($properties['desktopFontSize'] ?? null) ? 'font-size:initial;' : '' }} {{ $inlineStyles }} touch-action:manipulation;"
     {!! $dataAttributes !!} :class="selected ? 'border-blue-500' : 'border-gray-300'"
     x-on:block-selected.window="selected = $event.detail.blockId == '{{ $blockId }}'"
     x-on:row-selected.window="selected = false"
@@ -41,7 +45,26 @@
             x: $event.clientX,
             y: $event.clientY
         });
-    " x-on:show-block-context-menu.window="
+    "
+    @touchstart="
+        longPressed = false;
+        touchStartX = $event.touches[0].clientX;
+        touchStartY = $event.touches[0].clientY;
+        const sx = touchStartX, sy = touchStartY;
+        pressTimer = setTimeout(() => {
+            longPressed = true;
+            Livewire.dispatch('show-block-context-menu', { blockId: '{{ $blockId }}', x: sx, y: sy });
+        }, 500);
+    "
+    @touchmove="
+        if (pressTimer && (Math.abs($event.touches[0].clientX - touchStartX) > 10 || Math.abs($event.touches[0].clientY - touchStartY) > 10)) {
+            clearTimeout(pressTimer);
+            pressTimer = null;
+        }
+    "
+    @touchend="if (pressTimer) { clearTimeout(pressTimer); pressTimer = null; }"
+    @touchcancel="if (pressTimer) { clearTimeout(pressTimer); pressTimer = null; }"
+    x-on:show-block-context-menu.window="
         if ($event.detail.blockId === '{{ $blockId }}') {
             const pos = calculatePosition($event.detail.x, $event.detail.y);
             x = pos.x;
@@ -63,7 +86,8 @@
         </div>
     @else
         <!-- For regular blocks, use the normal click handling -->
-        <div class="cursor-pointer" wire:click="blockSelected()">
+        <div class="cursor-pointer" wire:click="blockSelected()"
+            @click.capture="if (longPressed) { $event.preventDefault(); $event.stopPropagation(); longPressed = false; }">
             <div class="builder-block relative">
                 @if (!$classExists)
                     <div class="text-red-500">{{ __('Unknown block') }}: {{ $blockAlias }}</div>
@@ -80,7 +104,7 @@
             x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
             x-transition:leave="transition ease-in duration-75" x-transition:leave-start="opacity-100 scale-100"
             x-transition:leave-end="opacity-0 scale-95" :style="`position: fixed; left: ${x}px; top: ${y}px;`"
-            class="context-menu bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg py-2 w-[280px] z-[9999]"
+            class="context-menu bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg py-2 w-[280px] max-w-[calc(100vw-20px)] max-h-[calc(100dvh-20px)] overflow-y-auto z-[9999]"
             @click.outside="showContextMenu = false">
 
         <div

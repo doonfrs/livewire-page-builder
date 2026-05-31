@@ -1,17 +1,23 @@
-<div class="h-full overflow-y-auto">
-    <!-- Header -->
+<div class="flex flex-col flex-1 min-h-0 h-full">
+    <!-- Header (fixed; title + block name on one line; only the content below scrolls) -->
     <div
-        class="sticky top-0 z-1 bg-gradient-to-r from-gray-800 to-gray-700 text-white px-4 py-3 border-b border-gray-700 shadow-md">
-        <h2 class="text-lg font-medium flex items-center">
-            <x-heroicon-o-adjustments-horizontal class="w-5 h-5 mr-2" />
-            {{ __('Properties') }}
-        </h2>
-        <div class="mt-1 text-xs font-mono bg-gray-900/50 rounded px-2 py-1 truncate">
-            {{ $blockLabel ?? __('No block selected') }}
+        class="shrink-0 bg-gradient-to-r from-gray-800 to-gray-700 text-white px-4 py-2 border-b border-gray-700 shadow-md flex items-center justify-between gap-2">
+        <div class="flex items-center gap-2 min-w-0">
+            <x-heroicon-o-adjustments-horizontal class="w-5 h-5 shrink-0" />
+            <h2 class="text-base font-medium shrink-0">{{ __('Properties') }}</h2>
+            <span class="text-xs font-mono bg-gray-900/50 rounded px-2 py-0.5 truncate min-w-0">
+                {{ $blockLabel ?? __('No block selected') }}
+            </span>
         </div>
+        <button type="button" class="shrink-0 p-1 rounded hover:bg-white/10 transition-colors"
+            x-on:click="$dispatch('close-properties-panel')" title="{{ __('Close') }}">
+            <x-heroicon-o-x-mark class="w-6 h-6" />
+        </button>
     </div>
 
-    <!-- Empty State -->
+    <!-- Scrollable content (only this area scrolls) -->
+    <div class="flex-1 min-h-0 overflow-y-auto">
+        <!-- Empty State -->
     @if ($componentMissing)
         @php
             $alias = $missingBlockAlias ?? __('unknown');
@@ -146,4 +152,5 @@
             @endforeach
         </div>
     @endif
+    </div>
 </div>

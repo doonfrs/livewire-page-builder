@@ -15,7 +15,7 @@
         }).length;
     }
 }">
-    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-3xl p-6 relative"
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-3xl p-4 sm:p-6 relative"
         @click.outside="$wire.closeBlockModal()">
         <button wire:click="closeBlockModal"
             class="absolute top-3 end-3 text-gray-400 hover:text-gray-700 dark:hover:text-gray-200">
@@ -38,20 +38,20 @@
                 placeholder="{{ __('Search blocks...') }}">
         </div>
 
-        <div class="flex gap-4 h-[50vh]">
+        <div class="flex gap-2 sm:gap-4 h-[50vh]">
             <!-- Category sidebar -->
-            <div class="w-40 shrink-0 flex flex-col gap-0.5 overflow-y-auto pe-1 h-full">
+            <div class="w-32 sm:w-40 shrink-0 flex flex-col gap-0.5 overflow-y-auto pe-1 h-full">
                 <button
                     @click="selectedCategory = ''"
                     :class="selectedCategory === '' ? 'bg-pink-100 dark:bg-pink-900/30 text-pink-600 dark:text-pink-400 font-semibold' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'"
-                    class="text-start px-3 py-2 rounded-lg text-sm transition-colors w-full">
+                    class="text-start px-2 sm:px-3 py-2 rounded-lg text-sm transition-colors w-full">
                     {{ __('All') }}
                 </button>
                 <template x-for="cat in categories" :key="cat">
                     <button
                         @click="selectedCategory = cat"
                         :class="selectedCategory === cat ? 'bg-pink-100 dark:bg-pink-900/30 text-pink-600 dark:text-pink-400 font-semibold' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'"
-                        class="text-start px-3 py-2 rounded-lg text-sm transition-colors w-full"
+                        class="text-start px-2 sm:px-3 py-2 rounded-lg text-sm transition-colors w-full"
                         x-text="cat">
                     </button>
                 </template>
