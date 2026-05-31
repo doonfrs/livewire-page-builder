@@ -1,20 +1,20 @@
 @section('title', __('Theme Manager - :app', ['app' => config('app.name')]))
 <div>
-    <div class="min-h-screen bg-gray-100 dark:bg-gray-900 flex flex-col">
+    <div class="min-h-screen overflow-x-hidden bg-gray-100 dark:bg-gray-900 flex flex-col">
         <!-- Header Navbar -->
         <div
-            class="flex items-center justify-between bg-gray-200 dark:bg-gray-800 shadow-md p-3 text-gray-900 dark:text-gray-100">
-            <div class="flex items-center gap-4">
-                <a href="{{ url('/') }}" class="p-1 rounded hover:bg-gray-300/50 dark:hover:bg-gray-700/50"
+            class="flex items-center justify-between gap-2 bg-gray-200 dark:bg-gray-800 shadow-md p-2 sm:p-3 text-gray-900 dark:text-gray-100">
+            <div class="flex items-center gap-2 sm:gap-4 min-w-0 flex-1">
+                <a href="{{ url('/') }}" class="shrink-0 p-1 rounded hover:bg-gray-300/50 dark:hover:bg-gray-700/50"
                     title="{{ __('Home') }}">
                     <x-heroicon-o-home class="w-6 h-6" />
                 </a>
-                <x-heroicon-o-paint-brush class="w-6 h-6 text-pink-600" />
+                <x-heroicon-o-paint-brush class="hidden sm:block w-6 h-6 text-pink-600" />
                 <span
-                    class="text-lg sm:text-xl font-semibold">{{ __('Theme Manager - :app', ['app' => config('app.name')]) }}</span>
+                    class="text-lg sm:text-xl font-semibold truncate">{{ __('Theme Manager - :app', ['app' => config('app.name')]) }}</span>
             </div>
 
-            <div class="flex items-center gap-3">
+            <div class="flex items-center gap-2 sm:gap-3 shrink-0">
                 <livewire:language-switcher />
 
                 <!-- Custom Header HTML -->
@@ -25,28 +25,28 @@
                 <!-- Template Gallery Button -->
                 @if (!empty($templateGalleryUrl))
                     <a href="{{ $templateGalleryUrl }}"
-                        class="inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-sm font-medium rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 focus:ring-2 focus:ring-pink-200 transition"
+                        class="inline-flex items-center px-2 sm:px-3 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-sm font-medium rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 focus:ring-2 focus:ring-pink-200 transition"
                         title="{{ __('Browse Template Gallery') }}">
-                        <x-heroicon-o-rectangle-stack class="w-5 h-5 mr-1" />
+                        <x-heroicon-o-rectangle-stack class="w-5 h-5 sm:mr-1" />
                         <span class="hidden sm:inline">{{ __('Templates') }}</span>
                     </a>
                 @endif
 
-                <button wire:click="openImportModal"
-                    class="inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-sm font-medium rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 focus:ring-2 focus:ring-pink-200 transition">
-                    <x-heroicon-o-arrow-up-tray class="w-5 h-5 mr-1 ml-1" />
-                    {{ __('Import Theme') }}
+                <button wire:click="openImportModal" title="{{ __('Import Theme') }}"
+                    class="inline-flex items-center px-2 sm:px-3 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-sm font-medium rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 focus:ring-2 focus:ring-pink-200 transition">
+                    <x-heroicon-o-arrow-up-tray class="w-5 h-5 sm:mr-1 sm:ml-1" />
+                    <span class="hidden sm:inline">{{ __('Import Theme') }}</span>
                 </button>
-                <button wire:click="openCreateModal"
-                    class="inline-flex items-center px-3 py-2 bg-pink-600 hover:bg-pink-700 text-white text-sm font-medium rounded-md focus:ring-2 focus:ring-pink-200 transition">
-                    <x-heroicon-o-plus class="w-5 h-5 mr-1" />
-                    {{ __('Create Theme') }}
+                <button wire:click="openCreateModal" title="{{ __('Create Theme') }}"
+                    class="inline-flex items-center px-2 sm:px-3 py-2 bg-pink-600 hover:bg-pink-700 text-white text-sm font-medium rounded-md focus:ring-2 focus:ring-pink-200 transition">
+                    <x-heroicon-o-plus class="w-5 h-5 sm:mr-1" />
+                    <span class="hidden sm:inline">{{ __('Create Theme') }}</span>
                 </button>
             </div>
         </div>
 
         <!-- Contained layout wrapper -->
-        <div class="flex-1 p-6">
+        <div class="flex-1 p-3 sm:p-6">
             <div class="max-w-7xl mx-auto">
                 <div
                     class="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-sm">
@@ -59,10 +59,10 @@
                         <!-- Selected Theme Info -->
                         @if ($selectedTheme)
                             <div
-                                class="mb-8 bg-gradient-to-r from-pink-50 to-purple-50 dark:from-pink-900/20 dark:to-purple-900/20 border border-pink-200 dark:border-pink-800 rounded-xl p-6">
-                                <div class="flex items-center justify-between">
-                                    <div class="flex items-center gap-4">
-                                        <div class="flex-shrink-0">
+                                class="mb-6 sm:mb-8 bg-gradient-to-r from-pink-50 to-purple-50 dark:from-pink-900/20 dark:to-purple-900/20 border border-pink-200 dark:border-pink-800 rounded-xl p-4 sm:p-6">
+                                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                                    <div class="flex items-center gap-4 min-w-0">
+                                        <div class="shrink-0">
                                             <div
                                                 class="w-12 h-12 bg-pink-100 dark:bg-pink-900 rounded-full flex items-center justify-center">
                                                 <x-heroicon-o-paint-brush
@@ -79,7 +79,7 @@
                                             @endif
                                         </div>
                                     </div>
-                                    <div class="flex items-center gap-2">
+                                    <div class="flex items-center gap-2 shrink-0">
                                         @if ($defaultThemeId == $selectedTheme->id)
                                             <span
                                                 class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400">
@@ -98,12 +98,12 @@
                         @endif
 
                         <!-- Themes Grid -->
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-8">
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6 sm:gap-8">
                             @forelse($themes as $theme)
                                 <div
                                     class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md transition-all duration-200 overflow-hidden">
                                     <!-- Theme Header -->
-                                    <div class="p-6 border-b border-gray-100 dark:border-gray-700">
+                                    <div class="p-4 sm:p-6 border-b border-gray-100 dark:border-gray-700">
                                         <div class="flex items-start justify-between">
                                             <div class="flex-1 min-w-0">
                                                 <h3
@@ -128,7 +128,7 @@
                                     </div>
 
                                     <!-- Theme Preview -->
-                                    <div class="px-6 py-4">
+                                    <div class="px-4 sm:px-6 py-4">
                                         <div
                                             class="h-24 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 rounded-lg flex items-center justify-center border border-gray-200 dark:border-gray-600">
                                             <div class="text-center">
@@ -141,7 +141,7 @@
                                     </div>
 
                                     <!-- Theme Actions -->
-                                    <div class="px-6 pb-6 space-y-2">
+                                    <div class="px-4 sm:px-6 pb-4 sm:pb-6 space-y-2">
                                         <!-- Primary Action -->
                                         <a href="{{ route('page-builder.editor', ['pageKey' => 'home', 'themeId' => $theme['id']]) }}"
                                             class="w-full inline-flex items-center justify-center px-4 py-2 bg-pink-600 hover:bg-pink-700 text-white text-sm font-medium rounded-lg focus:ring-2 focus:ring-pink-200 transition-all duration-150">
