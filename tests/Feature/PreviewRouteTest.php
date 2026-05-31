@@ -2,6 +2,7 @@
 
 namespace Trinavo\LivewirePageBuilder\Tests\Feature;
 
+use Illuminate\Auth\GenericUser;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Trinavo\LivewirePageBuilder\Models\Theme;
 use Trinavo\LivewirePageBuilder\Tests\TestCase;
@@ -18,7 +19,9 @@ class PreviewRouteTest extends TestCase
 
         $this->assertEquals($theme->id, session('page_builder_preview_theme_id'));
 
-        $response = $this->get('/page-builder/preview/cancel');
+        // The cancel route lives in the auth-protected editor middleware group.
+        $response = $this->actingAs(new GenericUser(['id' => 1]))
+            ->get('/page-builder/preview/cancel');
 
         $response->assertRedirect('/');
         $this->assertNull(session('page_builder_preview_theme_id'));
@@ -29,7 +32,9 @@ class PreviewRouteTest extends TestCase
     {
         $this->assertNull(session('page_builder_preview_theme_id'));
 
-        $response = $this->get('/page-builder/preview/cancel');
+        // The cancel route lives in the auth-protected editor middleware group.
+        $response = $this->actingAs(new GenericUser(['id' => 1]))
+            ->get('/page-builder/preview/cancel');
 
         $response->assertRedirect('/');
         $this->assertNull(session('page_builder_preview_theme_id'));
