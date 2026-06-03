@@ -35,7 +35,7 @@
         touchStartX = $event.touches[0].clientX;
         touchStartY = $event.touches[0].clientY;
         const rid = '{{ $rowId }}';
-        pressTimer = setTimeout(() => { $dispatch('toggle-row-options', { rowId: rid }); }, 500);
+        pressTimer = setTimeout(() => { $dispatch('toggle-row-options', { rowId: rid, x: touchStartX, y: touchStartY }); }, 500);
     "
     @touchmove="
         if (pressTimer && (Math.abs($event.touches[0].clientX - touchStartX) > 10 || Math.abs($event.touches[0].clientY - touchStartY) > 10)) {
@@ -57,7 +57,7 @@
             </button>
 
             <!-- Handle/Options Button -->
-            <button @click="$dispatch('toggle-row-options', {rowId: '{{ $rowId }}'})"
+            <button @click="$dispatch('toggle-row-options', {rowId: '{{ $rowId }}', x: $event.clientX, y: $event.clientY})"
                 class="w-7 h-7 flex items-center justify-center text-white hover:bg-pink-600 rounded transition-colors duration-150"
                 title="More Options">
                 <x-heroicon-o-ellipsis-horizontal class="w-5 h-5" />
@@ -72,16 +72,45 @@
         </div>
 
         <!-- Hidden Drawer for Row Tools (appears on click of handle) -->
-        <div x-data="{ open: false }"
-            x-on:toggle-row-options.window="if($event.detail.rowId === '{{ $rowId }}') { open = !open; if(open) checkClipboard(); }"
-            class="absolute {{ $isNested ? 'top-[-35px]' : 'top-[-35px]' }} left-1/2 -translate-x-1/2 z-51">
+        <div x-data="{
+            open: false,
+            x: 0,
+            y: 0,
+            calculatePosition(mouseX, mouseY) {
+                const padding = 10;
+                const menuWidth = Math.min(250, window.innerWidth - 2 * padding);
+                const menuHeight = 500;
+
+                let x = mouseX;
+                let y = mouseY;
+
+                // Check if menu would overflow right edge
+                if (x + menuWidth > window.innerWidth - padding) {
+                    x = window.innerWidth - menuWidth - padding;
+                }
+
+                // Check if menu would overflow bottom edge
+                if (y + menuHeight > window.innerHeight - padding) {
+                    y = window.innerHeight - menuHeight - padding;
+                }
+
+                // Ensure menu doesn't go off the left or top edges
+                if (x < padding) x = padding;
+                if (y < padding) y = padding;
+
+                return { x, y };
+            }
+        }"
+            x-on:toggle-row-options.window="if($event.detail.rowId === '{{ $rowId }}') { open = !open; if(open) { checkClipboard(); const pos = calculatePosition($event.detail.x, $event.detail.y); x = pos.x; y = pos.y; } }">
+            <template x-teleport="body">
             <div x-show="open" x-transition:enter="transition ease-out duration-200"
                 x-transition:enter-start="opacity-0 transform translate-y-2"
                 x-transition:enter-end="opacity-100 transform translate-y-0"
                 x-transition:leave="transition ease-in duration-150"
                 x-transition:leave-start="opacity-100 transform translate-y-0"
                 x-transition:leave-end="opacity-0 transform translate-y-2" @click.outside="open = false"
-                class="absolute top-[45px] left-1/2 -translate-x-1/2 bg-white shadow-xl rounded-lg border border-gray-200 py-2 w-[250px] dark:bg-gray-800 dark:border-gray-700">
+                :style="`position: fixed; left: ${x}px; top: ${y}px;`"
+                class="bg-white shadow-xl rounded-lg border border-gray-200 py-2 w-[250px] max-h-[calc(100dvh-20px)] overflow-y-auto z-[9999] dark:bg-gray-800 dark:border-gray-700">
 
                 <div
                     class="px-3 py-1 text-xs font-semibold text-gray-500 uppercase tracking-wider dark:text-gray-400 border-b border-gray-100 dark:border-gray-700 mb-1">
@@ -486,6 +515,7 @@
                     <span>{{ __('Remove Row') }}</span>
                 </button>
             </div>
+            </template>
         </div>
 
         <div class="row-blocks pt-10 pb-10 {{ $rowCssClasses }}" style="font-size:0">
