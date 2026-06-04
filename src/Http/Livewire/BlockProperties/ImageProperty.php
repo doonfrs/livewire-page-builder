@@ -57,7 +57,7 @@ class ImageProperty extends Component
 
         try {
             $this->validate([
-                'uploadedImage' => 'image|max:10240', // max 10MB
+                'uploadedImage' => 'image|mimes:jpg,jpeg,png,gif,webp|max:10240', // raster images only, max 10MB
             ]);
 
             Log::debug('ImageProperty::uploadImage - Validation passed, storing file');
