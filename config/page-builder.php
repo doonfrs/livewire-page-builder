@@ -74,4 +74,28 @@ return [
         // 'company_name' => 'Acme Inc',
         // 'support_email' => 'support@example.com',
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Theme Settings
+    |--------------------------------------------------------------------------
+    |
+    | Host-defined fields shown in the Theme Manager's "Settings" modal and
+    | saved into each theme's `settings` JSON column. The package renders them
+    | generically and stays unaware of what they mean. Fields left empty are
+    | NOT stored, so consumers fall back to their own defaults.
+    |
+    | Each field:
+    |   'key'         => dot path into the theme settings JSON (e.g. 'slider.width')
+    |   'label'       => translated label
+    |   'type'        => 'number' | 'text'   (default 'text')
+    |   'placeholder' => hint shown when empty (e.g. the app's current default)
+    |   'rule'        => optional Laravel rule applied only when filled
+    |   'group'       => optional section heading to group fields under
+    |
+    */
+    'theme_settings' => [
+        // [ 'key' => 'example.width', 'label' => 'Width', 'type' => 'number', 'placeholder' => '1920' ],
+    ],
 ];
+

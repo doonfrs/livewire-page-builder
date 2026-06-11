@@ -589,6 +589,15 @@
                                     <x-heroicon-o-arrow-up-tray class="w-4 h-4 me-3" />
                                     {{ __('Import Theme') }}
                                 </button>
+
+                                <!-- Theme Settings (host-defined fields) -->
+                                @if (!empty($this->themeSettingsSchema()))
+                                    <button wire:click="openThemeSettingsModal" @click="open = false"
+                                        class="flex items-center w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                        <x-heroicon-o-cog-6-tooth class="w-4 h-4 me-3" />
+                                        {{ __('Theme Settings') }}
+                                    </button>
+                                @endif
                             </div>
                         @endif
                     </div>
@@ -624,6 +633,11 @@
         ])
 
         @include('page-builder::livewire.builder.partials.layouts-modal')
+
+        <!-- Theme Settings Modal -->
+        @if (!empty($this->themeSettingsSchema()))
+            @include('page-builder::livewire.builder.partials.theme-settings-modal')
+        @endif
 
         <!-- Copy Confirmation Modal -->
         <div x-show="showCopyConfirmationModal"

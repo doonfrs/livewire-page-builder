@@ -44,6 +44,7 @@ class ThemeService
         $exportData = [
             'name' => $themeWithPages->name,
             'description' => $themeWithPages->description,
+            'settings' => $themeWithPages->settings,
             'pages' => $themeWithPages->pages->map(function ($page) {
                 return [
                     'key' => $page->key,
@@ -269,6 +270,7 @@ class ThemeService
         $theme = Theme::create([
             'name' => $data['name'],
             'description' => $data['description'] ?? '',
+            'settings' => $data['settings'] ?? null,
         ]);
 
         // Import pages
@@ -417,6 +419,7 @@ class ThemeService
         $clonedTheme = Theme::create([
             'name' => $newName,
             'description' => $themeModel->description,
+            'settings' => $themeModel->settings,
         ]);
 
         // Clone all pages

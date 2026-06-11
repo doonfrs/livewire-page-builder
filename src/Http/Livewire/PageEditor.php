@@ -65,6 +65,12 @@ class PageEditor extends Component
 
     public array $availableLayouts = [];
 
+    // Theme settings modal (host-defined schema, see config/page-builder.php)
+    public bool $showThemeSettingsModal = false;
+
+    /** @var array nested mirror of the schema keys (dotted wire:model paths) */
+    public array $themeSettingsForm = [];
+
     public $selfCentered = false;
 
     public BuilderPage $page;
@@ -2210,6 +2216,112 @@ class PageEditor extends Component
         }
 
         return null;
+    }
+
+    /**
+     * Host-defined theme settings fields. The package renders these generically
+     * and stays unaware of their meaning. See config/page-builder.php.
+     *
+     * @return array<int, array<string, mixed>>
+     */
+    public function themeSettingsSchema(): array
+    {
+        return array_values(config('page-builder.theme_settings', []));
+    }
+
+    public function openThemeSettingsModal()
+    {
+        $theme = $this->themeId ? Theme::find($this->themeId) : null;
+        if (! $theme) {
+            $this->dispatch('notify',
+                message: __('No theme selected'),
+                type: 'error'
+            );
+
+            return;
+        }
+
+        // Prefill each field from what's stored; unset keys become empty inputs.
+        // The form is NESTED (Livewire treats the dotted wire:model as a path).
+        $this->themeSettingsForm = [];
+        foreach ($this->themeSettingsSchema() as $field) {
+            data_set($this->themeSettingsForm, $field['key'], $theme->getSetting($field['key']));
+        }
+
+        $this->showThemeSettingsModal = true;
+    }
+
+    public function closeThemeSettingsModal()
+    {
+        $this->showThemeSettingsModal = false;
+        $this->themeSettingsForm = [];
+        $this->resetErrorBag();
+    }
+
+    public function saveThemeSettings()
+    {
+        $theme = $this->themeId ? Theme::find($this->themeId) : null;
+        if (! $theme) {
+            return;
+        }
+
+        $schema = $this->themeSettingsSchema();
+
+        // Validate only the fields that were actually filled in.
+        $rules = [];
+        foreach ($schema as $field) {
+            if (! empty($field['rule']) && $this->themeSettingFilled($field['key'])) {
+                $rules['themeSettingsForm.'.$field['key']] = $field['rule'];
+            }
+        }
+        if ($rules) {
+            $this->validate($rules);
+        }
+
+        try {
+            foreach ($schema as $field) {
+                $key = $field['key'];
+
+                if (! $this->themeSettingFilled($key)) {
+                    // Empty = use the app default; never store a blank value.
+                    $theme->forgetSetting($key);
+
+                    continue;
+                }
+
+                $value = data_get($this->themeSettingsForm, $key);
+                if (($field['type'] ?? 'text') === 'number') {
+                    $value = (int) $value;
+                }
+
+                $theme->setSetting($key, $value);
+            }
+
+            $theme->save();
+            $this->currentTheme = $theme;
+            $this->closeThemeSettingsModal();
+
+            $this->dispatch('notify',
+                message: __('Theme settings saved'),
+                type: 'success'
+            );
+        } catch (\Exception $e) {
+            report($e);
+            $this->dispatch('notify',
+                message: __('Error saving theme settings'),
+                type: 'error'
+            );
+        }
+    }
+
+    /**
+     * A settings field counts as filled when it is not null/empty-string.
+     */
+    private function themeSettingFilled(string $key): bool
+    {
+        $value = data_get($this->themeSettingsForm, $key);
+
+        return $value !== null && $value !== '';
     }
 
     /**
