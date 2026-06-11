@@ -22,6 +22,7 @@ Everything documented here lives in `config/page-builder.php`. The package merge
 | `pages` | `[]` | Map of page key → options (`label`, `is_block`) |
 | `layouts` | `[]` | Array of absolute paths to JSON layout templates |
 | `variables` | `[]` | Map of variable name → string value (closures aren't allowed here — see [Variables](variables.md)) |
+| `theme_settings` | `[]` | Field definitions for the per-theme **Theme Settings** modal (see [Theme settings](#theme-settings) below) |
 
 ---
 
@@ -92,6 +93,62 @@ The package reads each file via `PageBuilderService::getAvailableLayouts($locale
 `meta.name` and `meta.description` are looked up by the current UI locale, falling back to `en`, then to `basename($path)`.
 
 Files that don't exist on disk, or don't contain a top‑level `components` key, are silently skipped — handy if you ship environment‑specific layouts.
+
+---
+
+## Theme settings
+
+Themes have a nullable `settings` JSON column (`builder_themes.settings`). The `theme_settings` config key declares **host-defined fields** that the editor renders generically in a **Theme Settings** modal, reachable from the editor's actions menu (alongside Export / Import Theme). The menu item only appears when at least one field is declared. The package never interprets the values; your application reads them wherever it needs them.
+
+### Field schema
+
+```php
+'theme_settings' => [
+    [
+        'key'         => 'slider_images.desktop.width',   // dot path into the settings JSON
+        'label'       => 'Desktop slider width',          // shown next to the input (run through __())
+        'type'        => 'number',                        // 'number' or 'text' (default 'text')
+        'placeholder' => '2560',                          // hint shown when the field is empty
+        'rule'        => 'integer|min:1',                 // optional Laravel rule, applied only when filled
+        'group'       => 'Slider images',                 // optional section heading
+    ],
+],
+```
+
+| Option | Required | Notes |
+|---|---|---|
+| `key` | yes | Dot path into the theme's settings JSON, e.g. `slider_images.desktop.width` |
+| `label` | no | Defaults to the key. Translated with `__()` at render time, so keep it a plain string in config |
+| `type` | no | `number` inputs are cast to `int` on save; everything else is stored as text |
+| `placeholder` | no | Shown when the field is empty. Use it to surface your app's current default |
+| `rule` | no | Laravel validation rule string, applied **only when the field is filled** |
+| `group` | no | Fields sharing a `group` render under one heading |
+
+### Empty means "not stored"
+
+All fields start empty; the placeholder communicates the default. Saving an empty field **removes** the key from the settings JSON instead of storing `''` or `null`. That makes the consuming side a one-liner with natural fallback:
+
+```php
+$width = (int) ($theme?->getSetting('slider_images.desktop.width') ?? 2560);
+```
+
+### Reading and writing programmatically
+
+The `Theme` model exposes dot-key helpers (`setSetting` / `forgetSetting` mutate the model; call `save()` yourself):
+
+```php
+use Trinavo\LivewirePageBuilder\Models\Theme;
+
+$theme = Theme::find($id);
+
+$theme->getSetting('slider_images.desktop.width');          // null when unset
+$theme->getSetting('slider_images.desktop.width', 2560);    // with default
+
+$theme->setSetting('slider_images.desktop.width', 1920)->save();
+$theme->forgetSetting('slider_images.desktop.width')->save();
+```
+
+Theme settings are part of the theme's identity: they are included in **exports**, restored on **import**, and copied on **clone** (see [Theme Service Usage](theme-service-usage.md)).
 
 ---
 

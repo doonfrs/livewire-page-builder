@@ -10,6 +10,7 @@ Any Livewire component can be registered as a block. Any page can be reused as a
 
 - **Visual editor** — drag‑and‑drop rows and blocks, reorder, copy/paste within or across pages (with automatic ID regeneration), context menus, property panel
 - **Themes** — group pages under a named theme, set a default theme, clone themes, import/export, optional **AES‑256‑GCM theme encryption** with password protection
+- **Theme settings** - host-defined per-theme values (image sizes, ratios, anything) edited in a generic modal inside the editor and stored in a `settings` JSON column; they travel with export/import/clone
 - **Layout templates** — ship pre‑built page layouts as JSON files and let users start from a template
 - **Responsive by design** — every shared property has mobile / tablet / desktop variants resolved through Tailwind 4 `@3xl` / `@7xl` container queries; preview area uses real device widths
 - **Built‑in blocks** — `RichText`, `SimpleText`, `Spacer`, `IconBlock`, plus core `RowBlock` and `BuilderPageBlock` (page‑as‑block)
@@ -124,6 +125,7 @@ Route::get('/{permalink}', function (string $permalink) {
 | `pages` | `[]` | Page key → options map (`label`, `is_block`) |
 | `layouts` | `[]` | Absolute paths to JSON layout templates |
 | `variables` | `[]` | Name → value (string or `Closure`) map of template variables |
+| `theme_settings` | `[]` | Field definitions for the per-theme **Theme Settings** modal (see below) |
 
 ---
 
@@ -132,6 +134,30 @@ Route::get('/{permalink}', function (string $permalink) {
 Pages are identified by **`(key, theme_id)`** — the same `home` key can have a different design under each theme. The theme manager (`/page-builder/themes`) lets you create, clone, set a default, import and export themes. The default theme id is stored in the `builder_settings` table and is used whenever you call the editor or renderer without an explicit `themeId`.
 
 Any page can also be a **reusable block** by adding `'is_block' => true` to its config entry. Such pages don't render on their own; instead they show up in the block picker as `BuilderPageBlock`s and can be embedded inside other pages. This is how header / footer / sidebar are typically built.
+
+---
+
+## 🎛️ Theme settings
+
+Themes can carry **host-defined settings** (stored in the `builder_themes.settings` JSON column). You declare the fields in config; the editor renders them generically in a **Theme Settings** modal (actions menu, next to Export / Import), and your app reads the values wherever it needs them. The package itself never interprets them.
+
+```php
+// config/page-builder.php
+'theme_settings' => [
+    ['key' => 'slider_images.desktop.width',  'label' => 'Desktop width',  'type' => 'number', 'placeholder' => '2560', 'rule' => 'integer|min:1',      'group' => 'Slider images'],
+    ['key' => 'slider_images.desktop.ratio',  'label' => 'Desktop ratio',  'type' => 'text',   'placeholder' => '16:6', 'rule' => 'regex:/^\d+:\d+$/',  'group' => 'Slider images'],
+],
+```
+
+Fields are **empty by default**; the placeholder shows your app's default. An empty field is *not stored*, so consumers fall back naturally:
+
+```php
+use Trinavo\LivewirePageBuilder\Models\Theme;
+
+$width = (int) ($theme?->getSetting('slider_images.desktop.width') ?? 2560);
+```
+
+Settings are included in theme **export**, restored on **import**, and copied on **clone**. Full field schema: [docs/advanced-configuration.md](docs/advanced-configuration.md#theme-settings).
 
 ---
 

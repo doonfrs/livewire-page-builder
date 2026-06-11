@@ -34,6 +34,7 @@ $data = $service->exportTheme(1);
 // [
 //     'name'        => 'Default',
 //     'description' => '...',
+//     'settings'    => ['slider_images' => ['desktop' => ['width' => 2280]]],  // theme settings JSON, null when unset
 //     'pages'       => [ ['key' => 'home', 'components' => [...], 'is_block' => false, ...], ... ],
 //     'exported_at' => '2026-05-14T...',
 //     'version'     => '1.0',
@@ -91,6 +92,7 @@ $theme = $service->importTheme([
 
 - When `overwriteExisting` is `false` (default), a theme with a clashing name is renamed (`My New Theme (2)` etc.).
 - When `true`, the existing theme's pages are replaced.
+- A `settings` key in the data (see [Theme settings](advanced-configuration.md#theme-settings)) is restored onto the new theme; older exports without it import fine.
 
 Returns the resulting `Theme` model, or `null` on failure.
 
@@ -120,7 +122,7 @@ $theme = $service->importThemeFromEncryptedFile($filePath, overwriteExisting: fa
 $copy = $service->cloneTheme(1, 'My Cloned Theme');
 ```
 
-Duplicates the theme **and** all its pages. The new theme has an auto‑assigned id. Returns the cloned `Theme` model, or `null` if the source doesn't exist.
+Duplicates the theme **and** all its pages, including its [theme settings](advanced-configuration.md#theme-settings). The new theme has an auto‑assigned id. Returns the cloned `Theme` model, or `null` if the source doesn't exist.
 
 ---
 

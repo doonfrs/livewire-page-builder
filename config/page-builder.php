@@ -80,10 +80,11 @@ return [
     | Theme Settings
     |--------------------------------------------------------------------------
     |
-    | Host-defined fields shown in the Theme Manager's "Settings" modal and
-    | saved into each theme's `settings` JSON column. The package renders them
-    | generically and stays unaware of what they mean. Fields left empty are
-    | NOT stored, so consumers fall back to their own defaults.
+    | Host-defined fields shown in the editor's actions menu under
+    | "Theme Settings" and saved into each theme's `settings` JSON column.
+    | The package renders them generically and stays unaware of what they
+    | mean. Fields left empty are NOT stored, so consumers fall back to
+    | their own defaults.
     |
     | Each field:
     |   'key'         => dot path into the theme settings JSON (e.g. 'slider.width')
