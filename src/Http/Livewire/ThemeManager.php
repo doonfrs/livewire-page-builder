@@ -425,12 +425,15 @@ class ThemeManager extends Component
                 throw new \Exception(__('Cloning failed'));
             }
 
+            // Capture before closeCloneModal() nulls out $this->themeToClone
+            $originalName = $this->themeToClone->name;
+
             $this->loadThemes();
             $this->closeCloneModal();
 
             $message = __("Theme ':name' created successfully as a copy of ':originalName'", [
                 'name' => $clonedTheme->name,
-                'originalName' => $this->themeToClone->name,
+                'originalName' => $originalName,
             ]);
 
             $this->dispatch('notify', message: $message, type: 'success');
