@@ -69,18 +69,26 @@
             insertVariable(variable) {
                 const variableTag = '{' + variable.name + '}';
                 
-                // If we have access to quill
                 if (window.quillInstance) {
                     const quill = window.quillInstance;
-                    const range = quill.getSelection();
-                    
-                    if (range) {
-                        // Insert at current selection
-                        quill.insertText(range.index, variableTag);
-                    } else {
-                        // If no selection, insert at end
-                        quill.insertText(quill.getLength() - 1, variableTag);
-                    }
+
+                    // Use the caret captured while editing (selection-change handler).
+                    // The open modal owns the DOM selection, so quill.getSelection()
+                    // can't be trusted here.
+                    const saved = window.quillSavedRange;
+                    const length = quill.getLength();
+                    const index = saved ? Math.min(saved.index, length - 1) : length - 1;
+
+                    // Clear the modal's DOM selection before mutating. Quill's editor
+                    // and toolbar read window.getSelection() synchronously on every
+                    // change; a selection outside the editor makes them throw. With it
+                    // cleared, those reads return null safely.
+                    window.getSelection()?.removeAllRanges();
+
+                    quill.insertText(index, variableTag, 'user');
+                    window.quillSavedRange = { index: index + variableTag.length, length: 0 };
+
+                    console.log('[page-builder] inserted variable', variableTag, 'at index', index);
                 }
                 
                 this.open = false;
@@ -269,6 +277,17 @@
                 }, 500); // 500ms debounce
             });
     
+            // Remember the active editor and caret position whenever the selection
+            // changes. The variables modal is a separate Alpine component, and
+            // opening it (or clicking a variable) blurs the editor - so we can't
+            // rely on quill.getSelection() being valid at insert time.
+            this.quill.on('selection-change', (range) => {
+                if (range) {
+                    window.quillInstance = this.quill;
+                    window.quillSavedRange = range;
+                }
+            });
+
             // Listen for locale change events from Livewire
             this.$wire.$on('localeChanged', (newLocale) => {
                 console.log('Locale changed event received:', newLocale);
