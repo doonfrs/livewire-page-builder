@@ -101,7 +101,7 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6 sm:gap-8">
                             @forelse($themes as $theme)
                                 <div
-                                    class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md transition-all duration-200 overflow-hidden">
+                                    class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md transition-all duration-200">
                                     <!-- Theme Header -->
                                     <div class="p-4 sm:p-6 border-b border-gray-100 dark:border-gray-700">
                                         <div class="flex items-start justify-between">
@@ -141,54 +141,69 @@
                                     </div>
 
                                     <!-- Theme Actions -->
-                                    <div class="px-4 sm:px-6 pb-4 sm:pb-6 space-y-2">
-                                        <!-- Primary Action -->
-                                        <a href="{{ route('page-builder.editor', ['pageKey' => 'home', 'themeId' => $theme['id']]) }}"
-                                            class="w-full inline-flex items-center justify-center px-4 py-2 bg-pink-600 hover:bg-pink-700 text-white text-sm font-medium rounded-lg focus:ring-2 focus:ring-pink-200 transition-all duration-150">
-                                            <x-heroicon-o-paint-brush class="w-4 h-4 mr-2" />
-                                            {{ __('Design Pages') }}
-                                        </a>
+                                    <div class="px-4 sm:px-6 pb-4 sm:pb-6">
+                                        <!-- Actions row: Design + Preview + More actions menu -->
+                                        <div class="flex items-stretch gap-2">
+                                            <a href="{{ route('page-builder.editor', ['pageKey' => 'home', 'themeId' => $theme['id']]) }}"
+                                                class="flex-1 inline-flex items-center justify-center gap-2 px-3 py-2 bg-pink-600 hover:bg-pink-700 text-white text-sm font-medium rounded-lg focus:ring-2 focus:ring-pink-200 transition-all duration-150 whitespace-nowrap">
+                                                <x-heroicon-o-paint-brush class="w-4 h-4 shrink-0" />
+                                                {{ __('Design Pages') }}
+                                            </a>
 
-                                        <!-- Preview Action -->
-                                        <button wire:click="previewTheme({{ $theme['id'] }})"
-                                            class="w-full inline-flex items-center justify-center px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium rounded-lg focus:ring-2 focus:ring-purple-200 transition-all duration-150">
-                                            <x-heroicon-o-eye class="w-4 h-4 mr-2" />
-                                            {{ __('Preview') }}
-                                        </button>
+                                            <button wire:click="previewTheme({{ $theme['id'] }})"
+                                                class="flex-1 inline-flex items-center justify-center gap-2 px-3 py-2 bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium rounded-lg focus:ring-2 focus:ring-purple-200 transition-all duration-150 whitespace-nowrap">
+                                                <x-heroicon-o-eye class="w-4 h-4 shrink-0" />
+                                                {{ __('Preview') }}
+                                            </button>
 
-                                        <!-- Secondary Actions -->
-                                        <div class="grid grid-cols-3 gap-2 mb-2">
-                                            <button wire:click="openEditModal({{ $theme['id'] }})"
-                                                class="inline-flex items-center justify-center px-3 py-1.5 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 text-sm font-medium rounded-lg transition-all duration-150">
-                                                <x-heroicon-o-pencil-square class="w-4 h-4 mr-1 ml-1" />
-                                                {{ __('Edit') }}
-                                            </button>
-                                            <button wire:click="openCloneModal({{ $theme['id'] }})"
-                                                class="inline-flex items-center justify-center px-3 py-1.5 bg-green-100 dark:bg-green-900/30 hover:bg-green-200 dark:hover:bg-green-900/50 text-green-700 dark:text-green-400 text-sm font-medium rounded-lg transition-all duration-150">
-                                                <x-heroicon-o-document-duplicate class="w-4 h-4 mr-1 ml-1" />
-                                                {{ __('Clone') }}
-                                            </button>
-                                            <button wire:click="exportTheme({{ $theme['id'] }})"
-                                                class="inline-flex items-center justify-center px-3 py-1.5 bg-blue-100 dark:bg-blue-900/30 hover:bg-blue-200 dark:hover:bg-blue-900/50 text-blue-700 dark:text-blue-400 text-sm font-medium rounded-lg transition-all duration-150">
-                                                <x-heroicon-o-arrow-down-tray class="w-4 h-4 mr-1 ml-1" />
-                                                {{ __('Export') }}
-                                            </button>
-                                        </div>
-                                        <div class="grid grid-cols-2 gap-2">
-                                            @if ($defaultThemeId != $theme['id'])
-                                                <button wire:click="confirmSetDefaultTheme({{ $theme['id'] }})"
-                                                    class="inline-flex items-center justify-center px-3 py-1.5 bg-yellow-100 dark:bg-yellow-900/30 hover:bg-yellow-200 dark:hover:bg-yellow-900/50 text-yellow-700 dark:text-yellow-400 text-sm font-medium rounded-lg transition-all duration-150">
-                                                    <x-heroicon-o-star class="w-4 h-4 mr-1 ml-1" />
-                                                    {{ __('Default') }}
+                                            <!-- More actions dropdown -->
+                                            <div class="relative" x-data="{ open: false }">
+                                                <button type="button" @click="open = !open" :aria-expanded="open"
+                                                    aria-label="{{ __('More actions') }}" title="{{ __('More actions') }}"
+                                                    class="h-full inline-flex items-center justify-center px-3 py-2 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-lg transition-all duration-150"
+                                                    :class="open ? 'ring-2 ring-pink-200 dark:ring-pink-500/40' : ''">
+                                                    <x-heroicon-o-ellipsis-vertical class="w-5 h-5" />
                                                 </button>
-                                            @else
-                                                <div></div>
-                                            @endif
-                                            <button wire:click="openDeleteModal({{ $theme['id'] }})"
-                                                class="inline-flex items-center justify-center px-3 py-1.5 bg-red-100 dark:bg-red-900/30 hover:bg-red-200 dark:hover:bg-red-900/50 text-red-700 dark:text-red-400 text-sm font-medium rounded-lg transition-all duration-150">
-                                                <x-heroicon-o-trash class="w-4 h-4 mr-1 ml-1" />
-                                                {{ __('Delete') }}
-                                            </button>
+
+                                                <div x-show="open" x-cloak @click.away="open = false"
+                                                    @keydown.escape.window="open = false"
+                                                    x-transition:enter="transition ease-out duration-100"
+                                                    x-transition:enter-start="transform opacity-0 scale-95"
+                                                    x-transition:enter-end="transform opacity-100 scale-100"
+                                                    x-transition:leave="transition ease-in duration-75"
+                                                    x-transition:leave-start="transform opacity-100 scale-100"
+                                                    x-transition:leave-end="transform opacity-0 scale-95"
+                                                    class="absolute end-0 z-30 mt-2 w-48 origin-top rounded-lg bg-white dark:bg-gray-800 shadow-lg ring-1 ring-black/5 dark:ring-white/10 py-1">
+                                                    <button wire:click="openEditModal({{ $theme['id'] }})" @click="open = false"
+                                                        class="flex items-center gap-2.5 w-full px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                                                        <x-heroicon-o-pencil-square class="w-4 h-4 text-gray-500 dark:text-gray-400" />
+                                                        {{ __('Edit') }}
+                                                    </button>
+                                                    <button wire:click="openCloneModal({{ $theme['id'] }})" @click="open = false"
+                                                        class="flex items-center gap-2.5 w-full px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                                                        <x-heroicon-o-document-duplicate class="w-4 h-4 text-green-500 dark:text-green-400" />
+                                                        {{ __('Clone') }}
+                                                    </button>
+                                                    <button wire:click="exportTheme({{ $theme['id'] }})" @click="open = false"
+                                                        class="flex items-center gap-2.5 w-full px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                                                        <x-heroicon-o-arrow-down-tray class="w-4 h-4 text-blue-500 dark:text-blue-400" />
+                                                        {{ __('Export') }}
+                                                    </button>
+                                                    @if ($defaultThemeId != $theme['id'])
+                                                        <button wire:click="confirmSetDefaultTheme({{ $theme['id'] }})" @click="open = false"
+                                                            class="flex items-center gap-2.5 w-full px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                                                            <x-heroicon-o-star class="w-4 h-4 text-yellow-500 dark:text-yellow-400" />
+                                                            {{ __('Set as Default') }}
+                                                        </button>
+                                                    @endif
+                                                    <div class="my-1 border-t border-gray-100 dark:border-gray-700"></div>
+                                                    <button wire:click="openDeleteModal({{ $theme['id'] }})" @click="open = false"
+                                                        class="flex items-center gap-2.5 w-full px-4 py-2.5 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 transition-colors">
+                                                        <x-heroicon-o-trash class="w-4 h-4" />
+                                                        {{ __('Delete') }}
+                                                    </button>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
