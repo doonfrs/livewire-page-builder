@@ -72,13 +72,13 @@ class IconBlock extends Block
             }
         }
 
-        $localizedLabel = \pb_localize_content($this->label);
+        $localizedLabel = $this->localizeContent($this->label);
         $labelHtml = '';
         if (! empty($localizedLabel)) {
             $labelHtml = '<div class="mt-4 text-lg font-medium">'.$localizedLabel.'</div>';
         }
 
-        $localizedButtonText = strip_tags(\pb_localize_content($this->buttonText));
+        $localizedButtonText = strip_tags($this->localizeContent($this->buttonText));
         $buttonHtml = '';
         if (! empty($localizedButtonText) && ! empty($this->buttonUrl)) {
             $url = e($this->buttonUrl);

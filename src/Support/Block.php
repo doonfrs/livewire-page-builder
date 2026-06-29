@@ -241,6 +241,25 @@ abstract class Block extends Component
     public bool $editMode = false;
 
     /**
+     * Localize a (possibly multilingual) value for display and, in view mode,
+     * replace {variable} tokens with their registered values. In edit mode the
+     * raw tokens are kept so they stay visible and editable in the builder.
+     *
+     * @param  mixed  $content
+     * @return mixed
+     */
+    protected function localizeContent($content, ?string $locale = null)
+    {
+        $content = \pb_localize_content($content, $locale);
+
+        if ($this->editMode || ! is_string($content)) {
+            return $content;
+        }
+
+        return VariablesParser::parse($content);
+    }
+
+    /**
      * Get the icon for the block in the page builder UI.
      */
     public function getPageBuilderIcon(): string
