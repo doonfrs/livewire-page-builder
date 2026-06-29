@@ -52,7 +52,7 @@
                             <input type="{{ ($field['type'] ?? 'text') === 'number' ? 'number' : 'text' }}"
                                 wire:model="themeSettingsForm.{{ $field['key'] }}"
                                 id="theme_setting_{{ $loop->index }}" placeholder="{{ $field['placeholder'] ?? '' }}"
-                                class="mt-1 block w-full border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md shadow-sm focus:ring-pink-500 focus:border-pink-500 sm:text-sm">
+                                class="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md shadow-sm focus:ring-pink-500 focus:border-pink-500 sm:text-sm">
                             @error('themeSettingsForm.' . $field['key'])
                                 <span class="text-red-500 text-xs">{{ $message }}</span>
                             @enderror

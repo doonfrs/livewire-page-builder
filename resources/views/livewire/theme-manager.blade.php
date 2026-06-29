@@ -276,7 +276,7 @@
                                             <label for="name"
                                                 class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ __('Theme Name') }}</label>
                                             <input type="text" wire:model="name" id="name"
-                                                class="mt-1 block w-full border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md shadow-sm focus:ring-pink-500 focus:border-pink-500 sm:text-sm"
+                                                class="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md shadow-sm focus:ring-pink-500 focus:border-pink-500 sm:text-sm"
                                                 placeholder="{{ __('Enter theme name') }}">
                                             @error('name')
                                                 <span class="text-red-500 text-xs">{{ $message }}</span>
@@ -286,7 +286,7 @@
                                             <label for="description"
                                                 class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ __('Theme Description') }}</label>
                                             <textarea wire:model="description" id="description" rows="3"
-                                                class="mt-1 block w-full border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md shadow-sm focus:ring-pink-500 focus:border-pink-500 sm:text-sm"
+                                                class="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md shadow-sm focus:ring-pink-500 focus:border-pink-500 sm:text-sm"
                                                 placeholder="{{ __('Enter theme description') }}"></textarea>
                                             @error('description')
                                                 <span class="text-red-500 text-xs">{{ $message }}</span>
@@ -352,7 +352,7 @@
                                             <label for="edit_name"
                                                 class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ __('Theme Name') }}</label>
                                             <input type="text" wire:model="name" id="edit_name"
-                                                class="mt-1 block w-full border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md shadow-sm focus:ring-pink-500 focus:border-pink-500 sm:text-sm"
+                                                class="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md shadow-sm focus:ring-pink-500 focus:border-pink-500 sm:text-sm"
                                                 placeholder="{{ __('Enter theme name') }}">
                                             @error('name')
                                                 <span class="text-red-500 text-xs">{{ $message }}</span>
@@ -362,7 +362,7 @@
                                             <label for="edit_description"
                                                 class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ __('Theme Description') }}</label>
                                             <textarea wire:model="description" id="edit_description" rows="3"
-                                                class="mt-1 block w-full border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md shadow-sm focus:ring-pink-500 focus:border-pink-500 sm:text-sm"
+                                                class="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md shadow-sm focus:ring-pink-500 focus:border-pink-500 sm:text-sm"
                                                 placeholder="{{ __('Enter theme description') }}"></textarea>
                                             @error('description')
                                                 <span class="text-red-500 text-xs">{{ $message }}</span>
@@ -651,7 +651,7 @@
                                             <label for="cloneName"
                                                 class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{{ __('Clone Theme Name') }}</label>
                                             <input type="text" wire:model="cloneName" id="cloneName"
-                                                class="block w-full border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm"
+                                                class="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm"
                                                 placeholder="{{ __('Enter theme name') }}">
                                             @error('cloneName')
                                                 <span class="text-red-500 text-xs mt-1">{{ $message }}</span>
