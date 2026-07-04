@@ -38,7 +38,7 @@ Route::prefix('page-builder')->group(function () use ($editorMiddleware, $render
         Route::get(
             '/editor/{pageKey}/{themeId?}',
             PageEditor::class
-        )->name('page-builder.editor');
+        )->whereNumber('themeId')->name('page-builder.editor');
 
         Route::get(
             '/page/edit/{pageKey}/{pageTheme?}',
