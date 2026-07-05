@@ -3,7 +3,6 @@
 namespace Trinavo\LivewirePageBuilder\Http\Livewire\BlockProperties;
 
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
@@ -62,7 +61,10 @@ class VideoProperty extends Component
         Log::debug('VideoProperty::uploadVideo - Validation passed, storing file');
 
         $path = $this->uploadedVideo->store(path: 'page-builder', options: 'public');
-        $url = Storage::url(path: $path);
+        // Build the URL from the tenant-aware public disk URL. Do NOT use the disk's
+        // url() helper: the S3 driver re-applies the tenant root prefix, double-prefixing
+        // the key under S3. This concat matches local behavior byte-for-byte.
+        $url = rtrim((string) config('filesystems.disks.public.url'), '/').'/'.ltrim($path, '/');
 
         Log::debug('VideoProperty::uploadVideo - File stored', [
             'path' => $path,
