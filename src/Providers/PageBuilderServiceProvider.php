@@ -200,11 +200,13 @@ class PageBuilderServiceProvider extends ServiceProvider
      */
     protected function registerDefaultVariables(): void
     {
-        // Register default variables
+        // Register default variables. app_name/app_url are closures so they are
+        // resolved per request rather than frozen at boot, which lets the host
+        // app (e.g. a multi-tenant one) override or vary them at runtime.
         Variables::registerMany([
-            'app_name' => config('app.name'),
-            'app_url' => config('app.url'),
-            'year' => date('Y'),
+            'app_name' => fn () => config('app.name'),
+            'app_url' => fn () => config('app.url'),
+            'year' => fn () => date('Y'),
             'current_datetime' => fn () => now()->format('Y-m-d H:i:s'),
         ]);
 
