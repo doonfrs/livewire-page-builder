@@ -1,4 +1,17 @@
 <div>
+    {{--
+        Quill travels with this widget rather than with the builder layout, so the editor
+        also works on the public page (live edit), where the host's own layout is in charge.
+        Livewire's @assets injects each block once per page and waits for it to load before
+        morphing, so the Alpine init below can rely on window.Quill being present.
+    --}}
+    @assets
+        <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/quill-resize-module@2.0.3/dist/resize.js"></script>
+        <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/quill-resize-module@2.0.3/dist/resize.css" rel="stylesheet" />
+    @endassets
+
     <!-- Language Tabs (if multilingual is enabled) -->
     @if ($multilingual && count($contentLocales) > 1)
         <div class="mb-2 border-b border-gray-200 dark:border-gray-700">

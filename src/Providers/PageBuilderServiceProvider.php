@@ -19,6 +19,7 @@ use Trinavo\LivewirePageBuilder\Http\Livewire\BlockProperties\SimpleTextProperty
 use Trinavo\LivewirePageBuilder\Http\Livewire\BlockProperties\VideoProperty;
 use Trinavo\LivewirePageBuilder\Http\Livewire\BuilderBlock;
 use Trinavo\LivewirePageBuilder\Http\Livewire\BuilderPageBlock;
+use Trinavo\LivewirePageBuilder\Http\Livewire\LiveEdit;
 use Trinavo\LivewirePageBuilder\Http\Livewire\PageEditor;
 use Trinavo\LivewirePageBuilder\Http\Livewire\PreviewBar;
 use Trinavo\LivewirePageBuilder\Http\Livewire\RowBlock;
@@ -106,6 +107,11 @@ class PageBuilderServiceProvider extends ServiceProvider
 
     public function register(): void
     {
+        // Block classes come from config, so the live edit memo is only valid for the
+        // lifetime of a booted app. Clearing it here keeps tests (and any re-boot)
+        // honest without paying the lookup again on every request.
+        PageBuilderService::flushLiveEditCache();
+
         // Register the localization service
         $this->app->singleton(LocalizationService::class, function ($app) {
             return new LocalizationService;
@@ -182,6 +188,7 @@ class PageBuilderServiceProvider extends ServiceProvider
         Livewire::component('block-properties', BlockProperties::class);
         Livewire::component('row-block', RowBlock::class);
         Livewire::component('builder-page-block', BuilderPageBlock::class);
+        Livewire::component(LiveEdit::ALIAS, LiveEdit::class);
         Livewire::component('block-properties.color-picker', ColorPicker::class);
         Livewire::component('block-properties.flexible-size-property', FlexibleSizeProperty::class);
         Livewire::component('block-properties.icon-property', IconPropertyComponent::class);

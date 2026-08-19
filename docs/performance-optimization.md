@@ -60,6 +60,11 @@ Reasonable places to add caching, in order of bang‑for‑buck:
    );
    ```
 
+   > **If you use [Live Edit](live-edit.md), do not let a permitted user's render fill this cache.**
+   > The edit gears are part of the HTML, so a cached copy taken from an admin's request would be
+   > served to everyone. Skip the cache for authenticated/authorised users, or include
+   > `PageBuilderUIService::isLiveEditEnabled()` in the cache key.
+
 2. **`PageBuilderRender` result cache** — same idea but inside the render service, if you have many entry points to the same page. The `parsePage()` return value is fully serializable.
 
 3. **Variables** — if a `PageBuilderVariables::register()` callable hits the database on every render, cache the result. Variables are resolved per request, not per page.

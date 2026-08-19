@@ -5,9 +5,11 @@ namespace Trinavo\LivewirePageBuilder\Http\Livewire\BlockProperties;
 use Illuminate\Support\Facades\Log;
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use Trinavo\LivewirePageBuilder\Support\Concerns\DispatchesBlockPropertyUpdate;
 
 class ImageProperty extends Component
 {
+    use DispatchesBlockPropertyUpdate;
     use WithFileUploads;
 
     public $propertyName;
@@ -86,7 +88,7 @@ class ImageProperty extends Component
         ]);
 
         $this->currentValue = $url;
-        $this->dispatch('updateBlockProperty', $this->rowId, $this->blockId, $this->propertyName, $url);
+        $this->dispatchBlockPropertyUpdate($this->propertyName, $url);
 
         Log::debug('ImageProperty::uploadImage - Dispatched updateBlockProperty event', [
             'url' => $url,
@@ -98,12 +100,12 @@ class ImageProperty extends Component
 
     public function updateImageUrl()
     {
-        $this->dispatch('updateBlockProperty', $this->rowId, $this->blockId, $this->propertyName, $this->currentValue);
+        $this->dispatchBlockPropertyUpdate($this->propertyName, $this->currentValue);
     }
 
     public function removeImage()
     {
         $this->currentValue = null;
-        $this->dispatch('updateBlockProperty', $this->rowId, $this->blockId, $this->propertyName, null);
+        $this->dispatchBlockPropertyUpdate($this->propertyName, null);
     }
 }

@@ -4,9 +4,12 @@ namespace Trinavo\LivewirePageBuilder\Http\Livewire\BlockProperties;
 
 use Illuminate\Support\Facades\Log;
 use Livewire\Component;
+use Trinavo\LivewirePageBuilder\Support\Concerns\DispatchesBlockPropertyUpdate;
 
 class FlexibleSizeProperty extends Component
 {
+    use DispatchesBlockPropertyUpdate;
+
     public $property;
 
     public $value;
@@ -163,7 +166,7 @@ class FlexibleSizeProperty extends Component
             ],
         ]);
 
-        $this->dispatch('updateBlockProperty', $this->rowId, $this->blockId, $this->property['name'], $newValue);
+        $this->dispatchBlockPropertyUpdate($this->property['name'], $newValue);
     }
 
     public function render()

@@ -342,6 +342,7 @@ Themes can be exported as JSON and imported into another installation. Enable en
 
 - [docs/theme-service-usage.md](docs/theme-service-usage.md) — programmatic import/export, cloning, replacing pages
 - [docs/theme-encryption.md](docs/theme-encryption.md) — AES‑256‑GCM encryption, key management, password protection
+- [docs/live-edit.md](docs/live-edit.md) — editing block content from the live page
 
 Facades available out of the box: `ThemeService`, `ThemeEncryptionService`, `PageBuilderVariables`.
 
@@ -350,7 +351,8 @@ Facades available out of the box: `ThemeService`, `ThemeEncryptionService`, `Pag
 ## 🪝 Events & extension points
 
 - **Events**: `BuilderPageSaved` (after a page is saved), `DefaultThemeSet` (when the default theme changes)
-- **UI hooks**: `PageBuilderUIService` (singleton) exposes hooks for customising the editor chrome
+- **UI hooks**: `PageBuilderUIService` (singleton) exposes hooks for customising the editor chrome, and for enabling [live edit](docs/live-edit.md) on the public page
+- **Live edit**: a block that overrides `getPageBuilderLiveEditProperties()` can be edited straight from the rendered page — see [docs/live-edit.md](docs/live-edit.md)
 - **Views**: every view in the package can be overridden by publishing with the `page-builder-views` tag
 - **Translations**: override per‑string via `lang/vendor/page-builder` after publishing `page-builder-translations`
 - **Blade component namespace**: `<x-page-builder::… />` resolves to `Trinavo\LivewirePageBuilder\View\Components`

@@ -54,6 +54,7 @@ Override these methods to customise how your block appears in the picker:
 | `getPageBuilderCategory(): string` | Category name | Groups blocks in the picker |
 | `getPageBuilderIcon(): string` | Blade icon name (e.g. `heroicon-o-photo`) | Block card icon |
 | `getPageBuilderProperties(): array` | Array of `BlockProperty` objects | The block's edit panel |
+| `getPageBuilderLiveEditProperties(): array` | Property names or `BlockProperty` objects | Which properties may be edited from the live page. Empty (default) = no gear. See [Live Edit](live-edit.md) |
 
 ### Rendering
 

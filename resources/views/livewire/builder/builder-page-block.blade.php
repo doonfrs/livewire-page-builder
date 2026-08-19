@@ -53,16 +53,27 @@
                                 'properties' => $block['properties'],
                                 'isNested' => true,
                                 'editMode' => false,
+                                'liveEditContext' => $liveEditContexts[$rowId][$blockId] ?? null,
                             ],
                             key('pb-nested-' . $blockPageName . '-' . $blockId)
                         )
                     @else
                         {{-- For regular blocks, render them directly --}}
-                        <div class="{{ app(\Trinavo\LivewirePageBuilder\Services\PageBuilderService::class)->getCssClassesFromProperties($block['properties'] ?? [], false) }}"
+                        @php
+                            $liveEditGear = $liveEditGears[$rowId][$blockId] ?? null;
+                            $blockCssClasses = app(
+                                \Trinavo\LivewirePageBuilder\Services\PageBuilderService::class,
+                            )->getCssClassesFromProperties($block['properties'] ?? [], false);
+                            if ($liveEditGear && !preg_match('/\b(relative|absolute|fixed|sticky)\b/', $blockCssClasses)) {
+                                $blockCssClasses .= ' relative';
+                            }
+                        @endphp
+                        <div class="{{ $blockCssClasses }}"
                             style="{{ app(\Trinavo\LivewirePageBuilder\Services\PageBuilderService::class)->getInlineStylesFromProperties($block['properties'] ?? []) }}"
                             {!! app(\Trinavo\LivewirePageBuilder\Services\PageBuilderService::class)->getDataAttributesFromProperties(
                                 $block['properties'] ?? [],
                             ) !!}>
+                            <x-page-builder::live-edit-gear :ctx="$liveEditGear" />
                             @livewire($block['alias'], $block['properties'] ?? [], key('pb-block-' . $blockPageName . '-' . $blockId))
                         </div>
                     @endif

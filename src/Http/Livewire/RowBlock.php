@@ -3,7 +3,9 @@
 namespace Trinavo\LivewirePageBuilder\Http\Livewire;
 
 use Illuminate\Support\Facades\Log;
+use Livewire\Attributes\Locked;
 use Livewire\Attributes\On;
+use Trinavo\LivewirePageBuilder\Services\PageBuilderRender;
 use Trinavo\LivewirePageBuilder\Services\PageBuilderService;
 use Trinavo\LivewirePageBuilder\Support\Block;
 use Trinavo\LivewirePageBuilder\Support\Properties\SelectProperty;
@@ -47,6 +49,18 @@ class RowBlock extends Block
     public $contentAlign = 'content-center';
 
     public $isNested = false;
+
+    /**
+     * Where this row sits in builder_pages.components, so its children can render live
+     * edit gears that point at the right node. Null when live edit is off.
+     *
+     * Locked: it is server-derived addressing, never something the client may rewrite.
+     * Authorisation is still re-checked server side in LiveEdit.
+     *
+     * @var array{page: string, theme: mixed, path: array<int, string>}|null
+     */
+    #[Locked]
+    public ?array $liveEditContext = null;
 
     public function getPageBuilderCategory(): string
     {
@@ -323,6 +337,38 @@ class RowBlock extends Block
 
             return;
         }
+
+        // The event is global, so every row on the page hears every property change.
+        // Nothing matched here, so there is nothing to repaint.
+        $this->skipRender();
+    }
+
+    /**
+     * Live edit addressing for each child block, keyed by block id.
+     *
+     * Returns ['contexts' => [blockId => ?array], 'gears' => [blockId => ?array]]:
+     * `contexts` is handed to nested row-blocks so they can keep extending the path,
+     * `gears` is null for blocks that declare no live edit properties.
+     */
+    protected function liveEditChildren(): array
+    {
+        $contexts = [];
+        $gears = [];
+
+        if ($this->liveEditContext !== null) {
+            $render = app(PageBuilderRender::class);
+            $service = app(PageBuilderService::class);
+
+            foreach ($this->blocks as $blockId => $block) {
+                $context = $render->childContext($this->liveEditContext, (string) $blockId);
+                $contexts[$blockId] = $context;
+                $gears[$blockId] = $service->blockHasLiveEditProperties($block['alias'] ?? null)
+                    ? $context
+                    : null;
+            }
+        }
+
+        return ['contexts' => $contexts, 'gears' => $gears];
     }
 
     public function render()
@@ -346,11 +392,15 @@ class RowBlock extends Block
                 'dataAttributes' => $dataAttributes,
             ]);
         } else {
+            $liveEdit = $this->liveEditChildren();
+
             return view('page-builder::livewire.builder.row-view', [
                 'rowId' => $this->rowId,
                 'properties' => $properties,
                 'rowCssClasses' => $rowCssClasses,
                 'dataAttributes' => $dataAttributes,
+                'liveEditContexts' => $liveEdit['contexts'],
+                'liveEditGears' => $liveEdit['gears'],
             ]);
         }
     }

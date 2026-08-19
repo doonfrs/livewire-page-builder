@@ -3,9 +3,12 @@
 namespace Trinavo\LivewirePageBuilder\Http\Livewire\BlockProperties;
 
 use Livewire\Component;
+use Trinavo\LivewirePageBuilder\Support\Concerns\DispatchesBlockPropertyUpdate;
 
 class ResponsiveSpacingProperty extends Component
 {
+    use DispatchesBlockPropertyUpdate;
+
     public array $property = [];
 
     public array $values = [];
@@ -157,7 +160,7 @@ class ResponsiveSpacingProperty extends Component
             return;
         }
 
-        $this->dispatch('updateBlockProperty', $this->rowId, $this->blockId, $propertyName, $value);
+        $this->dispatchBlockPropertyUpdate($propertyName, $value);
     }
 
     public function render()

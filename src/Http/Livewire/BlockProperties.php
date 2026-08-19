@@ -7,10 +7,12 @@ use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Trinavo\LivewirePageBuilder\Services\PageBuilderService;
+use Trinavo\LivewirePageBuilder\Support\Concerns\OrganizesBlockProperties;
 use Trinavo\LivewirePageBuilder\Support\Properties\BlockProperty;
 
 class BlockProperties extends Component
 {
+    use OrganizesBlockProperties;
     use WithFileUploads;
 
     public $rowId = null;
@@ -34,72 +36,13 @@ class BlockProperties extends Component
     public function render()
     {
         if (! empty($this->blockProperties)) {
-            $this->organizeProperties();
+            $this->propertyGroups = $this->organizeProperties($this->blockProperties);
         }
 
         return view('page-builder::livewire.builder.block-properties', [
             'blockProperties' => $this->blockProperties,
             'propertyGroups' => $this->propertyGroups,
         ]);
-    }
-
-    /**
-     * Organize properties into groups for the UI
-     */
-    protected function organizeProperties()
-    {
-        $this->propertyGroups = [];
-        $defaultProperties = [];
-
-        // First pass - separate default properties and process group properties
-        foreach ($this->blockProperties as $property) {
-            if (! empty($property['group'])) {
-                $groupName = $property['group'];
-                if (! isset($this->propertyGroups[$groupName])) {
-                    $this->propertyGroups[$groupName] = [
-                        'label' => $property['groupLabel'] ?? ucfirst($groupName),
-                        'columns' => $property['groupColumns'] ?? 1,
-                        'icon' => $property['groupIcon'] ?? $this->getDefaultGroupIcon($groupName),
-                        'properties' => [],
-                    ];
-                }
-                $this->propertyGroups[$groupName]['properties'][] = $property;
-            } else {
-                $defaultProperties[] = $property;
-            }
-        }
-
-        // Add default properties as "general" group if any exist
-        if (! empty($defaultProperties)) {
-            $this->propertyGroups['general'] = [
-                'label' => __('Block Settings'),
-                'columns' => 1,
-                'icon' => 'heroicon-o-cog-6-tooth',
-                'properties' => $defaultProperties,
-            ];
-
-            // Move general group to the beginning
-            $this->propertyGroups = array_merge(
-                ['general' => $this->propertyGroups['general']],
-                array_diff_key($this->propertyGroups, ['general' => null])
-            );
-        }
-    }
-
-    /**
-     * Get default icon for a group based on its name
-     */
-    protected function getDefaultGroupIcon(string $groupName): string
-    {
-        return match ($groupName) {
-            'responsive' => 'heroicon-o-device-phone-mobile',
-            'visibility' => 'heroicon-o-eye',
-            'appearance' => 'heroicon-o-swatch',
-            'content' => 'heroicon-o-document-text',
-            'layout' => 'heroicon-o-rectangle-group',
-            'animation' => 'heroicon-o-arrow-path',
-            default => 'heroicon-o-tag',
-        };
     }
 
     public function updateBlockProperty($rowId, $blockId, $propertyName, $value)
@@ -124,7 +67,7 @@ class BlockProperties extends Component
                 return $property->toArray();
             }, app(RowBlock::class)->getAllProperties());
 
-        $this->organizeProperties();
+        $this->propertyGroups = $this->organizeProperties($this->blockProperties);
     }
 
     #[On('block-selected')]
@@ -170,7 +113,7 @@ class BlockProperties extends Component
             }
         }
 
-        $this->organizeProperties();
+        $this->propertyGroups = $this->organizeProperties($this->blockProperties);
     }
 
     public function resolveBlockClass($md5Class)

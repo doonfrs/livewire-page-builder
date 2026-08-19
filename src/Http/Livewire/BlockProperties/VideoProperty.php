@@ -5,9 +5,11 @@ namespace Trinavo\LivewirePageBuilder\Http\Livewire\BlockProperties;
 use Illuminate\Support\Facades\Log;
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use Trinavo\LivewirePageBuilder\Support\Concerns\DispatchesBlockPropertyUpdate;
 
 class VideoProperty extends Component
 {
+    use DispatchesBlockPropertyUpdate;
     use WithFileUploads;
 
     public $propertyName;
@@ -72,7 +74,7 @@ class VideoProperty extends Component
         ]);
 
         $this->currentValue = $url;
-        $this->dispatch(event: 'updateBlockProperty', rowId: $this->rowId, blockId: $this->blockId, propertyName: $this->propertyName, value: $url);
+        $this->dispatchBlockPropertyUpdate($this->propertyName, $url);
 
         Log::debug('VideoProperty::uploadVideo - Dispatched updateBlockProperty event', [
             'url' => $url,
@@ -84,12 +86,12 @@ class VideoProperty extends Component
 
     public function updateVideoUrl()
     {
-        $this->dispatch(event: 'updateBlockProperty', rowId: $this->rowId, blockId: $this->blockId, propertyName: $this->propertyName, value: $this->currentValue);
+        $this->dispatchBlockPropertyUpdate($this->propertyName, $this->currentValue);
     }
 
     public function removeVideo()
     {
         $this->currentValue = null;
-        $this->dispatch(event: 'updateBlockProperty', rowId: $this->rowId, blockId: $this->blockId, propertyName: $this->propertyName, value: null);
+        $this->dispatchBlockPropertyUpdate($this->propertyName, null);
     }
 }

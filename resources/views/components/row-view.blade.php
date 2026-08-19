@@ -1,3 +1,4 @@
+<x-page-builder::live-edit-mount />
 <div class="{{ $row['cssClasses'] }} group" style="{{ $row['inlineStyles'] }}" {!! $row['dataAttributes'] ?? '' !!}>
     <div class="{{ $row['rowCssClasses'] }}">
         @foreach ($row['blocks'] as $blockId => $block)
@@ -7,17 +8,27 @@
                     app(\Trinavo\LivewirePageBuilder\Services\PageBuilderService::class)->isBlockAliasRegistered(
                         $block['alias'] ?? '',
                     );
+                $liveEditCtx = ($block['liveEditable'] ?? false) ? $block['liveEditContext'] ?? null : null;
+                // The gear is absolutely positioned inside this wrapper, so the wrapper has to
+                // be a containing block. absolute/fixed/sticky already are; adding `relative`
+                // on top of them would just fight for source order.
+                $blockCssClasses = $block['cssClasses'] ?? '';
+                if ($liveEditCtx && !preg_match('/\b(relative|absolute|fixed|sticky)\b/', $blockCssClasses)) {
+                    $blockCssClasses .= ' relative';
+                }
             @endphp
 
             @if (!$componentExists)
                 @continue
             @endif
 
-            <div class="{{ $block['cssClasses'] }}" style="{{ $block['inlineStyles'] }}" {!! $block['dataAttributes'] ?? '' !!}>
+            <div class="{{ $blockCssClasses }}" style="{{ $block['inlineStyles'] }}" {!! $block['dataAttributes'] ?? '' !!}>
+                <x-page-builder::live-edit-gear :ctx="$liveEditCtx" />
                 @if ($block['alias'] == 'builder-page-block')
+                    {{-- Distinct loop variable: reusing $row here would shadow the row we are rendering. --}}
                     <div style="font-size:0">
-                        @foreach ($block['rows'] ?? [] as $rowId => $row)
-                            <x-page-builder::row-view :row="$row" />
+                        @foreach ($block['rows'] ?? [] as $embeddedRow)
+                            <x-page-builder::row-view :row="$embeddedRow" />
                         @endforeach
                     </div>
                 @elseif (str_contains($block['alias'], 'row-block') && isset($block['blocks']))
@@ -30,6 +41,7 @@
                                 'properties' => $block['properties'],
                                 'isNested' => true,
                                 'editMode' => false,
+                                'liveEditContext' => $block['liveEditContext'] ?? null,
                             ],
                             key($blockId)
                         )

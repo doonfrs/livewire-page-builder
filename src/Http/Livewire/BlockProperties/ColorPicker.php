@@ -3,9 +3,12 @@
 namespace Trinavo\LivewirePageBuilder\Http\Livewire\BlockProperties;
 
 use Livewire\Component;
+use Trinavo\LivewirePageBuilder\Support\Concerns\DispatchesBlockPropertyUpdate;
 
 class ColorPicker extends Component
 {
+    use DispatchesBlockPropertyUpdate;
+
     public $rowId = null;
 
     public $blockId = null;
@@ -148,7 +151,7 @@ class ColorPicker extends Component
 
     protected function updateProperty()
     {
-        $this->dispatch('updateBlockProperty', $this->rowId, $this->blockId, $this->propertyName, $this->currentValue);
+        $this->dispatchBlockPropertyUpdate($this->propertyName, $this->currentValue);
     }
 
     public function render()

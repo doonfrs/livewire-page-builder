@@ -11,9 +11,20 @@ use Trinavo\LivewirePageBuilder\Blocks\SimpleText;
 use Trinavo\LivewirePageBuilder\Blocks\Spacer;
 use Trinavo\LivewirePageBuilder\Http\Livewire\BuilderPageBlock;
 use Trinavo\LivewirePageBuilder\Http\Livewire\RowBlock;
+use Trinavo\LivewirePageBuilder\Support\Block;
 
 class PageBuilderService
 {
+    /**
+     * Per-request memo of which block aliases expose live edit properties.
+     *
+     * Static because this service is resolved fresh on every app() call, so an
+     * instance property would never be hit twice.
+     *
+     * @var array<string, bool>
+     */
+    private static array $liveEditAliasCache = [];
+
     public function getAvailableBlocks(): array
     {
         $blocks = [];
@@ -137,6 +148,64 @@ class PageBuilderService
         }
 
         return null;
+    }
+
+    /**
+     * Whether the block behind this alias declares live edit properties.
+     *
+     * Called once per block on every public page render, so the answer is memoised
+     * per alias for the request.
+     */
+    public function blockHasLiveEditProperties(?string $alias): bool
+    {
+        if (! $alias) {
+            return false;
+        }
+
+        if (array_key_exists($alias, self::$liveEditAliasCache)) {
+            return self::$liveEditAliasCache[$alias];
+        }
+
+        return self::$liveEditAliasCache[$alias] = $this->makeBlockForAlias($alias)?->hasLiveEditProperties() ?? false;
+    }
+
+    /**
+     * The live edit property schema for an alias, as the arrays the panel widgets expect.
+     */
+    public function getLiveEditSchema(string $alias): array
+    {
+        $block = $this->makeBlockForAlias($alias);
+
+        if (! $block) {
+            return [];
+        }
+
+        return array_map(
+            fn ($property) => $property->toArray(),
+            $block->resolveLiveEditProperties()
+        );
+    }
+
+    /**
+     * Instantiate the block behind an alias, or null when it is not a resolvable block.
+     */
+    public function makeBlockForAlias(string $alias): ?Block
+    {
+        $blockClass = $this->getClassNameFromAlias($alias);
+
+        if (! $blockClass || ! is_subclass_of($blockClass, Block::class)) {
+            return null;
+        }
+
+        return app($blockClass);
+    }
+
+    /**
+     * Forget the memoised alias lookups. Intended for tests.
+     */
+    public static function flushLiveEditCache(): void
+    {
+        self::$liveEditAliasCache = [];
     }
 
     public function getRowCssClassesFromProperties($properties): string

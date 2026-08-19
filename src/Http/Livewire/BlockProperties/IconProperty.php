@@ -5,9 +5,12 @@ namespace Trinavo\LivewirePageBuilder\Http\Livewire\BlockProperties;
 use Livewire\Component;
 use Trinavo\LivewirePageBuilder\Services\IconKeywords;
 use Trinavo\LivewirePageBuilder\Services\IconService;
+use Trinavo\LivewirePageBuilder\Support\Concerns\DispatchesBlockPropertyUpdate;
 
 class IconProperty extends Component
 {
+    use DispatchesBlockPropertyUpdate;
+
     public $propertyName;
 
     public $currentValue;
@@ -101,7 +104,7 @@ class IconProperty extends Component
     public function selectIcon($iconComponent)
     {
         $this->currentValue = $iconComponent;
-        $this->dispatch('updateBlockProperty', $this->rowId, $this->blockId, $this->propertyName, $iconComponent);
+        $this->dispatchBlockPropertyUpdate($this->propertyName, $iconComponent);
         $this->showModal = false;
         $this->searchQuery = '';
     }
@@ -109,7 +112,7 @@ class IconProperty extends Component
     public function removeIcon()
     {
         $this->currentValue = null;
-        $this->dispatch('updateBlockProperty', $this->rowId, $this->blockId, $this->propertyName, null);
+        $this->dispatchBlockPropertyUpdate($this->propertyName, null);
     }
 
     public function openModal()

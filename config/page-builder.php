@@ -51,6 +51,13 @@ return [
         'require_password' => env('PAGE_BUILDER_ENCRYPTION_REQUIRE_PASSWORD', true),
     ],
 
+    // Live edit (a gear on the public page that opens a block's property sheet) is not
+    // configured here: it is switched on per request from a service provider, so the
+    // decision can depend on the current user. See docs/live-edit.md.
+    //
+    //   app(PageBuilderUIService::class)
+    //       ->enableLiveEdit(fn () => Auth::user()?->can('edit-pages'));
+
     'blocks' => [
         // MainMenu::class,
     ],
@@ -99,4 +106,3 @@ return [
         // [ 'key' => 'example.width', 'label' => 'Width', 'type' => 'number', 'placeholder' => '1920' ],
     ],
 ];
-

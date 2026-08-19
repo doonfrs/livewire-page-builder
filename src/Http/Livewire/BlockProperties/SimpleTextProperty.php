@@ -5,9 +5,12 @@ namespace Trinavo\LivewirePageBuilder\Http\Livewire\BlockProperties;
 use Livewire\Component;
 use Trinavo\LivewirePageBuilder\Config\Variables;
 use Trinavo\LivewirePageBuilder\Services\LocalizationService;
+use Trinavo\LivewirePageBuilder\Support\Concerns\DispatchesBlockPropertyUpdate;
 
 class SimpleTextProperty extends Component
 {
+    use DispatchesBlockPropertyUpdate;
+
     public $rowId = null;
 
     public $blockId = null;
@@ -134,7 +137,7 @@ class SimpleTextProperty extends Component
                 app()->getLocale() // Use current app locale as default
             );
 
-            $this->dispatch('updateBlockProperty', $this->rowId, $this->blockId, $this->propertyName, $valueToStore);
+            $this->dispatchBlockPropertyUpdate($this->propertyName, $valueToStore);
         } else {
             // Single language mode - just update the current value
             $this->updateProperty();
@@ -143,7 +146,7 @@ class SimpleTextProperty extends Component
 
     protected function updateProperty()
     {
-        $this->dispatch('updateBlockProperty', $this->rowId, $this->blockId, $this->propertyName, $this->currentValue);
+        $this->dispatchBlockPropertyUpdate($this->propertyName, $this->currentValue);
     }
 
     public function render()

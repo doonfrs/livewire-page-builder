@@ -6,6 +6,7 @@ use Illuminate\Support\Str;
 use Livewire\Attributes\Locked;
 use Livewire\Component;
 use Trinavo\LivewirePageBuilder\Services\PageBuilderService;
+use Trinavo\LivewirePageBuilder\Support\Properties\BlockProperty;
 use Trinavo\LivewirePageBuilder\Support\Properties\CheckboxProperty;
 use Trinavo\LivewirePageBuilder\Support\Properties\ColorProperty;
 use Trinavo\LivewirePageBuilder\Support\Properties\FlexibleSizeProperty;
@@ -740,6 +741,95 @@ abstract class Block extends Component
     public function getPageBuilderProperties(): array
     {
         return [];
+    }
+
+    /**
+     * Properties a permitted user may edit directly on the live (non edit mode) page.
+     *
+     * Return either BlockProperty objects, exactly like getPageBuilderProperties(),
+     * or plain property names that are resolved against getAllProperties() so the
+     * definition is not duplicated:
+     *
+     *     return ['title', 'image'];
+     *
+     * An empty array (the default) means the block is not live editable and no gear
+     * is rendered for it.
+     */
+    public function getPageBuilderLiveEditProperties(): array
+    {
+        return [];
+    }
+
+    /**
+     * Resolve getPageBuilderLiveEditProperties() into BlockProperty objects.
+     *
+     * String entries are looked up in getAllProperties(); unknown names are dropped
+     * rather than fatal, so a renamed property never takes the whole page down.
+     */
+    public function resolveLiveEditProperties(): array
+    {
+        $declared = $this->getPageBuilderLiveEditProperties();
+
+        if (empty($declared)) {
+            return [];
+        }
+
+        $byName = null;
+        $resolved = [];
+
+        foreach ($declared as $property) {
+            if ($property instanceof BlockProperty) {
+                $resolved[] = $property;
+
+                continue;
+            }
+
+            if (! is_string($property)) {
+                continue;
+            }
+
+            if ($byName === null) {
+                $byName = [];
+                foreach ($this->getAllProperties() as $candidate) {
+                    $byName[$candidate->name] = $candidate;
+                }
+            }
+
+            if (isset($byName[$property])) {
+                $resolved[] = $byName[$property];
+            }
+        }
+
+        return $resolved;
+    }
+
+    /**
+     * Flat list of property keys a live edit save is allowed to write.
+     *
+     * ResponsiveSpacingProperty expands into its generated per-device field names,
+     * the same way getSharedPropertyKeys() does.
+     */
+    public function getLiveEditPropertyKeys(): array
+    {
+        $keys = [];
+
+        foreach ($this->resolveLiveEditProperties() as $property) {
+            if ($property instanceof ResponsiveSpacingProperty) {
+                $keys = array_merge($keys, array_keys($property->getFieldDefaults()));
+            } else {
+                $keys[] = $property->name;
+            }
+        }
+
+        return array_values(array_unique($keys));
+    }
+
+    /**
+     * Whether this block exposes anything for live editing.
+     */
+    public function hasLiveEditProperties(): bool
+    {
+        return $this->resolveLiveEditProperties() !== [];
     }
 
     public function getPropertyValues(): array

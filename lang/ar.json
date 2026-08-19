@@ -433,5 +433,9 @@
     "Purple": "بنفسجي",
     "Indigo": "نيلي",
     "More": "المزيد",
-    "More actions": "إجراءات إضافية"
+    "More actions": "إجراءات إضافية",
+    "Edit block": "تعديل الكتلة",
+    "Save": "حفظ",
+    "Saving...": "جارٍ الحفظ...",
+    "This block is no longer available.": "هذه الكتلة لم تعد متوفرة."
 }

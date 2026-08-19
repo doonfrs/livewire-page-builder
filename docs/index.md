@@ -6,6 +6,7 @@ Index of the deep‑dive guides for the package. Start with the [README](../READ
 
 - **[Advanced Configuration](advanced-configuration.md)** — the full `config/page-builder.php` schema, page & block registration, layouts, per-theme settings, middleware, publishing views & translations, manual installation.
 - **[Custom Block Development](custom-block-development.md)** — the `Block` base class, all 13 property types with constructor signatures, property groups, shared responsive properties, color handling, a complete example.
+- **[Live Edit](live-edit.md)** — editing a block's content straight from the live page: declaring live-editable properties, enabling it per request from a host service provider, and what to know before turning it on in production.
 - **[Multilingual Support](multilingual-support.md)** — UI locales vs. content locales, multilingual properties, the `LocalizationService` API, runtime locale management, RTL.
 - **[Variables](variables.md)** — `{name}` substitution syntax, registering static and dynamic variables, built‑in variables, the parser API.
 - **[Theme Service Usage](theme-service-usage.md)** — programmatic export / import / clone / page‑replace via `ThemeService`; theme settings travel with all three.

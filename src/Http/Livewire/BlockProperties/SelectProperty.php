@@ -3,9 +3,12 @@
 namespace Trinavo\LivewirePageBuilder\Http\Livewire\BlockProperties;
 
 use Livewire\Component;
+use Trinavo\LivewirePageBuilder\Support\Concerns\DispatchesBlockPropertyUpdate;
 
 class SelectProperty extends Component
 {
+    use DispatchesBlockPropertyUpdate;
+
     public $propertyName;
 
     public $currentValue;
@@ -27,6 +30,6 @@ class SelectProperty extends Component
 
     public function updateProperty($value)
     {
-        $this->dispatch('updateBlockProperty', $this->rowId, $this->blockId, $this->propertyName, $value);
+        $this->dispatchBlockPropertyUpdate($this->propertyName, $value);
     }
 }
