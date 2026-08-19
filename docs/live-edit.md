@@ -1,10 +1,11 @@
 # Live Edit
 
 Live edit lets a permitted user change a block's content **from the live page**, without opening the
-builder. When it is switched on, every block that opts in shows a small gear at its top-start
-corner. Clicking it opens a bottom sheet with the block's live-editable properties, rendered with
-the same widgets the builder's property panel uses. Saving writes into `builder_pages.components`
-and reloads the page.
+builder. When it is switched on, every block that opts in shows a small swatch button - the live
+edit gear - at its top-left corner, physically left in both directions, so a block only has to
+keep one corner clear. Clicking it opens a bottom sheet with the block's live-editable
+properties, rendered with the same widgets the builder's property panel uses. Saving writes
+into `builder_pages.components` and reloads the page.
 
 It is deliberately narrow. Live edit cannot add, remove, move or restyle blocks, and it cannot
 touch row properties or the shared responsive/spacing/style groups. It is a content touch-up tool

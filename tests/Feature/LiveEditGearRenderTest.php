@@ -129,6 +129,19 @@ class LiveEditGearRenderTest extends TestCase
     }
 
     /** @test */
+    public function the_gear_is_anchored_physically_left_in_both_directions(): void
+    {
+        app(PageBuilderUIService::class)->enableLiveEdit(true);
+
+        $html = $this->renderHome();
+
+        // `left-1`, not `start-1`: the corner the gear occupies must not move under RTL,
+        // so a block only ever has to keep one corner clear of its own controls.
+        $this->assertStringContainsString('top-1 left-1', $html);
+        $this->assertStringNotContainsString('top-1 start-1', $html);
+    }
+
+    /** @test */
     public function the_gears_wrapper_becomes_a_containing_block(): void
     {
         app(PageBuilderUIService::class)->enableLiveEdit(true);

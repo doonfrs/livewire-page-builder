@@ -18,10 +18,18 @@
     @endphp
 
     <button type="button" title="{{ __('Edit block') }}" style="font-size:initial"
-        {{-- z-[60] beats the z-50 a block can set on itself; font-size:initial escapes the wrapper's font-size:0 --}}
-        class="btn btn-circle btn-xs align-middle border-base-300 bg-base-100 text-base-content/40 shadow-sm hover:text-base-content hover:bg-base-200 absolute top-1 start-1 z-[60]"
-        @if ($pbLiveEditToggle) x-cloak x-show="{{ $pbLiveEditToggle }}" @endif
+        {{-- z-[60] beats the z-50 a block can set on itself; font-size:initial escapes the wrapper's font-size:0.
+             Anchored physically left rather than `start`, so the corner it occupies does not move between
+             LTR and RTL - a block only has to keep one corner clear instead of both. --}}
+        class="btn btn-circle btn-xs align-middle border-base-300 bg-base-100 text-base-content/40 shadow-sm hover:text-base-content hover:bg-base-200 absolute top-1 left-1 z-[60]"
+        {{-- x-data makes the button an Alpine root. It lives in the row wrapper, outside every
+             component's own x-data, and an x-cloak Alpine never processes is a permanently
+             invisible button. --}}
+        @if ($pbLiveEditToggle) x-data x-cloak x-show="{{ $pbLiveEditToggle }}" @endif
         x-on:click.stop.prevent="Livewire.dispatch('pb-live-edit', { ctx: @js($ctx) })">
-        <x-heroicon-o-cog-6-tooth class="h-4 w-4" />
+        {{-- A swatch rather than a cog: this opens the block's own design properties, and hosts
+             usually have settings gears of their own sitting on the same page. Solid, not outline:
+             at 16px in a btn-xs the outline version is thin enough to read as an empty button. --}}
+        <x-heroicon-s-swatch class="h-4 w-4" />
     </button>
 @endif

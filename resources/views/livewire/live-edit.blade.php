@@ -28,8 +28,10 @@
                 x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
                 x-on:click="$wire.close()"></div>
 
+            {{-- Full width only while there is no room to spare: past 36rem the sheet is capped and
+                 centred, so a handful of property fields never stretch across a desktop screen. --}}
             <div x-show="show" x-cloak
-                class="fixed inset-x-0 bottom-0 z-[101] flex max-h-[75dvh] flex-col rounded-t-2xl bg-white shadow-2xl dark:bg-gray-900"
+                class="fixed inset-x-0 bottom-0 z-[101] mx-auto flex max-h-[75dvh] w-full max-w-xl flex-col rounded-t-2xl bg-white shadow-2xl dark:bg-gray-900"
                 x-transition:enter="transition ease-out duration-200"
                 x-transition:enter-start="translate-y-full" x-transition:enter-end="translate-y-0"
                 x-transition:leave="transition ease-in duration-150"
