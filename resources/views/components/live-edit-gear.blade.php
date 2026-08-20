@@ -27,9 +27,9 @@
              invisible button. --}}
         @if ($pbLiveEditToggle) x-data x-cloak x-show="{{ $pbLiveEditToggle }}" @endif
         x-on:click.stop.prevent="Livewire.dispatch('pb-live-edit', { ctx: @js($ctx) })">
-        {{-- A swatch rather than a cog: this opens the block's own design properties, and hosts
-             usually have settings gears of their own sitting on the same page. Solid, not outline:
-             at 16px in a btn-xs the outline version is thin enough to read as an empty button. --}}
-        <x-heroicon-s-swatch class="h-4 w-4" />
+        {{-- A pencil rather than a cog: this edits the block, and hosts usually have settings
+             cogs of their own sitting on the same page. Solid, not outline: at 16px in a btn-xs
+             the outline variants are thin enough to read as an empty button. --}}
+        <x-heroicon-s-pencil class="h-4 w-4" />
     </button>
 @endif
