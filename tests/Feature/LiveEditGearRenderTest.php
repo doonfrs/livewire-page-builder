@@ -142,6 +142,19 @@ class LiveEditGearRenderTest extends TestCase
     }
 
     /** @test */
+    public function the_gear_stays_below_the_overlay_band(): void
+    {
+        app(PageBuilderUIService::class)->enableLiveEdit(true);
+
+        $html = $this->renderHome();
+
+        // Modals, drawers and menus live at z-50 and up. A gear above that band floats
+        // over an open modal, which is worse than being covered by one.
+        $this->assertStringContainsString('left-1 z-40', $html);
+        $this->assertStringNotContainsString('z-[60]', $html);
+    }
+
+    /** @test */
     public function the_gears_wrapper_becomes_a_containing_block(): void
     {
         app(PageBuilderUIService::class)->enableLiveEdit(true);

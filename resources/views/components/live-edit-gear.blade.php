@@ -18,10 +18,13 @@
     @endphp
 
     <button type="button" title="{{ __('Edit block') }}" style="font-size:initial"
-        {{-- z-[60] beats the z-50 a block can set on itself; font-size:initial escapes the wrapper's font-size:0.
-             Anchored physically left rather than `start`, so the corner it occupies does not move between
-             LTR and RTL - a block only has to keep one corner clear instead of both. --}}
-        class="btn btn-circle btn-xs align-middle border-base-300 bg-base-100 text-base-content/40 shadow-sm hover:text-base-content hover:bg-base-200 absolute top-1 left-1 z-[60]"
+        {{-- z-40 clears what a block stacks inside itself and stays deliberately below the z-50 band
+             that modals, drawers and menus live in - the gear only has to win against its own block,
+             and floating over an open modal is worse than being covered by one. Do not raise it.
+             font-size:initial escapes the wrapper's font-size:0. Anchored physically left rather than
+             `start`, so the corner it occupies does not move between LTR and RTL - a block only has
+             to keep one corner clear instead of both. --}}
+        class="btn btn-circle btn-xs align-middle border-base-300 bg-base-100 text-base-content/40 shadow-sm hover:text-base-content hover:bg-base-200 absolute top-1 left-1 z-40"
         {{-- x-data makes the button an Alpine root. It lives in the row wrapper, outside every
              component's own x-data, and an x-cloak Alpine never processes is a permanently
              invisible button. --}}
