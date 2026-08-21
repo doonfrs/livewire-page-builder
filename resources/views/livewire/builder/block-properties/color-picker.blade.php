@@ -1,10 +1,10 @@
 <div>
     <div x-data="{
         isOpen: false,
-        currentValue: @entangle('currentValue'),
-        customColor: @entangle('customColor'),
-        opacity: @entangle('opacity'),
-        activeTab: @entangle('activeTab'),
+        currentValue: $wire.entangle('currentValue'),
+        customColor: $wire.entangle('customColor'),
+        opacity: $wire.entangle('opacity'),
+        activeTab: $wire.entangle('activeTab'),
         getColorName(color) {
             if (!color) return 'None';
             return color.includes('#') ? color : color.replace('-', ' ').replace(/^\w/, c => c.toUpperCase());

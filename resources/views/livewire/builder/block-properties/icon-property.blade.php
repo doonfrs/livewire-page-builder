@@ -1,4 +1,4 @@
-<div x-data="{ modalOpen: @entangle('showModal') }">
+<div x-data="{ modalOpen: $wire.entangle('showModal') }">
     <label class="block text-sm font-medium text-gray-700 mb-1 dark:text-gray-300">
         <span>{{ $propertyLabel }}</span>
     </label>
@@ -34,8 +34,8 @@
     <div x-show="modalOpen"
          x-cloak
          x-data="{
-             localSelectedStyle: @entangle('selectedStyle'),
-             localSelectedSet: @entangle('selectedSet')
+             localSelectedStyle: $wire.entangle('selectedStyle'),
+             localSelectedSet: $wire.entangle('selectedSet')
          }"
          class="modal modal-open"
          @click.self="modalOpen = false; $wire.call('closeModal')">

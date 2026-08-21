@@ -9,7 +9,7 @@
             daisyUI is used only for the button and input cosmetics.
         --}}
         <div x-data="{
-                show: @entangle('open'),
+                show: $wire.entangle('open'),
                 restoreScroll() {
                     const y = sessionStorage.getItem('pbLiveEditScroll');
                     if (y === null) return;

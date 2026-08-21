@@ -253,7 +253,7 @@
         <div class="bg-gray-200 dark:bg-gray-800 h-12 border-t border-gray-300 dark:border-gray-700"></div>
 
         <!-- Create Theme Modal -->
-        <div x-data="{ show: @entangle('showCreateModal') }" x-show="show" x-cloak class="fixed inset-0 z-50 overflow-y-auto"
+        <div x-data="{ show: $wire.entangle('showCreateModal') }" x-show="show" x-cloak class="fixed inset-0 z-50 overflow-y-auto"
             aria-labelledby="modal-title" role="dialog" aria-modal="true">
             <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
                 <div x-show="show" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0"
@@ -329,7 +329,7 @@
         </div>
 
         <!-- Edit Theme Modal -->
-        <div x-data="{ show: @entangle('showEditModal') }" x-show="show" x-cloak class="fixed inset-0 z-50 overflow-y-auto"
+        <div x-data="{ show: $wire.entangle('showEditModal') }" x-show="show" x-cloak class="fixed inset-0 z-50 overflow-y-auto"
             aria-labelledby="modal-title" role="dialog" aria-modal="true">
             <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
                 <div x-show="show" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0"
@@ -405,7 +405,7 @@
         </div>
 
         <!-- Delete Confirmation Modal -->
-        <div x-data="{ show: @entangle('showDeleteModal') }" x-show="show" x-cloak class="fixed inset-0 z-50 overflow-y-auto"
+        <div x-data="{ show: $wire.entangle('showDeleteModal') }" x-show="show" x-cloak class="fixed inset-0 z-50 overflow-y-auto"
             aria-labelledby="modal-title" role="dialog" aria-modal="true">
             <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
                 <div x-show="show" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0"
@@ -486,7 +486,7 @@
         </div>
 
         <!-- Set Default Confirmation Modal -->
-        <div x-data="{ show: @entangle('showDefaultModal') }" x-show="show" x-cloak class="fixed inset-0 z-50 overflow-y-auto"
+        <div x-data="{ show: $wire.entangle('showDefaultModal') }" x-show="show" x-cloak class="fixed inset-0 z-50 overflow-y-auto"
             aria-labelledby="modal-title" role="dialog" aria-modal="true">
             <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
                 <div x-show="show" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0"
@@ -547,7 +547,7 @@
         </div>
 
         <!-- Import Theme Modal -->
-        <div x-data="{ show: @entangle('showImportModal') }" x-show="show" x-cloak class="fixed inset-0 z-50 overflow-y-auto"
+        <div x-data="{ show: $wire.entangle('showImportModal') }" x-show="show" x-cloak class="fixed inset-0 z-50 overflow-y-auto"
             aria-labelledby="modal-title" role="dialog" aria-modal="true">
             <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
                 <div x-show="show" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0"
@@ -624,7 +624,7 @@
         </div>
 
         <!-- Clone Theme Modal -->
-        <div x-data="{ show: @entangle('showCloneModal') }" x-show="show" x-cloak class="fixed inset-0 z-50 overflow-y-auto"
+        <div x-data="{ show: $wire.entangle('showCloneModal') }" x-show="show" x-cloak class="fixed inset-0 z-50 overflow-y-auto"
             aria-labelledby="modal-title" role="dialog" aria-modal="true">
             <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
                 <div x-show="show" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0"

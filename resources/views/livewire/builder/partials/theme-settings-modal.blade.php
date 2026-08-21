@@ -1,6 +1,6 @@
 <!-- Theme Settings Modal (host-defined schema; see config/page-builder.php 'theme_settings') -->
 <template x-teleport="body">
-    <div x-data="{ show: @entangle('showThemeSettingsModal') }" x-show="show"
+    <div x-data="{ show: $wire.entangle('showThemeSettingsModal') }" x-show="show"
         class="fixed inset-0 z-[9999] flex items-center justify-center bg-black/40 p-4" style="display: none;"
         x-transition:enter="transition ease-out duration-200"
         x-transition:enter-start="opacity-0"

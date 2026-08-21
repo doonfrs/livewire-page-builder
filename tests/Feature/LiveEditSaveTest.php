@@ -92,6 +92,24 @@ class LiveEditSaveTest extends TestCase
         return BuilderPage::where('key', $key)->where('theme_id', $this->theme->id)->first()->components;
     }
 
+    /**
+     * The sheet's Alpine root is teleported to <body>, so it initialises away from
+     * the component it belongs to. `@entangle` bakes the component id into that
+     * expression; when Alpine evaluates it before Livewire has registered the
+     * component - which happens on any clone pass during a morph - `Livewire.find()`
+     * returns undefined and the x-data throws, leaving the sheet and everything
+     * after it on the page without an Alpine scope. `$wire.entangle()` resolves
+     * lazily through the teleport instead, so keep it that way.
+     *
+     * @test
+     */
+    public function the_teleported_sheet_does_not_bake_in_a_component_id(): void
+    {
+        Livewire::test(LiveEdit::class)
+            ->assertDontSee('window.Livewire.find(', escape: false)
+            ->assertSee('$wire.entangle(', escape: false);
+    }
+
     /** @test */
     public function opening_loads_only_the_live_edit_properties(): void
     {
