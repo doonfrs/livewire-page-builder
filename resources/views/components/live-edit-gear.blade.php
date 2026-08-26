@@ -23,8 +23,11 @@
              and floating over an open modal is worse than being covered by one. Do not raise it.
              font-size:initial escapes the wrapper's font-size:0. Anchored physically left rather than
              `start`, so the corner it occupies does not move between LTR and RTL - a block only has
-             to keep one corner clear instead of both. --}}
-        class="btn btn-circle btn-xs align-middle border-base-300 bg-base-100 text-base-content/40 shadow-sm hover:text-base-content hover:bg-base-200 absolute top-1 left-1 z-40"
+             to keep one corner clear instead of both.
+             The inset is 1.5 rather than 1 because this button hangs on the block's wrapper while
+             a host's own gear hangs on whatever box the block draws inside it. At 1 the two read
+             as different margins and this one rides a rounded corner; at 2 it sits too far in. --}}
+        class="btn btn-circle btn-xs align-middle border-base-300 bg-base-100 text-base-content/40 shadow-sm hover:text-base-content hover:bg-base-200 absolute top-1.5 left-1.5 z-40"
         {{-- x-data makes the button an Alpine root. It lives in the row wrapper, outside every
              component's own x-data, and an x-cloak Alpine never processes is a permanently
              invisible button. --}}

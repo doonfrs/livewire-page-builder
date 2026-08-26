@@ -67,8 +67,9 @@
                             if ($liveEditGear && !preg_match('/\b(relative|absolute|fixed|sticky)\b/', $blockCssClasses)) {
                                 $blockCssClasses .= ' relative';
                             }
+                            $liveEditId = $liveEditGear ? \Trinavo\LivewirePageBuilder\Http\Livewire\LiveEdit::domId($liveEditGear) : null;
                         @endphp
-                        <div class="{{ $blockCssClasses }}"
+                        <div @if ($liveEditId) id="{{ $liveEditId }}" @endif class="{{ $blockCssClasses }}"
                             style="{{ app(\Trinavo\LivewirePageBuilder\Services\PageBuilderService::class)->getInlineStylesFromProperties($block['properties'] ?? []) }}"
                             {!! app(\Trinavo\LivewirePageBuilder\Services\PageBuilderService::class)->getDataAttributesFromProperties(
                                 $block['properties'] ?? [],

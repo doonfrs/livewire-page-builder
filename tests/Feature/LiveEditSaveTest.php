@@ -13,6 +13,7 @@ use Trinavo\LivewirePageBuilder\Services\PageBuilderService;
 use Trinavo\LivewirePageBuilder\Services\PageBuilderUIService;
 use Trinavo\LivewirePageBuilder\Tests\Fixtures\LiveEditableBlock;
 use Trinavo\LivewirePageBuilder\Tests\Fixtures\PlainBlock;
+use Trinavo\LivewirePageBuilder\Tests\Fixtures\SpacingLiveEditBlock;
 use Trinavo\LivewirePageBuilder\Tests\TestCase;
 
 class LiveEditSaveTest extends TestCase
@@ -30,6 +31,7 @@ class LiveEditSaveTest extends TestCase
         config()->set('page-builder.blocks', [
             LiveEditableBlock::class,
             PlainBlock::class,
+            SpacingLiveEditBlock::class,
         ]);
     }
 
@@ -67,6 +69,10 @@ class LiveEditSaveTest extends TestCase
                             'properties' => ['title' => 'Top', 'subtitle' => 'Sub', 'internalNote' => 'secret'],
                         ],
                         'block-sibling' => ['alias' => $this->plainAlias, 'properties' => ['heading' => 'Untouched']],
+                        'block-spacing' => [
+                            'alias' => $service->getClassAlias(SpacingLiveEditBlock::class),
+                            'properties' => ['desktopPaddingTop' => 0],
+                        ],
                         'nested-row' => [
                             'alias' => $service->getClassAlias(RowBlock::class),
                             'properties' => ['isNested' => true],
@@ -101,12 +107,16 @@ class LiveEditSaveTest extends TestCase
      * after it on the page without an Alpine scope. `$wire.entangle()` resolves
      * lazily through the teleport instead, so keep it that way.
      *
+     * The assertion looks for the opening quote of a baked id on purpose: the sheet does
+     * look components up at runtime, to push a preview into the block being edited, and
+     * that is fine.
+     *
      * @test
      */
     public function the_teleported_sheet_does_not_bake_in_a_component_id(): void
     {
         Livewire::test(LiveEdit::class)
-            ->assertDontSee('window.Livewire.find(', escape: false)
+            ->assertDontSee("window.Livewire.find('", escape: false)
             ->assertSee('$wire.entangle(', escape: false);
     }
 
@@ -298,16 +308,95 @@ class LiveEditSaveTest extends TestCase
     }
 
     /** @test */
-    public function saving_reloads_the_page_because_blocks_derive_state_at_mount(): void
+    public function editing_a_property_paints_it_onto_the_page_immediately(): void
+    {
+        $context = $this->context('home', ['row-1', 'block-live']);
+
+        Livewire::test(LiveEdit::class)
+            ->call('openBlock', $context)
+            ->call('updateBlockProperty', null, null, 'title', 'Changed')
+            // The block is its own component on the page, so the browser is told which
+            // element to find and what to set on it.
+            ->assertDispatched('pb-live-preview', function (string $event, array $params) use ($context) {
+                return $params['target'] === LiveEdit::domId($context)
+                    && $params['props'] === ['title' => 'Changed'];
+            });
+    }
+
+    /** @test */
+    public function nothing_is_written_to_the_database_until_save(): void
+    {
+        $before = $this->components('home');
+
+        Livewire::test(LiveEdit::class)
+            ->call('openBlock', $this->context('home', ['row-1', 'block-live']))
+            ->call('updateBlockProperty', null, null, 'title', 'Only previewed');
+
+        $this->assertSame($before, $this->components('home'));
+    }
+
+    /** @test */
+    public function cancelling_puts_the_page_back_the_way_it_was(): void
+    {
+        $component = Livewire::test(LiveEdit::class)
+            ->call('openBlock', $this->context('home', ['row-1', 'block-live']))
+            ->call('updateBlockProperty', null, null, 'title', 'Changed')
+            ->call('close');
+
+        // The preview is live on the page, so Cancel has to undo it there too, not just
+        // drop the buffered value.
+        $component->assertDispatched('pb-live-preview', function (string $event, array $params) {
+            return $params['props'] === ['title' => 'Top'];
+        });
+
+        $component->assertSet('open', false)
+            ->assertSet('properties.title', 'Top');
+
+        $this->assertSame('Top', $this->components('home')['row-1']['blocks']['block-live']['properties']['title']);
+    }
+
+    /** @test */
+    public function cancelling_without_edits_repaints_nothing(): void
+    {
+        Livewire::test(LiveEdit::class)
+            ->call('openBlock', $this->context('home', ['row-1', 'block-live']))
+            ->call('close')
+            ->assertNotDispatched('pb-live-preview');
+    }
+
+    /** @test */
+    public function a_virtual_property_is_saved_but_never_pushed_at_the_block(): void
+    {
+        // 'noSuchProperty' is declared live editable but is not a property on the block;
+        // setting it on the component would throw in the browser.
+        Livewire::test(LiveEdit::class)
+            ->call('openBlock', $this->context('home', ['row-1', 'block-live']))
+            ->assertSet('previewableKeys', ['title', 'subtitle']);
+    }
+
+    /** @test */
+    public function saving_a_content_change_does_not_reload_the_page(): void
     {
         $component = Livewire::test(LiveEdit::class)
             ->call('openBlock', $this->context('home', ['row-1', 'block-live']))
             ->call('updateBlockProperty', null, null, 'title', 'Changed')
             ->call('save');
 
-        // Pushing the new values onto the already-mounted block would leave whatever it
-        // derived in mount() stale, so the sheet reloads instead - and puts the reader
-        // back where they were.
+        // The page already shows it, so throwing the render away would only cost a flash.
+        $this->assertStringNotContainsString('location.reload', json_encode($component->effects['xjs'] ?? []));
+        $this->assertSame('Changed', $this->components('home')['row-1']['blocks']['block-live']['properties']['title']);
+    }
+
+    /** @test */
+    public function saving_a_wrapper_property_reloads_because_preview_cannot_repaint_it(): void
+    {
+        $component = Livewire::test(LiveEdit::class)
+            ->call('openBlock', $this->context('home', ['row-1', 'block-spacing']))
+            ->call('updateBlockProperty', null, null, 'desktopPaddingTop', 4)
+            ->call('save');
+
+        // Padding is drawn on the wrapper by the parent row, which preview cannot reach,
+        // so this is the one case that still needs a render - with the scroll kept.
         $js = json_encode($component->effects['xjs'] ?? []);
 
         $this->assertStringContainsString('window.location.reload()', $js);

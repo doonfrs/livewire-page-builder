@@ -61,6 +61,26 @@ class LiveEdit extends Component
     public array $properties = [];
 
     /**
+     * The values the block had when the sheet opened, so Cancel can put them back.
+     *
+     * @var array<string, mixed>
+     */
+    #[Locked]
+    public array $originalProperties = [];
+
+    /**
+     * Writable keys that are also real public properties on the block, so they can be
+     * pushed into the live component for preview.
+     *
+     * A CustomProperty is usually virtual - its widget writes elsewhere and the block has
+     * no property of that name - and setting one on the component would just error.
+     *
+     * @var array<int, string>
+     */
+    #[Locked]
+    public array $previewableKeys = [];
+
+    /**
      * BlockProperty::toArray() schemas for the live editable properties.
      */
     public array $blockProperties = [];
@@ -82,7 +102,7 @@ class LiveEdit extends Component
     #[On('pb-live-edit')]
     public function openBlock(array $ctx): void
     {
-        $this->reset(['context', 'alias', 'blockLabel', 'writableKeys', 'properties', 'blockProperties', 'propertyGroups', 'saved', 'error']);
+        $this->reset(['context', 'alias', 'blockLabel', 'writableKeys', 'properties', 'originalProperties', 'previewableKeys', 'blockProperties', 'propertyGroups', 'saved', 'error']);
 
         $context = $this->normalizeContext($ctx);
 
@@ -124,6 +144,14 @@ class LiveEdit extends Component
             $values[$key] = $stored[$key] ?? $defaults[$key] ?? null;
         }
         $this->properties = $values;
+        $this->originalProperties = $values;
+
+        // Only names the block actually declares as public properties can be previewed;
+        // virtual CustomProperty names would throw when set on the component.
+        $this->previewableKeys = array_values(array_filter(
+            $this->writableKeys,
+            fn (string $key) => property_exists($block, $key)
+        ));
 
         $this->propertyGroups = $this->organizeProperties($this->blockProperties);
         $this->open = true;
@@ -148,6 +176,53 @@ class LiveEdit extends Component
 
         $this->properties[$propertyName] = $this->sanitizeValue($value);
         $this->saved = false;
+
+        $this->pushPreview([$propertyName => $this->properties[$propertyName]]);
+    }
+
+    /**
+     * Push values into the live block so the page shows them straight away.
+     *
+     * The block on the page is its own Livewire component; the sheet cannot reach into
+     * it from PHP, so the browser is told which element to find and what to set on it.
+     * Livewire re-renders that component alone - nothing else on the page moves.
+     *
+     * @param  array<string, mixed>  $props
+     */
+    protected function pushPreview(array $props): void
+    {
+        if (! $this->context) {
+            return;
+        }
+
+        $previewable = array_intersect_key($props, array_flip($this->previewableKeys));
+
+        if ($previewable === []) {
+            return;
+        }
+
+        $this->dispatch(
+            'pb-live-preview',
+            target: self::domId($this->context),
+            props: $previewable
+        );
+    }
+
+    /**
+     * The DOM id of a block's wrapper on the page.
+     *
+     * Derived from the context rather than the block id alone: block ids are only unique
+     * within their own page, and one page can be embedded more than once.
+     */
+    public static function domId(array $context): string
+    {
+        $signature = implode('|', [
+            (string) ($context['page'] ?? ''),
+            (string) ($context['theme'] ?? ''),
+            implode('/', $context['path'] ?? []),
+        ]);
+
+        return 'pb-live-'.Str::substr(sha1($signature), 0, 12);
     }
 
     /**
@@ -197,29 +272,76 @@ class LiveEdit extends Component
             return;
         }
 
+        $changed = [];
+
         foreach ($this->writableKeys as $key) {
-            if (array_key_exists($key, $this->properties)) {
-                $node['properties'][$key] = $this->sanitizeValue($this->properties[$key]);
+            if (! array_key_exists($key, $this->properties)) {
+                continue;
             }
+
+            $value = $this->sanitizeValue($this->properties[$key]);
+
+            if (($this->originalProperties[$key] ?? null) !== $value) {
+                $changed[] = $key;
+            }
+
+            $node['properties'][$key] = $value;
         }
         unset($node);
 
         $page->components = $components;
         $page->saveOrFail();
 
+        $this->originalProperties = $this->properties;
         $this->saved = true;
         $this->open = false;
 
-        // Blocks derive state in mount() and their wrapper markup comes from the parent
-        // row, so only a real render shows the saved result. Keep the scroll position.
-        $this->js(<<<'JS'
-            sessionStorage.setItem('pbLiveEditScroll', String(window.scrollY));
-            window.location.reload();
-        JS);
+        // The page already shows these values: every change was previewed into the live
+        // block as it was made. The one thing preview cannot repaint is the block's
+        // wrapper, which the parent row renders from the shared style properties - so a
+        // reload is needed only when one of those actually changed.
+        if ($this->wrapperAffectedBy($changed)) {
+            $this->js(<<<'JS'
+                sessionStorage.setItem('pbLiveEditScroll', String(window.scrollY));
+                window.location.reload();
+            JS);
+        }
     }
 
+    /**
+     * Do any of these keys feed the wrapper the parent row draws around the block?
+     *
+     * @param  array<int, string>  $keys
+     */
+    protected function wrapperAffectedBy(array $keys): bool
+    {
+        if ($keys === []) {
+            return false;
+        }
+
+        $block = app(PageBuilderService::class)->makeBlockForAlias((string) $this->alias);
+
+        return $block !== null && array_intersect($keys, $block->getSharedPropertyKeys()) !== [];
+    }
+
+    /**
+     * Cancel: put the page back exactly as it was before the sheet opened.
+     */
     public function close(): void
     {
+        $reverted = [];
+
+        foreach ($this->properties as $key => $value) {
+            $original = $this->originalProperties[$key] ?? null;
+
+            if ($original !== $value) {
+                $reverted[$key] = $original;
+            }
+        }
+
+        $this->pushPreview($reverted);
+
+        $this->properties = $this->originalProperties;
         $this->open = false;
     }
 

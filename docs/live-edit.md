@@ -11,9 +11,9 @@ It is deliberately narrow. Live edit cannot add, remove, move or restyle blocks,
 touch row properties or the shared responsive/spacing/style groups. It is a content touch-up tool
 for the people who already have editor access, not a second builder.
 
-> **Not a live preview.** Values are buffered, saved, then the page reloads. Blocks derive state in
-> `mount()` and their wrapper markup is produced by the parent row, so only a real render shows the
-> true result. The reload restores the reader's scroll position.
+Editing is live: every change is painted onto the page as you make it, Cancel puts the page back
+the way it was, and Save writes the values you are already looking at. Nothing reaches the database
+until Save.
 
 ---
 
@@ -140,7 +140,39 @@ The builder's own canvas never shows live edit gears - it has the property panel
 
 ---
 
-## 4. Things to know before enabling it in production
+## 4. How preview works, and where it stops
+
+Each block on the page is its own Livewire component. When you change a property, the sheet tells
+the browser which block to find and what to set on it; Livewire re-renders that one block and
+nothing else on the page moves. Cancel replays the original values the same way.
+
+Two limits follow from that, and both are handled rather than hidden:
+
+**A block that derives state in `mount()`.** Livewire runs `mount()` once, so a block that copies
+properties into other state there will re-render from the stale copy. This is ordinary Livewire, and
+the fix is the ordinary one: add an `updated()` (or `updatedFoo()`) hook that re-derives, and preview
+works. Blocks whose `render()` reads their properties directly - which is most of them - need
+nothing.
+
+```php
+public function updatedTitle(): void
+{
+    $this->slug = Str::slug($this->title);
+}
+```
+
+**Properties drawn on the wrapper.** Width, padding, colours and the rest of the shared style
+properties are rendered by the parent row onto the wrapper around the block, which preview cannot
+reach. If a block declares one of them live editable, saving it reloads the page once so the wrapper
+is right, restoring your scroll position. Content-only edits never reload.
+
+**Virtual properties.** A `CustomProperty` whose name is not a real property on the block - the usual
+case, where the widget writes somewhere else entirely - is saved but never pushed at the block,
+since setting a property that does not exist would just error.
+
+---
+
+## 5. Things to know before enabling it in production
 
 **Live edit access is editor access.** A `richtext` property stores raw HTML which is rendered
 unescaped, so anyone who can live edit a rich text block can inject markup into the page. Grant it to
@@ -159,9 +191,13 @@ builder.
 **Concurrent saves.** Like the builder's own save, a live edit save rewrites the whole `components`
 column. Two people editing the same page at the same moment can overwrite each other.
 
+**Leaving the sheet.** The backdrop does not dismiss it. Edits are already live on the page behind
+it, so losing them to a stray click would be expensive; leaving is a deliberate choice between
+Cancel and Save. Escape is the keyboard spelling of Cancel and reverts the same way.
+
 ---
 
-## 5. Custom property widgets
+## 6. Custom property widgets
 
 `CustomProperty` widgets work in the sheet as they do in the panel. They keep dispatching the global
 `updateBlockProperty` event, which the sheet also listens for.

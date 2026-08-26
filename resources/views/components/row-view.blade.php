@@ -16,13 +16,18 @@
                 if ($liveEditCtx && !preg_match('/\b(relative|absolute|fixed|sticky)\b/', $blockCssClasses)) {
                     $blockCssClasses .= ' relative';
                 }
+                // Anchor the browser needs to find this exact block when the sheet previews
+                // a change into it. Derived from the context, not the block id: block ids
+                // repeat across pages, and one page can be embedded more than once.
+                $liveEditId = $liveEditCtx ? \Trinavo\LivewirePageBuilder\Http\Livewire\LiveEdit::domId($liveEditCtx) : null;
             @endphp
 
             @if (!$componentExists)
                 @continue
             @endif
 
-            <div class="{{ $blockCssClasses }}" style="{{ $block['inlineStyles'] }}" {!! $block['dataAttributes'] ?? '' !!}>
+            <div @if ($liveEditId) id="{{ $liveEditId }}" @endif class="{{ $blockCssClasses }}"
+                style="{{ $block['inlineStyles'] }}" {!! $block['dataAttributes'] ?? '' !!}>
                 <x-page-builder::live-edit-gear :ctx="$liveEditCtx" />
                 @if ($block['alias'] == 'builder-page-block')
                     {{-- Distinct loop variable: reusing $row here would shadow the row we are rendering. --}}
