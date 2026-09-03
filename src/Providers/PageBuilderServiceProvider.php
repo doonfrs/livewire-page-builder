@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
 use Trinavo\LivewirePageBuilder\Config\Variables;
+use Trinavo\LivewirePageBuilder\Contracts\StoresUploadedImages;
 use Trinavo\LivewirePageBuilder\Console\InstallPageBuilderCommand;
 use Trinavo\LivewirePageBuilder\Http\Livewire\BlockProperties;
 use Trinavo\LivewirePageBuilder\Http\Livewire\BlockProperties\ColorPicker;
@@ -24,6 +25,7 @@ use Trinavo\LivewirePageBuilder\Http\Livewire\PageEditor;
 use Trinavo\LivewirePageBuilder\Http\Livewire\PreviewBar;
 use Trinavo\LivewirePageBuilder\Http\Livewire\RowBlock;
 use Trinavo\LivewirePageBuilder\Http\Livewire\ThemeManager;
+use Trinavo\LivewirePageBuilder\Services\DefaultUploadedImageStore;
 use Trinavo\LivewirePageBuilder\Services\IconService;
 use Trinavo\LivewirePageBuilder\Services\LocalizationService;
 use Trinavo\LivewirePageBuilder\Services\PageBuilderService;
@@ -111,6 +113,11 @@ class PageBuilderServiceProvider extends ServiceProvider
         // lifetime of a booted app. Clearing it here keeps tests (and any re-boot)
         // honest without paying the lookup again on every request.
         PageBuilderService::flushLiveEditCache();
+
+        // How builder uploads reach permanent storage. bindIf, so a host
+        // application that has its own rules (resizing, a dimension cap, a CDN)
+        // binds them and this default steps aside.
+        $this->app->bindIf(StoresUploadedImages::class, DefaultUploadedImageStore::class);
 
         // Register the localization service
         $this->app->singleton(LocalizationService::class, function ($app) {

@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use Trinavo\LivewirePageBuilder\Contracts\StoresUploadedImages;
 use Trinavo\LivewirePageBuilder\Support\Concerns\DispatchesBlockPropertyUpdate;
 
 class ImageProperty extends Component
@@ -77,7 +78,17 @@ class ImageProperty extends Component
             throw $e;
         }
 
-        $path = $this->uploadedImage->store('page-builder', 'public');
+        // The host application decides how an upload is stored (it may cap or
+        // re-encode it); the package only supplies the destination.
+        $path = app(StoresUploadedImages::class)->store($this->uploadedImage, 'page-builder', 'public');
+
+        if ($path === null) {
+            Log::warning('ImageProperty::uploadImage - the image store rejected the file');
+            $this->addError('uploadedImage', __('Failed to upload image. Please try again.'));
+
+            return;
+        }
+
         // Ask the disk rather than concatenating the configured base URL by hand: the
         // tenant prefix lives in the base URL under the local driver and in the disk
         // root under S3, and only the adapter knows how to combine the two.
