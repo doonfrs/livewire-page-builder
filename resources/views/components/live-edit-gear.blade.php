@@ -31,16 +31,25 @@
              to keep one corner clear instead of both.
              The inset is 1.5 rather than 1 because this button hangs on the block's wrapper while
              a host's own gear hangs on whatever box the block draws inside it. At 1 the two read
-             as different margins and this one rides a rounded corner; at 2 it sits too far in. --}}
-        class="btn btn-circle btn-xs align-middle border-base-300 bg-base-100 text-base-content/40 shadow-sm hover:text-base-content hover:bg-base-200 {{ $floating ? 'absolute top-1.5 left-1.5 z-40' : 'inline-flex' }}"
+             as different margins and this one rides a rounded corner; at 2 it sits too far in.
+             The circle, border, background and colours are deliberately the host's own edit gear,
+             down to the opacities: the two sit side by side in a menu row and have to read as one
+             set of controls rather than two. Change them together or not at all. --}}
+        class="btn btn-circle btn-xs align-middle border-base-300 bg-base-100 text-base-content/30 shadow-sm hover:text-base-content/70 hover:bg-base-200 {{ $floating ? 'absolute top-1.5 left-1.5 z-40' : 'inline-flex' }}"
         {{-- x-data makes the button an Alpine root. It lives in the row wrapper, outside every
              component's own x-data, and an x-cloak Alpine never processes is a permanently
              invisible button. --}}
         @if ($pbLiveEditToggle) x-data x-cloak x-show="{{ $pbLiveEditToggle }}" @endif
         x-on:click.stop.prevent="Livewire.dispatch('pb-live-edit', { ctx: @js($ctx) })">
-        {{-- A pencil rather than a cog: this edits the block, and hosts usually have settings
-             cogs of their own sitting on the same page. Solid, not outline: at 16px in a btn-xs
-             the outline variants are thin enough to read as an empty button. --}}
-        <x-heroicon-s-pencil class="h-4 w-4" />
+        {{-- A wrench rather than a cog: this edits the block itself, and hosts sit their own
+             settings cogs right next to it, so the two have to be told apart at a glance while
+             still reading as the same family. Outline, to match the stroked cog: a solid glyph
+             beside a stroked one reads as two different kinds of button.
+             Drawn at 12px where the cog is 16px, because the wrench is a diagonal that reaches the
+             corners of its box while the cog is a compact round shape. At a matching 16px its tips
+             touch the circle and the button looks unpadded. The stroke is widened to make up for
+             the smaller box - as a class, since the SVG's own stroke-width attribute would
+             otherwise win. --}}
+        <x-heroicon-o-wrench class="h-3 w-3 [stroke-width:2]" />
     </button>
 @endif
