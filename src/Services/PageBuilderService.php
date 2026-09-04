@@ -25,6 +25,11 @@ class PageBuilderService
      */
     private static array $liveEditAliasCache = [];
 
+    /**
+     * @var array<string, bool> Per-alias memo of drawsOwnLiveEditGear(), for the request.
+     */
+    private static array $ownGearAliasCache = [];
+
     public function getAvailableBlocks(): array
     {
         $blocks = [];
@@ -170,6 +175,25 @@ class PageBuilderService
     }
 
     /**
+     * Whether the block behind this alias draws its own live edit gear.
+     *
+     * Asked once per block on every public page render, so it is memoised per alias for
+     * the request alongside blockHasLiveEditProperties().
+     */
+    public function blockDrawsOwnLiveEditGear(?string $alias): bool
+    {
+        if (! $alias) {
+            return false;
+        }
+
+        if (array_key_exists($alias, self::$ownGearAliasCache)) {
+            return self::$ownGearAliasCache[$alias];
+        }
+
+        return self::$ownGearAliasCache[$alias] = $this->makeBlockForAlias($alias)?->drawsOwnLiveEditGear() ?? false;
+    }
+
+    /**
      * The live edit property schema for an alias, as the arrays the panel widgets expect.
      */
     public function getLiveEditSchema(string $alias): array
@@ -206,6 +230,7 @@ class PageBuilderService
     public static function flushLiveEditCache(): void
     {
         self::$liveEditAliasCache = [];
+        self::$ownGearAliasCache = [];
     }
 
     public function getRowCssClassesFromProperties($properties): string

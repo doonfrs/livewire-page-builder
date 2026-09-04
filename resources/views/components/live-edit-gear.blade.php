@@ -6,10 +6,15 @@
     Deliberately outside the block's own @livewire() call so it is still visible while a
     lazy-loaded block is showing its placeholder.
 
+    A block whose content sits well inside that wrapper - a header with a max-width bar,
+    a centred menu row - can draw the gear itself instead, next to what it actually edits:
+    see Block::drawsOwnLiveEditGear(). Pass :floating="false" there, so the button sits in
+    the flow where the block puts it rather than absolutely over the wrapper's corner.
+
     $ctx is the block's live edit context stamped by PageBuilderRender:
     ['page' => pageKey, 'theme' => themeId, 'path' => [rowId, blockId, ...]].
 --}}
-@props(['ctx' => null])
+@props(['ctx' => null, 'floating' => true])
 
 @if ($ctx)
     @php
@@ -27,7 +32,7 @@
              The inset is 1.5 rather than 1 because this button hangs on the block's wrapper while
              a host's own gear hangs on whatever box the block draws inside it. At 1 the two read
              as different margins and this one rides a rounded corner; at 2 it sits too far in. --}}
-        class="btn btn-circle btn-xs align-middle border-base-300 bg-base-100 text-base-content/40 shadow-sm hover:text-base-content hover:bg-base-200 absolute top-1.5 left-1.5 z-40"
+        class="btn btn-circle btn-xs align-middle border-base-300 bg-base-100 text-base-content/40 shadow-sm hover:text-base-content hover:bg-base-200 {{ $floating ? 'absolute top-1.5 left-1.5 z-40' : 'inline-flex' }}"
         {{-- x-data makes the button an Alpine root. It lives in the row wrapper, outside every
              component's own x-data, and an x-cloak Alpine never processes is a permanently
              invisible button. --}}

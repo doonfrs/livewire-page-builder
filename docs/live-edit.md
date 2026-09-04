@@ -138,6 +138,35 @@ unless the block already positions itself.
 
 The builder's own canvas never shows live edit gears - it has the property panel.
 
+### When the wrapper's corner is the wrong place
+
+That wrapper spans the whole row. A block that centres its content inside it - a header with a
+max-width bar, a centred menu row - ends up with its gear far out in the gutter, or sitting on top
+of whatever the block does put in that corner. No fixed corner fixes every case: only the block
+knows where its own content is.
+
+So a block can take the gear over:
+
+```php
+public function drawsOwnLiveEditGear(): bool
+{
+    return true;
+}
+```
+
+It is then handed its context in `$liveEditContext` and draws the gear wherever it belongs:
+
+```blade
+<x-page-builder::live-edit-gear :ctx="$liveEditContext" :floating="false" />
+```
+
+`:floating="false"` makes the button an ordinary inline element instead of absolutely positioning it
+over the wrapper's corner. The wrapper draws none, so there is never a second one, and with live edit
+off `$liveEditContext` is null and the component renders nothing.
+
+One trade-off: the gear now lives inside the component, so a lazy-loaded block has no gear while its
+placeholder is on screen. Worth it for a block that always renders eagerly.
+
 ---
 
 ## 4. How preview works, and where it stops

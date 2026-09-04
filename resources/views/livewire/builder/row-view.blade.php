@@ -49,7 +49,12 @@
                     $blockCssClasses = app(
                         \Trinavo\LivewirePageBuilder\Services\PageBuilderService::class,
                     )->getCssClassesFromProperties($block['properties'] ?? [], false);
-                    if ($liveEditGear && !preg_match('/\b(relative|absolute|fixed|sticky)\b/', $blockCssClasses)) {
+                    // A block whose content sits well inside this wrapper draws the gear
+                    // itself, next to what it edits, and is handed the context instead.
+                    $ownGear = $liveEditGear && app(
+                        \Trinavo\LivewirePageBuilder\Services\PageBuilderService::class,
+                    )->blockDrawsOwnLiveEditGear($block['alias'] ?? null);
+                    if ($liveEditGear && !$ownGear && !preg_match('/\b(relative|absolute|fixed|sticky)\b/', $blockCssClasses)) {
                         $blockCssClasses .= ' relative';
                     }
                     $liveEditId = $liveEditGear ? \Trinavo\LivewirePageBuilder\Http\Livewire\LiveEdit::domId($liveEditGear) : null;
@@ -59,8 +64,10 @@
                     {!! app(\Trinavo\LivewirePageBuilder\Services\PageBuilderService::class)->getDataAttributesFromProperties(
                         $block['properties'] ?? [],
                     ) !!}>
-                    <x-page-builder::live-edit-gear :ctx="$liveEditGear" />
-                    @livewire($block['alias'], $block['properties'] ?? [], key($blockId))
+                    @unless ($ownGear)
+                        <x-page-builder::live-edit-gear :ctx="$liveEditGear" />
+                    @endunless
+                    @livewire($block['alias'], array_merge($block['properties'] ?? [], $ownGear ? ['liveEditContext' => $liveEditGear] : []), key($blockId))
                 </div>
             @endif
         @endforeach

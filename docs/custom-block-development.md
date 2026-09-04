@@ -55,6 +55,7 @@ Override these methods to customise how your block appears in the picker:
 | `getPageBuilderIcon(): string` | Blade icon name (e.g. `heroicon-o-photo`) | Block card icon |
 | `getPageBuilderProperties(): array` | Array of `BlockProperty` objects | The block's edit panel |
 | `getPageBuilderLiveEditProperties(): array` | Property names or `BlockProperty` objects | Which properties may be edited from the live page. Empty (default) = no gear. See [Live Edit](live-edit.md) |
+| `drawsOwnLiveEditGear(): bool` | `false` (default) | Return `true` to draw the live edit gear inside your own markup, next to the content it edits, instead of on the block's wrapper. See [Live Edit](live-edit.md) |
 
 ### Rendering
 

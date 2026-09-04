@@ -9,11 +9,15 @@
                         $block['alias'] ?? '',
                     );
                 $liveEditCtx = ($block['liveEditable'] ?? false) ? $block['liveEditContext'] ?? null : null;
+                // A block whose content sits well inside this wrapper draws the gear itself,
+                // next to what it edits. It is handed the context instead.
+                $ownGear = $liveEditCtx && app(\Trinavo\LivewirePageBuilder\Services\PageBuilderService::class)
+                    ->blockDrawsOwnLiveEditGear($block['alias'] ?? null);
                 // The gear is absolutely positioned inside this wrapper, so the wrapper has to
                 // be a containing block. absolute/fixed/sticky already are; adding `relative`
                 // on top of them would just fight for source order.
                 $blockCssClasses = $block['cssClasses'] ?? '';
-                if ($liveEditCtx && !preg_match('/\b(relative|absolute|fixed|sticky)\b/', $blockCssClasses)) {
+                if ($liveEditCtx && !$ownGear && !preg_match('/\b(relative|absolute|fixed|sticky)\b/', $blockCssClasses)) {
                     $blockCssClasses .= ' relative';
                 }
                 // Anchor the browser needs to find this exact block when the sheet previews
@@ -28,7 +32,9 @@
 
             <div @if ($liveEditId) id="{{ $liveEditId }}" @endif class="{{ $blockCssClasses }}"
                 style="{{ $block['inlineStyles'] }}" {!! $block['dataAttributes'] ?? '' !!}>
-                <x-page-builder::live-edit-gear :ctx="$liveEditCtx" />
+                @unless ($ownGear)
+                    <x-page-builder::live-edit-gear :ctx="$liveEditCtx" />
+                @endunless
                 @if ($block['alias'] == 'builder-page-block')
                     {{-- Distinct loop variable: reusing $row here would shadow the row we are rendering. --}}
                     <div style="font-size:0">
@@ -63,7 +69,7 @@
                             $isEditMode = $block['properties']['editMode'] ?? false;
                             $lazyValue = (!$isEditMode && ($lazyMode === 'on' || $lazyMode === true)) ? true : ((!$isEditMode && $lazyMode === 'on-load') ? 'on-load' : null);
                         @endphp
-                        @livewire($block['alias'], array_merge($block['properties'], $lazyValue !== null ? ['lazy' => $lazyValue] : []), key($blockId))
+                        @livewire($block['alias'], array_merge($block['properties'], $lazyValue !== null ? ['lazy' => $lazyValue] : [], $ownGear ? ['liveEditContext' => $liveEditCtx] : []), key($blockId))
                     </div>
                 @endif
             </div>

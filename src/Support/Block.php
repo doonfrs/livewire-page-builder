@@ -242,6 +242,19 @@ abstract class Block extends Component
     public bool $editMode = false;
 
     /**
+     * Where this block sits in builder_pages.components, so it can address the live edit
+     * sheet at its own node. Null when live edit is off, and only ever passed in for a
+     * row block (whose children need it) or a block that draws its own gear.
+     *
+     * Locked: it is server-derived addressing, never something the client may rewrite.
+     * Authorisation is still re-checked server side in LiveEdit.
+     *
+     * @var array{page: string, theme: mixed, path: array<int, string>}|null
+     */
+    #[Locked]
+    public ?array $liveEditContext = null;
+
+    /**
      * Localize a (possibly multilingual) value for display and, in view mode,
      * replace {variable} tokens with their registered values. In edit mode the
      * raw tokens are kept so they stay visible and editable in the builder.
@@ -758,6 +771,28 @@ abstract class Block extends Component
     public function getPageBuilderLiveEditProperties(): array
     {
         return [];
+    }
+
+    /**
+     * Whether the block draws the live edit gear itself, inside its own markup.
+     *
+     * The gear normally hangs on the block's wrapper, which spans the full width of its
+     * row. For a block that centres its content inside that width - a header with a
+     * max-width bar, a centred menu row - the wrapper's corner is a long way from the
+     * thing the gear edits, and no fixed corner fixes both: only the block knows where
+     * its own content is. So it can take the gear over. Return true and render
+     *
+     *     <x-page-builder::live-edit-gear :ctx="$liveEditContext" :floating="false" />
+     *
+     * wherever it belongs; the wrapper then draws none and passes the context in.
+     *
+     * The trade-off is that the gear now lives inside the component, so a lazy loaded
+     * block has no gear while its placeholder is on screen. Worth it for a block that is
+     * always rendered eagerly; not worth it for one that is not.
+     */
+    public function drawsOwnLiveEditGear(): bool
+    {
+        return false;
     }
 
     /**

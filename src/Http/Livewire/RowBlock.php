@@ -3,7 +3,6 @@
 namespace Trinavo\LivewirePageBuilder\Http\Livewire;
 
 use Illuminate\Support\Facades\Log;
-use Livewire\Attributes\Locked;
 use Livewire\Attributes\On;
 use Trinavo\LivewirePageBuilder\Services\PageBuilderRender;
 use Trinavo\LivewirePageBuilder\Services\PageBuilderService;
@@ -49,18 +48,6 @@ class RowBlock extends Block
     public $contentAlign = 'content-center';
 
     public $isNested = false;
-
-    /**
-     * Where this row sits in builder_pages.components, so its children can render live
-     * edit gears that point at the right node. Null when live edit is off.
-     *
-     * Locked: it is server-derived addressing, never something the client may rewrite.
-     * Authorisation is still re-checked server side in LiveEdit.
-     *
-     * @var array{page: string, theme: mixed, path: array<int, string>}|null
-     */
-    #[Locked]
-    public ?array $liveEditContext = null;
 
     public function getPageBuilderCategory(): string
     {
