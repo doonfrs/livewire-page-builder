@@ -241,7 +241,7 @@
 
                 <!-- Footer Actions - outside the scroll area so they stay reachable -->
                 <div class="flex shrink-0 justify-between border-t border-gray-200 p-2 dark:border-gray-700">
-                    <button type="button" wire:click="clearColor"
+                    <button type="button" wire:click="clearColor" @click="closePopover()"
                         class="rounded bg-white dark:bg-gray-700 px-2 py-1 text-xs font-medium text-gray-900 dark:text-gray-200 shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600">
                         {{ __('Clear') }}
                     </button>
