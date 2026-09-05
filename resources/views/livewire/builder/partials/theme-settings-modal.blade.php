@@ -26,7 +26,7 @@
                     <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100">
                         {{ __('Theme Settings') }}
                         @if ($currentTheme)
-                            <span class="text-gray-400 dark:text-gray-500">— {{ $currentTheme->name }}</span>
+                            <span class="text-gray-400 dark:text-gray-500">- {{ $currentTheme->name }}</span>
                         @endif
                     </h3>
                 </div>
