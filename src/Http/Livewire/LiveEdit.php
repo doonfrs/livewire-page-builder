@@ -11,6 +11,7 @@ use Trinavo\LivewirePageBuilder\Models\BuilderPage;
 use Trinavo\LivewirePageBuilder\Services\PageBuilderService;
 use Trinavo\LivewirePageBuilder\Services\PageBuilderUIService;
 use Trinavo\LivewirePageBuilder\Support\Concerns\OrganizesBlockProperties;
+use Trinavo\LivewirePageBuilder\Support\Properties\BlockProperty;
 
 /**
  * The live edit property sheet: one instance per public page, opened by a block's gear.
@@ -87,6 +88,14 @@ class LiveEdit extends Component
 
     public array $propertyGroups = [];
 
+    /**
+     * Does anything on this sheet ask for more than the default height?
+     *
+     * Derived from the block's own property objects, never from the browser.
+     */
+    #[Locked]
+    public bool $needsRoom = false;
+
     public bool $saved = false;
 
     public ?string $error = null;
@@ -102,7 +111,7 @@ class LiveEdit extends Component
     #[On('pb-live-edit')]
     public function openBlock(array $ctx): void
     {
-        $this->reset(['context', 'alias', 'blockLabel', 'writableKeys', 'properties', 'originalProperties', 'previewableKeys', 'blockProperties', 'propertyGroups', 'saved', 'error']);
+        $this->reset(['context', 'alias', 'blockLabel', 'writableKeys', 'properties', 'originalProperties', 'previewableKeys', 'blockProperties', 'propertyGroups', 'needsRoom', 'saved', 'error']);
 
         $context = $this->normalizeContext($ctx);
 
@@ -130,9 +139,18 @@ class LiveEdit extends Component
         $this->blockLabel = $block->getPageBuilderLabel();
         $this->writableKeys = $block->getLiveEditPropertyKeys();
 
+        $liveProperties = $block->resolveLiveEditProperties();
+
         $this->blockProperties = array_map(
-            fn ($property) => $property->toArray(),
-            $block->resolveLiveEditProperties()
+            fn (BlockProperty $property) => $property->toArray(),
+            $liveProperties
+        );
+
+        // One field that cannot work in the short sheet is enough to open it tall.
+        $this->needsRoom = array_reduce(
+            $liveProperties,
+            fn (bool $carry, BlockProperty $property) => $carry || $property->needsRoom(),
+            false
         );
 
         // Stored values win, block defaults fill the gaps, and nothing outside the

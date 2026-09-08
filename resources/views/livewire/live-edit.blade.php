@@ -57,9 +57,16 @@
                 x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"></div>
 
             {{-- Full width only while there is no room to spare: past 28rem the sheet is capped and
-                 centred, so a handful of property fields never stretch across a desktop screen. --}}
+                 centred, so a handful of property fields never stretch across a desktop screen.
+
+                 The height cap is short on purpose - the page being edited has to stay visible
+                 behind the sheet. A field carrying its own editor cannot be used in that space and
+                 says so through BlockProperty::needsRoom(), which opens the sheet tall instead;
+                 75dvh rather than full height so a quarter of the page is still there to look at.
+                 Both caps are written out as whole class names because the host's Tailwind scans
+                 this file - a class assembled from pieces would silently not exist. --}}
             <div x-show="show" x-cloak
-                class="pb-live-compact fixed inset-x-0 bottom-0 z-[101] mx-auto flex max-h-[40dvh] w-full max-w-md flex-col rounded-t-2xl bg-white shadow-2xl dark:bg-gray-900"
+                class="pb-live-compact fixed inset-x-0 bottom-0 z-[101] mx-auto flex {{ $needsRoom ? 'max-h-[75dvh]' : 'max-h-[40dvh]' }} w-full max-w-md flex-col rounded-t-2xl bg-white shadow-2xl dark:bg-gray-900"
                 x-transition:enter="transition ease-out duration-200"
                 x-transition:enter-start="translate-y-full" x-transition:enter-end="translate-y-0"
                 x-transition:leave="transition ease-in duration-150"
@@ -151,6 +158,20 @@
         .pb-live-compact textarea {
             padding-top: 0.3rem;
             padding-bottom: 0.3rem;
+        }
+
+        /* Quill's container is content-height, so an empty editor would be one line tall
+           and a poor target. The builder's sidebar has room to spare and is left alone. */
+        .pb-live-compact .ql-editor {
+            min-height: 9rem;
+        }
+
+        /* Quill writes `left` inline on its link tooltip, measured for a full-width sidebar.
+           In a max-w-md sheet that puts half of the tooltip out of reach. */
+        .pb-live-compact .ql-tooltip {
+            left: 0 !important;
+            max-width: 100%;
+            white-space: normal;
         }
     </style>
 </div>

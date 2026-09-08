@@ -7,9 +7,11 @@ keep one corner clear. Clicking it opens a bottom sheet with the block's live-ed
 properties, rendered with the same widgets the builder's property panel uses. Saving writes
 into `builder_pages.components` and reloads the page.
 
-It is deliberately narrow. Live edit cannot add, remove, move or restyle blocks, and it cannot
-touch row properties or the shared responsive/spacing/style groups. It is a content touch-up tool
-for the people who already have editor access, not a second builder.
+It is deliberately narrow. Live edit cannot add, remove or move blocks, it cannot touch row
+properties, and it never shows a block's full property list - only the handful of names the block
+itself declares, which may include a few shared style properties when the block decides they
+belong next to its content. It is a content touch-up tool for the people who already have editor
+access, not a second builder.
 
 Editing is live: every change is painted onto the page as you make it, Cancel puts the page back
 the way it was, and Save writes the values you are already looking at. Nothing reaches the database
@@ -75,6 +77,40 @@ Only the names this method declares. Everything else - other block properties, t
 properties, `editMode`, `blockPageName` - is rejected server side even if the browser asks for it.
 A `ResponsiveSpacingProperty` expands to its 12 generated per-device keys, as it does everywhere
 else in the package.
+
+### What ships live editable
+
+The package's own `RichText` and `SimpleText` blocks declare their content plus text align, text
+colour and the three font sizes, with the content first. So turning live edit on puts a gear on
+every paragraph in the theme without the host declaring anything, and the rich text one opens a
+Quill editor right there on the page.
+
+Note that this is also what the raw-HTML warning in §5 is about: a `richtext` value is rendered
+unescaped, and `RichText` is now reachable from the public page by anyone your `enableLiveEdit()`
+closure lets through.
+
+The other core blocks - `Spacer`, `ImageBlock`, `IconBlock` - stay opted out.
+
+### Fields that need room
+
+The sheet is capped short so the page being edited stays visible behind it. A property whose
+widget cannot work in that space says so, and the sheet opens tall for as long as that field is
+on it:
+
+```php
+class RichTextProperty extends BlockProperty
+{
+    public function needsRoom(): bool
+    {
+        return true;
+    }
+}
+```
+
+It is a property-level decision, not a block-level one, so every block using that property gets
+it without repeating itself. `RichTextProperty` is the only built-in that returns `true`; a
+`CustomProperty` subclass carrying an editor of its own should do the same. Nothing about the
+builder's property panel changes - it has a full sidebar either way.
 
 ---
 

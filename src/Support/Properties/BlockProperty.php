@@ -61,6 +61,19 @@ abstract class BlockProperty
         return $this;
     }
 
+    /**
+     * Does this field need more than the live edit sheet's default height?
+     *
+     * The sheet is deliberately short so the page being edited stays visible behind it.
+     * A widget that cannot work in that space - an editor carrying its own toolbar -
+     * overrides this and the sheet opens tall instead. It changes nothing in the builder's
+     * property panel, which has a full sidebar either way.
+     */
+    public function needsRoom(): bool
+    {
+        return false;
+    }
+
     abstract public function getType(): string;
 
     abstract public function toArray(): array;

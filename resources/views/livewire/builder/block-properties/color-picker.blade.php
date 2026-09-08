@@ -3,7 +3,7 @@
         The palette is teleported to <body> and positioned against the viewport rather than
         against this wrapper. Both hosts clip an absolutely positioned popover: the builder
         sidebar is an overflow-hidden <aside> around an overflow-y-auto panel, and the live
-        edit sheet is a max-h-[40dvh] bottom sheet with its own scroll container. Same
+        edit sheet is a height-capped bottom sheet with its own scroll container. Same
         pattern as the row / block context menus.
     --}}
     <div x-data="{

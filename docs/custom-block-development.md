@@ -191,6 +191,11 @@ new RichTextProperty(
 
 Pass `false` for the last argument if the field shouldn't have language tabs.
 
+It is the one built-in property that overrides `needsRoom(): bool` to return `true`: the live edit
+sheet is capped short so the page stays visible behind it, and a widget carrying its own toolbar
+needs the sheet to open tall instead. Override it on your own property class if you write one that
+does the same. See [Live Edit](live-edit.md).
+
 ### `CheckboxProperty`
 
 Boolean toggle.

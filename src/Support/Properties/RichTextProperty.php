@@ -64,6 +64,16 @@ class RichTextProperty extends BlockProperty
     }
 
     /**
+     * Quill's toolbar alone is most of the live edit sheet's default height, and what is
+     * left over is not an editing surface. This is the one built-in widget that asks for
+     * the tall sheet; a plain textarea (SimpleTextProperty) fits in the short one.
+     */
+    public function needsRoom(): bool
+    {
+        return true;
+    }
+
+    /**
      * Enable or disable multilingual support for this property
      */
     public function multilingual(bool $value = true): static

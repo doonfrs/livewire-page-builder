@@ -33,6 +33,23 @@ class RichText extends Block
     }
 
     /**
+     * Content first, then the three things an editor reaches for straight after writing it:
+     * where the text sits, what colour it is, how big it is. Everything else stays in the
+     * builder. Named rather than rebuilt, so the sheet and the panel cannot drift apart.
+     */
+    public function getPageBuilderLiveEditProperties(): array
+    {
+        return [
+            'content',
+            'textAlign',
+            'textColor',
+            'mobileFontSize',
+            'tabletFontSize',
+            'desktopFontSize',
+        ];
+    }
+
+    /**
      * Convert Quill editor classes to Tailwind classes
      */
     protected function convertQuillClassesToTailwind(string $html): string
