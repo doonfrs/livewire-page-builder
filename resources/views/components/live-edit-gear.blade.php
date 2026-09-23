@@ -43,8 +43,11 @@
              horizontally at all, so it can stay physically left in both directions and
              still never widen the page. Measured, not reasoned: the floating gear sits
              at x=4 with scrollWidth at or under clientWidth in both locales.
-             Only a quarter of the badge lands inside the block, because the vertical
-             offset still does the work. A wrapper is only as big as its block, and in
+             The vertical offset does nearly all the work: at -top-4 only the badge's
+             bottom 4px overlap the block, so on a header bar of icon-sized blocks it
+             reads as a marker ABOVE the icon rather than one sitting on it. It cannot
+             be bought horizontally instead - left-0 is as far left as it can go before
+             the offset turns negative and starts widening the page. A wrapper is only as big as its block, and in
              a header assembled from atomic blocks that is a single icon - so a gear
              inset on BOTH axes sat on top of the logo, the search and the account icon,
              and at z-40 it took their clicks too.
@@ -59,7 +62,7 @@
              The circle, border, background and colours are deliberately the host's own edit gear,
              down to the opacities: the two sit side by side in a menu row and have to read as one
              set of controls rather than two. Change them together or not at all. --}}
-        class="inline-flex items-center justify-center rounded-full h-5 w-5 p-0 align-middle border border-base-300 bg-base-100 cursor-pointer transition text-base-content/30 hover:text-base-content/70 hover:bg-base-200 {{ $floating ? 'absolute -top-2.5 left-1 z-40' : '' }}"
+        class="inline-flex items-center justify-center rounded-full h-5 w-5 p-0 align-middle border border-base-300 bg-base-100 cursor-pointer transition text-base-content/30 hover:text-base-content/70 hover:bg-base-200 {{ $floating ? 'absolute -top-4 left-0 z-40' : '' }}"
         {{-- x-data makes the button an Alpine root. It lives in the row wrapper, outside every
              component's own x-data, and an x-cloak Alpine never processes is a permanently
              invisible button. --}}
