@@ -26,10 +26,16 @@
         {{-- z-40 clears what a block stacks inside itself and stays deliberately below the z-50 band
              that modals, drawers and menus live in - the gear only has to win against its own block,
              and floating over an open modal is worse than being covered by one. Do not raise it.
-             font-size:initial escapes the wrapper's font-size:0. Anchored physically left rather than
-             `start`, so the corner it occupies does not move between LTR and RTL - a block only has
-             to keep one corner clear instead of both.
-             Offset OUTWARDS, so its centre sits on the wrapper's top-left corner and only a
+             font-size:initial escapes the wrapper's font-size:0. Anchored to the inline-START
+             corner, and that has to stay logical: a page can only be scrolled towards its inline
+             END, so an outward hang on the start side is unreachable and adds nothing to
+             scrollWidth, while the same hang on the end side grows the document. Anchored
+             physically left it was the start corner in LTR and the END corner in RTL, so on an
+             Arabic store every full-bleed block pushed the page 10px wider. Nothing scrolled
+             (the storefront html is overflow-x:hidden), but a mobile browser shrinks the page to
+             fit its content width, the layout viewport grew taller than the visible one, and the
+             fixed bottom navigation bar was cut off below the fold. Two symptoms, this one cause.
+             Offset OUTWARDS, so its centre sits on the wrapper's top-start corner and only a
              quarter of it lands inside the block. A wrapper is only as big as its block, and in
              a header assembled from atomic blocks that is a single icon - so a gear inset INTO
              the corner sat on top of the logo, the search and the account icon, and at z-40 it
@@ -45,7 +51,7 @@
              The circle, border, background and colours are deliberately the host's own edit gear,
              down to the opacities: the two sit side by side in a menu row and have to read as one
              set of controls rather than two. Change them together or not at all. --}}
-        class="inline-flex items-center justify-center rounded-full h-5 w-5 p-0 align-middle border border-base-300 bg-base-100 cursor-pointer transition text-base-content/30 hover:text-base-content/70 hover:bg-base-200 {{ $floating ? 'absolute -top-2.5 -left-2.5 z-40' : '' }}"
+        class="inline-flex items-center justify-center rounded-full h-5 w-5 p-0 align-middle border border-base-300 bg-base-100 cursor-pointer transition text-base-content/30 hover:text-base-content/70 hover:bg-base-200 {{ $floating ? 'absolute -top-2.5 -start-2.5 z-40' : '' }}"
         {{-- x-data makes the button an Alpine root. It lives in the row wrapper, outside every
              component's own x-data, and an x-cloak Alpine never processes is a permanently
              invisible button. --}}
