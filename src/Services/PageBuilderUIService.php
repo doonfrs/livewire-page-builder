@@ -33,6 +33,18 @@ class PageBuilderUIService
     private string $liveEditToggleExpression = '';
 
     /**
+     * The daisyUI theme name the host site renders with, painted on the editor's
+     * preview surfaces so a block looks in the editor the way it looks live.
+     */
+    private string|Closure $previewThemeName = '';
+
+    /**
+     * The host's own theme declarations (--color-*, --radius-*, ...) for a theme
+     * daisyUI does not ship, injected on the same surfaces.
+     */
+    private string|Closure $previewThemeCss = '';
+
+    /**
      * Set custom HTML to be rendered in the page editor header
      *
      * @param  string|Closure  $html  The HTML to render in the header (or a closure that returns HTML)
@@ -167,6 +179,80 @@ class PageBuilderUIService
     }
 
     /**
+     * Give the editor the host site's theme, so the preview canvas and the colour
+     * swatches render with the real palette instead of daisyUI's stock one.
+     *
+     * Both halves matter, because a theme can be either shape: a built-in daisyUI
+     * theme only needs its name on the element, while a theme the host defined
+     * itself needs its declarations too - the name alone matches no rule.
+     *
+     *     app(PageBuilderUIService::class)->setPreviewTheme(
+     *         name: fn () => app_color_theme(),
+     *         css: fn () => app_custom_theme_styles(),
+     *     );
+     *
+     * Pass closures so the answer is re-resolved per request; a multi-tenant host
+     * has a different theme on every domain.
+     *
+     * @param  string|Closure  $name  daisyUI theme name for the data-theme attribute
+     * @param  string|Closure  $css  Bare CSS declarations, no selector and no braces
+     */
+    public function setPreviewTheme(string|Closure $name = '', string|Closure $css = ''): self
+    {
+        $this->previewThemeName = $name;
+        $this->previewThemeCss = $css;
+
+        return $this;
+    }
+
+    /**
+     * The theme name for the preview surfaces, or '' when the host set none.
+     *
+     * Not memoised, for the same reason as isLiveEditEnabled(): the service is a
+     * container singleton, so one tenant's theme would outlive its request.
+     */
+    public function getPreviewThemeName(): string
+    {
+        if ($this->previewThemeName instanceof Closure) {
+            return (string) ($this->previewThemeName)();
+        }
+
+        return $this->previewThemeName;
+    }
+
+    /**
+     * The attributes that turn an element into a preview surface, ready to echo.
+     *
+     * Built here rather than with an @if in each view: three views mark a surface, and a
+     * conditional attribute in Blade leaves a newline and an indent in the middle of the
+     * tag, which is ugly to read and awkward to assert on.
+     */
+    public function getPreviewThemeAttributes(): string
+    {
+        $name = $this->getPreviewThemeName();
+
+        return $name === ''
+            ? 'data-pb-theme'
+            : 'data-pb-theme data-theme="'.e($name).'"';
+    }
+
+    /**
+     * The theme declarations for the preview surfaces, or '' when the host set none.
+     *
+     * `<` is stripped because this is echoed unescaped inside a <style> element, where
+     * a `</style>` in the value would end the stylesheet and hand the rest to the HTML
+     * parser. No valid CSS declaration contains one.
+     */
+    public function getPreviewThemeCss(): string
+    {
+        $css = $this->previewThemeCss instanceof Closure
+            ? (string) ($this->previewThemeCss)()
+            : $this->previewThemeCss;
+
+        return str_replace('<', '', $css);
+    }
+
+    /**
      * Clear all custom UI settings
      */
     public function clear(): self
@@ -176,6 +262,8 @@ class PageBuilderUIService
         $this->templateGalleryUrl = '';
         $this->liveEdit = false;
         $this->liveEditToggleExpression = '';
+        $this->previewThemeName = '';
+        $this->previewThemeCss = '';
 
         return $this;
     }

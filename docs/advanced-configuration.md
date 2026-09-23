@@ -175,6 +175,27 @@ The `page-builder-localization` middleware switches Laravel's locale to the user
 
 ---
 
+## Previewing the editor in your site's theme
+
+The editor chrome is deliberately neutral, but the preview canvas is supposed to be a piece of your site. Tell it which daisyUI theme your pages render with, from a service provider:
+
+```php
+app(PageBuilderUIService::class)->setPreviewTheme(
+    name: fn () => app_color_theme(),          // e.g. 'dark', or your own theme's name
+    css: fn () => app_custom_theme_styles(),   // '--color-primary: …; --radius-field: …;'
+);
+```
+
+Pass closures, not strings, if the answer can change per request — a multi-tenant host has a different theme on every domain.
+
+Both arguments matter, because a theme comes in two shapes. A built-in daisyUI theme only needs its `name`: the package puts it in `data-theme` and daisyUI's own rule supplies the palette. A theme you defined yourself matches no rule by name, so its declarations have to travel too — pass them as bare declarations, with no selector and no braces (strip the `@plugin "daisyui/theme" { … }` wrapper and its `name:` / `color-scheme:` meta lines).
+
+Registering nothing leaves the editor exactly as it was: no attribute, no injected CSS.
+
+What gets themed is every element the package marks with `data-pb-theme`: the preview canvas, the colour picker's current-value swatch and its Theme Colors grid. The toolbar and the properties panel are not, on purpose — they are the editor's own UI, and a dark site theme would otherwise leave them unreadable.
+
+---
+
 ## Publishing & overriding views
 
 The service provider exposes three publish tags. None of them are mandatory — the package falls back to its bundled versions for any view you haven't published.

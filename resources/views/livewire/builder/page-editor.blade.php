@@ -1067,7 +1067,11 @@
                      design width, so blocks still render their desktop/tablet layout. --}}
                 <div x-ref="previewViewport" class="w-full box-border"
                     :style="previewScale < 1 ? `height: ${previewFitHeight + 40}px; padding-top: 20px; padding-bottom: 20px; overflow: hidden;` : ''">
-                    <div x-ref="previewCanvas" class="mx-auto @container"
+                    {{-- data-pb-theme + data-theme make this a piece of the host's site rather than a
+                         piece of the editor: daisyUI paints any [data-theme] element with the theme's
+                         own background and base-content, so the canvas matches the live page instead
+                         of showing the grey gutter through the gaps between rows. --}}
+                    <div x-ref="previewCanvas" {!! $previewThemeAttributes !!} class="mx-auto @container"
                         :class="{
                             'w-[375px]': deviceMode === 'mobile',
                             'w-[768px]': deviceMode === 'tablet',
@@ -1086,6 +1090,19 @@
             </main>
         </div>
     </div>
+    @if ($previewThemeCss)
+        {{-- The host's own theme, for the surfaces that stand in for its site: the canvas here and
+             the colour swatches in the picker. Unlayered on purpose - daisyUI ships its themes in
+             @layer base, and an unlayered rule outranks every layered one whatever its specificity,
+             which is how the host's own layout wins on the real page too. Only the element carrying
+             the attribute is redeclared, so a block that forces its own data-theme still wins inside
+             its own subtree: a declaration on an element always beats an inherited value. --}}
+        <style>
+            [data-pb-theme] {
+                {!! $previewThemeCss !!}
+            }
+        </style>
+    @endif
     <style>
         /* Convert fixed positioning to absolute within the page builder design area */
         .builder-block .fixed {

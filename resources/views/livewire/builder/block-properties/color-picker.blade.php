@@ -97,7 +97,11 @@
         <div class="flex items-center gap-2">
             <button type="button" x-ref="trigger" @click="togglePopover()"
                 class="color-picker-button flex items-center gap-2 p-2 border border-gray-300 bg-white rounded w-full dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200">
-                <div class="w-6 h-6 shrink-0 rounded border border-gray-300 dark:border-gray-600 overflow-hidden"
+                {{-- The swatch names the host's theme so `bg-primary` here is the store's primary,
+                     not daisyUI's. A utility outranks the theme's own background, so the class still
+                     wins on this element. --}}
+                <div {!! $previewThemeAttributes !!}
+                    class="w-6 h-6 shrink-0 rounded border border-gray-300 dark:border-gray-600 overflow-hidden"
                     :class="getColorClass(currentValue)" :style="getColorStyle(currentValue)">
                 </div>
                 <span class="text-xs font-mono truncate flex-1 text-left text-gray-600 dark:text-gray-400"
@@ -151,7 +155,10 @@
                             <div class="mb-2">
                                 <h4 class="text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
                                     {{ __(ucfirst($colorGroup)) }}</h4>
-                                <div class="grid grid-cols-4 gap-1">
+                                {{-- Themed per grid, not per tab: the swatches and their labels become a
+                                     strip of the host's site, while the group headings stay part of the
+                                     editor's own panel. --}}
+                                <div {!! $previewThemeAttributes !!} class="grid grid-cols-4 gap-1 rounded-sm">
                                     @foreach ($colors as $color)
                                         <button wire:click="selectColor('{{ $color }}'); $dispatch('color-selected')"
                                             @color-selected.window="closePopover()"

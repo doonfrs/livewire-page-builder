@@ -10,6 +10,7 @@ use Livewire\WithFileUploads;
 use Trinavo\LivewirePageBuilder\Models\BuilderPage;
 use Trinavo\LivewirePageBuilder\Models\Theme;
 use Trinavo\LivewirePageBuilder\Services\PageBuilderService;
+use Trinavo\LivewirePageBuilder\Services\PageBuilderUIService;
 use Trinavo\LivewirePageBuilder\Services\ThemeService;
 use Trinavo\LivewirePageBuilder\Support\ThemeResolver;
 
@@ -2593,10 +2594,15 @@ class PageEditor extends Component
         // Group blocks by row for the tree view
         $groupedPageBlocks = $this->getGroupedPageBlocks();
 
+        // The host site's theme, so the canvas previews the page the way it renders live.
+        $ui = app(PageBuilderUIService::class);
+
         return view('page-builder::livewire.builder.page-editor', [
             'formattedBlocks' => $formattedBlocks,
             'allPageBlocks' => $allPageBlocks,
             'groupedPageBlocks' => $groupedPageBlocks,
+            'previewThemeAttributes' => $ui->getPreviewThemeAttributes(),
+            'previewThemeCss' => $ui->getPreviewThemeCss(),
         ])->layout('page-builder::layouts.app');
     }
 

@@ -3,6 +3,7 @@
 namespace Trinavo\LivewirePageBuilder\Http\Livewire\BlockProperties;
 
 use Livewire\Component;
+use Trinavo\LivewirePageBuilder\Services\PageBuilderUIService;
 use Trinavo\LivewirePageBuilder\Support\Concerns\DispatchesBlockPropertyUpdate;
 
 class ColorPicker extends Component
@@ -156,6 +157,11 @@ class ColorPicker extends Component
 
     public function render()
     {
-        return view('page-builder::livewire.builder.block-properties.color-picker');
+        return view('page-builder::livewire.builder.block-properties.color-picker', [
+            // A swatch has to show the colour the visitor will get. The popover is
+            // teleported to <body> and the trigger sits in the panel, so neither
+            // inherits the canvas theme and both have to name it themselves.
+            'previewThemeAttributes' => app(PageBuilderUIService::class)->getPreviewThemeAttributes(),
+        ]);
     }
 }
