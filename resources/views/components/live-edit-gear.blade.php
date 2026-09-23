@@ -29,13 +29,23 @@
              font-size:initial escapes the wrapper's font-size:0. Anchored physically left rather than
              `start`, so the corner it occupies does not move between LTR and RTL - a block only has
              to keep one corner clear instead of both.
-             The inset is 1.5 rather than 1 because this button hangs on the block's wrapper while
-             a host's own gear hangs on whatever box the block draws inside it. At 1 the two read
-             as different margins and this one rides a rounded corner; at 2 it sits too far in.
+             Offset OUTWARDS, so its centre sits on the wrapper's top-left corner and only a
+             quarter of it lands inside the block. A wrapper is only as big as its block, and in
+             a header assembled from atomic blocks that is a single icon - so a gear inset INTO
+             the corner sat on top of the logo, the search and the account icon, and at z-40 it
+             took their clicks too.
+             Revealing it on hover instead was wrong twice over: there is no hover on a phone,
+             so the gears became unreachable there, and while revealed it still covered the
+             thing it was pointing at.
+             Fixed at 20px rather than sized as a daisyUI btn-xs: that takes its height from
+             --size-field, which the host scales by its text scale, so on a store with larger type
+             the gears grew and in a header bar of icon-sized blocks they covered the menu beside
+             them. A marker has to be the same size everywhere. No shadow, for the same reason: it
+             should read as a badge on the design rather than another button in it.
              The circle, border, background and colours are deliberately the host's own edit gear,
              down to the opacities: the two sit side by side in a menu row and have to read as one
              set of controls rather than two. Change them together or not at all. --}}
-        class="btn btn-circle btn-xs align-middle border-base-300 bg-base-100 text-base-content/30 shadow-sm hover:text-base-content/70 hover:bg-base-200 {{ $floating ? 'absolute top-1.5 left-1.5 z-40' : 'inline-flex' }}"
+        class="inline-flex items-center justify-center rounded-full h-5 w-5 p-0 align-middle border border-base-300 bg-base-100 cursor-pointer transition text-base-content/30 hover:text-base-content/70 hover:bg-base-200 {{ $floating ? 'absolute -top-2.5 -left-2.5 z-40' : '' }}"
         {{-- x-data makes the button an Alpine root. It lives in the row wrapper, outside every
              component's own x-data, and an x-cloak Alpine never processes is a permanently
              invisible button. --}}
@@ -45,11 +55,11 @@
              settings cogs right next to it, so the two have to be told apart at a glance while
              still reading as the same family. Outline, to match the stroked cog: a solid glyph
              beside a stroked one reads as two different kinds of button.
-             Drawn at 12px where the cog is 16px, because the wrench is a diagonal that reaches the
-             corners of its box while the cog is a compact round shape. At a matching 16px its tips
+             Drawn at 10px where the cog is 12px, because the wrench is a diagonal that reaches the
+             corners of its box while the cog is a compact round shape. At a matching size its tips
              touch the circle and the button looks unpadded. The stroke is widened to make up for
              the smaller box - as a class, since the SVG's own stroke-width attribute would
              otherwise win. --}}
-        <x-heroicon-o-wrench class="h-3 w-3 [stroke-width:2]" />
+        <x-heroicon-o-wrench class="h-2.5 w-2.5 [stroke-width:2]" />
     </button>
 @endif
