@@ -792,9 +792,9 @@ class PageBuilderService
 
     /**
      * Resolve a color value to a CSS-usable string.
-     * Hex/rgb values pass through. DaisyUI class names are converted to oklch CSS variable references.
+     * Hex/rgb values pass through. daisyUI role names become var(--color-<role>).
      */
-    protected function resolveColorToCss(string $color): string
+    public function resolveColorToCss(string $color): string
     {
         $color = $this->sanitizeCssColor($color) ?? 'transparent';
 
@@ -802,32 +802,34 @@ class PageBuilderService
             return $color;
         }
 
-        // Map DaisyUI semantic color names to their CSS variable names
-        $daisyUiMap = [
-            'primary' => '--p',
-            'primary-content' => '--pc',
-            'secondary' => '--s',
-            'secondary-content' => '--sc',
-            'accent' => '--a',
-            'accent-content' => '--ac',
-            'neutral' => '--n',
-            'neutral-content' => '--nc',
-            'base-100' => '--b1',
-            'base-200' => '--b2',
-            'base-300' => '--b3',
-            'base-content' => '--bc',
-            'info' => '--in',
-            'info-content' => '--inc',
-            'success' => '--su',
-            'success-content' => '--suc',
-            'warning' => '--wa',
-            'warning-content' => '--wac',
-            'error' => '--er',
-            'error-content' => '--erc',
+        /*
+         * daisyUI 5 publishes every palette role as a COMPLETE colour in
+         * --color-<role>, so the reference is the variable on its own.
+         *
+         * This used to emit daisyUI 4's short names wrapped in oklch() -
+         * oklch(var(--p)) - because in v4 those variables carried bare oklch
+         * components. Under daisyUI 5 --p does not exist at all, so that
+         * expression is unparseable and the browser drops the whole
+         * declaration: a gradient or a text colour picked by NAME rendered as
+         * nothing whatsoever, while the same colour picked as hex worked. It
+         * went unnoticed because every shipped theme writes its gradients in
+         * hex; the semantic names are what a merchant reaches for in the
+         * colour picker.
+         */
+        $daisyUiRoles = [
+            'primary', 'primary-content',
+            'secondary', 'secondary-content',
+            'accent', 'accent-content',
+            'neutral', 'neutral-content',
+            'base-100', 'base-200', 'base-300', 'base-content',
+            'info', 'info-content',
+            'success', 'success-content',
+            'warning', 'warning-content',
+            'error', 'error-content',
         ];
 
-        if (isset($daisyUiMap[$color])) {
-            return 'oklch(var('.$daisyUiMap[$color].'))';
+        if (in_array($color, $daisyUiRoles, true)) {
+            return "var(--color-{$color})";
         }
 
         // Fallback: return as-is (could be a raw CSS value)
@@ -837,7 +839,7 @@ class PageBuilderService
     /**
      * Convert gradient direction shorthand to CSS linear-gradient direction.
      */
-    protected function gradientDirectionToCss(string $direction): string
+    public function gradientDirectionToCss(string $direction): string
     {
         $map = [
             'to-t' => 'to top',
