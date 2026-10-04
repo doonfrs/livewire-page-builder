@@ -9,6 +9,7 @@ use Trinavo\LivewirePageBuilder\Events\DefaultThemeSet;
 use Trinavo\LivewirePageBuilder\Exceptions\ThemeImportException;
 use Trinavo\LivewirePageBuilder\Models\Setting;
 use Trinavo\LivewirePageBuilder\Models\Theme;
+use Trinavo\LivewirePageBuilder\Services\PageBuilderUIService;
 use Trinavo\LivewirePageBuilder\Services\ThemeService;
 
 class ThemeManager extends Component
@@ -189,7 +190,15 @@ class ThemeManager extends Component
      */
     public function confirmSetDefaultTheme($themeId)
     {
-        $this->themeToSetDefault = Theme::find($themeId);
+        $theme = Theme::find($themeId);
+
+        if ($theme && $this->ui()->isThemeLocked($theme)) {
+            $this->dispatch('notify', message: __('This theme is locked and cannot be set as default.'), type: 'error');
+
+            return;
+        }
+
+        $this->themeToSetDefault = $theme;
         $this->showDefaultModal = true;
     }
 
@@ -199,6 +208,15 @@ class ThemeManager extends Component
     public function setDefaultTheme()
     {
         if (! $this->themeToSetDefault) {
+            return;
+        }
+
+        // Re-checked here: the confirm step is a separate request, and a
+        // Livewire action stays callable with its button hidden.
+        if ($this->ui()->isThemeLocked($this->themeToSetDefault)) {
+            $this->closeDefaultModal();
+            $this->dispatch('notify', message: __('This theme is locked and cannot be set as default.'), type: 'error');
+
             return;
         }
 
@@ -268,6 +286,8 @@ class ThemeManager extends Component
 
     public function exportTheme($themeId)
     {
+        $this->authorizeTransfer();
+
         $themeService = $this->getThemeService();
         $theme = Theme::find($themeId);
 
@@ -330,6 +350,8 @@ class ThemeManager extends Component
 
     public function openImportModal()
     {
+        $this->authorizeTransfer();
+
         $this->showImportModal = true;
         $this->resetForm();
         $this->resetValidation();
@@ -446,6 +468,8 @@ class ThemeManager extends Component
 
     public function importTheme()
     {
+        $this->authorizeTransfer();
+
         $this->validate([
             'importFile' => 'required|file|max:10240', // 10MB max, no mime restriction to support encrypted files
         ]);
@@ -473,6 +497,20 @@ class ThemeManager extends Component
         }
     }
 
+    /**
+     * Export and import are refused outright when the host forbids them, not
+     * just hidden: a Livewire action stays callable without its button.
+     */
+    private function authorizeTransfer(): void
+    {
+        abort_unless($this->ui()->canTransferThemes(), 403);
+    }
+
+    private function ui(): PageBuilderUIService
+    {
+        return app(PageBuilderUIService::class);
+    }
+
     private function resetForm()
     {
         $this->name = '';
@@ -481,7 +519,7 @@ class ThemeManager extends Component
 
     public function render()
     {
-        $uiService = app(\Trinavo\LivewirePageBuilder\Services\PageBuilderUIService::class);
+        $uiService = $this->ui();
 
         // Get custom header HTML from UI service
         $customHeaderHtml = $uiService->getCustomThemeManagerHeaderHtml();
@@ -489,8 +527,16 @@ class ThemeManager extends Component
         // Get template gallery URL from UI service
         $templateGalleryUrl = $uiService->getTemplateGalleryUrl();
 
+        // Locked themes and where each one unlocks, keyed by id.
+        $lockedThemes = Theme::all()
+            ->filter(fn (Theme $theme) => $uiService->isThemeLocked($theme))
+            ->mapWithKeys(fn (Theme $theme) => [$theme->id => $uiService->getThemeUnlockUrl($theme)])
+            ->all();
+
         return view('page-builder::livewire.theme-manager', [
             'selectedTheme' => $this->selectedTheme,
+            'canTransferThemes' => $uiService->canTransferThemes(),
+            'lockedThemes' => $lockedThemes,
             'customHeaderHtml' => $customHeaderHtml,
             'templateGalleryUrl' => $templateGalleryUrl,
         ])->layout('page-builder::layouts.app');

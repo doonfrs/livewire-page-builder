@@ -576,19 +576,21 @@
 
                         @if ($currentTheme)
                             <div class="py-1 border-t border-gray-100 dark:border-gray-700 lg:border-t-0">
-                                <!-- Export Theme -->
-                                <button wire:click="exportTheme" @click="open = false"
-                                    class="flex items-center w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
-                                    <x-heroicon-o-arrow-down-tray class="w-4 h-4 me-3" />
-                                    {{ __('Export Theme') }}
-                                </button>
+                                @if ($canTransferThemes)
+                                    <!-- Export Theme -->
+                                    <button wire:click="exportTheme" @click="open = false"
+                                        class="flex items-center w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                        <x-heroicon-o-arrow-down-tray class="w-4 h-4 me-3" />
+                                        {{ __('Export Theme') }}
+                                    </button>
 
-                                <!-- Import Theme -->
-                                <button @click="showImportConfirmModal = true; open = false"
-                                    class="flex items-center w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
-                                    <x-heroicon-o-arrow-up-tray class="w-4 h-4 me-3" />
-                                    {{ __('Import Theme') }}
-                                </button>
+                                    <!-- Import Theme -->
+                                    <button @click="showImportConfirmModal = true; open = false"
+                                        class="flex items-center w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                        <x-heroicon-o-arrow-up-tray class="w-4 h-4 me-3" />
+                                        {{ __('Import Theme') }}
+                                    </button>
+                                @endif
 
                                 <!-- Theme Settings (host-defined fields) -->
                                 @if (!empty($this->themeSettingsSchema()))
@@ -683,6 +685,7 @@
             </div>
         </div>
 
+        @if ($canTransferThemes)
         <!-- Import Theme Confirmation Modal -->
         <div x-show="showImportConfirmModal"
             class="fixed inset-0 z-53 flex items-center justify-center bg-black/40" style="display: none;"
@@ -947,6 +950,7 @@
                     </div>
                 </div>
             </div>
+        @endif
         @endif
 
         <!-- Theme Selector Modal -->

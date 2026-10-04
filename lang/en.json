@@ -451,5 +451,8 @@
     "Space Evenly": "Space Evenly",
     "Stretch": "Stretch",
     "Wrap": "Wrap",
-    "Wrap Reverse": "Wrap Reverse"
+    "Wrap Reverse": "Wrap Reverse",
+    "Locked": "Locked",
+    "Unlock": "Unlock",
+    "This theme is locked and cannot be set as default.": "This theme is locked and cannot be set as default."
 }

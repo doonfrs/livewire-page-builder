@@ -2330,6 +2330,8 @@ class PageEditor extends Component
      */
     public function exportTheme()
     {
+        abort_unless(app(PageBuilderUIService::class)->canTransferThemes(), 403);
+
         if (! $this->themeId || ! $this->currentTheme) {
             $this->dispatch('notify',
                 message: __('No theme selected'),
@@ -2390,6 +2392,8 @@ class PageEditor extends Component
      */
     public function parseImportFile(): void
     {
+        abort_unless(app(PageBuilderUIService::class)->canTransferThemes(), 403);
+
         $this->validate([
             'importFile' => 'required|file|max:10240', // 10MB max
         ]);
@@ -2501,6 +2505,8 @@ class PageEditor extends Component
      */
     public function importThemePages(): void
     {
+        abort_unless(app(PageBuilderUIService::class)->canTransferThemes(), 403);
+
         if (empty($this->importedPagesData)) {
             $this->dispatch('notify',
                 message: __('No pages to import'),
@@ -2603,6 +2609,7 @@ class PageEditor extends Component
             'groupedPageBlocks' => $groupedPageBlocks,
             'previewThemeAttributes' => $ui->getPreviewThemeAttributes(),
             'previewThemeCss' => $ui->getPreviewThemeCss(),
+            'canTransferThemes' => $ui->canTransferThemes(),
         ])->layout('page-builder::layouts.app');
     }
 

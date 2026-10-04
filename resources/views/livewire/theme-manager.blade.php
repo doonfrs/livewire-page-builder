@@ -32,11 +32,13 @@
                     </a>
                 @endif
 
-                <button wire:click="openImportModal" title="{{ __('Import Theme') }}"
-                    class="inline-flex items-center px-2 sm:px-3 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-sm font-medium rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 focus:ring-2 focus:ring-pink-200 transition">
-                    <x-heroicon-o-arrow-up-tray class="w-5 h-5 sm:mr-1 sm:ml-1" />
-                    <span class="hidden sm:inline">{{ __('Import Theme') }}</span>
-                </button>
+                @if ($canTransferThemes)
+                    <button wire:click="openImportModal" title="{{ __('Import Theme') }}"
+                        class="inline-flex items-center px-2 sm:px-3 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-sm font-medium rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 focus:ring-2 focus:ring-pink-200 transition">
+                        <x-heroicon-o-arrow-up-tray class="w-5 h-5 sm:mr-1 sm:ml-1" />
+                        <span class="hidden sm:inline">{{ __('Import Theme') }}</span>
+                    </button>
+                @endif
                 <button wire:click="openCreateModal" title="{{ __('Create Theme') }}"
                     class="inline-flex items-center px-2 sm:px-3 py-2 bg-pink-600 hover:bg-pink-700 text-white text-sm font-medium rounded-md focus:ring-2 focus:ring-pink-200 transition">
                     <x-heroicon-o-plus class="w-5 h-5 sm:mr-1" />
@@ -123,6 +125,12 @@
                                                     <x-heroicon-o-star class="w-3 h-3 mr-1 ml-1" />
                                                     {{ __('Default') }}
                                                 </span>
+                                            @elseif (array_key_exists($theme['id'], $lockedThemes))
+                                                <span
+                                                    class="ml-2 inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-400">
+                                                    <x-heroicon-o-lock-closed class="w-3 h-3 mr-1 ml-1" />
+                                                    {{ __('Locked') }}
+                                                </span>
                                             @endif
                                         </div>
                                     </div>
@@ -184,12 +192,22 @@
                                                         <x-heroicon-o-document-duplicate class="w-4 h-4 text-green-500 dark:text-green-400" />
                                                         {{ __('Clone') }}
                                                     </button>
-                                                    <button wire:click="exportTheme({{ $theme['id'] }})" @click="open = false"
-                                                        class="flex items-center gap-2.5 w-full px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-                                                        <x-heroicon-o-arrow-down-tray class="w-4 h-4 text-blue-500 dark:text-blue-400" />
-                                                        {{ __('Export') }}
-                                                    </button>
-                                                    @if ($defaultThemeId != $theme['id'])
+                                                    @if ($canTransferThemes)
+                                                        <button wire:click="exportTheme({{ $theme['id'] }})" @click="open = false"
+                                                            class="flex items-center gap-2.5 w-full px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                                                            <x-heroicon-o-arrow-down-tray class="w-4 h-4 text-blue-500 dark:text-blue-400" />
+                                                            {{ __('Export') }}
+                                                        </button>
+                                                    @endif
+                                                    @if ($defaultThemeId != $theme['id'] && array_key_exists($theme['id'], $lockedThemes))
+                                                        @if ($lockedThemes[$theme['id']] !== '')
+                                                            <a href="{{ $lockedThemes[$theme['id']] }}"
+                                                                class="flex items-center gap-2.5 w-full px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                                                                <x-heroicon-o-lock-open class="w-4 h-4 text-amber-500 dark:text-amber-400" />
+                                                                {{ __('Unlock') }}
+                                                            </a>
+                                                        @endif
+                                                    @elseif ($defaultThemeId != $theme['id'])
                                                         <button wire:click="confirmSetDefaultTheme({{ $theme['id'] }})" @click="open = false"
                                                             class="flex items-center gap-2.5 w-full px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
                                                             <x-heroicon-o-star class="w-4 h-4 text-yellow-500 dark:text-yellow-400" />
@@ -546,6 +564,7 @@
             </div>
         </div>
 
+        @if ($canTransferThemes)
         <!-- Import Theme Modal -->
         <div x-data="{ show: $wire.entangle('showImportModal') }" x-show="show" x-cloak class="fixed inset-0 z-50 overflow-y-auto"
             aria-labelledby="modal-title" role="dialog" aria-modal="true">
@@ -622,6 +641,7 @@
                 </div>
             </div>
         </div>
+        @endif
 
         <!-- Clone Theme Modal -->
         <div x-data="{ show: $wire.entangle('showCloneModal') }" x-show="show" x-cloak class="fixed inset-0 z-50 overflow-y-auto"

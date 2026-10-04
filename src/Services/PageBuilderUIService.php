@@ -3,6 +3,7 @@
 namespace Trinavo\LivewirePageBuilder\Services;
 
 use Closure;
+use Trinavo\LivewirePageBuilder\Models\Theme;
 
 class PageBuilderUIService
 {
@@ -43,6 +44,21 @@ class PageBuilderUIService
      * daisyUI does not ship, injected on the same surfaces.
      */
     private string|Closure $previewThemeCss = '';
+
+    /**
+     * Whether themes may leave or enter the site as files (export and import).
+     */
+    private bool|Closure $themeTransfer = true;
+
+    /**
+     * Decides whether a theme may not be made the default. Receives the Theme.
+     */
+    private ?Closure $themeLock = null;
+
+    /**
+     * Where a locked theme can be unlocked. Receives the Theme.
+     */
+    private string|Closure $themeUnlockUrl = '';
 
     /**
      * Set custom HTML to be rendered in the page editor header
@@ -253,6 +269,71 @@ class PageBuilderUIService
     }
 
     /**
+     * Allow or forbid moving themes in and out of the site as files.
+     *
+     * Covers the Theme Manager's export and import and the page editor's export
+     * and page import. Allowed unless the host says otherwise:
+     *
+     *     app(PageBuilderUIService::class)
+     *         ->allowThemeTransfer(fn () => Auth::user()?->can('transfer-themes'));
+     *
+     * The closure is resolved on every check, never memoised: this service is a
+     * container singleton, so a cached answer would leak between users.
+     *
+     * @param  bool|Closure  $allowed  Static flag, or a closure resolved on every check
+     */
+    public function allowThemeTransfer(bool|Closure $allowed = true): self
+    {
+        $this->themeTransfer = $allowed;
+
+        return $this;
+    }
+
+    public function canTransferThemes(): bool
+    {
+        if ($this->themeTransfer instanceof Closure) {
+            return (bool) ($this->themeTransfer)();
+        }
+
+        return $this->themeTransfer;
+    }
+
+    /**
+     * Keep some themes from being made the default, and say where they unlock.
+     *
+     * A locked theme can still be edited, previewed and cloned; it just cannot
+     * go live. The Theme Manager shows it with a lock and an unlock link in
+     * place of "Set as Default", and refuses the change server-side.
+     *
+     *     app(PageBuilderUIService::class)->lockThemes(
+     *         fn (Theme $theme) => ! $plan->includes($theme),
+     *         fn (Theme $theme) => route('plans'),
+     *     );
+     *
+     * @param  Closure|null  $isLocked  fn (Theme): bool, or null to lock nothing
+     * @param  string|Closure  $unlockUrl  URL, or fn (Theme): string
+     */
+    public function lockThemes(?Closure $isLocked, string|Closure $unlockUrl = ''): self
+    {
+        $this->themeLock = $isLocked;
+        $this->themeUnlockUrl = $unlockUrl;
+
+        return $this;
+    }
+
+    public function isThemeLocked(Theme $theme): bool
+    {
+        return $this->themeLock !== null && (bool) ($this->themeLock)($theme);
+    }
+
+    public function getThemeUnlockUrl(Theme $theme): string
+    {
+        return $this->themeUnlockUrl instanceof Closure
+            ? (string) ($this->themeUnlockUrl)($theme)
+            : $this->themeUnlockUrl;
+    }
+
+    /**
      * Clear all custom UI settings
      */
     public function clear(): self
@@ -264,6 +345,9 @@ class PageBuilderUIService
         $this->liveEditToggleExpression = '';
         $this->previewThemeName = '';
         $this->previewThemeCss = '';
+        $this->themeTransfer = true;
+        $this->themeLock = null;
+        $this->themeUnlockUrl = '';
 
         return $this;
     }
