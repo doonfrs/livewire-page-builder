@@ -249,6 +249,7 @@
     "Are you sure you want to set": "هل أنت متأكد من أنك تريد تعيين",
     "Are you sure you want to copy components from": "هل أنت متأكد من أنك تريد نسخ مكونات من",
     "Cannot delete the default theme": "لا يمكن حذف المظهر الافتراضي",
+    "This theme cannot be deleted": "لا يمكن حذف هذا المظهر",
     "Error creating theme": "خطأ في إنشاء المظهر",
     "Error updating theme": "خطأ في تحديث المظهر",
     "Error deleting theme": "خطأ في حذف المظهر",

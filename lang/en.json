@@ -244,6 +244,7 @@
     "Are you sure you want to set": "Are you sure you want to set",
     "Are you sure you want to copy components from": "Are you sure you want to copy components from",
     "Cannot delete the default theme": "Cannot delete the default theme",
+    "This theme cannot be deleted": "This theme cannot be deleted",
     "Error creating theme": "Error creating theme",
     "Error updating theme": "Error updating theme",
     "Error deleting theme": "Error deleting theme",

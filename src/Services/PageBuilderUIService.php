@@ -72,6 +72,16 @@ class PageBuilderUIService
     private string|Closure $themeUnlockLabel = '';
 
     /**
+     * Decides whether a theme may not be deleted. Receives the Theme.
+     */
+    private ?Closure $themeProtection = null;
+
+    /**
+     * Why a protected theme cannot be deleted. Receives the Theme.
+     */
+    private string|Closure $themeProtectedMessage = '';
+
+    /**
      * Turns a theme's stored preview image URL into the one a card displays.
      * Receives the URL.
      */
@@ -385,6 +395,44 @@ class PageBuilderUIService
         ];
     }
 
+    /**
+     * Keep some themes from being deleted, e.g. the one a site falls back to.
+     *
+     * A protected theme keeps its Delete item. Pressing it shows the host's
+     * message instead of the confirmation, and a delete that arrives anyway is
+     * refused server-side:
+     *
+     *     app(PageBuilderUIService::class)->protectThemes(
+     *         isProtected: fn (Theme $theme) => $theme->id === $fallbackThemeId,
+     *         message: __('Your site falls back to this theme, so it cannot be deleted.'),
+     *     );
+     *
+     * The default theme can never be deleted, whatever this says. The closures
+     * run only when Delete is pressed, never for every theme in the list.
+     *
+     * @param  Closure|null  $isProtected  fn (Theme): bool, or null to protect nothing
+     * @param  string|Closure  $message  Text, or fn (Theme): string
+     */
+    public function protectThemes(?Closure $isProtected, string|Closure $message = ''): self
+    {
+        $this->themeProtection = $isProtected;
+        $this->themeProtectedMessage = $message;
+
+        return $this;
+    }
+
+    public function isThemeProtected(Theme $theme): bool
+    {
+        return $this->themeProtection !== null && (bool) ($this->themeProtection)($theme);
+    }
+
+    public function getThemeProtectedMessage(Theme $theme): string
+    {
+        $message = $this->resolveForTheme($this->themeProtectedMessage, $theme);
+
+        return $message !== '' ? $message : __('This theme cannot be deleted');
+    }
+
     private function resolveForTheme(string|Closure $value, Theme $theme): string
     {
         return $value instanceof Closure ? (string) $value($theme) : $value;
@@ -436,6 +484,8 @@ class PageBuilderUIService
         $this->themeLockedTitle = '';
         $this->themeLockedMessage = '';
         $this->themeUnlockLabel = '';
+        $this->themeProtection = null;
+        $this->themeProtectedMessage = '';
         $this->themePreviewImage = null;
 
         return $this;

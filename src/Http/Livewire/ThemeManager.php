@@ -179,7 +179,13 @@ class ThemeManager extends Component
 
     public function openDeleteModal($themeId)
     {
-        $this->themeToDelete = Theme::find($themeId);
+        $theme = Theme::find($themeId);
+
+        if ($theme && $this->refuseDelete($theme)) {
+            return;
+        }
+
+        $this->themeToDelete = $theme;
         $this->showDeleteModal = true;
     }
 
@@ -274,9 +280,9 @@ class ThemeManager extends Component
             return;
         }
 
-        // Check if this is the default theme
-        if ($this->themeToDelete->id == $this->defaultThemeId) {
-            $this->dispatch('notify', message: __('Cannot delete the default theme'), type: 'error');
+        // Re-checked here: the confirm step is a separate request, and a
+        // Livewire action stays callable without its button.
+        if ($this->refuseDelete($this->themeToDelete)) {
             $this->closeDeleteModal();
 
             return;
@@ -306,6 +312,28 @@ class ThemeManager extends Component
     {
         $this->showDeleteModal = false;
         $this->themeToDelete = null;
+    }
+
+    /**
+     * Say why a theme cannot be deleted, if it cannot: it is the default theme,
+     * or the host protects it. Read fresh, since another tab may have changed
+     * the default since this page loaded.
+     */
+    private function refuseDelete(Theme $theme): bool
+    {
+        $message = match (true) {
+            $theme->id === Setting::getDefaultThemeId() => __('Cannot delete the default theme'),
+            $this->ui()->isThemeProtected($theme) => $this->ui()->getThemeProtectedMessage($theme),
+            default => null,
+        };
+
+        if ($message === null) {
+            return false;
+        }
+
+        $this->dispatch('notify', message: $message, type: 'warning');
+
+        return true;
     }
 
     public function exportTheme($themeId)
