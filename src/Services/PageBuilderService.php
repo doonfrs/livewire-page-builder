@@ -520,7 +520,7 @@ class PageBuilderService
         // Skip text class when text gradient is active (inline style handles it)
         $hasTextGradient = ! empty($properties['textGradientFrom']) && ! empty($properties['textGradientTo']);
         if ($textColor && ! $hasTextGradient) {
-            if (! str_starts_with($textColor, '#') && ! str_starts_with($textColor, 'rgb')) {
+            if (! $this->isInlineColor($textColor)) {
                 $classes[] = "text-$textColor";
             }
         }
@@ -528,7 +528,7 @@ class PageBuilderService
         // Skip bg class when background gradient is active (inline style handles it)
         $hasBgGradient = ! empty($properties['backgroundGradientFrom']) && ! empty($properties['backgroundGradientTo']);
         if ($backgroundColor && ! $hasBgGradient) {
-            if (! str_starts_with($backgroundColor, '#') && ! str_starts_with($backgroundColor, 'rgb')) {
+            if (! $this->isInlineColor($backgroundColor)) {
                 $classes[] = "bg-$backgroundColor";
             }
         }
@@ -659,9 +659,9 @@ class PageBuilderService
             $styles[] = '-webkit-background-clip: text';
             $styles[] = '-webkit-text-fill-color: transparent';
             $styles[] = 'background-clip: text';
-        } elseif ($textColor) {
+        } elseif ($textColor && $this->isInlineColor($textColor)) {
             $sanitized = $this->sanitizeCssColor($textColor);
-            if ($sanitized !== null && (str_starts_with($sanitized, '#') || str_starts_with($sanitized, 'rgb'))) {
+            if ($sanitized !== null) {
                 $styles[] = "color: $sanitized";
             }
         }
@@ -672,9 +672,9 @@ class PageBuilderService
             $cssDirection = $this->gradientDirectionToCss($bgGradientDirection);
             $styles[] = "background: linear-gradient($cssDirection, $fromCss, $toCss)";
         } else {
-            if ($backgroundColor) {
+            if ($backgroundColor && $this->isInlineColor($backgroundColor)) {
                 $sanitized = $this->sanitizeCssColor($backgroundColor);
-                if ($sanitized !== null && (str_starts_with($sanitized, '#') || str_starts_with($sanitized, 'rgb'))) {
+                if ($sanitized !== null) {
                     $styles[] = "background-color: $sanitized";
                 }
             }
@@ -712,6 +712,17 @@ class PageBuilderService
         }
 
         return $styleString;
+    }
+
+    /**
+     * Whether a color is rendered as an inline style rather than a class.
+     * Hex and rgb values go inline; everything else (a daisyUI name, with or
+     * without an opacity suffix such as `base-content/70`) becomes a `text-*`
+     * or `bg-*` class, so it never reaches the inline sanitizer.
+     */
+    protected function isInlineColor(string $color): bool
+    {
+        return str_starts_with($color, '#') || str_starts_with($color, 'rgb');
     }
 
     /**
