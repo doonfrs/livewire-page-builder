@@ -40,8 +40,6 @@ class ThemeManager extends Component
 
     public $editingTheme = null;
 
-    public $selectedTheme = null;
-
     public $themeToDelete = null;
 
     public $themeToSetDefault = null;
@@ -81,20 +79,20 @@ class ThemeManager extends Component
     public function loadThemes()
     {
         $defaultThemeId = Setting::getDefaultThemeId();
+        $ui = $this->ui();
+
         $this->themes = Theme::all()
             ->sortBy(fn ($theme) => $theme->id === $defaultThemeId ? 0 : 1)
             ->values()
-            ->toArray();
+            ->map(fn (Theme $theme) => $theme->toArray() + [
+                'preview_image_url' => $ui->getThemePreviewImageUrl($theme->previewImageUrl()),
+            ])
+            ->all();
     }
 
     public function loadDefaultTheme()
     {
         $this->defaultThemeId = Setting::getDefaultThemeId();
-    }
-
-    public function selectTheme($themeId)
-    {
-        $this->selectedTheme = Theme::find($themeId);
     }
 
     public function openCreateModal()
@@ -430,8 +428,11 @@ class ThemeManager extends Component
             return;
         }
 
-        // Set preview theme in session
-        session(['page_builder_preview_theme_id' => $themeId]);
+        // Set preview theme in session; Exit Preview comes back here.
+        session([
+            'page_builder_preview_theme_id' => $themeId,
+            PreviewBar::RETURN_URL_SESSION_KEY => route('page-builder.themes'),
+        ]);
 
         $this->dispatch('notify',
             message: __("Previewing theme ':name'", ['name' => $theme->name]),
@@ -447,7 +448,7 @@ class ThemeManager extends Component
      */
     public function cancelPreview()
     {
-        session()->forget('page_builder_preview_theme_id');
+        session()->forget(['page_builder_preview_theme_id', PreviewBar::RETURN_URL_SESSION_KEY]);
 
         $this->dispatch('notify', message: __('Preview mode cancelled'), type: 'success');
 
@@ -554,7 +555,6 @@ class ThemeManager extends Component
         $templateGalleryUrl = $uiService->getTemplateGalleryUrl();
 
         return view('page-builder::livewire.theme-manager', [
-            'selectedTheme' => $this->selectedTheme,
             'canTransferThemes' => $uiService->canTransferThemes(),
             'customHeaderHtml' => $customHeaderHtml,
             'templateGalleryUrl' => $templateGalleryUrl,

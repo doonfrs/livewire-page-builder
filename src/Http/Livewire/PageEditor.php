@@ -2220,14 +2220,25 @@ class PageEditor extends Component
     }
 
     /**
-     * Host-defined theme settings fields. The package renders these generically
-     * and stays unaware of their meaning. See config/page-builder.php.
+     * The theme settings fields: the package's own preview picture first, then
+     * the host-defined fields, which the package renders generically and stays
+     * unaware of. See config/page-builder.php.
      *
      * @return array<int, array<string, mixed>>
      */
     public function themeSettingsSchema(): array
     {
-        return array_values(config('page-builder.theme_settings', []));
+        return [
+            [
+                'key' => Theme::PREVIEW_IMAGE_SETTING,
+                'label' => 'Preview image URL',
+                'type' => 'url',
+                'placeholder' => 'https://',
+                'rule' => 'url:http,https|max:2048',
+                'group' => 'Theme card',
+            ],
+            ...array_values(config('page-builder.theme_settings', [])),
+        ];
     }
 
     public function openThemeSettingsModal()
@@ -2770,7 +2781,9 @@ class PageEditor extends Component
 
     public function applyLayout(string $layoutPath): void
     {
-        if (! file_exists($layoutPath)) {
+        // The path comes back from the browser, so only a configured layout
+        // may be read: anything else would apply any JSON file on the disk.
+        if (! in_array($layoutPath, config('page-builder.layouts', []), true) || ! file_exists($layoutPath)) {
             return;
         }
 

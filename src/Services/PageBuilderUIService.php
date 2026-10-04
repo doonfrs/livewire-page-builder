@@ -72,6 +72,12 @@ class PageBuilderUIService
     private string|Closure $themeUnlockLabel = '';
 
     /**
+     * Turns a theme's stored preview image URL into the one a card displays.
+     * Receives the URL.
+     */
+    private ?Closure $themePreviewImage = null;
+
+    /**
      * Set custom HTML to be rendered in the page editor header
      *
      * @param  string|Closure  $html  The HTML to render in the header (or a closure that returns HTML)
@@ -385,6 +391,34 @@ class PageBuilderUIService
     }
 
     /**
+     * Change how a theme's preview image is fetched for its card, e.g. to
+     * serve a resized copy of a full-page screenshot:
+     *
+     *     app(PageBuilderUIService::class)
+     *         ->themePreviewImageUsing(fn (string $url) => resize($url, 800, 450));
+     *
+     * The stored URL is never changed, so an exported theme carries the
+     * original. Without a callback the card shows the stored URL as it is.
+     *
+     * @param  Closure|null  $transform  fn (string $url): ?string
+     */
+    public function themePreviewImageUsing(?Closure $transform): self
+    {
+        $this->themePreviewImage = $transform;
+
+        return $this;
+    }
+
+    public function getThemePreviewImageUrl(?string $url): ?string
+    {
+        if ($url === null || $url === '') {
+            return null;
+        }
+
+        return $this->themePreviewImage ? ($this->themePreviewImage)($url) : $url;
+    }
+
+    /**
      * Clear all custom UI settings
      */
     public function clear(): self
@@ -402,6 +436,7 @@ class PageBuilderUIService
         $this->themeLockedTitle = '';
         $this->themeLockedMessage = '';
         $this->themeUnlockLabel = '';
+        $this->themePreviewImage = null;
 
         return $this;
     }

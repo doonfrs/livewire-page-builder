@@ -343,14 +343,14 @@
             x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
             class="fixed inset-0 z-100 flex items-center justify-center bg-gray-100 dark:bg-gray-900">
             <div class="text-center">
-                <x-heroicon-o-arrow-path class="w-16 h-16 mx-auto text-pink-500 animate-spin" />
+                <x-heroicon-o-arrow-path class="w-16 h-16 mx-auto text-gray-400 animate-spin" />
                 <p class="mt-4 text-lg font-medium text-gray-800 dark:text-gray-200"></p>
             </div>
         </div>
 
         <!-- Livewire Operations Loading Indicator -->
         <div wire:loading.delay wire:target="addRow, closeBlockModal, addBlockToModalRow"
-            class="fixed top-0 right-0 z-50 m-4 p-2 bg-pink-100 dark:bg-pink-900 rounded-lg shadow-lg flex items-center text-pink-600 dark:text-pink-300 text-sm font-medium">
+            class="fixed top-0 right-0 z-50 m-4 p-2 bg-white dark:bg-gray-800 rounded-lg shadow-lg flex items-center text-gray-700 dark:text-gray-200 text-sm font-medium">
             <x-heroicon-o-arrow-path class="w-5 h-5 mr-2 animate-spin" />
         </div>
 
@@ -366,8 +366,8 @@
                 @if ($currentTheme)
                     <div class="relative hidden lg:block" x-data="{ open: false }">
                         <button @click="open = !open"
-                            class="flex items-center gap-2 px-4 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-2 focus:ring-pink-200 transition-all duration-150 text-sm font-medium">
-                            <x-heroicon-o-paint-brush class="w-5 h-5 text-pink-500" />
+                            class="flex items-center gap-2 px-4 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-2 focus:ring-gray-300 transition-all duration-150 text-sm font-medium">
+                            <x-heroicon-o-paint-brush class="w-5 h-5" />
                             <span class="hidden sm:inline">{{ $currentTheme->name }}</span>
                             <x-heroicon-o-chevron-down class="w-4 h-4" />
                         </button>
@@ -379,7 +379,7 @@
                             x-transition:leave="transition ease-in duration-75"
                             x-transition:leave-start="transform opacity-100 scale-100"
                             x-transition:leave-end="transform opacity-0 scale-95"
-                            class="absolute z-50 mt-2 w-64 rounded-md bg-white dark:bg-gray-800 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none divide-y divide-gray-100 dark:divide-gray-700"
+                            class="absolute z-50 mt-2 w-64 rounded-md bg-white dark:bg-gray-800 shadow-lg ring-1 ring-black/5 focus:outline-none divide-y divide-gray-100 dark:divide-gray-700"
                             :class="document.documentElement.dir === 'rtl' ? 'right-0 origin-top-right' :
                                 'left-0 origin-top-left'">
 
@@ -390,9 +390,9 @@
                                 </div>
                                 @foreach ($availableThemes as $theme)
                                     <button wire:click="switchTheme({{ $theme['id'] }})" @click="open = false"
-                                        class="flex items-center w-full px-4 py-2 text-left text-sm {{ $theme['id'] === $themeId ? 'bg-pink-50 dark:bg-pink-900/30 text-pink-600 dark:text-pink-400 font-medium' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700' }}">
+                                        class="flex items-center w-full px-4 py-2 text-left text-sm {{ $theme['id'] === $themeId ? 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white font-medium' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700' }}">
                                         @if ($theme['id'] === $themeId)
-                                            <x-heroicon-o-check class="w-4 h-4 mr-2 text-pink-500" />
+                                            <x-heroicon-o-check class="w-4 h-4 me-2" />
                                         @else
                                             <span class="w-4 h-4 mr-2"></span>
                                         @endif
@@ -426,13 +426,13 @@
 
                 <!-- Add Button -->
                 <button
-                    class="flex items-center gap-1 px-4 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-2 focus:ring-pink-200 transition-all duration-150 text-sm font-medium"
+                    class="flex items-center gap-1 px-4 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-2 focus:ring-gray-300 transition-all duration-150 text-sm font-medium"
                     wire:click="addRow" title="{{ __('Add Row') }}">
                     <x-heroicon-o-plus class="w-5 h-5" />
                 </button>
                 <!-- List Blocks Button -->
                 <button
-                    class="hidden lg:flex items-center gap-1 px-4 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-2 focus:ring-pink-200 transition-all duration-150 text-sm font-medium"
+                    class="hidden lg:flex items-center gap-1 px-4 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-2 focus:ring-gray-300 transition-all duration-150 text-sm font-medium"
                     wire:click="$dispatch('openPageBlocksModal')" title="{{ __('List Blocks') }}">
                     <x-heroicon-o-list-bullet class="w-5 h-5" />
                 </button>
@@ -478,35 +478,35 @@
                 </a>
                 <!-- Save Button with animation placeholder -->
                 <button
-                    class="flex items-center w-14 gap-1 px-4 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-2 focus:ring-pink-200 transition-all duration-150 text-sm font-medium relative"
+                    class="flex items-center w-14 gap-1 px-4 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-2 focus:ring-gray-300 transition-all duration-150 text-sm font-medium relative"
                     wire:click="$dispatch('save-page')" x-data="{ saved: false }"
                     x-on:click="saved = true; setTimeout(() => saved = false, 1200);" title="{{ __('Save Page') }}">
                     <span x-show="!saved" class="flex items-center gap-1 justify-center">
-                        <x-heroicon-o-check class="w-5 h-5" />
+                        <x-bi-floppy class="w-5 h-5" />
                     </span>
                     <span x-show="saved" x-transition class="absolute inset-0 flex items-center justify-center">
-                        <x-heroicon-s-check class="w-5 h-5 text-green-500 animate-bounce" />
+                        <x-bi-floppy-fill class="w-5 h-5 text-green-600" />
                     </span>
                 </button>
             </div>
             <div class="flex items-center gap-2 lg:gap-4">
                 <div
                     class="flex gap-0 border border-gray-300 dark:border-gray-700 rounded-md overflow-hidden bg-white dark:bg-gray-900">
-                    <button :class="deviceMode === 'mobile' ? 'bg-pink-100 dark:bg-pink-900 text-pink-600' : ''"
+                    <button :class="deviceMode === 'mobile' ? 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white' : ''"
                         x-on:click="deviceMode = 'mobile'"
-                        class="px-3 lg:px-4 py-2 text-sm font-medium flex items-center gap-1 hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-2 focus:ring-pink-200 transition-all duration-150 border-r border-gray-200 dark:border-gray-800 last:border-r-0"
+                        class="px-3 lg:px-4 py-2 text-sm font-medium flex items-center gap-1 hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-2 focus:ring-gray-300 transition-all duration-150 border-r border-gray-200 dark:border-gray-800 last:border-r-0"
                         title="Mobile View">
                         <x-heroicon-o-device-phone-mobile class="w-5 h-5" />
                     </button>
-                    <button :class="deviceMode === 'tablet' ? 'bg-pink-100 dark:bg-pink-900 text-pink-600' : ''"
+                    <button :class="deviceMode === 'tablet' ? 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white' : ''"
                         x-on:click="deviceMode = 'tablet'"
-                        class="px-3 lg:px-4 py-2 text-sm font-medium flex items-center gap-1 hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-2 focus:ring-pink-200 transition-all duration-150 border-r border-gray-200 dark:border-gray-800 last:border-r-0"
+                        class="px-3 lg:px-4 py-2 text-sm font-medium flex items-center gap-1 hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-2 focus:ring-gray-300 transition-all duration-150 border-r border-gray-200 dark:border-gray-800 last:border-r-0"
                         title="Tablet View">
                         <x-heroicon-o-device-tablet class="w-5 h-5" />
                     </button>
-                    <button :class="deviceMode === 'desktop' ? 'bg-pink-100 dark:bg-pink-900 text-pink-600' : ''"
+                    <button :class="deviceMode === 'desktop' ? 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white' : ''"
                         x-on:click="deviceMode = 'desktop'"
-                        class="px-3 lg:px-4 py-2 text-sm font-medium flex items-center gap-1 hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-2 focus:ring-pink-200 transition-all duration-150"
+                        class="px-3 lg:px-4 py-2 text-sm font-medium flex items-center gap-1 hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-2 focus:ring-gray-300 transition-all duration-150"
                         title="Desktop View">
                         <x-heroicon-o-computer-desktop class="w-5 h-5" />
                     </button>
@@ -525,7 +525,7 @@
                 <!-- Extra Menu (Kebab): overflow tools on mobile + theme actions -->
                 <div class="relative" x-data="{ open: false }">
                     <button @click="open = !open"
-                        class="{{ $currentTheme ? 'flex' : 'flex lg:hidden' }} items-center justify-center p-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-2 focus:ring-pink-200 transition-all duration-150"
+                        class="{{ $currentTheme ? 'flex' : 'flex lg:hidden' }} items-center justify-center p-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-2 focus:ring-gray-300 transition-all duration-150"
                         title="{{ __('More') }}">
                         <x-heroicon-o-ellipsis-vertical class="w-5 h-5" />
                     </button>
@@ -592,7 +592,7 @@
                                     </button>
                                 @endif
 
-                                <!-- Theme Settings (host-defined fields) -->
+                                <!-- Theme Settings (the built-in preview picture plus host-defined fields) -->
                                 @if (!empty($this->themeSettingsSchema()))
                                     <button wire:click="openThemeSettingsModal" @click="open = false"
                                         class="flex items-center w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
@@ -773,7 +773,7 @@
                                             </label>
                                             <input type="file" wire:model="importFile" id="importFile"
                                                 accept=".json,.encrypted"
-                                                class="block w-full text-sm text-gray-500 dark:text-gray-400 file:mr-4 file:py-2 file:px-4 file:border-0 file:text-sm file:font-medium file:bg-pink-50 file:text-pink-700 hover:file:bg-pink-100 dark:file:bg-pink-900/30 dark:file:text-pink-400 dark:hover:file:bg-pink-900/50">
+                                                class="block w-full text-sm text-gray-500 dark:text-gray-400 file:mr-4 file:py-2 file:px-4 file:border-0 file:text-sm file:font-medium file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200 dark:file:bg-gray-700 dark:file:text-gray-200 dark:hover:file:bg-gray-600">
                                             @error('importFile')
                                                 <span class="text-red-500 text-xs mt-1">{{ $message }}</span>
                                             @enderror
@@ -1002,7 +1002,7 @@
                                         </div>
 
                                         <button
-                                            class="w-full mt-3 inline-flex items-center justify-center px-3 py-2 bg-pink-600 hover:bg-pink-700 text-white text-sm font-medium rounded-md transition-all duration-150">
+                                            class="w-full mt-3 inline-flex items-center justify-center px-3 py-2 bg-gray-900 hover:bg-gray-700 dark:bg-gray-100 dark:hover:bg-white text-white dark:text-gray-900 text-sm font-medium rounded-md transition-all duration-150">
                                             <x-heroicon-o-paint-brush class="w-4 h-4 mr-2" />
                                             {{ __('Design Pages') }}
                                         </button>
@@ -1016,7 +1016,7 @@
                                         <p class="text-gray-600 dark:text-gray-400">
                                             {{ __('Create a theme first to start building pages.') }}</p>
                                         <a href="{{ route('page-builder.themes') }}"
-                                            class="mt-4 inline-flex items-center px-4 py-2 bg-pink-600 hover:bg-pink-700 text-white text-sm font-medium rounded-lg transition-all duration-150">
+                                            class="mt-4 inline-flex items-center px-4 py-2 bg-gray-900 hover:bg-gray-700 dark:bg-gray-100 dark:hover:bg-white text-white dark:text-gray-900 text-sm font-medium rounded-lg transition-all duration-150">
                                             <x-heroicon-o-plus class="w-4 h-4 mr-2" />
                                             {{ __('Create Theme') }}
                                         </a>

@@ -205,7 +205,6 @@
     "Previewing theme ':name'": "معاينة القالب ':name'",
     "Preview mode cancelled": "تم إلغاء وضع المعاينة",
     "Exit Preview": "إنهاء المعاينة",
-    "Back to Themes": "العودة للقوالب",
     "Back": "رجوع",
     "Exit": "خروج",
     "Confirm Delete": "تأكيد الحذف",
@@ -469,5 +468,9 @@
     "Wrap": "التفاف",
     "Wrap Reverse": "التفاف معكوس",
     "This theme cannot be set as default": "لا يمكن تعيين هذا المظهر كافتراضي",
-    "Learn more": "اعرف المزيد"
+    "Learn more": "اعرف المزيد",
+    "Templates": "القوالب",
+    "Default theme": "المظهر الافتراضي",
+    "Theme card": "بطاقة المظهر",
+    "Preview image URL": "رابط صورة المعاينة"
 }

@@ -198,7 +198,6 @@
     "Previewing theme ':name'": "Previewing theme ':name'",
     "Preview mode cancelled": "Preview mode cancelled",
     "Exit Preview": "Exit Preview",
-    "Back to Themes": "Back to Themes",
     "Back": "Back",
     "Exit": "Exit",
     "Inside": "Inside",
@@ -453,5 +452,9 @@
     "Wrap": "Wrap",
     "Wrap Reverse": "Wrap Reverse",
     "This theme cannot be set as default": "This theme cannot be set as default",
-    "Learn more": "Learn more"
+    "Learn more": "Learn more",
+    "Templates": "Templates",
+    "Default theme": "Default theme",
+    "Theme card": "Theme card",
+    "Preview image URL": "Preview image URL"
 }

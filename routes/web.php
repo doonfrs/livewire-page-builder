@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Trinavo\LivewirePageBuilder\Http\Livewire\PageEditor;
+use Trinavo\LivewirePageBuilder\Http\Livewire\PreviewBar;
 use Trinavo\LivewirePageBuilder\Http\Livewire\ThemeManager;
 use Trinavo\LivewirePageBuilder\Services\PageBuilderRender;
 
@@ -29,7 +30,7 @@ Route::prefix('page-builder')->group(function () use ($editorMiddleware, $render
         Route::get('/preview/cancel', function () {
             session()->forget('page_builder_preview_theme_id');
 
-            return redirect('/')->with('notify', [
+            return redirect(session()->pull(PreviewBar::RETURN_URL_SESSION_KEY, '/'))->with('notify', [
                 'message' => __('Preview mode cancelled'),
                 'type' => 'success',
             ]);

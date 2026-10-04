@@ -19,6 +19,14 @@ use Illuminate\Support\Arr;
  */
 class Theme extends Model
 {
+    /**
+     * The settings key of the picture shown on the theme's card in the Theme
+     * Manager. A URL, so it travels with the theme through export, import and
+     * clone like every other setting. Built in rather than host-defined: the
+     * Theme Manager itself reads it.
+     */
+    public const PREVIEW_IMAGE_SETTING = 'preview_image';
+
     protected $table = 'builder_themes';
 
     protected $fillable = ['name', 'description', 'settings'];
@@ -50,6 +58,16 @@ class Theme extends Model
         $this->settings = $settings;
 
         return $this;
+    }
+
+    /**
+     * The URL of the theme's card picture, or null when it has none.
+     */
+    public function previewImageUrl(): ?string
+    {
+        $url = $this->getSetting(self::PREVIEW_IMAGE_SETTING);
+
+        return is_string($url) && $url !== '' ? $url : null;
     }
 
     /**

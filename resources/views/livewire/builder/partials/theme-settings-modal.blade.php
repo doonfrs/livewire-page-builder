@@ -1,4 +1,4 @@
-<!-- Theme Settings Modal (host-defined schema; see config/page-builder.php 'theme_settings') -->
+<!-- Theme Settings Modal (PageEditor::themeSettingsSchema(): the built-in preview picture plus config/page-builder.php 'theme_settings') -->
 <template x-teleport="body">
     <div x-data="{ show: $wire.entangle('showThemeSettingsModal') }" x-show="show"
         class="fixed inset-0 z-[9999] flex items-center justify-center bg-black/40 p-4" style="display: none;"
@@ -19,9 +19,8 @@
             x-transition:leave-end="opacity-0 scale-95">
             <form wire:submit="saveThemeSettings">
                 <div class="flex items-center gap-3 mb-1">
-                    <div
-                        class="flex items-center justify-center h-10 w-10 rounded-full bg-pink-100 dark:bg-pink-900/30 shrink-0">
-                        <x-heroicon-o-cog-6-tooth class="h-5 w-5 text-pink-600 dark:text-pink-400" />
+                    <div class="flex items-center justify-center h-10 w-10 rounded-full bg-base-200 shrink-0">
+                        <x-heroicon-o-cog-6-tooth class="h-5 w-5" />
                     </div>
                     <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100">
                         {{ __('Theme Settings') }}
@@ -49,10 +48,11 @@
                         <div>
                             <label for="theme_setting_{{ $loop->index }}"
                                 class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ __($field['label'] ?? $field['key']) }}</label>
-                            <input type="{{ ($field['type'] ?? 'text') === 'number' ? 'number' : 'text' }}"
+                            <input type="{{ in_array($field['type'] ?? 'text', ['number', 'url'], true) ? $field['type'] : 'text' }}"
                                 wire:model="themeSettingsForm.{{ $field['key'] }}"
                                 id="theme_setting_{{ $loop->index }}" placeholder="{{ $field['placeholder'] ?? '' }}"
-                                class="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md shadow-sm focus:ring-pink-500 focus:border-pink-500 sm:text-sm">
+                                @if (($field['type'] ?? 'text') === 'url') dir="ltr" @endif
+                                class="input input-sm mt-1 w-full">
                             @error('themeSettingsForm.' . $field['key'])
                                 <span class="text-red-500 text-xs">{{ $message }}</span>
                             @enderror
@@ -61,12 +61,10 @@
                 </div>
 
                 <div class="flex gap-3 justify-end mt-6">
-                    <button type="button" wire:click="closeThemeSettingsModal"
-                        class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-600 focus:ring-2 focus:ring-gray-200 dark:focus:ring-gray-500 transition-all duration-150">
+                    <button type="button" wire:click="closeThemeSettingsModal" class="btn btn-sm">
                         {{ __('Cancel') }}
                     </button>
-                    <button type="submit"
-                        class="px-4 py-2 text-sm font-medium text-white bg-pink-600 hover:bg-pink-700 focus:ring-2 focus:ring-pink-200 rounded-md transition-all duration-150">
+                    <button type="submit" class="btn btn-sm btn-neutral">
                         {{ __('Save') }}
                     </button>
                 </div>

@@ -4,6 +4,8 @@ namespace Trinavo\LivewirePageBuilder\Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
+use PHPUnit\Framework\Attributes\Test;
+use Trinavo\LivewirePageBuilder\Http\Livewire\PreviewBar;
 use Trinavo\LivewirePageBuilder\Http\Livewire\ThemeManager;
 use Trinavo\LivewirePageBuilder\Models\Theme;
 use Trinavo\LivewirePageBuilder\Tests\TestCase;
@@ -25,6 +27,33 @@ class ThemePreviewTest extends TestCase
             ->assertRedirect('/');
 
         $this->assertEquals($theme->id, session('page_builder_preview_theme_id'));
+    }
+
+    #[Test]
+    public function exit_preview_returns_to_the_theme_manager_it_was_started_from(): void
+    {
+        $theme = Theme::create(['name' => 'Test Theme']);
+
+        Livewire::test(ThemeManager::class)->call('previewTheme', $theme->id);
+
+        Livewire::test(PreviewBar::class)
+            ->assertDontSee('Back to Themes')
+            ->call('cancelPreview')
+            ->assertRedirect(route('page-builder.themes'));
+
+        $this->assertNull(session('page_builder_preview_theme_id'));
+        $this->assertNull(session(PreviewBar::RETURN_URL_SESSION_KEY));
+    }
+
+    #[Test]
+    public function exit_preview_goes_home_when_nothing_said_where_it_started(): void
+    {
+        $theme = Theme::create(['name' => 'Test Theme']);
+        session(['page_builder_preview_theme_id' => $theme->id]);
+
+        Livewire::test(PreviewBar::class)
+            ->call('cancelPreview')
+            ->assertRedirect('/');
     }
 
     /** @test */
