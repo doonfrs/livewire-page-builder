@@ -61,6 +61,17 @@ class PageBuilderUIService
     private string|Closure $themeUnlockUrl = '';
 
     /**
+     * The notice shown when someone tries to make a locked theme the default:
+     * its title, its message and the label of its unlock button. Each receives
+     * the Theme.
+     */
+    private string|Closure $themeLockedTitle = '';
+
+    private string|Closure $themeLockedMessage = '';
+
+    private string|Closure $themeUnlockLabel = '';
+
+    /**
      * Set custom HTML to be rendered in the page editor header
      *
      * @param  string|Closure  $html  The HTML to render in the header (or a closure that returns HTML)
@@ -301,22 +312,40 @@ class PageBuilderUIService
     /**
      * Keep some themes from being made the default, and say where they unlock.
      *
-     * A locked theme can still be edited, previewed and cloned; it just cannot
-     * go live. The Theme Manager shows it with a lock and an unlock link in
-     * place of "Set as Default", and refuses the change server-side.
+     * A locked theme looks like any other theme: it can be edited, previewed,
+     * cloned, and its Set as Default button is still there. Pressing it opens
+     * a notice instead of the confirmation, with the host's title, message and
+     * a button to the unlock URL; the change is also refused server-side.
      *
      *     app(PageBuilderUIService::class)->lockThemes(
-     *         fn (Theme $theme) => ! $plan->includes($theme),
-     *         fn (Theme $theme) => route('plans'),
+     *         isLocked: fn (Theme $theme) => ! $plan->includes($theme),
+     *         unlockUrl: fn (Theme $theme) => route('plans'),
+     *         title: fn (Theme $theme) => __(':name is not on your plan', ['name' => $theme->name]),
+     *         message: __('Upgrade to use this theme on your site.'),
+     *         unlockLabel: __('Upgrade'),
      *     );
      *
+     * The notice is resolved only when it opens, so the closures never run
+     * for every theme in the list.
+     *
      * @param  Closure|null  $isLocked  fn (Theme): bool, or null to lock nothing
-     * @param  string|Closure  $unlockUrl  URL, or fn (Theme): string
+     * @param  string|Closure  $unlockUrl  URL, or fn (Theme): string; no button when empty
+     * @param  string|Closure  $title  Notice title, or fn (Theme): string
+     * @param  string|Closure  $message  Notice text, or fn (Theme): string
+     * @param  string|Closure  $unlockLabel  Button label, or fn (Theme): string
      */
-    public function lockThemes(?Closure $isLocked, string|Closure $unlockUrl = ''): self
-    {
+    public function lockThemes(
+        ?Closure $isLocked,
+        string|Closure $unlockUrl = '',
+        string|Closure $title = '',
+        string|Closure $message = '',
+        string|Closure $unlockLabel = '',
+    ): self {
         $this->themeLock = $isLocked;
         $this->themeUnlockUrl = $unlockUrl;
+        $this->themeLockedTitle = $title;
+        $this->themeLockedMessage = $message;
+        $this->themeUnlockLabel = $unlockLabel;
 
         return $this;
     }
@@ -328,9 +357,31 @@ class PageBuilderUIService
 
     public function getThemeUnlockUrl(Theme $theme): string
     {
-        return $this->themeUnlockUrl instanceof Closure
-            ? (string) ($this->themeUnlockUrl)($theme)
-            : $this->themeUnlockUrl;
+        return $this->resolveForTheme($this->themeUnlockUrl, $theme);
+    }
+
+    /**
+     * What the notice for a locked theme says, with the package's own wording
+     * wherever the host gave none.
+     *
+     * @return array{title: string, message: string, url: string, label: string}
+     */
+    public function getLockedThemeNotice(Theme $theme): array
+    {
+        $title = $this->resolveForTheme($this->themeLockedTitle, $theme);
+        $label = $this->resolveForTheme($this->themeUnlockLabel, $theme);
+
+        return [
+            'title' => $title !== '' ? $title : __('This theme cannot be set as default'),
+            'message' => $this->resolveForTheme($this->themeLockedMessage, $theme),
+            'url' => $this->getThemeUnlockUrl($theme),
+            'label' => $label !== '' ? $label : __('Learn more'),
+        ];
+    }
+
+    private function resolveForTheme(string|Closure $value, Theme $theme): string
+    {
+        return $value instanceof Closure ? (string) $value($theme) : $value;
     }
 
     /**
@@ -348,6 +399,9 @@ class PageBuilderUIService
         $this->themeTransfer = true;
         $this->themeLock = null;
         $this->themeUnlockUrl = '';
+        $this->themeLockedTitle = '';
+        $this->themeLockedMessage = '';
+        $this->themeUnlockLabel = '';
 
         return $this;
     }

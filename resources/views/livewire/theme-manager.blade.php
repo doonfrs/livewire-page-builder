@@ -125,12 +125,6 @@
                                                     <x-heroicon-o-star class="w-3 h-3 mr-1 ml-1" />
                                                     {{ __('Default') }}
                                                 </span>
-                                            @elseif (array_key_exists($theme['id'], $lockedThemes))
-                                                <span
-                                                    class="ml-2 inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-400">
-                                                    <x-heroicon-o-lock-closed class="w-3 h-3 mr-1 ml-1" />
-                                                    {{ __('Locked') }}
-                                                </span>
                                             @endif
                                         </div>
                                     </div>
@@ -199,15 +193,7 @@
                                                             {{ __('Export') }}
                                                         </button>
                                                     @endif
-                                                    @if ($defaultThemeId != $theme['id'] && array_key_exists($theme['id'], $lockedThemes))
-                                                        @if ($lockedThemes[$theme['id']] !== '')
-                                                            <a href="{{ $lockedThemes[$theme['id']] }}"
-                                                                class="flex items-center gap-2.5 w-full px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-                                                                <x-heroicon-o-lock-open class="w-4 h-4 text-amber-500 dark:text-amber-400" />
-                                                                {{ __('Unlock') }}
-                                                            </a>
-                                                        @endif
-                                                    @elseif ($defaultThemeId != $theme['id'])
+                                                    @if ($defaultThemeId != $theme['id'])
                                                         <button wire:click="confirmSetDefaultTheme({{ $theme['id'] }})" @click="open = false"
                                                             class="flex items-center gap-2.5 w-full px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
                                                             <x-heroicon-o-star class="w-4 h-4 text-yellow-500 dark:text-yellow-400" />
@@ -560,6 +546,61 @@
                             {{ __('Cancel') }}
                         </button>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Locked Theme Notice: what Set as Default opens on a theme the host has locked -->
+        <div x-data="{ show: $wire.entangle('showLockedModal') }" x-show="show" x-cloak class="fixed inset-0 z-50 overflow-y-auto"
+            aria-labelledby="locked-modal-title" role="dialog" aria-modal="true">
+            <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+                <div x-show="show" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0"
+                    x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200"
+                    x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
+                    class="fixed inset-0 bg-gray-500/75 transition-opacity" aria-hidden="true" wire:click="closeLockedModal"></div>
+
+                <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+
+                <div x-show="show" x-transition:enter="ease-out duration-300"
+                    x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                    x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+                    x-transition:leave="ease-in duration-200"
+                    x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
+                    x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                    class="relative z-10 inline-block w-full align-bottom bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-xl transform transition-all text-start sm:my-8 sm:align-middle sm:max-w-md">
+                    @if ($lockedNotice)
+                        <div class="px-4 pt-5 pb-4 sm:p-6">
+                            <div class="flex items-start gap-4">
+                                <div
+                                    class="flex shrink-0 items-center justify-center h-10 w-10 rounded-full bg-pink-100 dark:bg-pink-900/30">
+                                    <x-heroicon-o-sparkles class="h-6 w-6 text-pink-600 dark:text-pink-400" />
+                                </div>
+                                <div class="min-w-0">
+                                    <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white" id="locked-modal-title">
+                                        {{ $lockedNotice['title'] }}
+                                    </h3>
+                                    @if ($lockedNotice['message'] !== '')
+                                        <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
+                                            {{ $lockedNotice['message'] }}
+                                        </p>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex flex-col-reverse gap-2 bg-gray-50 dark:bg-gray-700 px-4 py-3 sm:flex-row sm:justify-end sm:px-6">
+                            <button type="button" wire:click="closeLockedModal"
+                                class="inline-flex justify-center rounded-md border border-gray-300 dark:border-gray-600 shadow-xs px-4 py-2 bg-white dark:bg-gray-800 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700">
+                                {{ __('Cancel') }}
+                            </button>
+                            @if ($lockedNotice['url'] !== '')
+                                <a href="{{ $lockedNotice['url'] }}"
+                                    class="inline-flex items-center justify-center gap-2 rounded-md px-4 py-2 bg-pink-600 hover:bg-pink-700 text-sm font-medium text-white shadow-xs">
+                                    <x-heroicon-o-arrow-up-circle class="h-5 w-5" />
+                                    {{ $lockedNotice['label'] }}
+                                </a>
+                            @endif
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>

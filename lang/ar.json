@@ -468,7 +468,6 @@
     "Stretch": "تمديد",
     "Wrap": "التفاف",
     "Wrap Reverse": "التفاف معكوس",
-    "Locked": "مقفل",
-    "Unlock": "فتح القفل",
-    "This theme is locked and cannot be set as default.": "هذا المظهر مقفل ولا يمكن تعيينه كافتراضي."
+    "This theme cannot be set as default": "لا يمكن تعيين هذا المظهر كافتراضي",
+    "Learn more": "اعرف المزيد"
 }

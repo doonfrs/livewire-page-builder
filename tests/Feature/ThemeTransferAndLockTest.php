@@ -63,25 +63,83 @@ class ThemeTransferAndLockTest extends TestCase
     }
 
     #[Test]
-    public function a_locked_theme_cannot_be_made_the_default_and_links_to_its_unlock_page(): void
+    public function a_locked_theme_looks_like_any_other_theme(): void
     {
         $free = Theme::create(['name' => 'Free']);
         $paid = Theme::create(['name' => 'Paid']);
         Setting::setDefaultThemeId($free->id);
 
-        app(PageBuilderUIService::class)->lockThemes(
-            fn (Theme $theme) => $theme->name === 'Paid',
-            fn (Theme $theme) => 'https://shop.test/unlock/'.$theme->id,
-        );
+        $this->lockPaid();
 
         Livewire::test(ThemeManager::class)
-            ->assertSee(__('Locked'))
-            ->assertSee('https://shop.test/unlock/'.$paid->id)
+            ->assertDontSeeText('Locked')
+            ->assertDontSee('https://shop.test/unlock/'.$paid->id)
+            ->assertSeeHtml('confirmSetDefaultTheme('.$paid->id.')');
+    }
+
+    #[Test]
+    public function set_as_default_on_a_locked_theme_explains_why_and_links_to_its_unlock_page(): void
+    {
+        $free = Theme::create(['name' => 'Free']);
+        $paid = Theme::create(['name' => 'Paid']);
+        Setting::setDefaultThemeId($free->id);
+
+        $this->lockPaid();
+
+        Livewire::test(ThemeManager::class)
             ->call('confirmSetDefaultTheme', $paid->id)
             ->assertSet('showDefaultModal', false)
-            ->assertDispatched('notify', type: 'error');
+            ->assertSet('showLockedModal', true)
+            ->assertSee('Paid is not on your plan')
+            ->assertSee('Upgrade to put it live.')
+            ->assertSee('Go upgrade')
+            ->assertSeeHtml('https://shop.test/unlock/'.$paid->id)
+            ->call('closeLockedModal')
+            ->assertSet('showLockedModal', false);
 
         $this->assertSame($free->id, Setting::getDefaultThemeId());
+    }
+
+    #[Test]
+    public function a_locked_theme_is_refused_even_past_the_confirmation(): void
+    {
+        $free = Theme::create(['name' => 'Free']);
+        $paid = Theme::create(['name' => 'Paid']);
+        Setting::setDefaultThemeId($free->id);
+
+        // Unlocked when the confirmation opens, locked by the time it is
+        // confirmed: the second request has to check again.
+        $locked = false;
+        app(PageBuilderUIService::class)->lockThemes(function () use (&$locked) {
+            return $locked;
+        });
+
+        $component = Livewire::test(ThemeManager::class)
+            ->call('confirmSetDefaultTheme', $paid->id)
+            ->assertSet('showDefaultModal', true);
+
+        $locked = true;
+
+        $component->call('setDefaultTheme')
+            ->assertSet('showDefaultModal', false)
+            ->assertSet('showLockedModal', true);
+
+        $this->assertSame($free->id, Setting::getDefaultThemeId());
+    }
+
+    #[Test]
+    public function a_host_that_gives_no_wording_gets_a_generic_notice_without_a_button(): void
+    {
+        $paid = Theme::create(['name' => 'Paid']);
+
+        app(PageBuilderUIService::class)->lockThemes(fn (Theme $theme) => true);
+
+        Livewire::test(ThemeManager::class)
+            ->call('confirmSetDefaultTheme', $paid->id)
+            ->assertSet('showLockedModal', true)
+            ->assertSet('lockedNotice.title', __('This theme cannot be set as default'))
+            ->assertSet('lockedNotice.url', '')
+            ->assertDontSee(__('Learn more'));
     }
 
     #[Test]
@@ -99,5 +157,16 @@ class ThemeTransferAndLockTest extends TestCase
             ->call('setDefaultTheme');
 
         $this->assertSame($other->id, Setting::getDefaultThemeId());
+    }
+
+    private function lockPaid(): void
+    {
+        app(PageBuilderUIService::class)->lockThemes(
+            isLocked: fn (Theme $theme) => $theme->name === 'Paid',
+            unlockUrl: fn (Theme $theme) => 'https://shop.test/unlock/'.$theme->id,
+            title: fn (Theme $theme) => $theme->name.' is not on your plan',
+            message: 'Upgrade to put it live.',
+            unlockLabel: 'Go upgrade',
+        );
     }
 }

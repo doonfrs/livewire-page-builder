@@ -3,6 +3,7 @@
 namespace Trinavo\LivewirePageBuilder\Http\Livewire;
 
 use Illuminate\Support\Str;
+use Livewire\Attributes\Locked;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Trinavo\LivewirePageBuilder\Events\DefaultThemeSet;
@@ -29,6 +30,13 @@ class ThemeManager extends Component
     public $showImportModal = false;
 
     public $showCloneModal = false;
+
+    /** The notice that stands in for Set as Default on a locked theme. */
+    public $showLockedModal = false;
+
+    /** @var array{title: string, message: string, url: string, label: string}|null */
+    #[Locked]
+    public $lockedNotice = null;
 
     public $editingTheme = null;
 
@@ -193,7 +201,7 @@ class ThemeManager extends Component
         $theme = Theme::find($themeId);
 
         if ($theme && $this->ui()->isThemeLocked($theme)) {
-            $this->dispatch('notify', message: __('This theme is locked and cannot be set as default.'), type: 'error');
+            $this->openLockedNotice($theme);
 
             return;
         }
@@ -214,8 +222,9 @@ class ThemeManager extends Component
         // Re-checked here: the confirm step is a separate request, and a
         // Livewire action stays callable with its button hidden.
         if ($this->ui()->isThemeLocked($this->themeToSetDefault)) {
+            $theme = $this->themeToSetDefault;
             $this->closeDefaultModal();
-            $this->dispatch('notify', message: __('This theme is locked and cannot be set as default.'), type: 'error');
+            $this->openLockedNotice($theme);
 
             return;
         }
@@ -242,6 +251,23 @@ class ThemeManager extends Component
     {
         $this->showDefaultModal = false;
         $this->themeToSetDefault = null;
+    }
+
+    public function closeLockedModal(): void
+    {
+        $this->showLockedModal = false;
+        $this->lockedNotice = null;
+    }
+
+    /**
+     * Say why a locked theme cannot go live, in the host's words, and where it
+     * unlocks. Resolved here rather than at render, so the host's closures run
+     * for the one theme pressed instead of for every theme in the list.
+     */
+    private function openLockedNotice(Theme $theme): void
+    {
+        $this->lockedNotice = $this->ui()->getLockedThemeNotice($theme);
+        $this->showLockedModal = true;
     }
 
     public function deleteTheme()
@@ -527,16 +553,9 @@ class ThemeManager extends Component
         // Get template gallery URL from UI service
         $templateGalleryUrl = $uiService->getTemplateGalleryUrl();
 
-        // Locked themes and where each one unlocks, keyed by id.
-        $lockedThemes = Theme::all()
-            ->filter(fn (Theme $theme) => $uiService->isThemeLocked($theme))
-            ->mapWithKeys(fn (Theme $theme) => [$theme->id => $uiService->getThemeUnlockUrl($theme)])
-            ->all();
-
         return view('page-builder::livewire.theme-manager', [
             'selectedTheme' => $this->selectedTheme,
             'canTransferThemes' => $uiService->canTransferThemes(),
-            'lockedThemes' => $lockedThemes,
             'customHeaderHtml' => $customHeaderHtml,
             'templateGalleryUrl' => $templateGalleryUrl,
         ])->layout('page-builder::layouts.app');
