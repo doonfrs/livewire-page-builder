@@ -84,7 +84,9 @@
                             </span>
                         @endif
                     </div>
-                    <button type="button" class="btn btn-ghost btn-xs btn-circle" wire:click="close"
+                    <button type="button"
+                        class="btn btn-ghost btn-xs btn-circle text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-100"
+                        wire:click="close"
                         title="{{ __('Close') }}">
                         <x-heroicon-o-x-mark class="h-4 w-4" />
                     </button>
@@ -129,9 +131,14 @@
 
                 {{-- Opposite ends, never adjacent: Cancel throws away work that is already visible
                      on the page, so it must not sit under a thumb aiming for Save. Cancel takes the
-                     start edge and Save the end edge, which mirrors itself in RTL. --}}
+                     start edge and Save the end edge, which mirrors itself in RTL.
+                     The sheet is painted in fixed grays, not the store's daisyUI theme, so its
+                     neutral buttons pin their colors too: a ghost button takes the theme's
+                     text color, which on a dark theme is near-white on this light footer. --}}
                 <div class="flex shrink-0 items-center justify-between gap-2 border-t border-gray-200 bg-gray-100 px-3 py-2 dark:border-gray-700 dark:bg-gray-800">
-                    <button type="button" class="btn btn-ghost btn-xs" wire:click="close">{{ __('Cancel') }}</button>
+                    <button type="button"
+                        class="btn btn-xs border-gray-300 bg-white text-gray-700 shadow-none hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 dark:hover:bg-gray-600"
+                        wire:click="close">{{ __('Cancel') }}</button>
                     <button type="button" class="btn btn-primary btn-xs" wire:click="save" wire:loading.attr="disabled"
                         @disabled($error)>
                         <span wire:loading.remove wire:target="save">{{ __('Save') }}</span>
