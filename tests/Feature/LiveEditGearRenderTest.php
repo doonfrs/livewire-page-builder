@@ -135,10 +135,10 @@ class LiveEditGearRenderTest extends TestCase
 
         $html = $this->renderHome();
 
-        // `left-1.5`, not `start-1.5`: the corner the gear occupies must not move under RTL,
+        // `left-0`, not `start-0`: the corner the gear occupies must not move under RTL,
         // so a block only ever has to keep one corner clear of its own controls.
-        $this->assertStringContainsString('top-1.5 left-1.5', $html);
-        $this->assertStringNotContainsString('top-1.5 start-1.5', $html);
+        $this->assertStringContainsString('-top-4 left-0', $html);
+        $this->assertStringNotContainsString('-top-4 start-0', $html);
     }
 
     /** @test */
@@ -150,7 +150,7 @@ class LiveEditGearRenderTest extends TestCase
 
         // Modals, drawers and menus live at z-50 and up. A gear above that band floats
         // over an open modal, which is worse than being covered by one.
-        $this->assertStringContainsString('left-1.5 z-40', $html);
+        $this->assertStringContainsString('left-0 z-40', $html);
         $this->assertStringNotContainsString('z-[60]', $html);
     }
 

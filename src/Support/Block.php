@@ -796,6 +796,23 @@ abstract class Block extends Component
     }
 
     /**
+     * Whether the block shows anything right now.
+     *
+     * A block that renders an empty root - a currency menu on a store with one currency,
+     * a link list with no links - would otherwise leave its edit gear floating over blank
+     * space. Return false and every gear tied to the block is hidden: the wrapper's, one
+     * the block draws itself, and any host control carrying `data-pb-edit-gear`.
+     *
+     * Only the answer reaches the page builder; why is the block's business. It is read
+     * after render(), so state render() builds is available, and again on every Livewire
+     * update, so the gear comes back the moment the block has something to show.
+     */
+    public function hasVisibleContent(): bool
+    {
+        return true;
+    }
+
+    /**
      * Resolve getPageBuilderLiveEditProperties() into BlockProperty objects.
      *
      * String entries are looked up in getAllProperties(); unknown names are dropped

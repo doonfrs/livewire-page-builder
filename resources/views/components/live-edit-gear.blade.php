@@ -23,7 +23,11 @@
     @endphp
 
     <button type="button" title="{{ __('Edit block') }}" style="font-size:initial"
-        {{-- z-40 clears what a block stacks inside itself and stays deliberately below the z-50 band
+        data-pb-edit-gear="{{ $floating ? 'wrapper' : '' }}"
+        {{-- data-pb-edit-gear: hidden with its block when the block shows nothing, see
+             live-edit-mount and Block::hasVisibleContent(). "wrapper" marks the floating one
+             on the block's wrapper, the only gear found by its sibling rather than its ancestor.
+             z-40 clears what a block stacks inside itself and stays deliberately below the z-50 band
              that modals, drawers and menus live in - the gear only has to win against its own block,
              and floating over an open modal is worse than being covered by one. Do not raise it.
              font-size:initial escapes the wrapper's font-size:0.

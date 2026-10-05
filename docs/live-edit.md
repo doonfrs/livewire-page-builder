@@ -203,6 +203,27 @@ off `$liveEditContext` is null and the component renders nothing.
 One trade-off: the gear now lives inside the component, so a lazy-loaded block has no gear while its
 placeholder is on screen. Worth it for a block that always renders eagerly.
 
+### Blocks that render nothing
+
+A block can have nothing to show right now: a currency menu on a store with one currency, a link
+list with no links. Its gear would then float over blank space. The block says so, and only the
+block knows why:
+
+```php
+public function hasVisibleContent(): bool
+{
+    return $this->currencies->count() > 1;
+}
+```
+
+It is read after `render()`, so state built there is available. When it returns false the root of
+the block is stamped `data-pb-hidden`, and every gear tied to the block hides: the wrapper's, one
+the block draws itself, and any host control inside the block that carries `data-pb-edit-gear`.
+That is the attribute to put on your own edit buttons if they should go with the block.
+
+It is evaluated again on every Livewire update, so the gear comes back the moment the block has
+something to show. The default is true, so a block that does not override it keeps its gear.
+
 ---
 
 ## 4. How preview works, and where it stops

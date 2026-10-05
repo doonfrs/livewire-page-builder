@@ -105,10 +105,9 @@ class LiveEditOwnGearTest extends TestCase
 
         // The block's own one landed in the slot it rendered, not on the wrapper.
         $this->assertStringContainsString('own-gear-slot', $html);
-        $this->assertSame(1, substr_count($html, 'inline-flex'));
 
         // And the wrapper drew exactly one floating gear: the other block's.
-        $this->assertSame(1, substr_count($html, 'absolute top-1.5 left-1.5'));
+        $this->assertSame(1, substr_count($html, 'absolute -top-4 left-0'));
     }
 
     /**

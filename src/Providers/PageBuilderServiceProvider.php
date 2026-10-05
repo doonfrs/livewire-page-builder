@@ -4,6 +4,7 @@ namespace Trinavo\LivewirePageBuilder\Providers;
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
+use Livewire\ComponentHookRegistry;
 use Livewire\Livewire;
 use Trinavo\LivewirePageBuilder\Config\Variables;
 use Trinavo\LivewirePageBuilder\Contracts\StoresUploadedImages;
@@ -32,6 +33,7 @@ use Trinavo\LivewirePageBuilder\Services\PageBuilderService;
 use Trinavo\LivewirePageBuilder\Services\PageBuilderUIService;
 use Trinavo\LivewirePageBuilder\Services\ThemeEncryptionService;
 use Trinavo\LivewirePageBuilder\Services\ThemeService;
+use Trinavo\LivewirePageBuilder\Support\LiveEditVisibilityHook;
 
 class PageBuilderServiceProvider extends ServiceProvider
 {
@@ -113,6 +115,12 @@ class PageBuilderServiceProvider extends ServiceProvider
         // lifetime of a booted app. Clearing it here keeps tests (and any re-boot)
         // honest without paying the lookup again on every request.
         PageBuilderService::flushLiveEditCache();
+
+        // Lets a block that rendered nothing hide its edit gears, see Block::hasVisibleContent().
+        // Here and not in boot(): Livewire attaches its component hooks once, in its own boot(),
+        // so one registered after that never runs. Every register() precedes every boot().
+        // The registry itself rather than the facade, which may not be bound this early.
+        ComponentHookRegistry::register(LiveEditVisibilityHook::class);
 
         // How builder uploads reach permanent storage. bindIf, so a host
         // application that has its own rules (resizing, a dimension cap, a CDN)
