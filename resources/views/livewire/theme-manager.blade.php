@@ -95,30 +95,27 @@
                             </div>
 
                             <div class="flex items-center gap-2">
-                                <a href="{{ route('page-builder.editor', ['pageKey' => 'home', 'themeId' => $theme['id']]) }}"
-                                    class="btn btn-sm btn-neutral flex-1">
-                                    <x-heroicon-o-paint-brush class="w-4 h-4" />
-                                    {{ __('Design Pages') }}
-                                </a>
+                                {{-- The default theme is already live, so its main button designs it;
+                                     every other card's main button makes it the default. --}}
+                                @if ($defaultThemeId == $theme['id'])
+                                    <a href="{{ route('page-builder.editor', ['pageKey' => 'home', 'themeId' => $theme['id']]) }}"
+                                        class="btn btn-sm btn-neutral flex-1">
+                                        <x-heroicon-o-paint-brush class="w-4 h-4" />
+                                        {{ __('Design Pages') }}
+                                    </a>
+                                @else
+                                    <button type="button" wire:click="confirmSetDefaultTheme({{ $theme['id'] }})"
+                                        class="btn btn-sm btn-neutral flex-1">
+                                        <x-heroicon-o-check-circle class="w-4 h-4" />
+                                        {{ __('Set as Default') }}
+                                    </button>
+                                @endif
 
                                 <button type="button" wire:click="previewTheme({{ $theme['id'] }})"
                                     class="btn btn-sm btn-square" title="{{ __('Preview') }}"
                                     aria-label="{{ __('Preview') }}">
                                     <x-heroicon-o-eye class="w-4 h-4" />
                                 </button>
-
-                                @if ($defaultThemeId == $theme['id'])
-                                    <span class="btn btn-sm btn-square btn-soft btn-success cursor-default"
-                                        title="{{ __('Default theme') }}" aria-label="{{ __('Default theme') }}">
-                                        <x-heroicon-s-check-circle class="w-4 h-4" />
-                                    </span>
-                                @else
-                                    <button type="button" wire:click="confirmSetDefaultTheme({{ $theme['id'] }})"
-                                        class="btn btn-sm btn-square" title="{{ __('Set as Default') }}"
-                                        aria-label="{{ __('Set as Default') }}">
-                                        <x-heroicon-o-check-circle class="w-4 h-4" />
-                                    </button>
-                                @endif
 
                                 <div class="relative" x-data="{ open: false }">
                                     <button type="button" @click="open = !open" :aria-expanded="open"
@@ -129,6 +126,14 @@
                                     <ul x-show="open" x-cloak @click.away="open = false"
                                         @keydown.escape.window="open = false" x-transition.origin.top
                                         class="menu absolute end-0 z-30 mt-2 w-48 rounded-box bg-base-100 border border-base-300 shadow-lg">
+                                        @if ($defaultThemeId != $theme['id'])
+                                            <li>
+                                                <a href="{{ route('page-builder.editor', ['pageKey' => 'home', 'themeId' => $theme['id']]) }}">
+                                                    <x-heroicon-o-paint-brush class="w-4 h-4" />
+                                                    {{ __('Design Pages') }}
+                                                </a>
+                                            </li>
+                                        @endif
                                         <li>
                                             <button type="button" wire:click="openEditModal({{ $theme['id'] }})"
                                                 @click="open = false">

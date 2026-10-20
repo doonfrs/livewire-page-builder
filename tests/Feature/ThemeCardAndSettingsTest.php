@@ -18,7 +18,7 @@ use Trinavo\LivewirePageBuilder\Tests\TestCase;
 
 /**
  * The theme card's picture, the built-in Theme Settings field it comes from,
- * the Set as Default button outside the card's menu, and the editor's layout
+ * Set as Default as the main card button, and the editor's layout
  * guard.
  */
 class ThemeCardAndSettingsTest extends TestCase
@@ -81,7 +81,7 @@ class ThemeCardAndSettingsTest extends TestCase
         Livewire::test(ThemeManager::class)
             ->assertSeeHtml('confirmSetDefaultTheme('.$other->id.')')
             ->assertDontSeeHtml('confirmSetDefaultTheme('.$default->id.')')
-            ->assertSeeHtml('title="'.__('Default theme').'"')
+            ->assertDontSeeHtml('title="'.__('Default theme').'"')
             ->call('confirmSetDefaultTheme', $other->id)
             ->assertSet('showDefaultModal', true)
             ->call('setDefaultTheme');
