@@ -7,6 +7,7 @@ use Livewire\Livewire;
 use PHPUnit\Framework\Attributes\Test;
 use Trinavo\LivewirePageBuilder\Http\Livewire\PreviewBar;
 use Trinavo\LivewirePageBuilder\Http\Livewire\ThemeManager;
+use Trinavo\LivewirePageBuilder\Models\Setting;
 use Trinavo\LivewirePageBuilder\Models\Theme;
 use Trinavo\LivewirePageBuilder\Tests\TestCase;
 
@@ -54,6 +55,23 @@ class ThemePreviewTest extends TestCase
         Livewire::test(PreviewBar::class)
             ->call('cancelPreview')
             ->assertRedirect('/');
+    }
+
+    #[Test]
+    public function setting_a_default_theme_ends_a_running_preview(): void
+    {
+        $previewed = Theme::create(['name' => 'Previewed']);
+        $newDefault = Theme::create(['name' => 'New Default']);
+
+        Livewire::test(ThemeManager::class)->call('previewTheme', $previewed->id);
+
+        Livewire::test(ThemeManager::class)
+            ->call('confirmSetDefaultTheme', $newDefault->id)
+            ->call('setDefaultTheme');
+
+        $this->assertSame($newDefault->id, Setting::getDefaultThemeId());
+        $this->assertNull(session('page_builder_preview_theme_id'));
+        $this->assertNull(session(PreviewBar::RETURN_URL_SESSION_KEY));
     }
 
     /** @test */

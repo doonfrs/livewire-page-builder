@@ -15,6 +15,14 @@ class PreviewBar extends Component
 
     public $previewThemeId;
 
+    /**
+     * Forget the previewed theme and where Exit Preview would go.
+     */
+    public static function end(): void
+    {
+        session()->forget(['page_builder_preview_theme_id', self::RETURN_URL_SESSION_KEY]);
+    }
+
     public $themes = [];
 
     public function mount()

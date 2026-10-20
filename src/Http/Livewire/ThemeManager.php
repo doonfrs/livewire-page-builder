@@ -238,6 +238,10 @@ class ThemeManager extends Component
             DefaultThemeSet::dispatch($this->themeToSetDefault->id);
             $this->defaultThemeId = $this->themeToSetDefault->id;
 
+            // A running preview would keep showing another theme over the
+            // new default, so the store would look like nothing changed.
+            PreviewBar::end();
+
             $this->dispatch('notify', message: __("':name' set as default theme", ['name' => $this->themeToSetDefault->name]), type: 'success');
 
             $this->closeDefaultModal();
@@ -476,7 +480,7 @@ class ThemeManager extends Component
      */
     public function cancelPreview()
     {
-        session()->forget(['page_builder_preview_theme_id', PreviewBar::RETURN_URL_SESSION_KEY]);
+        PreviewBar::end();
 
         $this->dispatch('notify', message: __('Preview mode cancelled'), type: 'success');
 
